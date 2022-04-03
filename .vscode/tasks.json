@@ -1,17 +1,17 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Tweego",
-            "type": "shell",
-            "isBackground": true,
-            "command": "npm run build;Copy-Item -Path 'img' -Destination 'theChildTrainer0.0.2.0' -recurse -Force;tweego -o theChildTrainer0.0.2.0/game.html source;echo 'done compiling'",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        }
-    ]
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Tweego",
+      "type": "shell",
+      "isBackground": true,
+      "command": "npm run build;mkdir releases/${config:name}${config:version} -Force;Copy-Item -Path img -Destination releases/${config:name}${config:version} -Recurse -ErrorAction SilentlyContinue;tweego -o releases/${config:name}${config:version}/game.html source;echo 'done compiling'",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
 }

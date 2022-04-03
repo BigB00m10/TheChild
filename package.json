@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "build": "babel --extensions .ts ./ts --out-file source/script-compiled.js"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.8",
+    "@babel/preset-typescript": "^7.16.7",
+    "@types/twine-sugarcube": "^2.36.2",
+    "babel-preset-minify": "^0.5.1"
+  }
+}

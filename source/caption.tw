@@ -1,0 +1,5 @@
+:: StoryCaption
+----
+!<<- $weekDays[($now.day - 1) % 7]>>
+!!!<<- $now.hour + ':' + ('00' + $now.minute).slice(-2) + ' ' + $now.period>>
+----

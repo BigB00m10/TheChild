@@ -1,0 +1,6 @@
+:: widgets [widget nobr]
+<<widget emoji>>
+    <<if $config.emoji>>
+        <<- $args[0]>>
+    <</if>>
+<</widget>>

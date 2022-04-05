@@ -1,3 +1,4 @@
 /node_modules
 /*.zip
 /releases
+/source/script-compiled.js

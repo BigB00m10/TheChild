@@ -1,6 +1,34 @@
 :: widgets [widget nobr]
 <<widget emoji>>
     <<if $config.emoji>>
-        <<- $args[0]>>
+        <<- _args[0]>>
     <</if>>
 <</widget>>
+<<widget addMinutes>>
+    <<run Now.addMinutes(_args[0])>>
+<</widget>>
+<<widget addHours>>
+    <<run Now.addHours(_args[0])>>
+<</widget>>
+<<widget cash>>
+    <<run $player.cash += _args[0]
+        ;_cashAction = _args[0] < 1 ? 'lost' : 'received'
+        ;_cashColor = _args[0] < 1 ? 'red' : 'green'>>
+    @@color:_cashColor;You _cashAction $$_args[0]@@
+<</widget>>
+<<widget workOption>>
+    <<set _workEmoji = $player.gender != "male" ? "👷‍♀️" : "👷‍♂️">>
+    <<keyOption "Go to work" work _workEmoji>>
+<</widget>>
+<<widget unlessLateToJob container>>
+    <<if !$player.workedToday && Now.isEqualOrLaterThan($player.job.enterTime)>>
+        @@color:red;You need to go to work@@<br>
+        <<workOption>>
+    <<else>>
+        _contents
+    <</if>>
+<</widget>>
+:: workOption
+<<if !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
+    <<workOption>>
+<</if>>\

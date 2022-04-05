@@ -1,5 +1,6 @@
 :: StoryCaption
+<<set Now.date = $now.date>>\
 ----
-!<<- $weekDays[($now.day - 1) % 7]>>
-!!!<<- $now.hour + ':' + ('00' + $now.minute).slice(-2) + ' ' + $now.period>>
+!<<- Now.getWeekDay()>>
+!!!<<- Now.getTime()>>
 ----

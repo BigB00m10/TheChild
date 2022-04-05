@@ -2,3 +2,16 @@ sugarcube-2:
   macros:
     keyOption:
       name: keyOption
+    addMinutes:
+      name: addMinutes
+    addHours:
+      name: addHours
+    cash:
+      name: cash
+    unlessLateToJob:
+      name: unlessLateToJob
+      container: true
+    workOption:
+      name: workOption
+    updateVariables:
+      name: updateVariables

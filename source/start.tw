@@ -1,48 +1,8 @@
 :: Start
-Your name is <<textbox "$player.name" "David">>, a young $player.gender living by himself in a small home. To the outside world, you’re the definition of an average man, but behind closed doors, you're anything but normal.
+Your name is <<textbox "$player.name" "David">>, a young man living by himself in a small home. To the outside world, you’re the definition of an average man, but behind closed doors, you're anything but normal.
 
 If anyone where to know what type of person you really were, you’d probably find yourself under heavy surveillance in a prison cell. Let’s just say that your tastes in life, are a bit too exotic for most people.
 
 It's currently a nice Monday morning and the start of a new life. For too long have your desires been only satisfied by dreams. Today was the day that you started to make those dreams a reality. Today, you would go down the path of enslaving and training children to sate your sexual depravity.
 
 <<keyOption Start bed ▶️ btn>>
-:: bed
-<img src="img/room/smallMasterUrban.jpg" class="centerHouse" />
-
-<hr>
-
-<<if $player.sleeping>>\
-	As the sun reveals the world to a nice Monday morning, you climb out of bed, ready to start a new day. <<- either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
-	<<set $player.sleeping to false>>\
-<<else>>\
-	You currently stand in the middle of your cozy small bedroom.
-<</if>>\
-<<if Now.is('8:30')>>\
-    @@color:red;You need to go to work@@
-    <<keyOption "Leave your room" main 🚪>>
-<<else>>\
-    <<keyOption "Leave your room" main 🚪>>
-    <<keyOption "Manage room" bedManager 🛌>>
-    <<keyOption "Watch porn" watchPorn 💗>>: 30min
-<</if>>\
-:: main
-<img src="img/room/smallUrbanMain.jpg" class="centerHouse" />
-
-<hr>
-
-You are currently standing in the middle of the main room of your house.
-	
-''Is there something you want to do in here?''
-<<set _workEmoji = $player.gender != "man" ? "👷‍♀️" : "👷‍♂️">>\
-<<if Now.is('8:30')>>\
-    @@color:red;You need to go to work@@
-    <<keyOption "Go to work" work _workEmoji>>
-<<else>>\
-    <<keyOption "Watch TV" watchTv 📺>>: 30min
-    <<if $now.hour lte 8>>\
-        <<keyOption "Go to work" work _workEmoji>>
-    <</if>>\
-    <<keyOption "Go outside" neighborhood 🚪>>
-    <<keyOption "The Basement" basement 🔒>>
-    <<keyOption "Your Bedroom" bed 🛌>>
-<</if>>\

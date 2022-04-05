@@ -1,0 +1,34 @@
+Introductions/Summary/plans for the game: In this game, you play as a character who desires to bring boys and girls to his home either through kidnapping, seduction, or deceit. Once brought home, it will be up to you to train them into the type of slave your heart desires.
+Training will be something that works both ways. Both you and your slaves have their own set of skills to develop. Increasing your skills helps better train your slaves, get better jobs in society, or allow you to perform other activities restricted by skill. Slave skills will determine how usefull they may be at certain tasks, what type of slave thay can be, or how valuable they are for the market.
+Once you have succeeded at training a slave, there will be different options available. Perhaps you want to sell them for profit, maybe you just want a servant, or maybe you've grown fond of one and want them to be your personal bed mate. Ideas are limited right now, but I'm hoping to have a nice post-slavery phase for your captured children.
+
+For now this game is pretty bare bones but I have a good feeling about it. Later I may open a thread or set up something if people want to help in some way or just talk about the game.
+
+Milestones in general order (Purple-Finished for now, Green-In development, Yellow-Little progress, Red-Yet to work on)
+Finish character creator
+Finish first day intro
+Finish slave generator
+Add activities around the house and town
+Implement slave-training
+Implement job events/details
+Implement post-slave-training options
+Implement black market
+Implement learning options for slave and player
+Implement more houses and renovation options
+Implement black market contracts
+Improve User Interface
+Prostitution ring
+
+Jobs
+	Cabin
+		lumberjack, forest ranger, janitor
+	City Apartment
+		plumber, store clerk, janitor, construction worker, salesman
+	Neighborhood House
+		plumber, garbage collector, buss driver, janitor
+
+sex dungeon
+cages
+lure kids (candy shop?)
+runaway orphan where you dont need to kidnap
+having a favorite. have your favorite kept in a cage in your bedroom

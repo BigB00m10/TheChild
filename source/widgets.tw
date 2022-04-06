@@ -29,6 +29,7 @@
     <</if>>
 <</widget>>
 :: workOption
+<<set Now.date = $now.date>>\
 <<if !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>
 <</if>>\

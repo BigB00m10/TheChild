@@ -1,5 +1,4 @@
 type Gender = "male" | "female";
-type HoleViability = "virgin" | "tainted" | "tight" | "trained" | "loosened";
 interface Home {
   name: string;
   rent: number;
@@ -7,17 +6,6 @@ interface Home {
 let Homes: Record<string, Home> = {
   smallUrban: { name: "small urban house", rent: 400 },
 };
-interface Npc {
-  name: string;
-  age: number;
-  gender: Gender;
-  pussy: HoleViability;
-  anus: HoleViability;
-  mouth: HoleViability;
-  children: Array<Npc>;
-  mom: Npc | Player;
-  dad: Npc | Player;
-}
 class Product {
   name: string;
   price: number;
@@ -38,8 +26,10 @@ interface Window {
   Homes: Record<string, Home>;
   Jobs: Record<string, Job>;
   Player: Player;
+  Person: Person;
 }
 window.Now = new Now();
 window.Homes = Homes;
 window.Jobs = Jobs;
 window.Player = new Player();
+window.Person = new Person();

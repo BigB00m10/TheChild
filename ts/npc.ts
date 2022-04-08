@@ -12,6 +12,7 @@ abstract class Npc {
 }
 class Person extends Npc {
   title: string;
+  addressing: string
   hairColor: string;
   hairLength: string;
   hairStyle: string;
@@ -33,6 +34,7 @@ class Person extends Npc {
     person.gender =
       Math.random() * 100 + 1 < gen.femalePercentage ? "female" : "male";
     person.title = person.gender != "male" ? "girl" : "boy";
+    person.addressing = person.gender != "male" ? "her" : "him";
     let genGen: GenderGeneration =
       person.gender != "male" ? gen.females : gen.males;
     person.age =
@@ -52,7 +54,7 @@ class Person extends Npc {
       "red",
       "auburn",
     ]);
-    person.hairLength = this.either(genGen.hairLengths);
+    person.hairLength = person.age == 0 ? "short" : person.age == 1 ? this.either(["short", "medium"]) : this.either(["short", "medium", "long"]);
     person.hairStyle = this.either(["curly", "wavey", "straight"]);
     person.eyeColor = this.either(["green", "blue", "brown", "hazel"]);
     return person;
@@ -62,20 +64,17 @@ interface GenderGeneration {
   fromAge: number;
   toAge: number;
   skins: string[];
-  hairLengths: string[];
 }
 class PersonGeneration {
   females: GenderGeneration = {
     fromAge: 1,
     toAge: 15,
-    skins: ["tanned", "brown", "black", "white", "pale", "olive"],
-    hairLengths: ["short", "medium", "long"],
+    skins: ["tanned", "brown", "black", "white", "pale", "olive"]
   };
   males: GenderGeneration = {
     fromAge: 1,
     toAge: 15,
-    skins: ["tanned", "brown", "black", "white", "pale", "olive"],
-    hairLengths: ["short", "medium", "long"],
+    skins: ["tanned", "brown", "black", "white", "pale", "olive"]
   };
   femalePercentage: number = 50;
   load(definition: Object | string) {

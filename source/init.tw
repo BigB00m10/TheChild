@@ -15,7 +15,7 @@ $player = Player;
 $config = {
     emoji: true
 }
-$suBasement = {
+$basement = {
     padding: [],
     luxury: [],
     lock: "simple lock",
@@ -25,7 +25,7 @@ $suBasement = {
     muffleBase: 90,
     muffle: 90
 }
-$suMBed = {
+$bed = {
     padding: [],
     luxury: [],
     lock: "none",
@@ -36,5 +36,4 @@ $suMBed = {
     muffle: 20
 }
 $slaves = []
-$children = []
 >>

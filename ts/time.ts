@@ -54,18 +54,23 @@ class Now {
     var originalDay = currentDate.getDay();
     currentDate.setHours(currentDate.getHours() + amount);
     if (currentDate.getDay() != originalDay)
-      (
-        (SugarCube.State.variables as any).player as Player
-      ).workedToday = false;
+      ((SugarCube.State.variables as any).player as Player).workedToday = false;
+  }
+  skipTo(timeString: string) {
+    var currentDate = this.getCurrentDate();
+    var target = this.dateFromTimeString(timeString, currentDate);
+    if (target.getTime() < currentDate.getTime()) {
+      target.setDate(target.getDate() + 1);
+      ((SugarCube.State.variables as any).player as Player).workedToday = false;
+    }
+    currentDate.setTime(target.getTime());
   }
   addMinutes(amount: number) {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
     currentDate.setMinutes(currentDate.getMinutes() + amount);
     if (currentDate.getDay() != originalDay)
-      (
-        (SugarCube.State.variables as any).player as Player
-      ).workedToday = false;
+      ((SugarCube.State.variables as any).player as Player).workedToday = false;
   }
   getWeekDay(): string {
     return this.getCurrentDate().toLocaleString("en-us", { weekday: "long" });

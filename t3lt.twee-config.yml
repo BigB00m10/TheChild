@@ -15,3 +15,5 @@ sugarcube-2:
       name: workOption
     updateVariables:
       name: updateVariables
+    scenery:
+      name: scenery

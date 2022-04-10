@@ -40,15 +40,39 @@ You are currently standing in the middle of the main room of your house.
 :: basement
 <<scenery basement>>
 You are currently on your basement.
-<<if $slaves.length > 0>>\
-
-    Slaves:
-    <<for _slave range $slaves>>\
-        _slave.name (_slave.age y.o. _slave.hairColor hair)
-    <</for>>\
-<</if>>\
-
 <<unlessLateToJob>>\
+    <<if $slaves.length > 0>>\
+        Slaves:
+        <<for _slave range $slaves>>\
+            <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)' slave>><<set $slave to " + JSON.stringify(_slave) + ">><</link>>">>
+        <</for>>\
+    <</if>>
     <<keyOption "Go back upstairs" main 🚪>>
     <<include workOption>>\
 <</unlessLateToJob>>\
+:: slave
+<<scenery basement>>
+You approach $slave.name
+$slave.genPronoun nerviously looks at you with $slave.possesive $slave.eyeColor eyes
+
+<<keyOption "Push $slave.pronoun down" slavePushedDown 👇>>
+<<keyOption "Leave $slave.pronoun alone" basement ✋>>
+:: slavePushedDown
+<<scenery basement>>
+You push $slave.name down placing your body over.
+$slave.genPronoun trembles in fear under your shadow.
+
+<<keyOption "Strip $slave.pronoun naked" slaveStrip 👌>>
+<<keyOption "Leave $slave.pronoun alone" basement ✋>>
+:: slaveStrip
+<<scenery basement>>
+You pull out all $slave.pronoun clothes leaving $slave.name completely naked in front of you.
+
+<<keyOption "Penetrate $slave.pronoun" slavePenetrate 🍆>>
+<<keyOption "Leave $slave.pronoun alone" basement ✋>>
+:: slavePenetrate
+<<scenery basement>>
+You forcefully push your dick inside $slave.name and start to fuck $slave.pronoun
+$slave.genPronoun starts crying and whimpering.
+
+<<keyOption "finish" basement ✋>>

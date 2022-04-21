@@ -1,6 +1,8 @@
 //Source: https://www.reddit.com/r/twinegames/comments/5t73zc/keyboard_driven_twining_tutorial/ddmikxu/
 !(function () {
   $(document).keyup(function (t) {
+    if(SugarCube.Dialog.isOpen())
+      return;
     49 == t.keyCode &&
       ($("#oneAct a").trigger("click"), $("#oneAct button").trigger("click")),
       50 == t.keyCode &&

@@ -27,6 +27,7 @@ interface Window {
   Jobs: Record<string, Job>;
   Player: Player;
   Person: Person;
+  PersonGeneration: PersonGeneration;
 }
 window.Now = new Now();
 window.Homes = Homes;

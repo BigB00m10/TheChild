@@ -17,7 +17,7 @@ You are currently in front of your home.
 <</unlessLateToJob>>
 :: playground
 <<scenery playground>>
-<<set $found_kid = Person.generate()>>\
+<<set $found_kid = Person.generate($settings.childGeneration)>>\
 You found a $found_kid.age year old $found_kid.skin $found_kid.title with $found_kid.hairLength $found_kid.hairStyle $found_kid.hairColor hair \
 and $found_kid.eyeColor eyes named $found_kid.name
 

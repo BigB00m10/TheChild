@@ -1,6 +1,6 @@
 :: widgets [widget nobr]
 <<widget emoji>>
-    <<if settings.emoji === false>>
+    <<if $settings.emoji === false>>
         <<set _style to "display:none">>
     <</if>>
     <span class='emoji' @style="_style"><<- _args[0]>></span>

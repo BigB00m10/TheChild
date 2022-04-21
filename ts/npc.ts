@@ -30,8 +30,8 @@ class Person extends Npc {
   private either(values: string[]): string {
     return values[Math.floor(Math.random() * values.length)];
   }
-  generate(): Person {
-    let gen = new PersonGeneration();
+  generate(gen?: PersonGeneration): Person {
+    if (gen === undefined) gen = new PersonGeneration();
     let person = new Person();
     person.gender =
       Math.random() * 100 + 1 < gen.femalePercentage ? "female" : "male";
@@ -91,6 +91,7 @@ class PersonGeneration {
     Object.assign(this, definition);
   }
 }
+window.PersonGeneration = new PersonGeneration();
 const maleNames: string[] = [
   "Liam",
   "Noah",

@@ -4,3 +4,52 @@
 !<<- Now.getWeekDay()>>
 !!!<<- Now.getTime()>>
 ----
+:: StoryMenu
+<<link "⚙ Settings">>
+  <<run Dialog.setup("Settings")
+  Dialog.wiki(Story.get("Settings").processText())
+  Dialog.open()>>
+<</link>>
+:: Settings
+<label class="toggle-button">\
+  <input id="toggleEmoji" type="checkbox" class="macro-checkbox"><span>Show emojis</span>\
+</label>\
+<h3 style="color:yellow">Child generator</h3>\
+Female percentage:\
+<div class="slidecontainer">\
+	<div style="display:inline-block"><input type="range" min="1" max="100" value="50" class="slider" id="femalePercentSlider"></div>\
+    <div style="display:inline-block;position: relative;top: -10px;"><span id="femalePercentDisplay"><<- $settings.childGeneration.femalePercentage>></span> %</div>\
+</div>\
+Females:
+<label>From<input type="number" id="femaleAgeFrom" style="width:3em">years old</label>
+<label>To &nbsp;<input type="number" id="femaleAgeTo" style="width:3em">years old</label>
+Males:
+<label>From<input type="number" id="maleAgeFrom" style="width:3em">years old</label>
+<label>To &nbsp;<input type="number" id="maleAgeTo" style="width:3em">years old</label>
+<script>
+    var $settings = SugarCube.State.variables.settings
+    $('#toggleEmoji').change(function() {
+        var emoji = $('.emoji')
+        if(this.checked)
+            emoji.show()
+        else
+            emoji.hide()
+        $settings.emoji = this.checked
+    }).prop('checked', $settings.emoji)
+	$("#femalePercentSlider").on("input", function () {
+        $settings.childGeneration.femalePercentage = $(this).val()
+		$("#femalePercentDisplay").html($settings.childGeneration.femalePercentage)
+	}).val($settings.childGeneration.femalePercentage)
+    $('#femaleAgeFrom').change(function(){
+        $settings.childGeneration.females.fromAge = parseInt($(this).val())
+    }).val($settings.childGeneration.females.fromAge)
+    $('#femaleAgeTo').change(function(){
+        $settings.childGeneration.females.toAge = parseInt($(this).val())
+    }).val($settings.childGeneration.females.toAge)
+    $('#maleAgeFrom').change(function(){
+        $settings.childGeneration.males.fromAge = parseInt($(this).val())
+    }).val($settings.childGeneration.males.fromAge)
+    $('#maleAgeTo').change(function(){
+        $settings.childGeneration.males.toAge = parseInt($(this).val())
+    }).val($settings.childGeneration.males.toAge)
+</script>

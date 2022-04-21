@@ -8,21 +8,12 @@
 The Child Trainer
 :: StoryInit
 <<set
-$weekDays = ['Monday', 'Tuesday', 'Wednesday', 
-    'Thursday', 'Friday', 'Saturday', 'Sunday']
 $now = Now;
 $player = Player;
-Setting.addToggle("emoji",{
-    label: "Show emojis",
-    default: true,
-    onChange: function() {
-        let emoji = $('.emoji');
-        if(settings.emoji)
-            emoji.show();
-        else
-            emoji.hide();
-    }
-})
+$settings = {
+    emoji: true,
+    childGeneration: PersonGeneration
+};
 $basement = {
     padding: [],
     luxury: [],
@@ -32,7 +23,7 @@ $basement = {
     usedSpace: 0,
     muffleBase: 90,
     muffle: 90
-}
+};
 $bed = {
     padding: [],
     luxury: [],
@@ -43,5 +34,5 @@ $bed = {
     muffleBase: 20,
     muffle: 20
 }
-$slaves = []
+$slaves = [];
 >>

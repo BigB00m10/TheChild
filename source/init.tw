@@ -33,6 +33,6 @@ $bed = {
     usedSpace: 0,
     muffleBase: 20,
     muffle: 20
-}
+};
 $slaves = [];
 >>

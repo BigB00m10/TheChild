@@ -18,7 +18,8 @@
 Female percentage:\
 <div class="slidecontainer">\
 	<div style="display:inline-block"><input type="range" min="1" max="100" value="50" class="slider" id="femalePercentSlider"></div>\
-    <div style="display:inline-block;position: relative;top: -10px;"><span id="femalePercentDisplay"><<- $settings.childGeneration.femalePercentage>></span> %</div>\
+    <div style="display:inline-block;position: relative;top: -11px;">\
+    <input id="femalePercentDisplay" @value="$settings.childGeneration.femalePercentage" style="width: 1.7em;border: 0;pointer-events: none;" readonly> %</div>\
 </div>\
 Females:
 <label>From<input type="number" id="femaleAgeFrom" style="width:3em">years old</label>
@@ -37,8 +38,8 @@ Males:
         $settings.emoji = this.checked
     }).prop('checked', $settings.emoji)
 	$("#femalePercentSlider").on("input", function () {
-        $settings.childGeneration.femalePercentage = $(this).val()
-		$("#femalePercentDisplay").html($settings.childGeneration.femalePercentage)
+        $settings.childGeneration.femalePercentage = parseInt($(this).val())
+		$("#femalePercentDisplay").val($settings.childGeneration.femalePercentage)
 	}).val($settings.childGeneration.femalePercentage)
     $('#femaleAgeFrom').change(function(){
         $settings.childGeneration.females.fromAge = parseInt($(this).val())

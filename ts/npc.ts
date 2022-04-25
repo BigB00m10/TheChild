@@ -22,10 +22,9 @@ class Person extends Npc {
   skin: string;
   fear: number = 50;
   love: number = 0;
-  familyLove: number = 0;
   obedience: number = 25;
   lust: number = 0;
-  freedomDesire: number = 100;
+  freedomWish: number = 75;
   hunger: number = 0;
   private either(values: string[]): string {
     return values[Math.floor(Math.random() * values.length)];

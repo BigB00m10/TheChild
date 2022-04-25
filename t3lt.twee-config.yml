@@ -17,3 +17,12 @@ sugarcube-2:
       name: updateVariables
     scenery:
       name: scenery
+    newmeter:
+      name: newmeter
+      container: true
+    label:
+      name: label
+    colors:
+      name: colors
+    showmeter:
+      name: showmeter

@@ -49,19 +49,29 @@ class Now {
     if (currentDate.getHours() < 12) return currentTimeStamp <= toTimeStamp;
     return currentTimeStamp >= fromTimeStamp;
   }
+  daysPassed(amount: number) {
+    if (amount < 1) return;
+    ((SugarCube.State.variables as any).player as Player).workedToday = false;
+    let slaves = (SugarCube.State.variables as any).slaves as Person[];
+    for (let index = 0; index < amount; index++) {
+      slaves.forEach((slave) => {
+        slave.fear = Math.max(0, slave.fear - 5);
+        slave.hunger = Math.min(100, slave.hunger + 10);
+      });
+    }
+  }
   addHours(amount: number) {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
     currentDate.setHours(currentDate.getHours() + amount);
-    if (currentDate.getDay() != originalDay)
-      ((SugarCube.State.variables as any).player as Player).workedToday = false;
+    this.daysPassed(currentDate.getDay() - originalDay);
   }
   skipTo(timeString: string) {
     var currentDate = this.getCurrentDate();
     var target = this.dateFromTimeString(timeString, currentDate);
     if (target.getTime() < currentDate.getTime()) {
       target.setDate(target.getDate() + 1);
-      ((SugarCube.State.variables as any).player as Player).workedToday = false;
+      this.daysPassed(1);
     }
     currentDate.setTime(target.getTime());
   }
@@ -69,8 +79,7 @@ class Now {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
     currentDate.setMinutes(currentDate.getMinutes() + amount);
-    if (currentDate.getDay() != originalDay)
-      ((SugarCube.State.variables as any).player as Player).workedToday = false;
+    this.daysPassed(currentDate.getDay() - originalDay);
   }
   getWeekDay(): string {
     return this.getCurrentDate().toLocaleString("en-us", { weekday: "long" });

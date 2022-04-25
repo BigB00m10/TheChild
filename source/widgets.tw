@@ -34,3 +34,44 @@
 <<if !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>
 <</if>>\
+:: slaveStats [nobr]
+<<run
+    ['love', 'obedience', 'lust'].forEach(function(name) {
+        Meter.del(name);
+        Meter.add(name, { 
+            label: name + ':' + $slave[name],
+            height: '20px'
+        }, $slave[name] / 100);
+    });
+    ['freedomWish', 'hunger', 'fear'].forEach(function(name) {
+        Meter.del(name);
+        Meter.add(name, { 
+            label: name + ':' + $slave[name],
+            height: '20px',
+            full: '#FF4136',
+            empty: '#2ECC40'
+        }, $slave[name] / 100);
+    });
+>>
+<div class="row">
+    <div class="one-third column">
+        <<showmeter fear>>
+    </div>
+    <div class="one-third column">
+        <<showmeter love>>
+    </div>
+    <div class="one-third column">
+        <<showmeter obedience>>
+    </div>
+</div><br>
+<div class="row">
+    <div class="one-third column">
+        <<showmeter lust>>
+    </div>
+    <div class="one-third column">
+        <<showmeter freedomWish>>
+    </div>
+    <div class="one-third column">
+        <<showmeter hunger>>
+    </div>
+</div>

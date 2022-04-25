@@ -43,8 +43,10 @@ You are currently on your basement.
 <<unlessLateToJob>>\
     <<if $slaves.length > 0>>\
         Slaves:
+        <<set _slaveIndex to 0>>\
         <<for _slave range $slaves>>\
-            <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)' slave>><<set $slave to " + JSON.stringify(_slave) + ">><</link>>">>
+            <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)' slave>><<set $slave to " + JSON.stringify(_slave) + ", $slave.index to " + _slaveIndex + ">><</link>>">>
+            <<set _slaveIndex++>>\
         <</for>>\
     <</if>>
     <<keyOption "Go back upstairs" main 🚪>>
@@ -53,6 +55,7 @@ You are currently on your basement.
 :: slave
 <<scenery basement>>
 You approach $slave.name
+<<include slaveStats>>
 $slave.genPronoun nerviously looks at you with $slave.possesive $slave.eyeColor eyes
 
 <<keyOption "Push $slave.pronoun down" slavePushedDown 👇>>
@@ -60,7 +63,9 @@ $slave.genPronoun nerviously looks at you with $slave.possesive $slave.eyeColor 
 :: slavePushedDown
 <<scenery basement>>
 You push $slave.name down placing your body over.
-$slave.genPronoun trembles in fear under your shadow.
+<<if $slave.fear gt 25>>\
+    $slave.genPronoun trembles in fear under your shadow.
+<</if>>\
 
 <<keyOption "Strip $slave.pronoun naked" slaveStrip 👌>>
 <<keyOption "Leave $slave.pronoun alone" basement ✋>>
@@ -74,5 +79,7 @@ You pull out all $slave.pronoun clothes leaving $slave.name completely naked in 
 <<scenery basement>>
 You forcefully push your dick inside $slave.name and start to fuck $slave.pronoun
 $slave.genPronoun starts crying and whimpering.
+<<set $slave.fear to Math.min(100, $slave.fear + 50), $slaves[$slave.index].fear = $slave.fear>>\
+<<include slaveStats>>
 
 <<keyOption "finish" basement ✋>>

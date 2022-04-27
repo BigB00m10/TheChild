@@ -39,14 +39,14 @@
     ['love', 'obedience', 'lust'].forEach(function(name) {
         Meter.del(name);
         Meter.add(name, { 
-            label: name + ':' + $slave[name],
+            label: (name.charAt(0).toUpperCase() + name.slice(1)).replace(/(\B[A-Z])/g, ' $1') + ':' + $slave[name],
             height: '20px'
         }, $slave[name] / 100);
     });
     ['freedomWish', 'hunger', 'fear'].forEach(function(name) {
         Meter.del(name);
         Meter.add(name, { 
-            label: name + ':' + $slave[name],
+            label: (name.charAt(0).toUpperCase() + name.slice(1)).replace(/(\B[A-Z])/g, ' $1') + ':' + $slave[name],
             height: '20px',
             full: '#FF4136',
             empty: '#2ECC40'

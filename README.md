@@ -7,9 +7,12 @@ I'm pretty sure these indications work on Linux and MacOS but I only tested it o
 
 ### You need to install on your OS (minimum requeriments):
 
-- [Tweego](https://github.com/ChapelR/tweego-setup/blob/tweego-2/docs/installing-tweego.md) - Mandatory. To compile all files in the **source** folder to a Twine 2 compatible html (final result). When installed on Windows make sure you leave the "Add to PATH" option checked (It is by default).
 - [node.js](https://nodejs.org/) - Needed to transpile the TypeScript in the **ts** folder into Javascript so that Tweego can then compile it into the game.
 - [VSCode](https://code.visualstudio.com/) - IDE I use to develop the game. This project is configured to work with this one and it will only compile out of the box with VSCode.
+
+No need to install Tweego. The repository comes with the right version to compile the game.
+
+For this project you'll also need to update your sugarcube version to 
 
 Once all that is installed and the project is cloned or downloaded you can proceed to the first compilation:
 

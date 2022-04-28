@@ -7,7 +7,7 @@
       "label": "Tweego",
       "type": "shell",
       "isBackground": true,
-      "command": "npm run build;tweego -o releases/${config:name}${config:version}.html source;echo 'done compiling'",
+      "command": "npm run build;tweego/tweego -o releases/${config:name}${config:version}.html source;echo 'done compiling'",
       "group": {
         "kind": "build",
         "isDefault": true

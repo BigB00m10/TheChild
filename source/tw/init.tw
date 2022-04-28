@@ -1,0 +1,20 @@
+:: StoryData
+{
+    "ifid": "A1AB4B27-D446-4DA4-9B25-47E8F99367E8",
+    "format":"SugarCube",
+    "format-version":"2.36.1"
+}
+:: StoryTitle
+The Child Trainer
+:: StoryInit
+<<set
+$now = Now;
+$player = Player;
+$settings = {
+    emoji: true,
+    childGeneration: PersonGeneration
+};
+$onlineStore = OnlineStore;
+$basement = Basement;
+$slaves = [];
+>>

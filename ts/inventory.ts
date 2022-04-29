@@ -46,7 +46,8 @@ class Inventory {
     if (existing) existing.count += item.count;
     else this.items.push(item);
   }
-  remove(itemName: string, count: number = 0): void {
+  remove(item: Item, count: number = 0): void {}
+  removeByName(itemName: string, count: number = 0): void {
     let item: Item = this.items.firstOrDefault(
       (i: Item) => (i.name = itemName)
     );
@@ -63,6 +64,13 @@ class Inventory {
   }
   hasAll(itemNames: string[]): boolean {
     return itemNames.countWith((n) => this.has(n)) == itemNames.length;
+  }
+  move(itemIndex: number, destination: Inventory): void {
+    destination.add(this.items[itemIndex]);
+    this.items.deleteAt(itemIndex);
+  }
+  clear(): void {
+    this.items = [];
   }
 }
 class OnlineStore {
@@ -84,18 +92,47 @@ class OnlineStore {
       packQuantity: 10,
     }),
   ];
+  bought: Inventory = new Inventory();
   get(name: string): Product {
-    return this.products.firstOrDefault((p: Product) => p.name == name);
-  }
-  buy(productIndex: number, count: number = 1) {
-    let product = this.products[productIndex];
-    if (product.tags[0] == "basement")
-      product.transferTo(window.Basement.contents, count);
-    else product.transferTo(window.Player.inventory, count);
-    window.Player.cash -= product.price * count;
-    if (product.avaliable > 0) {
-      if (product.avaliable <= count) this.products.deleteAt(productIndex);
-      else this.products[productIndex].avaliable -= count;
+    let store: OnlineStore = this;
+    if (SugarCube.State) {
+      let variables = SugarCube.State.variables as any;
+      store = variables.onlineStore as OnlineStore;
     }
+    return store.products.firstOrDefault((p: Product) => p.name == name);
+  }
+  buy(productIndex: number, count: number = 1): void {
+    let variables = SugarCube.State.variables as any;
+    let store = variables.onlineStore as OnlineStore;
+    let product = store.products[productIndex];
+    product.transferTo(store.bought);
+    (variables.player as Player).cash -= product.price * count;
+    if (product.avaliable > 0) {
+      if (product.avaliable <= count) store.products.deleteAt(productIndex);
+      else store.products[productIndex].avaliable -= count;
+    }
+  }
+  receiveBought(): void {
+    let variables = SugarCube.State.variables as any;
+    let store = variables.onlineStore as OnlineStore;
+    let player = variables.player as Player;
+    let basement = variables.basement as Basement;
+    for (let index = 0; index < store.bought.items.length; index++) {
+      const item = store.bought.items[index];
+      switch ([...item.tags][0]) {
+        case "basement":
+          basement.contents.add(item);
+          break;
+        default:
+          player.inventory.add(item);
+          break;
+      }
+    }
+    store.bought.clear();
+  }
+  pendingOrder(): boolean {
+    let variables = SugarCube.State.variables as any;
+    let store = variables.onlineStore as OnlineStore;
+    return store.bought.items.length > 0;
   }
 }

@@ -49,16 +49,19 @@ class Now {
     if (currentDate.getHours() < 12) return currentTimeStamp <= toTimeStamp;
     return currentTimeStamp >= fromTimeStamp;
   }
+  readonly onDaysPassed = new LiteEvent<number>();
   daysPassed(amount: number) {
     if (amount < 1) return;
-    ((SugarCube.State.variables as any).player as Player).workedToday = false;
-    let slaves = (SugarCube.State.variables as any).slaves as Person[];
+    let variables = SugarCube.State.variables as any;
+    (variables.player as Player).workedToday = false;
+    let slaves = variables.slaves as Person[];
     for (let index = 0; index < amount; index++) {
       slaves.forEach((slave) => {
         slave.fear = Math.max(0, slave.fear - 5);
         slave.hunger = Math.min(100, slave.hunger + 10);
       });
     }
+    this.onDaysPassed.trigger(amount);
   }
   addHours(amount: number) {
     var currentDate = this.getCurrentDate();

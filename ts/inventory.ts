@@ -46,14 +46,16 @@ class Inventory {
     if (existing) existing.count += item.count;
     else this.items.push(item);
   }
-  remove(item: Item, count: number = 0): void {}
-  removeByName(itemName: string, count: number = 0): void {
-    let item: Item = this.items.firstOrDefault(
-      (i: Item) => (i.name = itemName)
-    );
+  remove(item: Item, count: number = 0): void {
     if (!item) return;
     if (!count || count >= item.count) this.items.delete(item);
     else item.count -= count;
+  }
+  get(name: string): Item {
+    return this.items.firstOrDefault((i: Item) => (i.name = name));
+  }
+  removeByName(name: string, count: number = 0): void {
+    this.remove(this.get(name), count);
   }
   has(itemName: string, count: number = 0): boolean {
     let item: Item = this.items.firstOrDefault(

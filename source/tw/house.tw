@@ -41,14 +41,29 @@ You are currently standing in the middle of the main room of your house.
 <<scenery basement>>
 You are currently in your basement.
 <<unlessLateToJob>>\
-    <<if $slaves.length > 0>>\
-        Slaves:
-        <<set _slaveIndex to 0>>\
-        <<for _slave range $slaves>>\
-            <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)' slave>><<set $slave to " + JSON.stringify(_slave) + ", $slave.index to " + _slaveIndex + ">><</link>>">>
-            <<set _slaveIndex++>>\
-        <</for>>\
-    <</if>>
+    <div class="row">\
+        <div class="one-half column">\
+            <<if $slaves.length > 0>>\
+                Slaves:
+                <<set _slaveIndex to 0>>\
+                <<for _slave range $slaves>>\
+                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)' slave>><<set $slave to " + JSON.stringify(_slave) + ", $slave.index to " + _slaveIndex + ">><</link>>">>
+                    <<set _slaveIndex++>>\
+                <</for>>\
+            <</if>>
+        </div>\
+        <div class="one-half column">\
+            <<set
+                Basement.contents.items to $basement.contents.items;
+                _avaliableBeds to Basement.contents.get("Matress").count - $slaves.length;
+            >>\
+            <<if _avaliableBeds <= 0>>\
+                There's no more room for more slaves. You need to buy matresses.
+            <<else>>\
+                There's room for <<- _avaliableBeds>> more slave<<if _avaliableBeds gt 1>>s<</if>>.
+            <</if>>\
+        </div>\
+    </div>\
     <<keyOption "Go back upstairs" main 🚪>>
     <<include workOption>>\
 <</unlessLateToJob>>\

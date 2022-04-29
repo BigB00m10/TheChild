@@ -12,8 +12,6 @@ I'm pretty sure these indications work on Linux and MacOS but I only tested it o
 
 No need to install Tweego. The repository comes with the right version to compile the game.
 
-For this project you'll also need to update your sugarcube version to 
-
 Once all that is installed and the project is cloned or downloaded you can proceed to the first compilation:
 
 1. Open the file **theChildTrainer.code-workspace** with VSCode.

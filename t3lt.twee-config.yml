@@ -26,3 +26,8 @@ sugarcube-2:
       name: colors
     showmeter:
       name: showmeter
+    popup:
+      name: popup
+    dialog:
+      name: dialog
+      container: true

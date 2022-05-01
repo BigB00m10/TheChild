@@ -6,6 +6,9 @@ interface Home {
 let Homes: Record<string, Home> = {
   smallUrban: { name: "small urban house", rent: 400 },
 };
+function Variables(): any {
+  return variables() as any;
+}
 class Player {
   name: string = "David";
   gender: Gender = "male";
@@ -15,6 +18,15 @@ class Player {
   sleeping: boolean = true;
   workedToday: boolean = false;
   inventory: Inventory = new Inventory();
+  getInventory() {
+    return new Inventory(Variables().player.inventory);
+  }
+  has(itemName: string, count: number = 1) {
+    return this.getInventory().has(itemName, count);
+  }
+  removeItem(itemName: string) {
+    return this.getInventory().removeByName(itemName);
+  }
 }
 interface HomeSpace {
   contents: Inventory;
@@ -26,7 +38,17 @@ class Basement implements HomeSpace {
   muffleBase: number = 90;
   securityBase: number = 25;
   constructor() {
-    window.OnlineStore.get("Matress").transferTo(this.contents);
+    window.OnlineStore.get("matress").transferTo(this.contents);
+  }
+  has(itemName: string, count: number = 1): boolean {
+    return new Inventory(Variables().basement.contents).has(itemName, count);
+  }
+  avaliableBeds(): number {
+    let variables = Variables();
+    return (
+      new Inventory(variables.basement.contents).get("matress").count -
+      variables.slaves.length
+    );
   }
 }
 interface ILiteEvent<T> {

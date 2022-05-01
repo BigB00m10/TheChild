@@ -21,7 +21,13 @@ You are currently in front of your home.
 You found a $found_kid.age year old $found_kid.skin $found_kid.title with $found_kid.hairLength $found_kid.hairStyle $found_kid.hairColor hair \
 and $found_kid.eyeColor eyes named $found_kid.name
 
-<<keyOption "Kidnap $found_kid.pronoun" kidnap 🖐>>: 30min
+<<if !Player.has('chloroform')>>\
+    (You don't have anything at your disposal to obtain kids)
+<<elseif Basement.avaliableBeds() lte 0>>\
+    (Not enough space for a new kid back at home)
+<<else>>\
+    <<keyOption "Kidnap $found_kid.pronoun" kidnap 🖐>>: 30min
+<</if>>\
 <<keyOption "Keep searching" playground 🔍>>
 <<keyOption "Return home" home 🏠>>
 :: kidnap
@@ -29,9 +35,9 @@ and $found_kid.eyeColor eyes named $found_kid.name
 <<set $slaves.push($found_kid)>>\
 <<addMinutes 30>>\
 You start stalking the $found_kid.age year old kid waiting for the right moment.
-
+<<run Player.removeItem("chloroform")>>
 A while later you see the kid standing all alone in a corner. You look around making sure no one sees you and quickly use the chloroform \
-on $found_kid.possesive mouth.
+on $found_kid.possesive mouth. (<<- Player.getInventory().get('chloroform').count>> doses left)
 
 Surprised, the kid takes a deep breath on the chloroform soaked handkerchief. You feel $found_kid.possesive strength quickly running out and \
 $found_kid.possesive cute limbs falling right in your arms.

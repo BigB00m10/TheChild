@@ -25,7 +25,7 @@ class Product {
       count: count * this.packQuantity,
       tags: this.tags,
     });
-    this.avaliable -= count;
+    if (this.avaliable > 0) this.avaliable -= count;
   }
 }
 class Item {
@@ -41,27 +41,35 @@ class Inventory {
   items: Item[] = [];
   add(item: Item): void {
     let existing: Item = this.items.firstOrDefault(
-      (i: Item) => (i.name = item.name)
+      (i: Item) => i.name == item.name
     );
     if (existing) existing.count += item.count;
     else this.items.push(item);
   }
-  remove(item: Item, count: number = 0): void {
+  remove(item: Item, count: number = 1): void {
     if (!item) return;
     if (!count || count >= item.count) this.items.delete(item);
     else item.count -= count;
   }
   get(name: string): Item {
-    return this.items.firstOrDefault((i: Item) => (i.name = name));
+    let found: Item = this.items.firstOrDefault(
+      (i: Item) => i.name.toLowerCase() == name.toLowerCase()
+    );
+    if (!found)
+      found = this.items.firstOrDefault(
+        (i: Item) => i.name.split(" ")[0].toLowerCase() == name.toLowerCase()
+      );
+    return found;
   }
-  removeByName(name: string, count: number = 0): void {
+  removeByName(name: string, count: number = 1): void {
     this.remove(this.get(name), count);
   }
   has(itemName: string, count: number = 0): boolean {
     let item: Item = this.items.firstOrDefault(
       (i: Item) => (i.name = itemName)
     );
-    if (!count) return item !== null;
+    if (item === null) return false;
+    if (!count) return true;
     return item.count >= count;
   }
   hasAll(itemNames: string[]): boolean {
@@ -74,16 +82,12 @@ class Inventory {
   clear(): void {
     this.items = [];
   }
+  constructor(init?: Partial<Inventory>) {
+    Object.assign(this, init);
+  }
 }
 class OnlineStore {
   products: Product[] = [
-    new Product({
-      name: "Matress",
-      description:
-        "Adds an additional bed to your basement so another slave can move in.",
-      price: 70,
-      tags: new Set(["basement", "home", "furniture"]),
-    }),
     new Product({
       name: "Chloroform",
       itemName: "chloroform doses",
@@ -93,29 +97,59 @@ class OnlineStore {
       tags: new Set(["player", "consumable"]),
       packQuantity: 10,
     }),
+    new Product({
+      name: "Matress",
+      description:
+        "Adds an additional bed to your basement so another slave can move in.",
+      price: 70,
+      tags: new Set(["basement", "home", "furniture"]),
+    }),
   ];
   bought: Inventory = new Inventory();
   get(name: string): Product {
-    let store: OnlineStore = this;
-    if (SugarCube.State) {
-      let variables = SugarCube.State.variables as any;
-      store = variables.onlineStore as OnlineStore;
-    }
-    return store.products.firstOrDefault((p: Product) => p.name == name);
+    let store: OnlineStore = Variables().onlineStore as OnlineStore;
+    if (!store) store = this;
+    return store.products.firstOrDefault(
+      (p: Product) => p.name.toLowerCase() == name.toLowerCase()
+    );
   }
-  buy(productIndex: number, count: number = 1): void {
-    let variables = SugarCube.State.variables as any;
+  canBuy(productIndex: number, count: number = 1): boolean {
+    let variables = Variables();
+    let player = variables.player as Player;
     let store = variables.onlineStore as OnlineStore;
     let product = store.products[productIndex];
-    product.transferTo(store.bought);
-    (variables.player as Player).cash -= product.price * count;
+    return player.cash >= product.price * count;
+  }
+  buy(productIndex: number, count: number = 1): boolean {
+    let variables = Variables();
+    let player = variables.player as Player;
+    let store = variables.onlineStore as OnlineStore;
+    let product = new Product(store.products[productIndex]);
+    let total = product.price * count;
+    if (total > player.cash) return false;
+    store.bought = new Inventory(store.bought);
+    product.transferTo(store.bought, count);
+    player.cash -= total;
     if (product.avaliable > 0) {
       if (product.avaliable <= count) store.products.deleteAt(productIndex);
       else store.products[productIndex].avaliable -= count;
     }
+    return true;
+  }
+  destination(product:Product | Item):Inventory{
+    switch ([...product.tags][0]) {
+      case "basement":
+        let basement = Variables().basement as Basement;
+        basement.contents = new Inventory(basement.contents);
+        return basement.contents;
+      default:
+        let player = Variables().player as Player;
+        player.inventory = new Inventory(player.inventory);
+        return player.inventory;
+    }
   }
   receiveBought(): void {
-    let variables = SugarCube.State.variables as any;
+    let variables = Variables();
     let store = variables.onlineStore as OnlineStore;
     let player = variables.player as Player;
     let basement = variables.basement as Basement;
@@ -123,18 +157,20 @@ class OnlineStore {
       const item = store.bought.items[index];
       switch ([...item.tags][0]) {
         case "basement":
+          basement.contents = new Inventory(basement.contents);
           basement.contents.add(item);
           break;
         default:
+          player.inventory = new Inventory(player.inventory);
           player.inventory.add(item);
           break;
       }
     }
+    store.bought = new Inventory(store.bought);
     store.bought.clear();
   }
   pendingOrder(): boolean {
-    let variables = SugarCube.State.variables as any;
-    let store = variables.onlineStore as OnlineStore;
+    let store = Variables().onlineStore as OnlineStore;
     return store.bought.items.length > 0;
   }
 }

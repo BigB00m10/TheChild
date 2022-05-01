@@ -1,18 +1,115 @@
+:: buyProduct
+$buyProduct.description
+
+<<set _own to OnlineStore.destination($buyProduct).get($buyProduct.name)>>\
+<<if _own>>\
+    You currently own _own.count.
+<<else>>\
+    You don't have any right now.
+<</if>>\
+
+How many? <<numberbox '_buyProductQuantity' 1>>
+
+Developer note: If you put too many (and you don't have enough money) the "Buy" button will simply not work. I plan to improve this aspect later.
+
+<span id="spaceAct">\
+    <<button "✅ (Space) Order">>\
+        <<run
+            if(_buyProductQuantity > 0) {
+                OnlineStore.products = $onlineStore.products;
+                var bought = OnlineStore.buy($buyProductIndex, _buyProductQuantity);
+                if(bought){
+                    Dialog.close();
+                    Engine.show();
+                }
+            }
+        >>\
+    <</button>>\
+</span>\
+<span id="escAct">\
+    <<button "❌ (Esc) Cancel">>\
+        <<run Dialog.close()>>\
+    <</button>>\
+</span>\
+:: onlineStore [nobr]
+<div class='container' style="text-align: center;">
+    <div class='row'><!--https://fictionalcompanies.fandom.com/wiki/Amazoon-->
+        <h2>Anazom</h2><h3>Next day delivery</h3>
+    </div>
+    <div class='row' style="display: inline-block;width: 100%;">
+        <<for _productIndex to 0; _productIndex lt $onlineStore.products.length; _productIndex++>>
+            <<set 
+                _product = $onlineStore.products[_productIndex];
+                _priceStyle = "color:" + (_product.price > $player.cash ? "red" : "#68d");
+            >>
+            <a class="product" @data-productindex="_productIndex" @data-product="JSON.stringify(_product)">
+                <div class='four columns' style="position: relative;height: 0;padding-bottom: 30.6666666667%;background: darkslategray;vertical-align: middle;margin-right:4%;border:1px solid #999">
+                    <div style="position: absolute;bottom: 0;width: 100%;">_product.name<<if _product.packQuantity gt 1>> x _product.packQuantity<</if>>: <span @style="_priceStyle">$$_product.price</span></div>
+                </div>
+            </a>
+        <</for>>
+    </div>
+    <br><br>
+    <div class='row'>
+        <div id='oneAct' class="three columns">
+            <<if State.peek(1).title != State.passage>>
+                <<set $returnPassage to State.peek(1).title>>
+            <</if>>
+            <<keyOption Return $returnPassage 🔙>>
+        </div>
+        <div class="nine columns" style="text-align:right">
+            You currently own $$$player.cash
+        </div>
+    </div>
+</div>
+<script>
+    $('.product').each(function() {
+        let $this = $(this);
+        let index = $this.data('productindex');
+        if(OnlineStore.canBuy(index))
+            $this.on('click', function() {
+                SugarCube.State.variables.buyProduct = $this.data('product');
+                SugarCube.State.variables.buyProductIndex = index;
+                SugarCube.Dialog.setup("Buy " + SugarCube.State.variables.buyProduct.name);
+                SugarCube.Dialog.wiki(SugarCube.Story.get("buyProduct").processText());
+                SugarCube.Dialog.open();
+            });
+    });
+</script>
+:: receivePacket
+<<scenery home>>
+''Delivery man'': "I have a delivery for you"
+
+You received: <<- $onlineStore.bought.items.map(function(item){return item.count + 'x ' + item.name.charAt(0).toUpperCase() + item.name.slice(1)}).join(', ').replace(/, ((?:.(?!, ))+)$/, ' and $1')>>
+
+<<unlessLateToJob>>\
+    <<keyOption "Go back inside" main 🔙>>
+    <<include workOption>>\
+    <<keyOption "Look for kids in the playground" playground ⚽>>
+<</unlessLateToJob>>\
+<<run OnlineStore.receiveBought()>>\
 :: bed
 <<scenery bed>>
 <<if $player.sleeping>>\
 	As the sun reveals the world to a nice Monday morning, you climb out of bed, ready to start a new day. <<- either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
-	<<set $player.sleeping to false>>\
 <<else>>\
 	You currently stand in the middle of your cozy small bedroom.
 <</if>>\
-<<unlessLateToJob>>\
-    <<keyOption "Leave your room" main 🚪>>
-    <<keyOption "Watch porn" watchPorn 💗>>: 30min
-    <<if $player.workedToday>>\
-        <<keyOption Sleep sleep 😴>>
-    <</if>>\
-<</unlessLateToJob>>\
+<<if $player.sleeping && OnlineStore.pendingOrder()>>
+    Someone is knocking at the front door!!
+    Who might that be?
+    <<keyOption "Go check" receivePacket 🚪>>
+<<else>>
+    <<unlessLateToJob>>\
+        <<keyOption "Leave your room" main 🚪>>
+        <<keyOption "Watch porn" watchPorn 💗>>: 30min
+        <<keyOption "Shop online using your laptop" onlineStore 🛒>>
+        <<if $player.workedToday>>\
+            <<keyOption Sleep sleep 😴>>
+        <</if>>\
+    <</unlessLateToJob>>\
+<</if>>
+<<set $player.sleeping to false>>
 :: sleep
 <<set $player.sleeping to true
 Now.skipTo("7:00 AM")>>\
@@ -50,20 +147,19 @@ You are currently in your basement.
                     <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)' slave>><<set $slave to " + JSON.stringify(_slave) + ", $slave.index to " + _slaveIndex + ">><</link>>">>
                     <<set _slaveIndex++>>\
                 <</for>>\
-            <</if>>
+            <</if>>\
         </div>\
         <div class="one-half column">\
-            <<set
-                Basement.contents.items to $basement.contents.items;
-                _avaliableBeds to Basement.contents.get("Matress").count - $slaves.length;
-            >>\
+            <<set _avaliableBeds to Basement.avaliableBeds()>>
             <<if _avaliableBeds <= 0>>\
-                There's no more room for more slaves. You need to buy matresses.
+                There's no more room for more slaves. You need to buy matresses if you want more.
             <<else>>\
                 There's room for <<- _avaliableBeds>> more slave<<if _avaliableBeds gt 1>>s<</if>>.
             <</if>>\
         </div>\
-    </div>\
+    </div>
+
+
     <<keyOption "Go back upstairs" main 🚪>>
     <<include workOption>>\
 <</unlessLateToJob>>\

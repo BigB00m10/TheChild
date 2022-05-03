@@ -1,0 +1,90 @@
+:: buyProduct
+$buyProduct.description
+
+<<set _own to OnlineStore.destination($buyProduct).get($buyProduct.name)>>\
+<<if _own>>\
+    You currently own _own.count.
+<<else>>\
+    You don't have any right now.
+<</if>>\
+
+How many? <<numberbox '_buyProductQuantity' 1>>
+
+Developer note: If you put too many (and you don't have enough money) the "Buy" button will simply not work. I plan to improve this aspect later.
+
+<span id="spaceAct">\
+    <<button "✅ (Space) Order">>\
+        <<run
+            if(_buyProductQuantity > 0) {
+                OnlineStore.products = $onlineStore.products;
+                var bought = OnlineStore.buy($buyProductIndex, _buyProductQuantity);
+                if(bought) {
+                    Dialog.close();
+                    Engine.show();
+                }
+            }
+        >>\
+    <</button>>\
+</span>\
+<span id="escAct">\
+    <<button "❌ (Esc) Cancel">>\
+        <<run Dialog.close()>>\
+    <</button>>\
+</span>\
+:: onlineStore [nobr]
+<div class='container' style="text-align: center;">
+    <div class='row'><!--https://fictionalcompanies.fandom.com/wiki/Amazoon-->
+        <h2>Anazom</h2><h3>Next day delivery</h3>
+    </div>
+    <div class='row' style="display: inline-block;width: 100%;">
+        <<for _productIndex to 0; _productIndex lt $onlineStore.products.length; _productIndex++>>
+            <<set 
+                _product = $onlineStore.products[_productIndex];
+                _priceStyle = "color:" + (_product.price > $player.cash ? "red" : "#68d");
+            >>
+            <a class="product" @data-productindex="_productIndex" @data-product="JSON.stringify(_product)">
+                <div class='four columns' style="position: relative;height: 0;padding-bottom: 30.6666666667%;background: darkslategray;vertical-align: middle;margin-right:4%;border:1px solid #999">
+                    <div style="position: absolute;bottom: 0;width: 100%;">_product.name<<if _product.packQuantity gt 1>> x _product.packQuantity<</if>>: <span @style="_priceStyle">$$_product.price</span></div>
+                </div>
+            </a>
+        <</for>>
+    </div>
+    <br><br>
+    <div class='row'>
+        <div id='oneAct' class="three columns">
+            <<if State.peek(1).title != State.passage>>
+                <<set $returnPassage to State.peek(1).title>>
+            <</if>>
+            <<keyOption Return $returnPassage 🔙>>
+        </div>
+        <div class="nine columns" style="text-align:right">
+            You currently own $$$player.cash
+        </div>
+    </div>
+</div>
+<script>
+    $('.product').each(function() {
+        let $this = $(this);
+        let index = $this.data('productindex');
+        if(OnlineStore.canBuy(index))
+            $this.on('click', function() {
+                SugarCube.State.variables.buyProduct = $this.data('product');
+                SugarCube.State.variables.buyProductIndex = index;
+                SugarCube.Dialog.setup("Buy " + SugarCube.State.variables.buyProduct.name);
+                SugarCube.Dialog.wiki(SugarCube.Story.get("buyProduct").processText());
+                SugarCube.Dialog.open();
+            });
+    });
+</script>
+:: receivePacket
+<<scenery home>>
+''Delivery man'': "I have a delivery for you"
+
+You received: <<- $onlineStore.bought.items.map(function(item){return item.count + 'x ' + item.name.charAt(0).toUpperCase() + item.name.slice(1)}).join(', ').replace(/, ((?:.(?!, ))+)$/, ' and $1')>>
+
+<<unlessLateToJob>>\
+    <<keyOption "Go back inside" main 🔙>>
+    <<include workOption>>\
+    <<keyOption "Look for kids in the playground" playground ⚽>>
+<</unlessLateToJob>>\
+<<run OnlineStore.receiveBought()>>\

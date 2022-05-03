@@ -7,6 +7,7 @@ interface Window {
   PersonGeneration: PersonGeneration;
   Basement: Basement;
   OnlineStore: OnlineStore;
+  Interactions: Record<string, NpcInteractionCollection>;
 }
 window.Now = new Now();
 window.Homes = Homes;

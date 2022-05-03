@@ -1,9 +1,7 @@
 class Now {
   date: Date = new Date(2022, 3, 4, 7);
   private getCurrentDate(): Date {
-    return SugarCube.State
-      ? ((SugarCube.State.variables as any).now as Now).date
-      : this.date;
+    return Variables().now.date;
   }
   private dateFromTimeString(timeString: string, ref?: Date): Date {
     if (!ref) ref = this.getCurrentDate();
@@ -70,8 +68,8 @@ class Now {
     this.daysPassed(currentDate.getDay() - originalDay);
   }
   skipTo(timeString: string) {
-    var currentDate = this.getCurrentDate();
-    var target = this.dateFromTimeString(timeString, currentDate);
+    let currentDate = this.getCurrentDate();
+    let target = this.dateFromTimeString(timeString, currentDate);
     if (target.getTime() < currentDate.getTime()) {
       target.setDate(target.getDate() + 1);
       this.daysPassed(1);

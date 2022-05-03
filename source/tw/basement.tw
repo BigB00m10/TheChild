@@ -1,0 +1,60 @@
+:: basement
+<<scenery basement>>
+You are currently in your basement.
+<<unlessLateToJob>>\
+    <div class="row">\
+        <div class="one-half column">\
+            <<if $slaves.length > 0>>\
+                Slaves:
+                <<set _slaveIndex to 0>>\
+                <<for _slave range $slaves>>\
+                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)' slave>><<set $slave to " + JSON.stringify(_slave) + ", $slave.index to " + _slaveIndex + ">><</link>>">>
+                    <<set _slaveIndex++>>\
+                <</for>>\
+            <</if>>\
+        </div>\
+        <div class="one-half column">\
+            <<set _avaliableBeds to Basement.avaliableBeds()>>
+            <<if _avaliableBeds <= 0>>\
+                There's no more room for more slaves. You need to buy matresses if you want more.
+            <<else>>\
+                There's room for <<- _avaliableBeds>> more slave<<if _avaliableBeds gt 1>>s<</if>>.
+            <</if>>\
+        </div>\
+    </div>
+
+
+    <<keyOption "Go back upstairs" main 🚪>>
+    <<include workOption>>\
+<</unlessLateToJob>>\
+:: slave
+<<scenery basement>>
+You approach $slave.name
+<<include slaveStats>>
+$slave.genPronoun nerviously looks at you with $slave.possesive $slave.eyeColor eyes
+
+<<keyOption "Push $slave.pronoun down" slavePushedDown 👇>>
+<<keyOption "Leave $slave.pronoun alone" basement ✋>>
+:: slavePushedDown
+<<scenery basement>>
+You push $slave.name down placing your body over.
+<<if $slave.fear gt 25>>\
+    $slave.genPronoun trembles in fear under your shadow.
+<</if>>\
+
+<<keyOption "Strip $slave.pronoun naked" slaveStrip 👌>>
+<<keyOption "Leave $slave.pronoun alone" basement ✋>>
+:: slaveStrip
+<<scenery basement>>
+You take off all $slave.possesive clothes leaving $slave.name completely naked in front of you.
+
+<<keyOption "Penetrate $slave.pronoun" slavePenetrate 🍆>>
+<<keyOption "Leave $slave.pronoun alone" basement ✋>>
+:: slavePenetrate
+<<scenery basement>>
+You forcefully push your dick inside $slave.name and start to fuck $slave.pronoun.
+$slave.genPronoun starts crying and whimpering.
+<<set $slave.fear to Math.min(100, $slave.fear + 50), $slaves[$slave.index].fear = $slave.fear>>\
+<<include slaveStats>>
+
+<<keyOption "finish" basement ✋>>

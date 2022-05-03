@@ -75,3 +75,6 @@
         <<showmeter hunger>>
     </div>
 </div>
+:: npcInteraction
+<<scenery $scenery>>\
+<<npcInteraction $npcInteractionRoute>>

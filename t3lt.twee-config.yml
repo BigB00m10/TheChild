@@ -2,6 +2,9 @@ sugarcube-2:
   macros:
     keyOption:
       name: keyOption
+    keyAction:
+      name: keyAction
+      container: true
     addMinutes:
       name: addMinutes
     addHours:
@@ -31,3 +34,5 @@ sugarcube-2:
     dialog:
       name: dialog
       container: true
+    npcInteraction:
+      name: npcInteraction

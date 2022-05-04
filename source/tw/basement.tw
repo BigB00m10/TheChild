@@ -8,7 +8,7 @@ You are currently in your basement.
                 Slaves:
                 <<set _slaveIndex to 0>>\
                 <<for _slave range $slaves>>\
-                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)' slave>><<set $slave to " + JSON.stringify(_slave) + ", $slave.index to " + _slaveIndex + ">><</link>>">>
+                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $slave to " + JSON.stringify(_slave) + ", $slave.index to " + _slaveIndex + ">><<openNpcInteraction slave>><</link>>">>
                     <<set _slaveIndex++>>\
                 <</for>>\
             <</if>>\

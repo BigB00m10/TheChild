@@ -8,7 +8,7 @@ You are currently in your basement.
                 Slaves:
                 <<set _slaveIndex to 0>>\
                 <<for _slave range $slaves>>\
-                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $slave to " + JSON.stringify(_slave) + ", $slave.index to " + _slaveIndex + ">><<openNpcInteraction slave>><</link>>">>
+                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $npc to " + JSON.stringify(_slave) + ", $npc.index to " + _slaveIndex + ">><<openNpcInteraction slave>><</link>>">>
                     <<set _slaveIndex++>>\
                 <</for>>\
             <</if>>\
@@ -29,32 +29,32 @@ You are currently in your basement.
 <</unlessLateToJob>>\
 :: slave
 <<scenery basement>>
-You approach $slave.name
-<<include slaveStats>>
-$slave.genPronoun nerviously looks at you with $slave.possesive $slave.eyeColor eyes
+You approach $npc.name
+<<include npcStats>>
+$npc.genPronoun nerviously looks at you with $npc.possesive $npc.eyeColor eyes
 
-<<keyOption "Push $slave.pronoun down" slavePushedDown 👇>>
-<<keyOption "Leave $slave.pronoun alone" basement ✋>>
+<<keyOption "Push $npc.pronoun down" slavePushedDown 👇>>
+<<keyOption "Leave $npc.pronoun alone" basement ✋>>
 :: slavePushedDown
 <<scenery basement>>
-You push $slave.name down placing your body over.
-<<if $slave.fear gt 25>>\
-    $slave.genPronoun trembles in fear under your shadow.
+You push $npc.name down placing your body over.
+<<if $npc.fear gt 25>>\
+    $npc.genPronoun trembles in fear under your shadow.
 <</if>>\
 
-<<keyOption "Strip $slave.pronoun naked" slaveStrip 👌>>
-<<keyOption "Leave $slave.pronoun alone" basement ✋>>
+<<keyOption "Strip $npc.pronoun naked" slaveStrip 👌>>
+<<keyOption "Leave $npc.pronoun alone" basement ✋>>
 :: slaveStrip
 <<scenery basement>>
-You take off all $slave.possesive clothes leaving $slave.name completely naked in front of you.
+You take off all $npc.possesive clothes leaving $npc.name completely naked in front of you.
 
-<<keyOption "Penetrate $slave.pronoun" slavePenetrate 🍆>>
-<<keyOption "Leave $slave.pronoun alone" basement ✋>>
+<<keyOption "Penetrate $npc.pronoun" slavePenetrate 🍆>>
+<<keyOption "Leave $npc.pronoun alone" basement ✋>>
 :: slavePenetrate
 <<scenery basement>>
-You forcefully push your dick inside $slave.name and start to fuck $slave.pronoun.
-$slave.genPronoun starts crying and whimpering.
-<<set $slave.fear to Math.min(100, $slave.fear + 50), $slaves[$slave.index].fear = $slave.fear>>\
-<<include slaveStats>>
+You forcefully push your dick inside $npc.name and start to fuck $npc.pronoun.
+$npc.genPronoun starts crying and whimpering.
+<<set $npc.fear to Math.min(100, $npc.fear + 50), $slaves[$npc.index].fear = $npc.fear>>\
+<<include npcStats>>
 
 <<keyOption "finish" basement ✋>>

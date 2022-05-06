@@ -1,5 +1,6 @@
 interface NpcInteraction {
-  npcRequeriments?: any;
+  playerRequeriments?: string[];
+  npcRequeriments?: string[];
   inventoryRequeriments?: string[];
   locationRequeriments?: string[];
   settingsRequeriments?: string[];
@@ -9,6 +10,7 @@ interface NpcInteraction {
   playerStats?: string[];
   next?: Record<string, NpcInteraction>;
   stopOption?: string | false;
+  showNpcStats?: boolean;
 }
 interface NpcInteractionCollection {
   options: Record<string, NpcInteraction>;
@@ -35,10 +37,54 @@ Macro.add("npcInteraction", {
     }
     let result =
       (interaction ? interaction.contents : collection.contents) + "\n";
-    //TODO: execute interaction consequences
+    if (interaction && interaction.npcStats) {
+      result += "@@color:yellow;";
+      interaction.npcStats.forEach((change) => {
+        result += " " + change;
+        let match = /(\w+)([+-]\d+)/.exec(change);
+        let varPath = "SugarCube.State.variables." + match[1];
+        eval(`${varPath}=Math.min(100, Math.max(0, ${varPath + match[2]}))`);
+      });
+      result += "@@\n";
+    }
+    //TODO: player stat change
+    if (interaction && interaction.showNpcStats)
+      result += "<<include npcStats>>\n";
+    let checkCondition = (objectName: string, condition: string): boolean => {
+      let neg = "";
+      if (condition[0] == "!") {
+        neg = "!";
+        condition = condition.slice(1);
+      }
+      return eval(
+        neg +
+          "SugarCube.State.variables." +
+          objectName +
+          "." +
+          condition
+            .replace(/(\w[!=]=?=?)((?!true)(?!false)[^\d=].+)/, "$1'$2'")
+            .replace(/([^><!=])=([^=])/, "$1==$2")
+      );
+    };
     for (const name in options) {
       let option = options[name];
-      //TODO: check if this option can be shown (requeriments)
+      let canBeShown = true;
+      if (option.playerRequeriments)
+        option.playerRequeriments.forEach(
+          (condition) => (canBeShown &&= checkCondition("player", condition))
+        );
+      if (!canBeShown) continue;
+      if (option.npcRequeriments)
+        option.npcRequeriments.forEach(
+          (condition) => (canBeShown &&= checkCondition("npc", condition))
+        );
+      if (!canBeShown) continue;
+      if (option.settingsRequeriments)
+        option.settingsRequeriments.forEach(
+          (condition) => (canBeShown &&= checkCondition("settings", condition))
+        );
+      //TODO: check inventory and location required objects
+      if (!canBeShown) continue;
       let optionText = option.optionText;
       let emoji = "";
       if (/^\p{Extended_Pictographic}/u.test(optionText)) {
@@ -72,17 +118,34 @@ Macro.add("npcInteraction", {
 });
 window.Interactions = {
   slave: {
-    defaultStopOption: "✋ Leave $slave.pronoun alone",
-    contents: `You approach $slave.name.
-    <<include slaveStats>>
-    $slave.genPronoun nerviously looks at you with $slave.possesive $slave.eyeColor eyes.`,
+    defaultStopOption: "✋ Leave $npc.pronoun alone",
+    contents: `You approach $npc.name.
+    <<include npcStats>>
+    $npc.genPronoun nerviously looks at you with $npc.possesive $npc.eyeColor eyes.`,
     options: {
       pushDown: {
-        optionText: "👇 Push $slave.pronoun down",
-        contents: `You push $slave.name down placing your body over.
-        <<if $slave.fear gt 25>>\
-            $slave.genPronoun trembles in fear under your shadow.\
+        optionText: "👇 Push $npc.pronoun down",
+        contents: `You push $npc.name down placing your body over.
+        <<if $npc.fear gt 25>>\
+            $npc.genPronoun trembles in fear under your shadow.\
         <</if>>`,
+        next: {
+          strip: {
+            optionText: "👌 Strip $npc.pronoun naked",
+            contents:
+              "You take off all $npc.possesive clothes leaving $npc.name completely naked in front of you.",
+            next: {
+              penetrate: {
+                playerRequeriments: ["gender=male"],
+                optionText: "🍆 Penetrate $npc.pronoun.",
+                contents: `You forcefully push your dick inside $npc.name and start to fuck $npc.pronoun.
+                $npc.genPronoun starts crying and whimpering.`,
+                npcStats: ["fear+50"],
+                showNpcStats: true,
+              },
+            },
+          },
+        },
       },
     },
   },

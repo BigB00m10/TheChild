@@ -27,34 +27,3 @@ You are currently in your basement.
     <<keyOption "Go back upstairs" main 🚪>>
     <<include workOption>>\
 <</unlessLateToJob>>\
-:: slave
-<<scenery basement>>
-You approach $npc.name
-<<include npcStats>>
-$npc.genPronoun nerviously looks at you with $npc.possesive $npc.eyeColor eyes
-
-<<keyOption "Push $npc.pronoun down" slavePushedDown 👇>>
-<<keyOption "Leave $npc.pronoun alone" basement ✋>>
-:: slavePushedDown
-<<scenery basement>>
-You push $npc.name down placing your body over.
-<<if $npc.fear gt 25>>\
-    $npc.genPronoun trembles in fear under your shadow.
-<</if>>\
-
-<<keyOption "Strip $npc.pronoun naked" slaveStrip 👌>>
-<<keyOption "Leave $npc.pronoun alone" basement ✋>>
-:: slaveStrip
-<<scenery basement>>
-You take off all $npc.possesive clothes leaving $npc.name completely naked in front of you.
-
-<<keyOption "Penetrate $npc.pronoun" slavePenetrate 🍆>>
-<<keyOption "Leave $npc.pronoun alone" basement ✋>>
-:: slavePenetrate
-<<scenery basement>>
-You forcefully push your dick inside $npc.name and start to fuck $npc.pronoun.
-$npc.genPronoun starts crying and whimpering.
-<<set $npc.fear to Math.min(100, $npc.fear + 50), $slaves[$npc.index].fear = $npc.fear>>\
-<<include npcStats>>
-
-<<keyOption "finish" basement ✋>>

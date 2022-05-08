@@ -1,5 +1,4 @@
 :: StoryCaption
-<<set Now.date = $now.date>>\
 ----
 !<<- Now.getWeekDay()>>
 !!!<<- Now.getTime()>>

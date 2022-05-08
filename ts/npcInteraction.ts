@@ -1,16 +1,19 @@
 interface NpcInteraction {
-  playerRequeriments?: string[];
-  npcRequeriments?: string[];
-  inventoryRequeriments?: string[];
-  locationRequeriments?: string[];
-  settingsRequeriments?: string[];
+  playerRequirements?: string[];
+  npcRequirements?: string[];
+  inventoryRequirements?: string[];
+  locationRequirements?: string[];
+  settingsRequirements?: string[];
   optionText: string;
   contents: string;
   npcStats?: string[];
   playerStats?: string[];
-  next?: Record<string, NpcInteraction>;
+  next?:
+    | Record<string, NpcInteraction>
+    | (() => Record<string, NpcInteraction>);
   stopOption?: string | false;
   showNpcStats?: boolean;
+  minutesCost?: number;
 }
 interface NpcInteractionCollection {
   options: Record<string, NpcInteraction>;
@@ -34,10 +37,15 @@ Macro.add("npcInteraction", {
     let interaction: NpcInteraction;
     for (let stepIndex = 1; stepIndex < steps.length; stepIndex++) {
       interaction = options[steps[stepIndex]];
-      options = interaction.next;
+      options =
+        typeof interaction.next != "function"
+          ? interaction.next
+          : interaction.next();
     }
     let result =
       (interaction ? interaction.contents : collection.contents) + "\n";
+    if (interaction && interaction.minutesCost)
+      window.Now.addMinutes(interaction.minutesCost);
     if (interaction && interaction.npcStats) {
       result += "@@color:yellow;";
       interaction.npcStats.forEach((change) => {
@@ -47,9 +55,19 @@ Macro.add("npcInteraction", {
             /(\B[A-Z])/g,
             " $1"
           );
-        let match = /(\w+)([+-]\d+)/.exec(change);
+        let match = /(\w+)([+-])(\d+)(%?)/.exec(change);
         let varPath = "variables().npc." + match[1];
-        eval(`${varPath}=Math.min(100, Math.max(0, ${varPath + match[2]}))`);
+        let value: number = eval(varPath);
+        value =
+          match[4] != "%"
+            ? eval(value + match[2] + match[3])
+            : eval(
+                `Math.max(1, value)${match[2]}${
+                  (value * parseFloat(match[3])) / 100
+                }`
+              );
+        value = Math.min(100, Math.max(0, Math.ceil(value)));
+        eval(`${varPath} = ${value}`);
         var slaveIndex = (variables() as any).npc.index;
         if (slaveIndex != undefined)
           //TODO: might not be the best way to determine if it's a slave
@@ -68,7 +86,7 @@ Macro.add("npcInteraction", {
       }
       return eval(
         neg +
-          "SugarCube.State.variables." +
+          "variables()." +
           objectName +
           "." +
           condition
@@ -79,18 +97,18 @@ Macro.add("npcInteraction", {
     for (const name in options) {
       let option = options[name];
       let canBeShown = true;
-      if (option.playerRequeriments)
-        option.playerRequeriments.forEach(
+      if (option.playerRequirements)
+        option.playerRequirements.forEach(
           (condition) => (canBeShown &&= checkCondition("player", condition))
         );
       if (!canBeShown) continue;
-      if (option.npcRequeriments)
-        option.npcRequeriments.forEach(
+      if (option.npcRequirements)
+        option.npcRequirements.forEach(
           (condition) => (canBeShown &&= checkCondition("npc", condition))
         );
       if (!canBeShown) continue;
-      if (option.settingsRequeriments)
-        option.settingsRequeriments.forEach(
+      if (option.settingsRequirements)
+        option.settingsRequirements.forEach(
           (condition) => (canBeShown &&= checkCondition("settings", condition))
         );
       //TODO: check inventory and location required objects
@@ -102,6 +120,7 @@ Macro.add("npcInteraction", {
         optionText = optionText.slice(emoji.length + 1);
       }
       result += `\n<<keyAction '${optionText}' ${emoji}>><<openNpcInteraction ${this.args[0]}.${name}>><</keyAction>>`;
+      if (option.minutesCost) result += `: ${option.minutesCost}min`;
     }
     let stopOptionText: string;
     if (interaction)
@@ -130,7 +149,7 @@ window.Interactions = {
     defaultStopOption: "✋ Leave $npc.pronoun alone",
     contents: `You approach $npc.name.
     <<include npcStats>>
-    $npc.genPronoun nervously looks at you with $npc.possesive $npc.eyeColor eyes.`,
+    $npc.genPronoun nervously looks at you with $npc.possessive $npc.eyeColor eyes.`,
     options: {
       pushDown: {
         optionText: "👇 Push $npc.pronoun down",
@@ -142,25 +161,38 @@ window.Interactions = {
           strip: {
             optionText: "👌 Strip $npc.pronoun naked",
             contents:
-              "You take off all $npc.possesive clothes leaving $npc.name completely naked in front of you.\nYou admire $npc.possesive nice body 👀.",
+              "You take off all $npc.possessive clothes leaving $npc.name completely naked in front of you.\nYou admire $npc.possessive nice body 👀.",
             next: {
               penetrate: {
-                playerRequeriments: ["gender=male"],
+                playerRequirements: ["gender=male"],
                 optionText: "🍆 Penetrate $npc.pronoun.",
                 contents: `You forcefully push your dick inside $npc.name and start to fuck $npc.pronoun.
                 $npc.genPronoun starts crying and whimpering.`,
                 npcStats: ["fear+50"],
                 showNpcStats: true,
+                minutesCost: 30,
               },
               rubPussies: {
-                playerRequeriments: ["gender=female"],
-                npcRequeriments: ["gender=female"],
+                playerRequirements: ["gender=female"],
+                npcRequirements: ["gender=female"],
                 optionText: "Trib pussies together.",
                 contents: `You open her legs and you start rubbing your pussy against hers.\nShe doesn't seem to dislike it.`,
-                npcStats: ["fear-5", "lewd+2"], //TODO add percentage
-                //next: window.Interactions.slave.options.pushDown.next.strip.next,
+                npcStats: ["fear-5", "lust+10%"],
+                next: () =>
+                  window.Interactions.slave.options.pushDown.next["strip"].next,
+                showNpcStats: true,
+                minutesCost: 20,
               },
-              //TODO
+              rubToSlaveFace: {
+                optionText:
+                  "Rub your <<- $player.gender!=\\'male\\'?\\'pussy\\':\\'dick\\'>> on $npc.name\\'s face",
+                contents: `You grab $npc.name head and press it between your legs and start rubbing.
+                <<- $npc.pronoun[0].toUpperCase() + $npc.pronoun.slice(1)>> nose and lips feel really good on your <<- $player.gender!='male'?'pussy':'dick'>>.
+                $npc.genPronoun looks at you with <<- $player.gender!='male'?$npc.possessive+' now wet':'some precum on '+$npc.possessive>> face. 🥺`,
+                next: () =>
+                  window.Interactions.slave.options.pushDown.next["strip"].next,
+                minutesCost: 10,
+              },
             },
           },
         },

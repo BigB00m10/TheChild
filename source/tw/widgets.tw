@@ -77,4 +77,6 @@
 </div>
 :: npcInteraction [nobr]
 <<scenery $scenery>>
-<<npcInteraction $npcInteractionRoute>>
+<<unlessLateToJob>>
+    <<npcInteraction $npcInteractionRoute>>
+<</unlessLateToJob>>

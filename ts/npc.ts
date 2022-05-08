@@ -14,7 +14,7 @@ class Person extends Npc {
   title: string;
   pronoun: string;
   genPronoun: string;
-  possesive: string;
+  possessive: string;
   hairColor: string;
   hairLength: string;
   hairStyle: string;
@@ -37,7 +37,7 @@ class Person extends Npc {
     person.title = person.gender != "male" ? "girl" : "boy";
     person.pronoun = person.gender != "male" ? "her" : "him";
     person.genPronoun = person.gender != "male" ? "She" : "He";
-    person.possesive = person.gender != "male" ? "her" : "his";
+    person.possessive = person.gender != "male" ? "her" : "his";
     let genGen: GenderGeneration =
       person.gender != "male" ? gen.females : gen.males;
     person.age =

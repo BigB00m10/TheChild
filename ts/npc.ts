@@ -26,6 +26,7 @@ class Person extends Npc {
   lust: number = 0;
   freedomWish: number = 75;
   hunger: number = 0;
+  haveClothes: boolean = false;
   private either(values: string[]): string {
     return values[Math.floor(Math.random() * values.length)];
   }

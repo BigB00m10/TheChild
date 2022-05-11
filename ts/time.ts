@@ -50,7 +50,7 @@ class Now {
   readonly onDaysPassed = new LiteEvent<number>();
   daysPassed(amount: number) {
     if (amount < 1) return;
-    let variables = SugarCube.State.variables as any;
+    let variables = Variables();
     (variables.player as Player).workedToday = false;
     let slaves = variables.slaves as Person[];
     for (let index = 0; index < amount; index++) {
@@ -65,6 +65,7 @@ class Now {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
     currentDate.setHours(currentDate.getHours() + amount);
+    window.Player.manageEnergy(amount);
     this.daysPassed(currentDate.getDay() - originalDay);
   }
   skipTo(timeString: string) {
@@ -74,12 +75,16 @@ class Now {
       target.setDate(target.getDate() + 1);
       this.daysPassed(1);
     }
+    window.Player.manageEnergy(
+      Math.abs(target.getTime() - currentDate.getTime()) / 36e5
+    );
     currentDate.setTime(target.getTime());
   }
   addMinutes(amount: number) {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
     currentDate.setMinutes(currentDate.getMinutes() + amount);
+    window.Player.manageEnergy(amount / 60);
     this.daysPassed(currentDate.getDay() - originalDay);
   }
   getWeekDay(): string {
@@ -91,5 +96,9 @@ class Now {
       minute: "numeric",
       hour12: true,
     });
+  }
+  isWeekend(): boolean {
+    var weekDay = this.getCurrentDate().getDay();
+    return weekDay == 0 || weekDay == 6;
   }
 }

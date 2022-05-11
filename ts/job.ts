@@ -6,7 +6,7 @@ interface Job {
 let Jobs: Record<string, Job> = {
   garbageCollector: {
     name: "garbage collector",
-    pay: Math.round((800 / 30) * 100) / 100,
+    pay: Math.round((800 / 21.74) * 100) / 100,
     enterTime: "8:30 AM",
   },
 };

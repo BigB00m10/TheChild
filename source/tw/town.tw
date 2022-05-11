@@ -10,11 +10,11 @@ You currently own $$$player.cash
 :: home
 <<scenery home>>
 You are currently in front of your home.
-<<unlessLateToJob>>
+<<unlessEmergency>>
     <<keyOption "Go inside" main 🚪>>
     <<include workOption>>\
     <<keyOption "Look for kids in the playground" playground ⚽>>
-<</unlessLateToJob>>
+<</unlessEmergency>>
 :: playground
 <<scenery playground>>
 <<set $found_kid = Person.generate($settings.childGeneration)>>\

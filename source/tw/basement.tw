@@ -1,7 +1,7 @@
 :: basement
 <<scenery basement>>
 You are currently in your basement.
-<<unlessLateToJob>>\
+<<unlessEmergency>>\
     <div class="row">\
         <div class="one-half column">\
             <<if $slaves.length > 0>>\
@@ -26,4 +26,4 @@ You are currently in your basement.
 
     <<keyOption "Go back upstairs" main 🚪>>
     <<include workOption>>\
-<</unlessLateToJob>>\
+<</unlessEmergency>>\

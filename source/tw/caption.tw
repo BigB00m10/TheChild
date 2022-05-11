@@ -3,11 +3,14 @@
 !<<- Now.getWeekDay()>>
 !!!<<- Now.getTime()>>
 ----
+$player.name
+Energy:
+<<showmeter playerEnergy `$player.energy / 100`>>
 :: StoryMenu
 <<link "⚙ Settings">>
     <<dialog Settings>>
         <label class="toggle-button">\
-        <input id="toggleEmoji" type="checkbox" class="macro-checkbox"><span>Show emojis</span>\
+            <input id="toggleEmoji" type="checkbox" class="macro-checkbox"><span>Show emojis</span>\
         </label>\
         <h3 style="color:yellow">Child generator</h3>\
         Female percentage:\

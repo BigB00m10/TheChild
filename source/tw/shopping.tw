@@ -82,9 +82,9 @@ Developer note: If you put too many (and you don't have enough money) the "Buy" 
 
 You received: <<- $onlineStore.bought.items.map(function(item){return item.count + 'x ' + item.name.charAt(0).toUpperCase() + item.name.slice(1)}).join(', ').replace(/, ((?:.(?!, ))+)$/, ' and $1')>>
 
-<<unlessLateToJob>>\
+<<unlessEmergency>>\
     <<keyOption "Go back inside" main 🔙>>
     <<include workOption>>\
     <<keyOption "Look for kids in the playground" playground ⚽>>
-<</unlessLateToJob>>\
+<</unlessEmergency>>\
 <<run OnlineStore.receiveBought()>>\

@@ -1,20 +1,24 @@
 :: Start
 <<set _genderOptions = ["man", "woman"]>>\
 Your name is <<textbox "$player.name" "David">>, a young <<listbox '_gender' autoselect>><<optionsfrom _genderOptions>><</listbox>>
- living by himself in a small home. To the outside world, you’re the definition of an average person, but behind closed doors, you're anything but normal.
+ living by <span id="pronoun">him</span>self in a small home. To the outside world, you’re the definition of an average person, but behind closed doors, you're anything but normal.
 
 If anyone where to know what type of person you really were, you’d probably find yourself under heavy surveillance in a prison cell. Let’s just say that your tastes in life, are a bit too exotic for most people.
 
 It's currently a nice Monday morning and the start of a new life. For too long have your desires been only satisfied by dreams. Today was the day that you started to make those dreams a reality. Today, you would go down the path of enslaving and training children to sate your sexual depravity.
 
 <<keyAction Start ▶️ btn>>
-  <<set $player.gender to (_gender == "man" ? "male" : "female")>>
+  <<set
+    $player.gender to (_gender == "man" ? "male" : "female")
+    $player.name to $('#textbox-playername').val()
+    >>
   <<goto bed>>
 <</keyAction>>
 <<done>>
   <<run
     $('#listbox--gender').on('change', function() {
       $('#textbox-playername').val(this.value == 1 ? "Emma" : "David")
+      $('#pronoun').html(this.value == 1 ? "her" : "him")
     })
   >>
 <</done>>

@@ -14,7 +14,7 @@ $(document).on(":passagestart", () => (keyOptionIndex = 0));
 Macro.add("keyOption", {
   handler: function () {
     let $wrapper = $(document.createElement("span"));
-    let emoji = this.args.length > 2 ? this.args[2] : "'     '";
+    let emoji = this.args.length > 2 ? this.args[2] : "'    '";
     let widget =
       this.args.length > 3 && this.args[3] == "btn" ? "button" : "link";
     $wrapper
@@ -32,7 +32,7 @@ Macro.add("keyAction", {
   tags: null,
   handler: function() {
     let $wrapper = $(document.createElement("span"));
-    let emoji = this.args.length > 1 ? this.args[1] : "'     '";
+    let emoji = this.args.length > 1 ? this.args[1] : "'    '";
     let widget =
       this.args.length > 2 && this.args[2] == "btn" ? "button" : "link";
     $wrapper

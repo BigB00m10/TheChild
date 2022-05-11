@@ -8,13 +8,17 @@
 The Child Trainer
 :: StoryInit
 <<set
-$now = Now;
-$player = Player;
-$settings = {
-    emoji: true,
-    childGeneration: PersonGeneration
-};
-$onlineStore = OnlineStore;
-$basement = Basement;
-$slaves = [];
+    $now = Now;
+    $player = Player;
+    $settings = {
+        emoji: true,
+        childGeneration: PersonGeneration
+    };
+    $onlineStore = OnlineStore;
+    $basement = Basement;
+    $slaves = [];
 >>
+<<newmeter playerEnergy>>
+    <<sizing 100% 20px>>
+    <<label '$player.energy'>>
+<</newmeter>>

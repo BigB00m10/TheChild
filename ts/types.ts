@@ -18,6 +18,7 @@ class Player {
   sleeping: boolean = true;
   workedToday: boolean = false;
   inventory: Inventory = new Inventory();
+  energy: number = 100;
   getInventory() {
     return new Inventory(Variables().player.inventory);
   }
@@ -26,6 +27,19 @@ class Player {
   }
   removeItem(itemName: string) {
     return this.getInventory().removeByName(itemName);
+  }
+  manageEnergy(hoursPassed: number) {
+    let player = Variables().player as Player;
+    let multiplier = player.sleeping ? 1 : -0.46;
+    player.energy = Math.max(
+      0,
+      Math.min(
+        100,
+        Math.round(
+          player.energy + (hoursPassed / 8) * 100 * multiplier
+        )
+      )
+    );
   }
 }
 interface HomeSpace {

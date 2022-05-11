@@ -1,7 +1,7 @@
 :: bed
 <<scenery bed>>
 <<if $player.sleeping>>\
-	As the sun reveals the world to a nice Monday morning, you climb out of bed, ready to start a new day. <<- either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
+	As the sun reveals the world to a nice <<- Now.getWeekDay()>> morning, you climb out of bed, ready to start a new day. <<- either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
 <<else>>\
 	You currently stand in the middle of your cozy small bedroom.
 <</if>>\
@@ -10,14 +10,14 @@
     Who might that be?
     <<keyOption "Go check" receivePacket 🚪>>
 <<else>>
-    <<unlessLateToJob>>\
+    <<unlessEmergency>>\
         <<keyOption "Leave your room" main 🚪>>
         <<keyOption "Watch porn" watchPorn 💗>>: 30min
         <<keyOption "Shop online using your laptop" onlineStore 🛒>>
-        <<if $player.workedToday>>\
+        <<if $player.workedToday or Now.isWeekend()>>\
             <<keyOption Sleep sleep 😴>>
         <</if>>\
-    <</unlessLateToJob>>\
+    <</unlessEmergency>>\
 <</if>>
 <<set $player.sleeping to false>>
 :: sleep
@@ -29,13 +29,13 @@ Now.skipTo("7:00 AM")>>\
 You are currently standing in the middle of the main room of your house.
 	
 ''Is there something you want to do in here?''
-<<unlessLateToJob>>\
+<<unlessEmergency>>\
     <<keyOption "Watch TV" watchTv 📺>>: 30min
     <<include workOption>>\
     <<keyOption "Go outside" home 🚪>>
     <<keyOption "The Basement" basement 🔒>>
     <<keyOption "Your Bedroom" bed 🛌>>
-<</unlessLateToJob>>\
+<</unlessEmergency>>\
 :: watchTv
 <<addMinutes 30>>\
 @@color:yellow;You spend the next half hour skimming through channels and shows.@@

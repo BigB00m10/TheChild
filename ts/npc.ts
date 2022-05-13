@@ -1,14 +1,24 @@
-type HoleViability = "virgin" | "tainted" | "tight" | "trained" | "loosened";
 abstract class Npc {
   name: string;
   age: number;
   gender: Gender;
-  pussy: HoleViability = "virgin";
-  anus: HoleViability = "virgin";
-  mouth: HoleViability = "virgin";
+  pussyTraining: number;
+  anusTraining: number;
+  mouthTraining: number;
+  genitalVirgin: boolean = true;
+  anusVirgin: boolean = true;
+  mouthVirgin: boolean = true;
   children: Npc[] = [];
   mom: Npc | Player = null;
   dad: Npc | Player = null;
+  horny: boolean = false;
+  hunger: number = 0;
+  fear: number = 50;
+  love: number = 0;
+  obedience: number = 25;
+  lust: number = 0;
+  freedomWish: number = 75;
+  genitals: string;
 }
 class Person extends Npc {
   title: string;
@@ -20,13 +30,7 @@ class Person extends Npc {
   hairStyle: string;
   eyeColor: string;
   skin: string;
-  fear: number = 50;
-  love: number = 0;
-  obedience: number = 25;
-  lust: number = 0;
-  freedomWish: number = 75;
-  hunger: number = 0;
-  haveClothes: boolean = false;
+  haveClothes: boolean = true;
   private either(values: string[]): string {
     return values[Math.floor(Math.random() * values.length)];
   }
@@ -44,6 +48,8 @@ class Person extends Npc {
     person.age =
       Math.floor(Math.random() * (genGen.toAge - genGen.fromAge)) +
       genGen.fromAge;
+    person.genitals =
+      person.gender != "male" ? (person.age < 15 ? "cunny" : "pussy") : "penis";
     person.name = this.either(
       person.gender != "male" ? femaleNames : maleNames
     );

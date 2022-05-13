@@ -10,15 +10,18 @@ function Variables(): any {
   return variables() as any;
 }
 class Player {
-  name: string = "David";
-  gender: Gender = "male";
-  cash: number = 100;
+  name: string;
+  gender: Gender;
+  genitals: string;
+  sexHole: string;
   house: Home = Homes.smallUrban;
   job: Job = Jobs.garbageCollector;
+  cash: number = 100;
+  energy: number = 100;
+  lust: number;
   sleeping: boolean = true;
   workedToday: boolean = false;
   inventory: Inventory = new Inventory();
-  energy: number = 100;
   getInventory() {
     return new Inventory(Variables().player.inventory);
   }
@@ -35,11 +38,15 @@ class Player {
       0,
       Math.min(
         100,
-        Math.round(
-          player.energy + (hoursPassed / 8) * 100 * multiplier
-        )
+        Math.round(player.energy + (hoursPassed / 8) * 100 * multiplier)
       )
     );
+  }
+  setGender(gender: Gender) {
+    let player = Variables().player as Player;
+    player.gender = gender;
+    player.genitals = gender != "male" ? "pussy" : "dick";
+    player.sexHole = gender != "male" ? "pussy" : "ass";
   }
 }
 interface HomeSpace {

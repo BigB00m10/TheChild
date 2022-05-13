@@ -14,6 +14,10 @@ interface NpcInteraction {
   stopOption?: string | false;
   showNpcStats?: boolean;
   minutesCost?: number;
+  altOptions?: (
+    npc: Npc,
+    current: Record<string, NpcInteraction>
+  ) => Record<string, NpcInteraction>;
 }
 interface NpcInteractionCollection {
   options: Record<string, NpcInteraction>;
@@ -31,6 +35,7 @@ Macro.add("openNpcInteraction", {
 });
 Macro.add("npcInteraction", {
   handler: function () {
+    let npc = (variables() as any).npc;
     let steps = this.args[0].split(".");
     let collection = window.Interactions[steps[0]];
     let options = collection.options;
@@ -42,6 +47,8 @@ Macro.add("npcInteraction", {
           ? interaction.next
           : interaction.next();
     }
+    if (interaction && interaction.altOptions)
+      options = interaction.altOptions(npc, options);
     let result =
       (interaction ? interaction.contents : collection.contents) + "\n";
     if (interaction && interaction.minutesCost)
@@ -49,29 +56,40 @@ Macro.add("npcInteraction", {
     if (interaction && interaction.npcStats) {
       result += "@@color:yellow;";
       interaction.npcStats.forEach((change) => {
-        result +=
-          " " +
-          (change.charAt(0).toUpperCase() + change.slice(1)).replace(
-            /(\B[A-Z])/g,
-            " $1"
-          );
-        let match = /(\w+)([+-])(\d+)(%?)/.exec(change);
-        let varPath = "variables().npc." + match[1];
-        let value: number = eval(varPath);
-        value =
-          match[4] != "%"
-            ? eval(value + match[2] + match[3])
-            : eval(
-                `Math.max(1, value)${match[2]}${
-                  (value * parseFloat(match[3])) / 100
-                }`
-              );
-        value = Math.min(100, Math.max(0, Math.ceil(value)));
+        let varName: string;
+        let varPath: string;
+        let value: number | string;
+        switch (change[0]) {
+          case "+":
+          case "-":
+            varName = change.slice(1);
+            varPath = "variables().npc." + varName;
+            result += " " + change[0] + varName.toUpperFirst().replace(/(\B[A-Z])/g, " $1");
+            value = change[0] != "-" ? "true" : "false";
+            break;
+          default:
+            result += " " + change.toUpperFirst().replace(/(\B[A-Z])/g, " $1");
+            let match = /(\w+)([+-])(\d+)(%?)/.exec(change);
+            varName = match[1];
+            varPath = "variables().npc." + varName;
+            value = eval(varPath) as number;
+            value = (
+              match[4] != "%"
+                ? eval(value + match[2] + match[3])
+                : eval(
+                    `Math.max(1, value)${match[2]}${
+                      (value * parseFloat(match[3])) / 100
+                    }`
+                  )
+            ) as number;
+            value = Math.min(100, Math.max(0, Math.ceil(value)));
+            break;
+        }
         eval(`${varPath} = ${value}`);
-        var slaveIndex = (variables() as any).npc.index;
+        var slaveIndex = npc.index;
         if (slaveIndex != undefined)
           //TODO: might not be the best way to determine if it's a slave
-          (variables() as any).slaves[slaveIndex][match[1]] = eval(varPath);
+          (variables() as any).slaves[slaveIndex][varName] = eval(varPath);
       });
       result += "@@\n";
     }
@@ -126,7 +144,7 @@ Macro.add("npcInteraction", {
     if (interaction)
       stopOptionText =
         interaction.stopOption === false ? null : interaction.stopOption;
-    if (stopOptionText !== null) {
+    if (!stopOptionText && stopOptionText !== null) {
       stopOptionText =
         collection.defaultStopOption === false
           ? null
@@ -144,59 +162,3 @@ Macro.add("npcInteraction", {
     $(document.createElement("span")).wiki(result).appendTo(this.output);
   },
 });
-window.Interactions = {
-  slave: {
-    defaultStopOption: "✋ Leave $npc.pronoun alone",
-    contents: `You approach $npc.name.
-    <<include npcStats>>
-    $npc.genPronoun nervously looks at you with $npc.possessive $npc.eyeColor eyes.`,
-    options: {
-      pushDown: {
-        optionText: "👇 Push $npc.pronoun down",
-        contents: `You push $npc.name down placing your body over.
-        <<if $npc.fear gt 25>>\
-            $npc.genPronoun trembles in fear under your shadow.\
-        <</if>>`,
-        next: {
-          strip: {
-            optionText: "👌 Strip $npc.pronoun naked",
-            contents:
-              "You take off all $npc.possessive clothes leaving $npc.name completely naked in front of you.\nYou admire $npc.possessive nice body 👀.",
-            next: {
-              penetrate: {
-                playerRequirements: ["gender=male"],
-                optionText: "🍆 Penetrate $npc.pronoun.",
-                contents: `You forcefully push your dick inside $npc.name and start to fuck $npc.pronoun.
-                $npc.genPronoun starts crying and whimpering.`,
-                npcStats: ["fear+50"],
-                showNpcStats: true,
-                minutesCost: 30,
-              },
-              rubPussies: {
-                playerRequirements: ["gender=female"],
-                npcRequirements: ["gender=female"],
-                optionText: "Trib pussies together.",
-                contents: `You open her legs and you start rubbing your pussy against hers.\nShe doesn't seem to dislike it.`,
-                npcStats: ["fear-5", "lust+10%"],
-                next: () =>
-                  window.Interactions.slave.options.pushDown.next["strip"].next,
-                showNpcStats: true,
-                minutesCost: 20,
-              },
-              rubToSlaveFace: {
-                optionText:
-                  "Rub your <<- $player.gender!=\\'male\\'?\\'pussy\\':\\'dick\\'>> on $npc.name\\'s face",
-                contents: `You grab $npc.name head and press it between your legs and start rubbing.
-                <<- $npc.pronoun[0].toUpperCase() + $npc.pronoun.slice(1)>> nose and lips feel really good on your <<- $player.gender!='male'?'pussy':'dick'>>.
-                $npc.genPronoun looks at you with <<- $player.gender!='male'?$npc.possessive+' now wet':'some precum on '+$npc.possessive>> face. 🥺`,
-                next: () =>
-                  window.Interactions.slave.options.pushDown.next["strip"].next,
-                minutesCost: 10,
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-};

@@ -9,16 +9,16 @@ It's currently a nice Monday morning and the start of a new life. For too long h
 
 <<keyAction Start ▶️ btn>>
   <<set
-    $player.gender to (_gender == "man" ? "male" : "female")
-    $player.name to $('#textbox-playername').val()
+    Player.setGender(_gender == "man" ? "male" : "female");
+    $player.name to $('#textbox-playername').val();
     >>
   <<goto bed>>
 <</keyAction>>
 <<done>>
   <<run
     $('#listbox--gender').on('change', function() {
-      $('#textbox-playername').val(this.value == 1 ? "Emma" : "David")
-      $('#pronoun').html(this.value == 1 ? "her" : "him")
-    })
+      $('#textbox-playername').val(this.value == 1 ? "Emma" : "David");
+      $('#pronoun').html(this.value == 1 ? "her" : "him");
+    });
   >>
 <</done>>

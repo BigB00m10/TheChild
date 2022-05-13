@@ -51,13 +51,16 @@ class Now {
   daysPassed(amount: number) {
     if (amount < 1) return;
     let variables = Variables();
-    (variables.player as Player).workedToday = false;
+    let player = variables.player as Player;
+    player.workedToday = false;
     let slaves = variables.slaves as Person[];
     for (let index = 0; index < amount; index++) {
       slaves.forEach((slave) => {
+        slave.horny = false;
         slave.fear = Math.max(0, slave.fear - 5);
         slave.hunger = Math.min(100, slave.hunger + 10);
       });
+      player.lust = Math.min(100, player.lust + 10);
     }
     this.onDaysPassed.trigger(amount);
   }

@@ -34,7 +34,7 @@ You approach $npc.name.
     $npc.genPronoun walks back scared and wodering what you will do to $npc.pronoun.
 <<elseif $npc.gender == 'male' && $npc.lust gte 30>>\
     <<set $npc.honry = true>>\
-    He looks at you with expectancy. <<if $npc.haveClothes>>@@color:pink;You can see a bump on his pants@@<<else>>@@color:deeppink;He's already erected@@ ❤<</if>>.
+    He looks at you with expectancy. <<if $npc.haveClothes>>@@color:deeppink;You can see a bump on his pants@@<<else>>@@color:deeppink;He's already erected@@ ❤<</if>>.
 <<elseif $npc.lust gte 50>>
     <<set $npc.honry = true>>\
     She looks at you with expectancy. <<if !$npc.haveClothes>>@@color:deeppink;Her pussy is wet and leaking@@ ❤<</if>>.

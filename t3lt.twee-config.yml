@@ -38,3 +38,5 @@ sugarcube-2:
       name: npcInteraction
     sizing:
       name: sizing
+    itemImage:
+      name: itemImage

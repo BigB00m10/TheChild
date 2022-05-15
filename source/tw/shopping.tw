@@ -43,8 +43,9 @@ Developer note: If you put too many (and you don't have enough money) the "Buy" 
                 _priceStyle = "color:" + (_product.price > $player.cash ? "red" : "#68d");
             >>
             <a class="product" @data-productindex="_productIndex" @data-product="JSON.stringify(_product)">
-                <div class='four columns' style="position: relative;height: 0;padding-bottom: 30.6666666667%;background: darkslategray;vertical-align: middle;margin-right:4%;border:1px solid #999">
-                    <div style="position: absolute;bottom: 0;width: 100%;">_product.name<<if _product.packQuantity gt 1>> x _product.packQuantity<</if>>: <span @style="_priceStyle">$$_product.price</span></div>
+                <div class='four columns' style="position: relative;height: 0;padding-bottom: 30.6666666667%;background: darkslategray;vertical-align: middle;margin-right:4%;border:1px solid #999;overflow: hidden;">
+                    <<itemImage _product.name>>
+                    <div style="position: absolute;bottom: 0;width: 100%;text-shadow: 2px 0 0 #2f4f4f, -2px 0 0 #2f4f4f, 0 2px 0 #2f4f4f, 0 -2px 0 #2f4f4f, 1px 1px #2f4f4f, -1px -1px 0 #2f4f4f, 1px -1px 0 #2f4f4f, -1px 1px 0 #2f4f4f;">_product.name<<if _product.packQuantity gt 1>> x _product.packQuantity<</if>>: <span @style="_priceStyle">$$_product.price</span></div>
                 </div>
             </a>
         <</for>>

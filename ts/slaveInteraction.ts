@@ -18,9 +18,20 @@ window.Interactions = {
           strip: {
             optionText: "👌 Strip $npc.pronoun naked",
             contents:
-              "You take off all $npc.possessive clothes leaving $npc.name completely naked in front of you.\nYou admire $npc.possessive nice body 👀.",
+              `You take off all $npc.possessive clothes leaving $npc.name completely naked in front of you.
+              <<if $npc.horny>>\
+                You notice that \
+                <<if $npc.gender != 'male'>>\
+                  @@color:deeppink;her $npc.genitals is wet@@
+                <<else>>\
+                  @@color:deeppink;he has an erection@@
+                <</if>>\
+                !! 👀
+              <<else>>\
+                You admire $npc.possessive nice body. 👀\
+              <</if>>`,
             next: {
-              penetrate: {
+              penetrate: {//TODO: branch this
                 playerRequirements: ["gender=male"],
                 optionText: "🍆 Penetrate $npc.pronoun.",
                 minutesCost: 30,
@@ -37,7 +48,7 @@ window.Interactions = {
                 optionText: "🌮 Trib pussies together.",
                 minutesCost: 20,
                 contents: `You open her legs and you start rubbing your pussy against hers.\nShe doesn't seem to dislike it.`,
-                npcStats: ["fear-5", "lust+10%"],
+                npcStats: ["fear-5", "lust+10%", "+horny"],
                 showNpcStats: true,
                 next: () =>
                   window.Interactions.slave.options.pushDown.next["strip"].next,
@@ -101,7 +112,7 @@ window.Interactions = {
                     <<else>>\
                       You feel his dick shooting his seed inside you.
                     <</if>>`,
-                    npcStats: ["lust+30%", "love+10", "freedomWish-10", "hunger+10"],
+                    npcStats: ["lust+30%", "love+10", "freedomWish-10", "hunger+10", "-horny"],
                     playerStats: ["lust-10"],
                     showNpcStats: true,
                     next: () =>

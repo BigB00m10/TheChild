@@ -57,8 +57,9 @@ class Now {
     for (let index = 0; index < amount; index++) {
       slaves.forEach((slave) => {
         slave.horny = false;
-        slave.fear = Math.max(0, slave.fear - 5);
+        slave.fear = Math.max(0, slave.fear - 10);
         slave.hunger = Math.min(100, slave.hunger + 10);
+        slave.freedomWish = Math.min(100, slave.freedomWish - 5);
       });
       player.lust = Math.min(100, player.lust + 10);
     }

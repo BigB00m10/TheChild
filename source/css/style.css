@@ -51,3 +51,26 @@ label.toggle-button span {
   -ms-user-select: none;
   user-select: none;
 }
+.shopProduct {
+  position: relative;
+  height: 0;
+  padding-bottom: 30.6666666667%;
+  background: #2f4f4f;
+  vertical-align: middle;
+  margin-right: 4%;
+  border: 1px solid #999;
+  overflow: hidden;
+}
+.shopProduct div {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-shadow: 2px 0 0 #2f4f4f, -2px 0 0 #2f4f4f, 0 2px 0 #2f4f4f,
+    0 -2px 0 #2f4f4f, 1px 1px #2f4f4f, -1px -1px 0 #2f4f4f, 1px -1px 0 #2f4f4f,
+    -1px 1px 0 #2f4f4f;
+}
+.shopProduct img {
+  margin-top: 0.5em;
+  max-width: 95%;
+  max-height: 178px;
+}

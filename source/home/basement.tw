@@ -24,20 +24,30 @@ You are currently in your basement.
     </div>
 
 
-    <<keyOption "Go back upstairs" main 🚪>>
+    /*<<keyOption "Go back upstairs" main 🚪>>*/
+    <<keyAction "Go back upstairs" 🚪>>
+        <<run
+            $slaves.forEach(slave => {
+                slave.aroused = false;
+            });
+        >>
+        <<goto main>>
+    <</keyAction>>
     <<include workOption>>\
 <</unlessEmergency>>\
 :: slaveApproach
 You approach $npc.name.
 <<include npcStats>>
 <<if $npc.fear gt 90>>\
-    $npc.genPronoun walks back scared and wodering what you will do to $npc.pronoun.
-<<elseif $npc.gender == 'male' && $npc.lust gte 30>>\
-    <<set $npc.honry = true>>\
-    He looks at you with expectancy. <<if $npc.haveClothes>>@@color:deeppink;You can see a bump on his pants@@<<else>>@@color:deeppink;He's already erected@@ ❤<</if>>.
-<<elseif $npc.lust gte 50>>
-    <<set $npc.honry = true>>\
-    She looks at you with expectancy. <<if !$npc.haveClothes>>@@color:deeppink;Her pussy is wet and leaking@@ ❤<</if>>.
+    $npc.GenPronoun walks back scared and wodering what you will do to $npc.pronoun.
+<<elseif $npc.hasPenis && $npc.lust gte 30 && $npc.fear lt 25>>\
+    <<set $npc.aroused = true>>\
+    $npc.GenPronoun looks at you with expectancy. <<if $npc.haveClothes>>@@color:deeppink;You can see a bump on his pants@@.<<else>>@@color:deeppink;He's already erected@@. ❤<</if>>
+    (High lust made $npc.pronoun "happy" to see you)
+<<elseif $npc.lust gte 50 && $npc.fear lt 25>>
+    <<set $npc.aroused = true>>\
+    $npc.GenPronoun looks at you with expectancy. <<if !$npc.haveClothes>>@@color:deeppink;$npc.Possessive pussy is wet and leaking@@. ❤<</if>>
+    (High lust made $npc.pronoun "happy" to see you)
 <<else>>\
-    $npc.genPronoun nervously looks at you with $npc.possessive $npc.eyeColor eyes.
+    $npc.GenPronoun nervously looks at you with $npc.possessive $npc.eyeColor eyes.
 <</if>>

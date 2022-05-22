@@ -12,6 +12,9 @@ Energy:
         <label class="toggle-button">\
             <input id="toggleEmoji" type="checkbox" class="macro-checkbox"><span>Show emojis</span>\
         </label>\
+        <label class="toggle-button">\
+            <input id="toggleAnal" type="checkbox" class="macro-checkbox"><span>Show anal content</span>\
+        </label>\
         <h3 style="color:yellow">Child generator</h3>\
         Female percentage:\
         <div class="slidecontainer">\
@@ -35,6 +38,9 @@ Energy:
                     emoji.hide()
                 $settings.emoji = this.checked
             }).prop('checked', $settings.emoji)
+            $('#toggleAnal').change(function() {
+                $settings.anal = this.checked
+            }).prop('checked', $settings.anal)
             $("#femalePercentSlider").on("input", function () {
                 $settings.childGeneration.femalePercentage = parseInt($(this).val())
                 $("#femalePercentDisplay").val($settings.childGeneration.femalePercentage)

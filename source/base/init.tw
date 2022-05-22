@@ -12,6 +12,7 @@ The Child Trainer
     $player = Player;
     $settings = {
         emoji: true,
+        anal: true,
         childGeneration: PersonGeneration
     };
     $onlineStore = OnlineStore;

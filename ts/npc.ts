@@ -2,16 +2,18 @@ abstract class Npc {
   name: string;
   age: number;
   gender: Gender;
-  pussyTraining: number;
-  anusTraining: number;
-  mouthTraining: number;
+  hasPussy: boolean;
+  hasPenis: boolean;
+  pussyTraining: number = 0;
+  anusTraining: number = 0;
+  mouthTraining: number = 0;
   genitalVirgin: boolean = true;
-  anusVirgin: boolean = true;
+  analVirgin: boolean = true;
   mouthVirgin: boolean = true;
   children: Npc[] = [];
   mom: Npc | Player = null;
   dad: Npc | Player = null;
-  horny: boolean = false;
+  aroused: boolean = false;
   hunger: number = 0;
   fear: number = 50;
   love: number = 0;
@@ -24,16 +26,15 @@ class Person extends Npc {
   title: string;
   pronoun: string;
   genPronoun: string;
+  GenPronoun: string;
   possessive: string;
+  Possessive: string;
   hairColor: string;
   hairLength: string;
   hairStyle: string;
   eyeColor: string;
   skin: string;
   haveClothes: boolean = true;
-  private either(values: string[]): string {
-    return values[Math.floor(Math.random() * values.length)];
-  }
   generate(gen?: PersonGeneration): Person {
     if (gen === undefined) gen = new PersonGeneration();
     let person = new Person();
@@ -41,8 +42,12 @@ class Person extends Npc {
       Math.random() * 100 + 1 < gen.femalePercentage ? "female" : "male";
     person.title = person.gender != "male" ? "girl" : "boy";
     person.pronoun = person.gender != "male" ? "her" : "him";
-    person.genPronoun = person.gender != "male" ? "She" : "He";
+    person.GenPronoun = person.gender != "male" ? "She" : "He";
+    person.genPronoun = person.gender != "male" ? "she" : "he";
     person.possessive = person.gender != "male" ? "her" : "his";
+    person.Possessive = person.gender != "male" ? "Her" : "His";
+    person.hasPussy = person.gender == "female";
+    person.hasPenis = person.gender == "male";
     let genGen: GenderGeneration =
       person.gender != "male" ? gen.females : gen.males;
     person.age =
@@ -50,11 +55,9 @@ class Person extends Npc {
       genGen.fromAge;
     person.genitals =
       person.gender != "male" ? (person.age < 15 ? "cunny" : "pussy") : "penis";
-    person.name = this.either(
-      person.gender != "male" ? femaleNames : maleNames
-    );
-    person.skin = this.either(genGen.skins);
-    person.hairColor = this.either([
+    person.name = (person.gender != "male" ? femaleNames : maleNames).random();
+    person.skin = genGen.skins.random();
+    person.hairColor = [
       "black",
       "dark brown",
       "brown",
@@ -63,18 +66,43 @@ class Person extends Npc {
       "blonde",
       "red",
       "auburn",
-    ]);
+    ].random();
     person.hairLength =
       person.age == 0
         ? "short"
         : person.age == 1
-        ? this.either(["short", "medium"])
-        : this.either(["short", "medium", "long"]);
-    person.hairStyle = this.either(["curly", "wavey", "straight"]);
-    person.eyeColor = this.either(["green", "blue", "brown", "hazel"]);
+        ? ["short", "medium"].random()
+        : ["short", "medium", "long"].random();
+    person.hairStyle = ["curly", "wavey", "straight"].random();
+    person.eyeColor = ["green", "blue", "brown", "hazel"].random();
     return person;
   }
 }
+$(document).on(":passagestart", () => {
+  //TODO: temporary event to fix lack of compatibility with older saves
+  let variables = Variables();
+  let slaves = Variables().slaves as Person[];
+  if (slaves.length) {
+    if (!slaves[0].GenPronoun)
+      slaves.forEach((slave: Person) => {
+        slave.GenPronoun = slave.gender != "male" ? "She" : "He";
+        slave.genPronoun = slave.gender != "male" ? "she" : "he";
+        slave.Possessive = slave.gender != "male" ? "Her" : "His";
+      });
+    if (slaves[0].anusTraining == undefined)
+      slaves.forEach((slave: Person) => {
+        slave.anusTraining = 0;
+        slave.pussyTraining = 0;
+        slave.mouthTraining = 0;
+      });
+    if (slaves[0].hasPenis == undefined)
+      slaves.forEach((slave: Person) => {
+        slave.hasPenis = slave.gender == "male";
+        slave.hasPussy = slave.gender == "female";
+      });
+    if (variables.settings.anal == undefined) variables.settings.anal = true;
+  }
+});
 interface GenderGeneration {
   fromAge: number;
   toAge: number;
@@ -97,7 +125,6 @@ class PersonGeneration {
     Object.assign(this, definition);
   }
 }
-window.PersonGeneration = new PersonGeneration();
 const maleNames: string[] = [
   "Liam",
   "Noah",

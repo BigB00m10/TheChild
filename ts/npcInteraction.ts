@@ -6,7 +6,7 @@ interface NpcInteraction {
   settingsRequirements?: string[];
   optionText: string;
   contents: string;
-  npcStats?: string[];
+  npcStats?: string[] | ((npc: Npc) => string[]);
   playerStats?: string[];
   next?:
     | Record<string, NpcInteraction>
@@ -35,27 +35,40 @@ Macro.add("openNpcInteraction", {
 });
 Macro.add("npcInteraction", {
   handler: function () {
-    let npc = (variables() as any).npc;
-    let steps = this.args[0].split(".");
+    let vars = variables() as any;
+    let npc = vars.npc;
+    let steps = this.args[0].split("."); //TODO: actually, it's better if the npcInteractionRoute variable is used instead of a parameter so it can be changed within the interaction itself
     let collection = window.Interactions[steps[0]];
     let options = collection.options;
     let interaction: NpcInteraction;
     for (let stepIndex = 1; stepIndex < steps.length; stepIndex++) {
       interaction = options[steps[stepIndex]];
+      if (interaction == undefined) {
+        console.error(this.args[0]);
+        console.error(options);
+        console.error(steps[stepIndex]);
+      }
       options =
         typeof interaction.next != "function"
           ? interaction.next
           : interaction.next();
     }
+    $(document.createElement("span"))
+      .wiki((interaction ? interaction.contents : collection.contents) + "\n")
+      .appendTo(this.output);
     if (interaction && interaction.altOptions)
       options = interaction.altOptions(npc, options);
-    let result =
-      (interaction ? interaction.contents : collection.contents) + "\n";
+    let result = "";
     if (interaction && interaction.minutesCost)
       window.Now.addMinutes(interaction.minutesCost);
     if (interaction && interaction.npcStats) {
       result += "@@color:yellow;";
-      interaction.npcStats.forEach((change) => {
+      let npcStats =
+        typeof interaction.npcStats != "function"
+          ? interaction.npcStats
+          : interaction.npcStats(npc);
+      npcStats.forEach((change) => {
+        result += " ";
         let varName: string;
         let varPath: string;
         let value: number | string;
@@ -64,25 +77,41 @@ Macro.add("npcInteraction", {
           case "-":
             varName = change.slice(1);
             varPath = "variables().npc." + varName;
-            result += " " + change[0] + varName.toUpperFirst().replace(/(\B[A-Z])/g, " $1");
+            result += change[0] + varName.beautifyStat();
             value = change[0] != "-" ? "true" : "false";
             break;
           default:
-            result += " " + change.toUpperFirst().replace(/(\B[A-Z])/g, " $1");
-            let match = /(\w+)([+-])(\d+)(%?)/.exec(change);
+            let match = /(\w+)(%?)([+-])(\d+)(%?)/.exec(change);
             varName = match[1];
             varPath = "variables().npc." + varName;
             value = eval(varPath) as number;
-            value = (
-              match[4] != "%"
-                ? eval(value + match[2] + match[3])
-                : eval(
-                    `Math.max(1, value)${match[2]}${
-                      (value * parseFloat(match[3])) / 100
-                    }`
-                  )
-            ) as number;
-            value = Math.min(100, Math.max(0, Math.ceil(value)));
+            if (match[2] == "%") {
+              try {
+                //Fairmath
+                let max = parseInt(match[4]) + 1;
+                let term = Math.max(
+                  0,
+                  Math.round((max - value) * (max / 100))
+                ).toString();
+                result += varName.beautifyStat() + match[3] + term;
+                value = eval(value.toString() + match[3] + term) as number;
+              } catch (err) {
+                console.error(err);
+                console.info(varPath);
+              }
+            } else {
+              result += change.beautifyStat();
+              value = (
+                match[5] != "%"
+                  ? eval(value + match[3] + match[4])
+                  : eval(
+                      `Math.max(1, value)${match[3]}${
+                        (value * parseFloat(match[4])) / 100
+                      }`
+                    )
+              ) as number;
+            }
+            value = Math.ceil(value).clamp(0, 100);
             break;
         }
         eval(`${varPath} = ${value}`);
@@ -137,7 +166,7 @@ Macro.add("npcInteraction", {
         emoji = optionText.split(" ")[0];
         optionText = optionText.slice(emoji.length + 1);
       }
-      result += `\n<<keyAction '${optionText}' ${emoji}>><<openNpcInteraction ${this.args[0]}.${name}>><</keyAction>>`;
+      result += `\n<<keyAction '${optionText}' ${emoji}>><<openNpcInteraction ${vars.npcInteractionRoute}.${name}>><</keyAction>>`;
       if (option.minutesCost) result += `: ${option.minutesCost}min`;
     }
     let stopOptionText: string;

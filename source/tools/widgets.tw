@@ -34,23 +34,33 @@
         <</if>>
     <</if>>
 <</widget>>
+<<widget checkNpcVirgin>>
+    <<set _fieldName to _args[0]+'Virgin'>>
+    <<if $npc[_fieldName]>>
+        <<set $npc[_fieldName] to false>>
+        <<if $npc.index != undefined>>
+            <<set $slaves[$npc.index][_fieldName] to false>>
+        <</if>>
+        @@color:red;$npc.name just lost $npc.possessive _args[0] virginity!!!@@<br>
+    <</if>>
+<</widget>>
 :: workOption
 <<if !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>
 <</if>>\
 :: npcStats [nobr]
 <<run
-    ['love', 'obedience', 'lust'].forEach(function(name) {
+    ['love', 'obedience', 'lust', 'pussyTraining', 'anusTraining', 'mouthTraining'].forEach(function(name) {
         Meter.del(name);
         Meter.add(name, { 
-            label: (name.charAt(0).toUpperCase() + name.slice(1)).replace(/(\B[A-Z])/g, ' $1') + ':' + $npc[name],
+            label: name.beautifyStat() + ':' + $npc[name],
             height: '20px'
         }, $npc[name] / 100);
     });
     ['freedomWish', 'hunger', 'fear'].forEach(function(name) {
         Meter.del(name);
         Meter.add(name, { 
-            label: (name.charAt(0).toUpperCase() + name.slice(1)).replace(/(\B[A-Z])/g, ' $1') + ':' + $npc[name],
+            label: name.beautifyStat() + ':' + $npc[name],
             height: '20px',
             full: '#FF4136',
             empty: '#2ECC40'
@@ -58,26 +68,55 @@
     });
 >>
 <div class="row">
-    <div class="one-third column">
-        <<showmeter fear>>
-    </div>
-    <div class="one-third column">
-        <<showmeter love>>
-    </div>
-    <div class="one-third column">
-        <<showmeter obedience>>
-    </div>
+    <<if $npc.fear>>
+        <div class="one-third column">
+            <<showmeter fear>>
+        </div>
+    <</if>>
+    <<if $npc.love>>
+        <div class="one-third column">
+            <<showmeter love>>
+        </div>
+    <</if>>
+    <<if $npc.obedience>>
+        <div class="one-third column">
+            <<showmeter obedience>>
+        </div>
+    <</if>>
 </div><br>
 <div class="row">
-    <div class="one-third column">
-        <<showmeter lust>>
-    </div>
-    <div class="one-third column">
-        <<showmeter freedomWish>>
-    </div>
-    <div class="one-third column">
-        <<showmeter hunger>>
-    </div>
+    <<if $npc.lust>>
+        <div class="one-third column">
+            <<showmeter lust>>
+        </div>
+    <</if>>
+    <<if $npc.freedomWish>>
+        <div class="one-third column">
+            <<showmeter freedomWish>>
+        </div>
+    <</if>>
+    <<if $npc.hunger>>
+        <div class="one-third column">
+            <<showmeter hunger>>
+        </div>
+    <</if>>
+</div><br>
+<div class="row">
+    <<if $npc.pussyTraining>>
+        <div class="one-third column">
+            <<showmeter pussyTraining>>
+        </div>
+    <</if>>
+    <<if $npc.anusTraining>>
+        <div class="one-third column">
+            <<showmeter anusTraining>>
+        </div>
+    <</if>>
+    <<if $npc.mouthTraining>>
+        <div class="one-third column">
+            <<showmeter mouthTraining>>
+        </div>
+    <</if>>
 </div>
 :: npcInteraction [nobr]
 <<scenery $scenery>>

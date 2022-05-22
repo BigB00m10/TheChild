@@ -13,7 +13,7 @@ class Product {
   price: number;
   description: string;
   packQuantity: number = 1;
-  avaliable: number;
+  available: number;
   tags: Set<string>;
   constructor(init?: Partial<Product>) {
     Object.assign(this, init);
@@ -25,7 +25,7 @@ class Product {
       count: count * this.packQuantity,
       tags: this.tags,
     });
-    if (this.avaliable > 0) this.avaliable -= count;
+    if (this.available > 0) this.available -= count;
   }
 }
 class Item {
@@ -129,14 +129,14 @@ class OnlineStore {
     if (total > player.cash) return false;
     store.bought = new Inventory(store.bought);
     product.transferTo(store.bought, count);
-    player.cash -= total;
-    if (product.avaliable > 0) {
-      if (product.avaliable <= count) store.products.deleteAt(productIndex);
-      else store.products[productIndex].avaliable -= count;
+    player.cash = Math.round((player.cash - total) * 100) / 100;
+    if (product.available > 0) {
+      if (product.available <= count) store.products.deleteAt(productIndex);
+      else store.products[productIndex].available -= count;
     }
     return true;
   }
-  destination(product:Product | Item):Inventory{
+  destination(product: Product | Item): Inventory {
     switch ([...product.tags][0]) {
       case "basement":
         let basement = Variables().basement as Basement;

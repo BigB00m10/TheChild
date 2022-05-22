@@ -16,3 +16,4 @@ window.Player = new Player();
 window.Person = new Person();
 window.OnlineStore = new OnlineStore();
 window.Basement = new Basement();
+window.PersonGeneration = new PersonGeneration();

@@ -9,6 +9,9 @@ let Homes: Record<string, Home> = {
 function Variables(): any {
   return variables() as any;
 }
+function Temporary(): any {
+  return temporary() as any;
+}
 class Player {
   name: string;
   gender: Gender;
@@ -34,13 +37,9 @@ class Player {
   manageEnergy(hoursPassed: number) {
     let player = Variables().player as Player;
     let multiplier = player.sleeping ? 1 : -0.46;
-    player.energy = Math.max(
-      0,
-      Math.min(
-        100,
-        Math.round(player.energy + (hoursPassed / 8) * 100 * multiplier)
-      )
-    );
+    player.energy = Math.round(
+      player.energy + (hoursPassed / 8) * 100 * multiplier
+    ).clamp(0, 100);
   }
   setGender(gender: Gender) {
     let player = Variables().player as Player;
@@ -91,3 +90,12 @@ class LiteEvent<T> implements ILiteEvent<T> {
     this.handlers.slice(0).forEach((h) => h(data));
   }
 }
+interface String {
+  /**
+   * Split camelcase words and upper the first letter.
+   */
+  beautifyStat(): string;
+}
+String.prototype.beautifyStat = function () {
+  return this.toUpperFirst().replace(/(\B[A-Z])/g, " $1");
+};

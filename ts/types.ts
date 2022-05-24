@@ -37,9 +37,9 @@ class Player {
   manageEnergy(hoursPassed: number) {
     let player = Variables().player as Player;
     let multiplier = player.sleeping ? 1 : -0.46;
-    player.energy = Math.round(
-      player.energy + (hoursPassed / 8) * 100 * multiplier
-    ).clamp(0, 100);
+    let increment = Math.round((hoursPassed / 8) * 100 * multiplier);
+    if (increment == 0) increment = multiplier < 0 ? -1 : 1;
+    player.energy = (player.energy + increment).clamp(0, 100);
   }
   setGender(gender: Gender) {
     let player = Variables().player as Player;
@@ -58,15 +58,19 @@ class Basement implements HomeSpace {
   muffleBase: number = 90;
   securityBase: number = 25;
   constructor() {
-    window.OnlineStore.get("matress").transferTo(this.contents);
+    window.OnlineStore.get("Mattress").transferTo(this.contents);
   }
   has(itemName: string, count: number = 1): boolean {
     return new Inventory(Variables().basement.contents).has(itemName, count);
   }
-  avaliableBeds(): number {
+  availableBeds(): number {
     let variables = Variables();
+    var contents = new Inventory(variables.basement.contents);
+    var oldItem = contents.get("Matress");
+    if(oldItem)//TODO: fix old misspelling, remove later
+      oldItem.name = "Mattress";
     return (
-      new Inventory(variables.basement.contents).get("matress").count -
+      contents.get("Mattress").count -
       variables.slaves.length
     );
   }

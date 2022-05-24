@@ -67,8 +67,10 @@ Macro.add("npcInteraction", {
         typeof interaction.npcStats != "function"
           ? interaction.npcStats
           : interaction.npcStats(npc);
+      let first = true;
       npcStats.forEach((change) => {
-        result += " ";
+        if (first) first = false;
+        else result += ", ";
         let varName: string;
         let varPath: string;
         let value: number | string;
@@ -88,11 +90,12 @@ Macro.add("npcInteraction", {
             if (match[2] == "%") {
               try {
                 //Fairmath
-                let max = parseInt(match[4]) + 1;
-                let term = Math.max(
-                  0,
-                  Math.round((max - value) * (max / 100))
-                ).toString();
+                let max = parseInt(match[4]);
+                let fraction = (max + 1 - value) * (max / 100);
+                let term =
+                  fraction * 100 == max
+                    ? "0"
+                    : Math.max(0, Math.round(fraction)).toString();
                 result += varName.beautifyStat() + match[3] + term;
                 value = eval(value.toString() + match[3] + term) as number;
               } catch (err) {
@@ -158,7 +161,10 @@ Macro.add("npcInteraction", {
         option.settingsRequirements.forEach(
           (condition) => (canBeShown &&= checkCondition("settings", condition))
         );
-      //TODO: check inventory and location required objects
+      if (option.inventoryRequirements)
+        option.inventoryRequirements.forEach(
+          (itemName) => (canBeShown &&= window.Player.has(itemName))
+        );
       if (!canBeShown) continue;
       let optionText = option.optionText;
       let emoji = "";

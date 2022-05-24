@@ -47,7 +47,7 @@ class Now {
     if (currentDate.getHours() < 12) return currentTimeStamp <= toTimeStamp;
     return currentTimeStamp >= fromTimeStamp;
   }
-  readonly onDaysPassed = new LiteEvent<number>();
+  //readonly onDaysPassed = new LiteEvent<number>();
   daysPassed(amount: number) {
     if (amount < 1) return;
     let variables = Variables();
@@ -57,13 +57,15 @@ class Now {
     for (let index = 0; index < amount; index++) {
       slaves.forEach((slave) => {
         slave.aroused = false;
+        slave.lubricatedAss = false;
+        slave.lubricatedPussy = false;
         slave.fear = Math.max(0, slave.fear - 10);
         slave.hunger = Math.min(100, slave.hunger + 10);
         slave.freedomWish = Math.min(100, slave.freedomWish - 5);
       });
       player.lust = Math.min(100, player.lust + 10);
     }
-    this.onDaysPassed.trigger(amount);
+    //this.onDaysPassed.trigger(amount);
   }
   addHours(amount: number) {
     var currentDate = this.getCurrentDate();

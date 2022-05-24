@@ -14,6 +14,7 @@ class Product {
   description: string;
   packQuantity: number = 1;
   available: number;
+  soldOut: boolean = false;
   tags: Set<string>;
   constructor(init?: Partial<Product>) {
     Object.assign(this, init);
@@ -25,7 +26,7 @@ class Product {
       count: count * this.packQuantity,
       tags: this.tags,
     });
-    if (this.available > 0) this.available -= count;
+    //if (this.available > 0) this.available -= count;
   }
 }
 class Item {
@@ -65,9 +66,7 @@ class Inventory {
     this.remove(this.get(name), count);
   }
   has(itemName: string, count: number = 0): boolean {
-    let item: Item = this.items.firstOrDefault(
-      (i: Item) => (i.name = itemName)
-    );
+    let item: Item = this.get(itemName);
     if (item === null) return false;
     if (!count) return true;
     return item.count >= count;
@@ -87,6 +86,7 @@ class Inventory {
   }
 }
 class OnlineStore {
+  version: number = 1;
   products: Product[] = [
     new Product({
       name: "Chloroform",
@@ -98,11 +98,19 @@ class OnlineStore {
       packQuantity: 10,
     }),
     new Product({
-      name: "Matress",
+      name: "Mattress",
       description:
         "Adds an additional bed to your basement so another slave can move in.",
       price: 70,
       tags: new Set(["basement", "home", "furniture"]),
+    }),
+    new Product({
+      name: "Lube",
+      description:
+        "Slippery lotion. Can be used to easier screwing, among other things 😏",
+      price: 15,
+      tags: new Set(["player", "sex"]),
+      available: 1,
     }),
   ];
   bought: Inventory = new Inventory();
@@ -131,8 +139,9 @@ class OnlineStore {
     product.transferTo(store.bought, count);
     player.cash = Math.round((player.cash - total) * 100) / 100;
     if (product.available > 0) {
-      if (product.available <= count) store.products.deleteAt(productIndex);
-      else store.products[productIndex].available -= count;
+      if (product.available <= count)
+        variables.onlineStore.products[productIndex].soldOut = true;
+      else variables.onlineStore.products[productIndex].available -= count;
     }
     return true;
   }
@@ -172,5 +181,13 @@ class OnlineStore {
   pendingOrder(): boolean {
     let store = Variables().onlineStore as OnlineStore;
     return store.bought.items.length > 0;
+  }
+  priceText(product: Product): string {
+    return "$" + product.price;
+  }
+  productText(product: Product): string {
+    let text = product.name;
+    if (product.packQuantity > 1) text += " x " + product.packQuantity;
+    return text + ": ";
   }
 }

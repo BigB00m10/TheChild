@@ -4,6 +4,8 @@ abstract class Npc {
   gender: Gender;
   hasPussy: boolean;
   hasPenis: boolean;
+  lubricatedAss: boolean;
+  lubricatedPussy: boolean;
   pussyTraining: number = 0;
   anusTraining: number = 0;
   mouthTraining: number = 0;
@@ -82,7 +84,7 @@ $(document).on(":passagestart", () => {
   //TODO: temporary event to fix lack of compatibility with older saves
   let variables = Variables();
   let slaves = Variables().slaves as Person[];
-  if (slaves.length) {
+  if (slaves && slaves.length) {
     if (!slaves[0].GenPronoun)
       slaves.forEach((slave: Person) => {
         slave.GenPronoun = slave.gender != "male" ? "She" : "He";
@@ -99,6 +101,12 @@ $(document).on(":passagestart", () => {
       slaves.forEach((slave: Person) => {
         slave.hasPenis = slave.gender == "male";
         slave.hasPussy = slave.gender == "female";
+      });
+    if (slaves[0].analVirgin == undefined)
+      slaves.forEach((slave: Person) => {
+        slave.analVirgin = true;
+        slave.genitalVirgin = true;
+        slave.mouthVirgin = true;
       });
     if (variables.settings.anal == undefined) variables.settings.anal = true;
   }

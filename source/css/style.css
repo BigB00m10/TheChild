@@ -41,8 +41,8 @@ label.toggle-button span {
   border: 1px solid #57c;
   line-height: normal;
   padding: 0.4em;
-  margin-top: 2px;
-  margin-bottom: 2px;
+  margin-top: 1px;
+  margin-bottom: 1px;
   -webkit-transition-duration: 0.2s;
   -o-transition-duration: 0.2s;
   transition-duration: 0.2s;
@@ -57,7 +57,7 @@ label.toggle-button span {
   padding-bottom: 30.6666666667%;
   background: #2f4f4f;
   vertical-align: middle;
-  margin-right: 4%;
+  margin-right: 2%;
   border: 1px solid #999;
   overflow: hidden;
 }
@@ -65,9 +65,16 @@ label.toggle-button span {
   position: absolute;
   bottom: 0;
   width: 100%;
-  text-shadow: 2px 0 0 #2f4f4f, -2px 0 0 #2f4f4f, 0 2px 0 #2f4f4f,
-    0 -2px 0 #2f4f4f, 1px 1px #2f4f4f, -1px -1px 0 #2f4f4f, 1px -1px 0 #2f4f4f,
-    -1px 1px 0 #2f4f4f;
+  color: #69e;
+  text-shadow: 2px 0px 1px #2f4f4f, 2px 2px 1px #2f4f4f, 0px 2px 1px #2f4f4f,
+    -2px 2px 1px #2f4f4f, -2px 0px 1px #2f4f4f, -2px -2px 1px #2f4f4f,
+    0px -2px 1px #2f4f4f, 2px -2px 1px #2f4f4f, 4px 0px 3px #2f4f4f,
+    4px 4px 3px #2f4f4f, 0px 4px 3px #2f4f4f, -4px 4px 3px #2f4f4f,
+    -4px 0px 3px #2f4f4f, -4px -4px 3px #2f4f4f, 0px -4px 3px #2f4f4f,
+    4px -4px 3px #2f4f4f;
+}
+.shopProduct:hover div {
+  color: #8af;
 }
 .shopProduct img {
   margin-top: 0.5em;

@@ -14,11 +14,11 @@ You are currently in your basement.
             <</if>>\
         </div>\
         <div class="one-half column">\
-            <<set _avaliableBeds to Basement.avaliableBeds()>>
-            <<if _avaliableBeds <= 0>>\
-                There's no more room for more slaves. You need to buy matresses if you want more.
+            <<set _availableBeds to Basement.availableBeds()>>
+            <<if _availableBeds <= 0>>\
+                There's no more room for more slaves. You need to buy Mattresses if you want more.
             <<else>>\
-                There's room for <<- _avaliableBeds>> more slave<<if _avaliableBeds gt 1>>s<</if>>.
+                There's room for <<- _availableBeds>> more slave<<if _availableBeds gt 1>>s<</if>>.
             <</if>>\
         </div>\
     </div>

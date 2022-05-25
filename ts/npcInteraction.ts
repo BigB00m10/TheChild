@@ -37,7 +37,7 @@ Macro.add("npcInteraction", {
   handler: function () {
     let vars = variables() as any;
     let npc = vars.npc;
-    let steps = this.args[0].split("."); //TODO: actually, it's better if the npcInteractionRoute variable is used instead of a parameter so it can be changed within the interaction itself
+    let steps = vars.npcInteractionRoute.split(".");
     let collection = window.Interactions[steps[0]];
     let options = collection.options;
     let interaction: NpcInteraction;

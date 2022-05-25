@@ -18,6 +18,7 @@ The Child Trainer
     $onlineStore = OnlineStore;
     $basement = Basement;
     $slaves = [];
+    $achievements = [];
 >>
 <<newmeter playerEnergy>>
     <<sizing 100% 20px>>

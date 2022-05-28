@@ -12,7 +12,7 @@ It's currently a nice Monday morning and the start of a new life. For too long h
     Player.setGender(_gender == "man" ? "male" : "female");
     $player.name to $('#textbox-playername').val();
     >>
-  <<goto bed>>
+  <<goto IntroBed>>
 <</keyAction>>
 <<done>>
   <<run
@@ -22,3 +22,37 @@ It's currently a nice Monday morning and the start of a new life. For too long h
     });
   >>
 <</done>>
+:: IntroBed
+<<scenery bed>>
+As the sun reveals the world to a nice Monday morning, you climb out of bed, ready to start a new day. <<print either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
+
+Today is the day that you begin your debauchery.
+
+<<keyOption 'Leave your room' IntroMain 🚪>>
+<<keyOption 'Skip intro' main ⏭>>
+:: IntroMain
+<<scenery mainRoom>>
+As you leave your room, you walk into your combined kitchen/living room. It’s not the most ideal layout, but at least you have a house with the terrible paychecks you get from work. 
+
+Glancing at the clock, you note that you have a good hour and a half before you need to leave for work. It starts at 8 o’clock, but it’s also a 30-minute drive away.
+
+To pass the time you decide to head on down to the basement. It would probably be best if you plan out how you were going to keep a child down there.
+
+<<keyOption 'The Basement' IntroBasement 🚪>>
+<<keyOption 'Skip intro' main ⏭>>
+:: IntroBasement
+<<addMinutes 60>>\
+<<scenery basement>>
+Walking down creaky wooden steps, you arrive at the basement. It's quite barren with a concrete layout and exposed piping visible. But as much as it sucks, it is the most preferable option to keep a slave held in.
+
+You already have a couple things set up. An old mattress has been laid on the ground for future ‘guests’, and a simple lock was installed on the door to help prevent any escapes. You determine that you’ll need a couple more items before you’re ready to hold someone here. At least some restraints and optionally some sound padding, would all be the necessary components. Technically you could also use your own bedroom too, but the sound muffling the basement provides is so much better.
+
+After a bit of daydreaming about your hopeful future, you check the time to see that you have about 30 minutes left until you need to leave for work. You could hang around the house for the time being, otherwise you could leave now.
+
+<<keyOption 'Go outside' IntroHouse 🏡>>
+<<keyOption 'Skip intro' main ⏭>>
+:: IntroHouse
+<<scenery home>>
+Your home doesn’t contain much, but it’s a home that you’ve grown accustomed to. Along with the living space, you also have a job working as a $player.job.name. It doesn’t pay much, but something is better than nothing.
+
+<<keyOption 'Start game' main ▶ btn>>

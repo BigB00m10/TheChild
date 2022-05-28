@@ -1,3 +1,4 @@
+type NpcStatus = "citizen" | "slave" | "accomplice" | "pet";
 abstract class Npc {
   name: string;
   age: number;
@@ -23,6 +24,9 @@ abstract class Npc {
   lust: number = 0;
   freedomWish: number = 75;
   genitals: string;
+  status: NpcStatus = "citizen";
+  need: string;
+  index: number | false = false;
 }
 class Person extends Npc {
   title: string;

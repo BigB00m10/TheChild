@@ -40,3 +40,7 @@ sugarcube-2:
       name: sizing
     itemImage:
       name: itemImage
+    openNpcInteraction:
+      name: openNpcInteraction
+    emoji:
+      name: emoji

@@ -32,7 +32,7 @@ and $found_kid.eyeColor eyes named $found_kid.name
 <<keyOption "Return home" home 🏠>>
 :: kidnap
 <<scenery home>>
-<<set $slaves.push($found_kid)>>\
+<<set $found_kid.status to "slave"; $slaves.push($found_kid)>>\
 <<addMinutes 30>>\
 You start stalking the $found_kid.age year old kid waiting for the right moment.
 <<run Player.removeItem("chloroform")>>

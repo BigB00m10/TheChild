@@ -67,12 +67,23 @@ class Basement implements HomeSpace {
     let variables = Variables();
     var contents = new Inventory(variables.basement.contents);
     var oldItem = contents.get("Matress");
-    if(oldItem)//TODO: fix old misspelling, remove later
+    if (oldItem)
+      //TODO: fix old misspelling, remove later
       oldItem.name = "Mattress";
-    return (
-      contents.get("Mattress").count -
-      variables.slaves.length
-    );
+    return contents.get("Mattress").count - variables.slaves.length;
+  }
+  getDemandingSlaves() {
+    let slaves = Variables().slaves as Person[];
+    let candidates: Person[] = [];
+    for (let slaveIndex = 0; slaveIndex < slaves.length; slaveIndex++) {
+      const slave = slaves[slaveIndex];
+      if (slave.age >= 1 && slave.hunger >= 25) {
+        slave.index = slaveIndex;
+        slave.need = "hunger";
+        candidates.push(slave);
+      }
+    }
+    return candidates.sort(() => Math.random() - 0.5);
   }
 }
 interface ILiteEvent<T> {

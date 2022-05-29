@@ -11,7 +11,7 @@ window.Interactions["slave"] = {
         <<if $npc.fear gt 25>>\
           $npc.GenPronoun trembles in fear under your shadow.
         <<elseif $npc.love gt 50>>\
-          $npc.GenPronoun leaves <<- $npc.possessive>>self completely open as $npc.genPronoun smiles at you<<emoji ♥>>.
+          $npc.GenPronoun leaves <<- $npc.pronoun>>self completely open as $npc.genPronoun smiles at you<<emoji ♥>>.
         <</if>>`,
       altOptions: (npc: Npc, current: Record<string, NpcInteraction>) => {
         //If slave has no clothes we can skip stripping.
@@ -21,7 +21,7 @@ window.Interactions["slave"] = {
       next: {
         strip: {
           optionText: "👌 Strip $npc.pronoun naked",
-          contents: `You take off all $npc.possessive clothes leaving $npc.name completely naked in front of you.
+          contents: `You take all off $npc.possessive clothes leaving $npc.name completely naked in front of you.
               <<if $npc.aroused>>\
                 You notice that \
                 <<if $npc.gender != 'male'>>\
@@ -33,7 +33,7 @@ window.Interactions["slave"] = {
               <<else>>\
                 You admire $npc.possessive nice body. <<emoji 👀>>
               <</if>>\
-              <<if $npc.love gt 50>>She offers no resistance<<emoji ♥>> and lets you have your way.<</if>>`,
+              <<if $npc.love gt 50>>$npc.GenPronoun offers no resistance<<emoji ♥>> and lets you have your way.<</if>>`,
           next: {
             fingerAss: {
               settingsRequirements: ["anal"],

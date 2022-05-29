@@ -13,7 +13,7 @@
     <</switch>>\
     <<set _demandInteraction to "slaveDemand" + _slave.need.toUpperFirst()>>
     <<button '✅ Handle'>>
-        <<set $npc to _slave>>
+        <<set $npc to _slaves[_demandIndex]>>
         <<openNpcInteraction _demandInteraction>>
     <</button>>\
     <<button '❌ Ignore'>>\

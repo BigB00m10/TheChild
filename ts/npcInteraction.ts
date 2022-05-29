@@ -118,10 +118,11 @@ Macro.add("npcInteraction", {
             break;
         }
         eval(`${varPath} = ${value}`);
-        var slaveIndex = npc.index;
-        if (slaveIndex != undefined)
-          //TODO: might not be the best way to determine if it's a slave
-          (variables() as any).slaves[slaveIndex][varName] = eval(varPath);
+        switch (npc.status) {
+          case "slave":
+            (variables() as any).slaves[npc.index][varName] = eval(varPath);
+            break;
+        }
       });
       result += "@@\n";
     }

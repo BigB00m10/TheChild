@@ -64,6 +64,8 @@ class Now {
         slave.freedomWish = Math.min(100, slave.freedomWish - 5);
         if (slave.hunger >= 90)
           slave.love = Math.max(0, slave.love - (slave.hunger - 80));
+        if (!slave.haveClothes && slave.obedience < 60)
+          slave.obedience += Math.round((61 - slave.obedience) * 0.25);
       });
       player.lust = Math.min(100, player.lust + 10);
     }

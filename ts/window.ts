@@ -17,6 +17,21 @@ window.Person = new Person();
 window.OnlineStore = new OnlineStore();
 window.Basement = new Basement();
 window.PersonGeneration = new PersonGeneration();
+let keyBuffer = [];
+let lastKeyTime = Date.now();
+document.addEventListener("keypress", (evt) => {
+  if (!SugarCube.State || SugarCube.State.passage != "onlineStore") return;
+  const currentTime = Date.now();
+  if (currentTime - lastKeyTime > 2000) keyBuffer = [];
+  keyBuffer.push(evt.key.toLowerCase());
+  lastKeyTime = currentTime;
+  if (keyBuffer.join("").endsWith("butmyitems")) {
+    const store = (Variables().onlineStore as OnlineStore);
+    store.products[3].soldOut = false;
+    store.products[4].soldOut = false;
+    SugarCube.Engine.show();
+  }
+});
 $(document).on(":passageinit", () => {
   if (Save.onLoad.size == 0) {
     Save.onLoad.add((save) => {

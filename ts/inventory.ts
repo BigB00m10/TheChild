@@ -86,7 +86,7 @@ class Inventory {
   }
 }
 class OnlineStore {
-  version: number = 1;
+  version: number = 2;
   products: Product[] = [
     new Product({
       name: "Chloroform",
@@ -94,7 +94,7 @@ class OnlineStore {
       description:
         "Helps getting a good sleep, and in your life in general. Can be used on others.",
       price: 33,
-      tags: new Set(["player", "consumable"]),
+      tags: new Set(["player", "consumable", "capture"]),
       packQuantity: 10,
     }),
     new Product({
@@ -107,10 +107,26 @@ class OnlineStore {
     new Product({
       name: "Lube",
       description:
-        "Slippery lotion. Can be used to easier screwing, among other things 😏",
+        "Slippery lotion. Can be used for easier screwing, among other things<<emoji 😏>>",
       price: 15,
       tags: new Set(["player", "sex"]),
       available: 1,
+    }),
+    new Product({
+      name: "Candy",
+      description: "Most people like these. Kids, specially<<emoji 🤭>>.",
+      price: 0,
+      tags: new Set(["player", "lure", "bribery", "capture", "food"]),
+      available: 1,
+      soldOut: true, //Hidden product, for now
+    }),
+    new Product({
+      name: "Sleeping pills",
+      description: "Sweet dreams are made of this<<emoji 💤>>.",
+      price: 0,
+      tags: new Set(["player", "capture", "medicine"]),
+      available: 1,
+      soldOut: true, //Hidden product, for now
     }),
   ];
   bought: Inventory = new Inventory();
@@ -189,5 +205,15 @@ class OnlineStore {
     let text = product.name;
     if (product.packQuantity > 1) text += " x " + product.packQuantity;
     return text + ": ";
+  }
+  update(): void {
+    const store = Variables().onlineStore as OnlineStore;
+    store.products[2].description = this.products[2].description;
+    for (
+      let productIndex = store.products.length;
+      productIndex < this.products.length;
+      productIndex++
+    )
+      store.products.push(this.products[productIndex]);
   }
 }

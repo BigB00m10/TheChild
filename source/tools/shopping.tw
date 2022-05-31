@@ -39,8 +39,8 @@ $buyProduct.description
     <</button>>\
 </span>\
 :: onlineStore [nobr]
-<<if !$onlineStore.version>>
-    <<set $onlineStore = OnlineStore>>
+<<if $onlineStore.version < 2>>>
+    <<run OnlineStore.update()>>
 <</if>>
 <div class='container' style="text-align: center;">
     <div class='row'><!--https://fictionalcompanies.fandom.com/wiki/Amazoon-->

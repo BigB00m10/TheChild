@@ -44,8 +44,10 @@ window.Interactions["slaveDemandHunger"] = {
       playerRequirements: ["gender=male"],
       optionText:
         "💦 Offer $npc.pronoun your ==sperm== white jelly. (-5 hunger)",
+      minutesCost: 30,
       contents: `You show $npc.pronoun your dick while grabbing it with your hand and say:
       "Here, you can eat my special jelly. My body produces it, but you need to stimulate this to be able to get it out."
+
       $npc.name: "\
       <<if $npc.lust gte 80>>\
         <<set _willing = true>>\
@@ -83,7 +85,7 @@ window.Interactions["slaveDemandHunger"] = {
         $player.name: "That's it. Good $npc.title. Just a little more and you'll have your meal."
         The feeling of $npc.possessive<<if $npc.age lt 10>> little<</if>> lips and tongue quickly brings you to the edge and start shooting your seed inside.
         <<if $npc.hunger gte 80>>\
-          $npc.name is so hungry that, as soon as $npc.pronoun feels your cum shooting on her tongue, eagerly eats your cum with passion till the last drop.
+          $npc.name is so hungry that, as soon as $npc.genPronoun feels your cum shooting on her tongue, eagerly eats your cum with passion till the last drop.
 
           $npc.name: "Haa... much better <<emoji 😫>>."
         <<elseif _willing>>\
@@ -94,16 +96,124 @@ window.Interactions["slaveDemandHunger"] = {
           $npc.name: "Thanks $player.name. That was yummy<<emoji 😋>>."
         <<else>>\
           You can see $npc.name making a weird face as you shoot your seed inside $npc.possessive mouth<<emoji 😫>>.
-          $npc.GenPronoun steps back after taking int some cumshots. You can hear $npc.pronoun making a gulp with $npc.possessive hands covering her mouth.
+          $npc.GenPronoun steps back after taking in some cumshots. You can hear $npc.pronoun making a gulp with $npc.possessive hands covering her mouth.
 
           Finally, $npc.genPronoun chews in the remaining cum on $npc.possessive tongue.
           $npc.name: "<<if $npc.age lt 5>>It's yucky!! <<emoji 😟>><<else>>Ugh! It doesn't taste very good...<<emoji 😖>><</if>>".
         <</if>>
       <</if>>`,
+      altMinutes: (minutes) => (Temporary().denied ? 0 : minutes),
+      npcStats: () => {
+        let temp = Temporary();
+        if (temp.denied) return null;
+        let stats = ["hunger-5", "lust+5%"];
+        if (temp.willing) stats.push("love+5");
+        return stats;
+      },
+      showNpcStats: true,
     },
-    //pussy: {
-    //  playerRequirements: ["gender=female"],
-    //  optionText: "💦 Offer $npc.pronoun your love juice. (-5 hunger)",
-    //},
+    pussy: {
+      playerRequirements: ["gender=female"],
+      optionText: "💦 Offer $npc.pronoun your love juice. (-5 hunger)",
+      minutesCost: 30,
+      contents: `You show $npc.pronoun your pussy and say:
+      "Come here, you can drink my love juice. My body produces it, but you need to stimulate me down here to be able to get it out."
+      $npc.name: "\
+      <<if $npc.lust gte 80>>\
+        <<set _willing = true>>\
+        <<if $npc.age lt 4>>\
+          $npc.name's love juice!! Yay!!<<emoji 😛>>\
+        <<else>>\
+          Yesh!!! I'll drink your love juice!<<emoji 😛>>\
+        <</if>>\
+      <<elseif $npc.love gte 80>>\
+        <<set _willing = true>>\
+        Okay <<emoji ❤>>\
+      <<elseif $npc.hunger gte 80>>\
+        <<set _willing = true>>\
+        <<if $npc.age lt 4>>\
+          Hungryyy..<<emoji 😗>>\
+        <<else>>\
+          Anything<<if $npc.age gte 6>> is fine<</if>>.. Please... So hungry...\
+        <</if>>\
+      <<elseif $npc.hunger gte 50>>\
+        <<if $npc.age lt 4>>\
+          Okay...<<emoji 🙄>>\
+        <<else>>\
+          If there isn't really anything else for me to eat...<<emoji 😥>>\
+        <</if>>\
+      <<else>>\
+        <<set _denied = true>>\
+        <<emoji 😟>>Ugh!! no... I don't wanna...\
+      <</if>>".<<if !_denied>>
+      
+        <<if _willing>>$npc.name doesn't hesitate and puts $npc.possessive face between your legs while grabbing your legs.
+        <</if>>\
+        With a hand in $npc.possessive $npc.hairColor $npc.hairStyle head you guide $npc.pronoun in giving you pleasure by licking and sucking your pussy and clit.
+        The sounds of $npc.possessive wet tongue gently slapping your privates echoes on the basement's walls.
+
+        $player.name: "That's it. Good $npc.title. Just a little more and you'll have your meal."
+        The feeling of $npc.possessive<<if $npc.age lt 10>> little<</if>> lips and tongue caressing you down there finally brings you to the edge and start squirting.
+        <<if $npc.hunger gte 80>>\
+          $npc.name is so hungry that, as soon as $npc.genPronoun feels your love juice on her tongue, eagerly drinks and sucks your nectar with passion till the last drop.
+
+          $npc.name: "Haa... much better <<emoji 😫>>."
+        <<elseif _willing>>\
+          As you squirt, you can hear and feel $npc.name gulping down your nectar while $npc.possessive lips keep pressing on your pussy's.
+
+          Afterwards, $npc.genPronoun sucks out the remaining juice while doing a loud kiss down there. 
+
+          $npc.name: "Thanks $player.name. That was yummy<<emoji 😋>>."
+        <<else>>\
+          You can see $npc.name making a weird face as you squirt in $npc.possessive mouth<<emoji 😫>>.
+          $npc.GenPronoun steps back after taking a good portion of your nectar. You can hear $npc.pronoun making a gulp with $npc.possessive hand covering her mouth.
+
+          <<if $npc.age gte 5>>\
+            $npc.name: "It tastes weird<<emoji 😑>>".\
+          <</if>>\
+        <</if>>\
+      <</if>>`,
+      altMinutes: (minutes) => (Temporary().denied ? 0 : minutes),
+      npcStats: () =>
+        (
+          window.Interactions.slaveDemandHunger.options.cum
+            .npcStats as CallableFunction
+        )(),
+      showNpcStats: true,
+    },
+    punish: {
+      optionText: "🖐 Punish $npc.pronoun.",
+      contents: "How should $npc.name be punished?",
+      next: {
+        clothes: {
+          npcRequirements: ["haveClothes"],
+          optionText: "🩲 Steal $npc.possessive clothes.",
+          contents: `You take all off $npc.possessive clothes leaving $npc.name completely naked and say:
+          "I'll be keeping this as punishment. From now on you'll go without clothes all day. And your $npc.genitals will bring good views for the house<<emoji 🤤>>."
+
+          <<if $npc.lust gte 60>>\
+            $npc.name blushes a little bit and says: "Ah!.. O-Okay <<emoji 🥺>>"
+          <<else>>\
+            $npc.name covers $npc.possessive genitals with both hands: "Nooo!, give it baaack!!<<emoji 😳>>"
+          <</if>>\
+          <<set _item = {
+            name:'Used clothes(' + $npc.age + ' y.o.)',
+            description:'Used clothes from a ' + $npc.age + ' year old',
+            quantity: 1,
+            tags:["person","clothes","used"]
+          };
+          Player.getInventory().add(_item);>>
+          (_item.description added to your inventory)`,
+          npcStats: (npc) => {
+            let stats = ["obedience+10", "-haveClothes"];
+            if (npc.lust >= 60) stats.push("lust+10%");
+            else stats.push("freedomWish-20");
+            return stats;
+          },
+          showNpcStats: true,
+        },
+      },
+      stopOption: "🚫 Don\\'t do anything",
+    },
   },
 };

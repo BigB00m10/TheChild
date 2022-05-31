@@ -27,6 +27,7 @@ abstract class Npc {
   status: NpcStatus = "citizen";
   need: string;
   index: number | false = false;
+  achievements: string[] = [];
 }
 class Person extends Npc {
   title: string;

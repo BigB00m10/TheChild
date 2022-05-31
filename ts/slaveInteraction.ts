@@ -14,10 +14,11 @@ window.Interactions["slave"] = {
           $npc.GenPronoun leaves <<- $npc.pronoun>>self completely open as $npc.genPronoun smiles at you<<emoji ♥>>.
         <</if>>`,
       altOptions: (npc: Npc, current: Record<string, NpcInteraction>) => {
-        //If slave has no clothes we can skip stripping.
         if ((npc as Person).haveClothes) return current;
-        return afterStrip();
+        return afterStrip(); //If slave has no clothes we can skip stripping.
       },
+      baseRoute: (npc) =>
+        (npc as Person).haveClothes ? "slave.pushDown" : "slave.pushDown.strip",
       next: {
         strip: {
           optionText: "👌 Strip $npc.pronoun naked",
@@ -59,7 +60,7 @@ window.Interactions["slave"] = {
               minutesCost: 10,
               contents: `<<if $npc.pussyTraining lt 20>>\
                 You gently rub your finger in $npc.name's $npc.genitals hole.
-                You can feel your finger getting wet 💧. 
+                You can feel your finger getting wet <<emoji 💧>>. 
                 <<elseif $npc.pussyTraining lt 40>>\
                 You manage to push your finger inside $npc.name.
                 You can feel $npc.possessive $npc.genitals tightening around your finger. <<emoji 😛>>

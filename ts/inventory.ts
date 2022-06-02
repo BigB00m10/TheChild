@@ -173,6 +173,9 @@ class OnlineStore {
         return player.inventory;
     }
   }
+  isBought(itemName: string): boolean {
+    return new Inventory(Variables().onlineStore.bought).has(itemName);
+  }
   receiveBought(): void {
     let variables = Variables();
     let store = variables.onlineStore as OnlineStore;

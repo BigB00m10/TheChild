@@ -6,6 +6,14 @@
   padding: 0 20px;
   box-sizing: border-box;
 }
+
+.container:after,
+.row:after,
+.u-cf {
+  content: "";
+  display: table;
+  clear: both; }
+
 .column,
 .columns {
   width: 100%;

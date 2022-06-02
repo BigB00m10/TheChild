@@ -47,6 +47,9 @@ class Player {
     player.genitals = gender != "male" ? "pussy" : "dick";
     player.sexHole = gender != "male" ? "pussy" : "ass";
   }
+  hasAchievement(achievement: string) {
+    return (Variables().achievements as string[]).includes(achievement);
+  }
 }
 interface HomeSpace {
   contents: Inventory;

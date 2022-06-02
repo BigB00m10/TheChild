@@ -202,7 +202,8 @@ window.Interactions["slaveDemandHunger"] = {
             quantity: 1,
             tags:["person","clothes","used"]
           };
-          Player.getInventory().add(_item);>>
+          Player.getInventory().add(_item);
+          $npc.punishments.push("naked");>>
           (_item.description added to your inventory)`,
           npcStats: (npc) => {
             let stats = ["obedience+10", "-haveClothes"];

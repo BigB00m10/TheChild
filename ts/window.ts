@@ -26,7 +26,7 @@ document.addEventListener("keypress", (evt) => {
   keyBuffer.push(evt.key.toLowerCase());
   lastKeyTime = currentTime;
   if (keyBuffer.join("").endsWith("butmyitems")) {
-    const store = (Variables().onlineStore as OnlineStore);
+    const store = Variables().onlineStore as OnlineStore;
     store.products[3].soldOut = false;
     store.products[4].soldOut = false;
     SugarCube.Engine.show();
@@ -65,6 +65,10 @@ $(document).on(":passageinit", () => {
         if (slaves[0].status == undefined)
           slaves.forEach((slave: Person) => {
             slave.status = "slave";
+          });
+        if (slaves[0].punishments == undefined)
+          slaves.forEach((slave: Person) => {
+            slave.punishments = [];
           });
       }
       if (variables.settings.anal == undefined) variables.settings.anal = true;

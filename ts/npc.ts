@@ -28,6 +28,7 @@ abstract class Npc {
   need: string;
   index: number | false = false;
   achievements: string[] = [];
+  punishments: string[] = [];
 }
 class Person extends Npc {
   title: string;
@@ -94,12 +95,12 @@ class PersonGeneration {
   females: GenderGeneration = {
     fromAge: 1,
     toAge: 15,
-    skins: ["tanned", "brown", "black", "white", "pale", "olive"],
+    skins: ["tan", "brown", "black", "white", "pale", "olive"],
   };
   males: GenderGeneration = {
     fromAge: 1,
     toAge: 15,
-    skins: ["tanned", "brown", "black", "white", "pale", "olive"],
+    skins: ["tan", "brown", "black", "white", "pale", "olive"],
   };
   femalePercentage: number = 50;
   load(definition: Object | string) {

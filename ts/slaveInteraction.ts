@@ -21,7 +21,7 @@ window.Interactions["slave"] = {
         (npc as Person).haveClothes ? "slave.pushDown" : "slave.pushDown.strip",
       next: {
         strip: {
-          optionText: "👌 Strip $npc.pronoun naked",
+          optionText: "👌 Strip $npc.pronoun naked.",
           contents: `You take all off $npc.possessive clothes leaving $npc.name completely naked in front of you.
               <<if $npc.aroused>>\
                 You notice that \
@@ -463,7 +463,7 @@ window.Interactions["slave"] = {
                   ],
                   playerStats: ["lust-10"],
                   showNpcStats: true,
-                  next: () => afterStrip().getPenPussy.next,
+                  //next: () => afterStrip().getPenPussy.next,
                   stopOption: "💤 Let $npc.pronoun rest.",
                 },
               },
@@ -510,7 +510,7 @@ window.Interactions["slave"] = {
                   ],
                   playerStats: ["lust-10"],
                   showNpcStats: true,
-                  next: () => afterStrip().getPenAss.next,
+                  //next: () => afterStrip().getPenAss.next,
                   stopOption: "💤 Let $npc.pronoun rest.",
                 },
               },
@@ -540,7 +540,24 @@ window.Interactions["slave"] = {
             },
           },
         },
+        stealClothes: {
+          optionText: "🖐 Strip $npc.pronoun and keep $npc.possessive clothes.",
+          contents: null,
+          npcStats: ["-haveClothes"],
+          next: () =>
+            window.Interactions["slave"].options.pushDown.next["strip"].next,
+        },
       },
     },
   },
 };
+window.Interactions["slave"].options.pushDown.next["stealClothes"].contents =
+  window.Interactions["slave"].options.pushDown.next["strip"].contents +
+  `<<set _item = {
+name:'Used clothes(' + $npc.age + ' y.o.)',
+description:'Used clothes from a ' + $npc.age + ' year old',
+quantity: 1,
+tags:["person","clothes","used"]
+};
+Player.getInventory().add(_item);>>
+(_item.description added to your inventory)`;

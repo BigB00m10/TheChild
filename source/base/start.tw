@@ -17,7 +17,12 @@ It's currently a nice Monday morning and the start of a new life. For too long h
 <<done>>
   <<run
     $('#listbox--gender').on('change', function() {
-      $('#textbox-playername').val(this.value == 1 ? "Emma" : "David");
+      var playerName = $('#textbox-playername');
+      var currentName = playerName.val();
+      if(this.value == 1 && currentName == "David")
+        playerName.val("Emma");
+      else if(currentName == "Emma")
+        playerName.val("David");
       $('#pronoun').html(this.value == 1 ? "her" : "him");
     });
   >>

@@ -49,8 +49,6 @@ You are currently in your basement.
             <</if>>\
         </div>\
     </div>
-
-
     /*<<keyOption "Go back upstairs" main 🚪>>*/\
     <<keyAction "Go back upstairs" 🚪>>
         <<run

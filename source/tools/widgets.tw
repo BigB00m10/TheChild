@@ -83,7 +83,7 @@
             <<showmeter obedience>>
         </div>
     <</if>>
-</div><br>
+</div>
 <div class="row">
     <<if $npc.lust>>
         <div class="one-third column">
@@ -100,7 +100,7 @@
             <<showmeter hunger>>
         </div>
     <</if>>
-</div><br>
+</div>
 <div class="row">
     <<if $npc.pussyTraining>>
         <div class="one-third column">

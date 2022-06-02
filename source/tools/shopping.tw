@@ -95,6 +95,12 @@ $buyProduct.description
 
 You received: <<- $onlineStore.bought.items.map(function(item){return item.count + 'x ' + item.name.charAt(0).toUpperCase() + item.name.slice(1)}).join(', ').replace(/, ((?:.(?!, ))+)$/, ' and $1')>>
 
+<<if !Player.hasAchievement("boughtMattress") && OnlineStore.isBought("mattress")>>\
+    <<set $achievements.push("boughtMattress")>>\
+    ''Delivery man'': "Do you need help you carring the Matress?<<emoji 🙂>>"
+    ''$player.name'': "NO!!.. No thanks, I can do it myself.<<emoji 😅>>"
+
+<</if>>\
 <<unlessEmergency>>\
     <<keyOption "Go back inside" main 🔙>>
     <<include workOption>>\

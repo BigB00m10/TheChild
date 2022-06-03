@@ -17,6 +17,7 @@ window.Person = new Person();
 window.OnlineStore = new OnlineStore();
 window.Basement = new Basement();
 window.PersonGeneration = new PersonGeneration();
+if (!window.Interactions) window.Interactions = {};
 let keyBuffer = [];
 let lastKeyTime = Date.now();
 document.addEventListener("keypress", (evt) => {

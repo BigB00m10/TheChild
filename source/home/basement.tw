@@ -1,26 +1,29 @@
 :: slaveDemand
 <<if _slaves[_demandIndex]>>\
     <span id="slaveDemand">\
-    <<set _slave to _slaves[_demandIndex]>>
-    _slave.name <<if _slave.fear gte 30>>cautiously<</if>> approaches, looking at you with _slave.possessive _slave.eyeColor eyes, and says:
-    <<switch _slave.need>>\
-        <<case "hunger">>\
-            <<if _slave.hunger gte 75>>\
-                "<<if _slave.age gte 5>>Please!!! I'm so hungry!!! <<emoji 🙁>><<else>>"I'm hungryyyyyy!!! <<emoji 😢>><</if>>"
-            <<else>>\
-                "I'm hungry... <<emoji 🙁>>"
-            <</if>>\
-    <</switch>>\
-    <<set _demandInteraction to "slaveDemand" + _slave.need.toUpperFirst()>>
-    <<button '✅ Handle'>>
-        <<set $npc to _slaves[_demandIndex]>>
-        <<openNpcInteraction _demandInteraction>>
-    <</button>>\
-    <<button '❌ Ignore'>>\
-        <<set _demandIndex++>>
-        <<replace #slaveDemand>><<include slaveDemand>><</replace>>
-    <</button>>
-    </span>
+        <<set _slave to _slaves[_demandIndex]>>
+        _slave.name <<if _slave.fear gte 30>>cautiously<</if>> approaches, looking at you with _slave.possessive _slave.eyeColor eyes, and says:
+        <<switch _slave.need>>\
+            <<case "hunger">>\
+                <<if _slave.hunger gte 75>>\
+                    "<<if _slave.age gte 5>>Please!!! I'm so hungry!!! <<emoji 🙁>><<else>>"I'm hungryyyyyy!!! <<emoji 😢>><</if>>"
+                <<else>>\
+                    "I'm hungry... <<emoji 🙁>>"
+                <</if>>\
+        <</switch>>\
+        <<set _demandInteraction to "slaveDemand" + _slave.need.toUpperFirst()>>
+        <span id='hKeyAct'>\
+            <<button '✅ (H) Handle'>>
+                <<set $npc to _slaves[_demandIndex]>>
+                <<openNpcInteraction _demandInteraction>>
+            <</button>>\
+        </span><span id='iKeyAct'>\
+            <<button '❌ (I) Ignore'>>\
+                <<set _demandIndex++>>
+                <<replace #slaveDemand>><<include slaveDemand>><</replace>>
+            <</button>>
+        </span>
+    </span>\
 <</if>>\
 :: basement
 <<scenery basement>>
@@ -32,9 +35,11 @@ You are currently in your basement.
     <div class="row">\
         <div class="one-half column">\
             <<if $slaves.length > 0>>\
-                Slaves:
+                Approach slave:
                 <<set _slaveIndex to 0>>\
                 <<for _slave range $slaves>>\
+                    <<set _genderSymbol = _slave.gender != 'male'?'♀':'♂'>>\
+                    <<emoji _genderSymbol>>\
                     <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $npc to " + JSON.stringify(_slave) + ", $npc.index to " + _slaveIndex + ">><<openNpcInteraction slave>><</link>>">>
                     <<set _slaveIndex++>>\
                 <</for>>\

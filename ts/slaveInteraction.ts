@@ -1,4 +1,4 @@
-if (window.Interactions == undefined) window.Interactions = {};
+if (!window.Interactions) window.Interactions = {};//TODO: manage file ordering instead
 let afterStrip = () =>
   window.Interactions.slave.options.pushDown.next["strip"].next;
 window.Interactions["slave"] = {
@@ -134,8 +134,11 @@ window.Interactions["slave"] = {
                       else if (npc.pussyTraining < 60) stats.push("fear+10");
                       else stats.push("fear+5");
                     }
-                    if (wet || npc.pussyTraining >= 40)
-                      stats.push("pussyTraining+10");
+                    if (
+                      (wet || npc.pussyTraining >= 40) &&
+                      npc.pussyTraining < 75
+                    )
+                      stats.push("pussyTraining+5");
                     if (wet && npc.pussyTraining >= 60) stats.push("fear-5");
                     if (npc.pussyTraining >= 80) {
                       stats.push("+aroused");
@@ -164,10 +167,20 @@ window.Interactions["slave"] = {
                       You slam the whole thing inside filling up $npc.possessive vagina.
                       $npc.GenPronoun looks surprised<<emoji 😲>> with $npc.possessive $npc.eyeColor eyes wide open.
                     <</if>><<checkNpcVirgin genital>>`,
-                  npcStats: (npc) =>
-                    npc.pussyTraining < 80
-                      ? ["fear+50", "freedomWish+25", "pussyTraining%+60"]
-                      : ["fear+5", "lust+2%", "pussyTraining%+90"],
+                  npcStats: (npc) => {
+                    let stats =
+                      npc.pussyTraining < 80
+                        ? ["fear+50", "freedomWish+25"]
+                        : ["fear+5", "lust+2%"];
+                    if (npc.pussyTraining < 50) stats.push("pussyTraining%+60");
+                    else if (npc.pussyTraining < 60)
+                      stats.push("pussyTraining%+70");
+                    else if (npc.pussyTraining < 70)
+                      stats.push("pussyTraining%+80");
+                    else if (npc.pussyTraining < 80)
+                      stats.push("pussyTraining%+90");
+                    return stats;
+                  },
                   showNpcStats: true,
                   next: {
                     slow: {
@@ -183,7 +196,7 @@ window.Interactions["slave"] = {
                         <<else>>\
                           $npc.name is visibly enjoying your cock. You can hear $npc.pronoun loudly moaning:
                           "Ah!...Ah!...<<if $npc.age gt 4>> Yes... Please don't stop!!<</if>>\
-                          <<if $npc.age gt 3 && $npc.love gte 50>>I love you $player.name<<emoji ♥>>.<</if>>"\
+                          <<if $npc.age gt 3 && $npc.love gte 50>>I love you $player.name<<emoji ♥>><</if>>".\
                         <</if>>`,
                       minutesCost: 30,
                       npcStats: (npc) => {
@@ -210,7 +223,50 @@ window.Interactions["slave"] = {
                       },
                       showNpcStats: true,
                       next: () => afterStrip().pushDickVag.next.ram.next,
-                    }, //TODO: add fast and rough options
+                    },
+                    fast: {
+                      optionText: "⏩ Fast piston.",
+                      contents: `You trust your dick into $npc.name's $npc.genitals. Making $npc.genPronoun bounce with a fast pelvic piston movement.
+                      <<run Player.manageEnergy(3)>>\
+                      <<if $npc.pussyTraining lt 40>>\
+                        $npc.GenPronoun <<if $npc.age gt 0>>pushes you while crying<<else>>cries<</if>> desperately. <<emoji 😭>>
+                      <<elseif $npc.pussyTraining lt 60>>\
+                        $npc.name seems to have a hard time taking your thrusts while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
+                      <<elseif $npc.lust lt 60>>\
+                        $npc.GenPronoun seems to be able to withstand your piston and, after a while, even starts to feel good for $npc.pronoun.\
+                        <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you screw $npc.genPronoun.<<emoji ♥>><</if>>
+                      <<else>>\
+                        $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure $npc.genPronoun's experiencing.
+                        "Ah!, Ah!, Ah!<<if $npc.age gt 3 && $npc.love gte 50>>, $player.name!...<<emoji 💕>><</if>>"<<emoji 😫>>\
+                      <</if>>`,
+                      minutesCost: 10,
+                      npcStats: (npc) => {
+                        if (npc.pussyTraining < 40)
+                          return [
+                            "fear+40",
+                            "freedomWish+10",
+                            "pussyTraining%+60",
+                            "hunger+5",
+                          ];
+                        if (npc.pussyTraining < 60)
+                          return ["fear+5", "pussyTraining%+80"];
+                        let stats = [
+                          "pussyTraining+10",
+                          "lust+10%",
+                          "+aroused",
+                          "fear-5",
+                          "hunger+5",
+                        ];
+                        if (
+                          (npc.lust < 30 && npc.love >= 75) ||
+                          (npc.lust >= 30 && npc.love >= 50)
+                        )
+                          stats.push("love+5");
+                        return stats;
+                      },
+                      showNpcStats: true,
+                      next: () => afterStrip().pushDickVag.next.ram.next,
+                    },
                     out: {
                       optionText: "🔙 Pull out",
                       contents: `You pull out your dick on $npc.name`,
@@ -354,7 +410,50 @@ window.Interactions["slave"] = {
                       },
                       showNpcStats: true,
                       next: () => afterStrip().pushDickAnus.next.ram.next,
-                    }, //TODO: add fast and rough options
+                    },
+                    fast: {
+                      optionText: "⏩ Fast piston.",
+                      contents: `You trust your dick into $npc.name's anus. Making $npc.genPronoun bounce with a fast pelvic piston movement.
+                      <<run Player.manageEnergy(3)>>\
+                      <<if $npc.anusTraining lt 40>>\
+                        $npc.GenPronoun <<if $npc.age gt 0>>pushes you while crying<<else>>cries<</if>> desperately. <<emoji 😭>>
+                      <<elseif $npc.anusTraining lt 60>>\
+                        $npc.name seems to have a hard time taking your thrusts while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
+                      <<elseif $npc.lust lt 60>>\
+                        $npc.GenPronoun seems to be able to withstand your piston and, after a while, even starts to feel good for $npc.pronoun.\
+                        <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you screw $npc.genPronoun.<<emoji ♥>><</if>>
+                      <<else>>\
+                        $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure $npc.genPronoun's experiencing.
+                        "Ah!, Ah!, Ah!<<if $npc.age gt 3 && $npc.love gte 50>>, $player.name!...<<emoji 💕>><</if>>"<<emoji 😫>>\
+                      <</if>>`,
+                      minutesCost: 10,
+                      npcStats: (npc) => {
+                        if (npc.anusTraining < 40)
+                          return [
+                            "fear+40",
+                            "freedomWish+10",
+                            "anusTraining%+60",
+                            "hunger+5",
+                          ];
+                        if (npc.anusTraining < 60)
+                          return ["fear+5", "anusTraining%+80"];
+                        let stats = [
+                          "anusTraining+10",
+                          "lust+10%",
+                          "+aroused",
+                          "fear-5",
+                          "hunger+5",
+                        ];
+                        if (
+                          (npc.lust < 30 && npc.love >= 75) ||
+                          (npc.lust >= 30 && npc.love >= 50)
+                        )
+                          stats.push("love+5");
+                        return stats;
+                      },
+                      showNpcStats: true,
+                      next: () => afterStrip().pushDickAnus.next.ram.next,
+                    },
                     out: {
                       optionText: "🔙 Pull out",
                       contents: `You pull out your dick on $npc.name`,
@@ -550,6 +649,7 @@ window.Interactions["slave"] = {
       },
     },
   },
+  timeIncreaseNpcHunger: true,
 };
 window.Interactions["slave"].options.pushDown.next["stealClothes"].contents =
   window.Interactions["slave"].options.pushDown.next["strip"].contents +

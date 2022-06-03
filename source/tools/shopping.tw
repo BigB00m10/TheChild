@@ -46,7 +46,7 @@ $buyProduct.description
     <div class='row'><!--https://fictionalcompanies.fandom.com/wiki/Amazoon-->
         <h2>Anazom</h2><h3>Next day delivery</h3>
     </div>
-    <div class='row' style="display: inline-block;width: 100%;">
+    <div class='row'>
         <<for _productIndex to 0; _productIndex lt $onlineStore.products.length; _productIndex++>>
             <<set 
                 _product = $onlineStore.products[_productIndex];

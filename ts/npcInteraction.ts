@@ -20,11 +20,13 @@ interface NpcInteraction {
   ) => Record<string, NpcInteraction>;
   altMinutes?: (current: number) => number;
   baseRoute?: (npc: Npc) => string;
+  showIfEmpty?: boolean;
 }
 interface NpcInteractionCollection {
   options: Record<string, NpcInteraction>;
   contents: string;
   defaultStopOption?: string | false;
+  timeIncreaseNpcHunger?: boolean;
 }
 Macro.add("openNpcInteraction", {
   handler: function () {
@@ -101,18 +103,26 @@ Macro.add("npcInteraction", {
     if (interaction && interaction.altOptions)
       options = interaction.altOptions(npc, options);
     let result = "";
-    if (interaction && interaction.minutesCost)
-      window.Now.addMinutes(
-        interaction.altMinutes
-          ? interaction.altMinutes(interaction.minutesCost)
-          : interaction.minutesCost
-      );
+    let npcHungerIncrease = 0;
+    if (interaction && interaction.minutesCost) {
+      const minutes = interaction.altMinutes
+        ? interaction.altMinutes(interaction.minutesCost)
+        : interaction.minutesCost;
+      window.Now.addMinutes(minutes);
+      if (collection.timeIncreaseNpcHunger && interaction.showNpcStats)
+        npcHungerIncrease = Math.max(1, Math.round((minutes / 8) * 0.46));
+    }
     if (interaction && interaction.npcStats) {
       let npcStats =
         typeof interaction.npcStats != "function"
           ? interaction.npcStats
           : interaction.npcStats(npc);
       if (npcStats) {
+        if (
+          npcHungerIncrease &&
+          !npcStats.firstOrDefault((s: string) => s.startsWith("hunger"))
+        )
+          npcStats.push("hunger+" + npcHungerIncrease);
         result += "@@color:yellow;";
         let first = true;
         npcStats.forEach((change) => {
@@ -181,48 +191,53 @@ Macro.add("npcInteraction", {
       interaction && interaction.baseRoute
         ? interaction.baseRoute(npc)
         : vars.npcInteractionRoute;
-    for (const name in options) {
-      let option = options[name];
-      let canBeShown = checkCanBeShown(option);
-      if (!canBeShown) continue;
-      if (option.next) {
-        let next = getNext(option);
-        if (option.altOptions) next = option.altOptions(npc, next);
-        let empty = true;
-        for (const nextName in next)
-          if (checkCanBeShown(next[nextName])) {
-            empty = false;
-            break;
-          }
-        if (empty) continue;
+    if (vars.player.energy <= 0)
+      result += `@@color:red;You REALLY need to sleep@@<br>
+      <<keyOption 'Go to sleep' sleep 😴>>`;
+    else {
+      for (const name in options) {
+        let option = options[name];
+        let canBeShown = checkCanBeShown(option);
+        if (!canBeShown) continue;
+        if (option.next && !option.showIfEmpty) {
+          let next = getNext(option);
+          if (option.altOptions) next = option.altOptions(npc, next);
+          let empty = true;
+          for (const nextName in next)
+            if (checkCanBeShown(next[nextName])) {
+              empty = false;
+              break;
+            }
+          if (empty) continue;
+        }
+        let optionText = option.optionText;
+        let emoji = "";
+        if (/^\p{Extended_Pictographic}/u.test(optionText)) {
+          emoji = optionText.split(" ")[0];
+          optionText = optionText.slice(emoji.length + 1);
+        }
+        result += `\n<<keyAction '${optionText}' ${emoji}>><<openNpcInteraction ${baseRoute}.${name}>><</keyAction>>`;
+        if (option.minutesCost) result += `: ${option.minutesCost}min`;
       }
-      let optionText = option.optionText;
-      let emoji = "";
-      if (/^\p{Extended_Pictographic}/u.test(optionText)) {
-        emoji = optionText.split(" ")[0];
-        optionText = optionText.slice(emoji.length + 1);
+      let stopOptionText: string;
+      if (interaction)
+        stopOptionText =
+          interaction.stopOption === false ? null : interaction.stopOption;
+      if (!stopOptionText && stopOptionText !== null) {
+        stopOptionText =
+          collection.defaultStopOption === false
+            ? null
+            : collection.defaultStopOption;
       }
-      result += `\n<<keyAction '${optionText}' ${emoji}>><<openNpcInteraction ${baseRoute}.${name}>><</keyAction>>`;
-      if (option.minutesCost) result += `: ${option.minutesCost}min`;
-    }
-    let stopOptionText: string;
-    if (interaction)
-      stopOptionText =
-        interaction.stopOption === false ? null : interaction.stopOption;
-    if (!stopOptionText && stopOptionText !== null) {
-      stopOptionText =
-        collection.defaultStopOption === false
-          ? null
-          : collection.defaultStopOption;
-    }
-    if (stopOptionText !== null) {
-      if (!stopOptionText) stopOptionText = "🔙 Return";
-      let emoji = "";
-      if (/^\p{Extended_Pictographic}/u.test(stopOptionText)) {
-        emoji = stopOptionText.split(" ")[0];
-        stopOptionText = stopOptionText.slice(emoji.length + 1);
+      if (stopOptionText !== null) {
+        if (!stopOptionText) stopOptionText = "🔙 Return";
+        let emoji = "";
+        if (/^\p{Extended_Pictographic}/u.test(stopOptionText)) {
+          emoji = stopOptionText.split(" ")[0];
+          stopOptionText = stopOptionText.slice(emoji.length + 1);
+        }
+        result += `\n<<keyOption '${stopOptionText}' $returnPassage ${emoji}>>`;
       }
-      result += `\n<<keyOption '${stopOptionText}' $returnPassage ${emoji}>>`;
     }
     $(document.createElement("span")).wiki(result).appendTo(this.output);
   },

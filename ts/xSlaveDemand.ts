@@ -1,4 +1,3 @@
-if (!window.Interactions) window.Interactions = {};//TODO: manage file ordering instead
 const punishment: NpcInteraction = {
   optionText: "🖐 Punish $npc.pronoun.",
   contents: "How should $npc.name be punished?",

@@ -1,4 +1,3 @@
-if (!window.Interactions) window.Interactions = {};//TODO: manage file ordering instead
 let afterStrip = () =>
   window.Interactions.slave.options.pushDown.next["strip"].next;
 window.Interactions["slave"] = {
@@ -501,7 +500,7 @@ window.Interactions["slave"] = {
                 $npc.GenPronoun looks at you with <<- $player.gender!='male'?$npc.possessive+' now wet':'some precum on '+$npc.possessive>> face. <<emoji 🥺>>`,
               npcStats: (npc) => {
                 let stats = ["fear-1"];
-                if (npc.lust > 50) stats.push("lust+5%");
+                if (npc.lust >= 50) stats.push("lust+5%");
                 return stats;
               },
               showNpcStats: true,

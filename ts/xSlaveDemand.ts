@@ -80,8 +80,17 @@ window.Interactions["slaveDemandHunger"] = {
         full: '#FF4136',
         empty: '#2ECC40'
     }, $npc[name] / 100);
+    name = 'obedience'
+    Meter.del(name);
+    Meter.add(name, { 
+        label: name.beautifyStat() + ':' + $npc[name],
+        height: '20px',
+        full: '#FF4136',
+        empty: '#2ECC40'
+    }, $npc[name] / 100);
   >>\
   <<showmeter hunger>>\
+  <<showmeter obedience>>\
   How do you want to handle it?`,
   options: {
     smallMeal: {
@@ -192,7 +201,7 @@ window.Interactions["slaveDemandHunger"] = {
       <<if $npc.lust gte 80>>\
         <<set _willing = true>>\
         <<if $npc.age lt 4>>\
-          $npc.name's love juice!! Yay!!<<emoji 😛>>\
+          $player.name's love juice!! Yay!!<<emoji 😛>>\
         <<else>>\
           Yesh!!! I'll drink your love juice!<<emoji 😛>>\
         <</if>>\

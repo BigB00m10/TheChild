@@ -647,6 +647,74 @@ window.Interactions["slave"] = {
         },
       },
     },
+    dummyPunish: {
+      settingsRequirements: ["false"],
+      contents: "",
+      optionText: "",
+      next: {
+        punish: punishment,
+      },
+    },
+    askLickPus: {
+      playerRequirements: ["gender=female"],
+      optionText: "👅 Ask $npc.pronoun to lick your pussy.",
+      minutesCost: 30,
+      contents: `With your hand on the back of $npc.possessive $npc.hairColor head you approach your pussy to her face and say:
+      "Lick here!"
+      
+      <<if $npc.love gte 80>>\
+        ''$npc.name'': "Sure thing, $player.name!!"<<emoji ❤>>
+        Right after finishing $npc.possessive sentence, $npc.name places $npc.possessive<<if $npc.age lt 7>>little<</if>> hands on your legs as $npc.pronoun approaches his face to your pussy.
+        You can see her $npc.eyeColor loving eyes looking at you while her mouth is being covered by your crotch as you feel the first contact of $npc.possessive<<if $npc.age lt 7>>little<</if>> tongue on your labia.
+        <<if $npc.mouthTraining gte 30>>\
+          $npc.name already knows how to pleasure you and focuses on your clit, giving you lots of pleasure. You instinctively press $npc.possessive head towards you while $npc.genPronoun insist on the licking and sucking.
+        <<else>>\
+          $npc.name randomly licks you between your legs. $npc.GenPronoun's a little clumsy with it but $npc.genPronoun's trying her best and it feels pretty good.
+        <</if>>\
+      <<elseif $npc.lust gte 60>>\
+        Hearing that makes $npc.pronoun aroused and blushes at the thought.
+        $npc.name nods and quickly throws <<- $npc.pronoun>>self between your legs and starts licking with vigor.
+        <<if $npc.mouthTraining gte 30>>\
+          $npc.name already knows how to pleasure you and focuses on your clit, giving you lots of pleasure. You instinctively press $npc.possessive head towards you while $npc.genPronoun insist on the licking and sucking.
+        <<else>>\
+          $npc.name randomly licks you between your legs. $npc.GenPronoun's a little clumsy with it but $npc.genPronoun's trying her best and it feels pretty good.
+        <</if>>\
+      <<else>>\
+        <<set _unwilling to true>>\
+        <<if $npc.obedience lt 30 && $npc.mouthTraining lt 30>>\
+          <<set _refused = true>>\
+          <<if $npc.age lt 5>>\
+            $npc.name shakes $npc.possessive head, refusing your request.<<emoji 😟>>
+          <<else>>\
+            ''$npc.name'': "Ugh! I don't want to...".<<emoji 😟>>
+          <</if>>\
+        <<elseif $npc.mouthTraining lt 60>>\
+          $npc.name has no problem approaching and licking your pussy. $npc.GenPronoun's pretty used to it by now.
+          $npc.GenPronoun gives you random licks to your labia, some of them ends up rubbing your clit giving you some little peaks of pleasure.
+          $npc.GenPronoun's not too shabby, although $npc.genPronoun doesn't put too much passion into it and seems like $npc.genPronoun's doing some chore. But feels pretty good for you anyway.
+        <<else>>\
+          $npc.name's no amateur about this, $npc.genPronoun already knows how to please you.
+          $npc.GenPronoun starts by sinking $npc.possessive tongue under your labia and lick inside. You feel $npc.possessive<<if $npc.age lt 7>>little<</if>> warm lips over your labia while $npc.pronoun does it.
+          $npc.GenPronoun can surely taste your flavor and $npc.genPronoun has to gulp down the excess of saliva and love juice more than once during the process.
+        <</if>>\
+      <</if>>`,
+      npcStats(npc) {
+        let temp = Temporary();
+        if (temp.refused) return null;
+        var stats = ["mouthTraining+10", "fear-5"];
+        if (!temp.unwilling) stats.push("lust+10%");
+        return stats;
+      },
+      showNpcStats: true,
+      next() {
+        return { pushDown: window.Interactions["slave"].options.pushDown };
+      },
+      altOptions(npc, current) {
+        if (Temporary().refused)
+          current.punish = punishment;//TODO: route not found after selecting the punishment
+        return current;
+      },
+    },
   },
   timeIncreaseNpcHunger: true,
 };

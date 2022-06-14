@@ -22,7 +22,7 @@ class Player {
   cash: number = 100;
   energy: number = 100;
   lust: number;
-  sleeping: boolean = true;
+  sleeping: boolean;
   workedToday: boolean = false;
   inventory: Inventory = new Inventory();
   getInventory() {
@@ -86,7 +86,7 @@ class Basement implements HomeSpace {
         candidates.push(slave);
       }
     }
-    return candidates.sort(() => Math.random() - 0.5);
+    return candidates.sort(() => PseudoRandom.getFloat(turns()) - 0.5);
   }
 }
 interface ILiteEvent<T> {
@@ -117,3 +117,18 @@ interface String {
 String.prototype.beautifyStat = function () {
   return this.toUpperFirst().replace(/(\B[A-Z])/g, " $1");
 };
+class PseudoRandom {
+  static getInt(seed: number): number {
+    //27 is a coprime of 100 and 10-1 is divisible by 27's factors (3)
+    return (27 * seed + 10) % 100;
+  }
+  static getFloat(seed: number): number {
+    return this.getInt(seed) / 100;
+  }
+  static getFromRange(seed: number, start: number, end: number): number {
+    return start + Math.floor(this.getFloat(seed) * (end - start));
+  }
+  static either<T>(seed: number, options: Array<T>): T {
+    return options[this.getFromRange(seed, 0, options.length)];
+  }
+}

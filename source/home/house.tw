@@ -15,15 +15,15 @@
         <<keyOption "Watch porn" watchPorn 💗>>: 30min
         <<keyOption "Shop online using your laptop" onlineStore 🛒>>
         <<if $player.workedToday or Now.isWeekend()>>\
-            <<keyOption Sleep sleep 😴>>
+            <<keyAction Sleep 😴>>
+                <<set $player.sleeping to true
+                    Now.skipTo("7:00 AM")>>
+                <<goto bed>>
+            <</keyAction>>
         <</if>>\
     <</unlessEmergency>>\
 <</if>>
 <<set $player.sleeping to false>>
-:: sleep
-<<set $player.sleeping to true
-Now.skipTo("7:00 AM")>>\
-<<include bed>>
 :: main
 <<scenery mainRoom>>
 You are currently standing in the middle of the main room of your house.

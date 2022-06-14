@@ -7,6 +7,21 @@ $player.name
 Energy:
 <<showmeter playerEnergy `$player.energy / 100`>>
 :: StoryMenu
+<<link "👨‍👩‍👧‍👦 Character stats">>
+    <<dialog "Character stats">>
+        <<set _dialogWidth = 'width:' + Math.min(1022, window.innerWidth - 84) + 'px'>>\
+        <div class="row" @style="_dialogWidth">\
+            <div class="eight columns" id="stats"><br></div>\
+            <div class="four columns">\
+                <<for _slaveIndex = 0; _slaveIndex lt $slaves.length; _slaveIndex++>>\
+                    <<set _slave = $slaves[_slaveIndex]; _genderSymbol = _slave.gender != 'male'?'♀':'♂'>>\
+                    <<emoji _genderSymbol>>\
+                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $npc to " + JSON.stringify(_slave) + ", $npc.index to " + _slaveIndex + ">><<replace '#stats'>><<include npcStats>><</replace>><</link>>">>
+                <</for>>\
+            </div>\
+        </div>\
+    <</dialog>>
+<</link>>
 <<link "⚙ Settings">>
     <<dialog Settings>>
         <label class="toggle-button">\

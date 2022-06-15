@@ -1,4 +1,5 @@
 interface NpcInteraction {
+  canBeShown?: () => boolean;
   playerRequirements?: string[];
   npcRequirements?: string[];
   inventoryRequirements?: string[];
@@ -74,6 +75,8 @@ const checkCanBeShown = (option: NpcInteraction) => {
     option.inventoryRequirements.forEach(
       (itemName) => (canBeShown &&= window.Player.has(itemName))
     );
+  if (!canBeShown) return false;
+  if (option.canBeShown) canBeShown = option.canBeShown();
   return canBeShown;
 };
 Macro.add("npcInteraction", {
@@ -193,7 +196,11 @@ Macro.add("npcInteraction", {
         : vars.npcInteractionRoute;
     if (vars.player.energy <= 0)
       result += `@@color:red;You REALLY need to sleep@@<br>
-      <<keyOption 'Go to sleep' sleep 😴>>`;
+      <<keyAction Sleep 😴>>
+        <<set $player.sleeping to true
+          Now.skipTo("7:00 AM")>>
+        <<goto bed>>
+      <</keyAction>>`;
     else {
       for (const name in options) {
         let option = options[name];

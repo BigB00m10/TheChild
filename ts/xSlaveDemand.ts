@@ -61,7 +61,7 @@ const punishment: NpcInteraction = {
       npcStats: (npc) => {
         let stats = ["obedience+10"];
         if (npc.lust >= 50) stats.push("lust+5%");
-        else if (npc.love < 50) stats.push("freedomWish+5");
+        else if (npc.love < 50) stats.push("freedomWish+5", "fear+20");
         return stats;
       },
       showNpcStats: true,

@@ -485,7 +485,7 @@ window.Interactions["slave"] = {
                   <</if>>
                 <</if>>`,
               npcStats: (npc) => {
-                var stats = ["fear-5", "lust+10%", "+aroused", "freedomWish-2"];
+                let stats = ["fear-5", "lust+10%", "+aroused", "freedomWish-2"];
                 if (npc.lust >= 65 && npc.love > 50) stats = ["love+5"];
                 return stats;
               },
@@ -647,6 +647,7 @@ window.Interactions["slave"] = {
     },
     askLickPus: {
       playerRequirements: ["gender=female"],
+      npcRequirements: ["age>0"],
       optionText: "👅 Ask $npc.pronoun to lick your pussy.",
       minutesCost: 30,
       contents: `With your hand on the back of $npc.possessive $npc.hairColor head you approach your pussy to her face and say:
@@ -691,7 +692,7 @@ window.Interactions["slave"] = {
       npcStats(npc) {
         let temp = Temporary();
         if (temp.refused) return null;
-        var stats = ["mouthTraining+10", "fear-5"];
+        let stats = ["mouthTraining+10", "fear-5", "hunger-1"];
         if (!temp.unwilling) stats.push("lust+10%");
         if (npc.mouthTraining >= 60) stats.push("hunger-2");
         return stats;
@@ -713,7 +714,7 @@ window.Interactions["slave"] = {
             contents: `''$player.name'': "Don't stop. Keep licking me down there."
             $npc.name obeys and keeps licking you making lots of lewd noises. $npc.GenPronoun's face gets covered by your juices more and more as it keeps liking.`,
             npcStats(npc) {
-              let stats = ["mouthTraining+10", "fear-5"];
+              let stats = ["mouthTraining+10", "fear-5", "hunger-1"];
               if (npc.love > 80 || npc.lust > 60) stats.push("lust+10%");
               return stats;
             },
@@ -730,11 +731,12 @@ window.Interactions["slave"] = {
     },
     penToMouth: {
       playerRequirements: ["gender=male"],
+      npcRequirements: ["age>0"],
       optionText: "👄🍆 Put your dick in $npc.possessive mouth.",
       contents: `You place a hand on the back of $npc.possessive $npc.hairColor head and with the other hand you guide your erected penis to $npc.possessive mouth.
-      <<set _accepted = $npc.love gte 80 || $npc.lust gte 60 || $npc.obedience gte 30 || $npc.mouthTraining gte 30;
+      <<set _okBj = $npc.love gte 80 || $npc.lust gte 60 || $npc.obedience gte 30 || $npc.mouthTraining gte 30;
       _willing = $npc.love gte 80 || $npc.lust gte 60>>\
-      <<if !_accepted>>\
+      <<if !_okBj>>\
         <<if $npc.age lt 5>>\
           $npc.name turns $npc.possessive face away, refusing your request.<<emoji 😟>>
         <<else>>\
@@ -748,15 +750,109 @@ window.Interactions["slave"] = {
           $npc.name does not hesitate and opens $npc.possessive mouth allowing you to enter.
           You can feel the warmth inside $npc.possessive mouth wrapping around your dick and $npc.possessive lips closing on it.
           $npc.GenPronoun starts suckling on your member and rubbing with $npc.possessive tongue while inside $npc.possessive mouth, making a lot of noise.
+          <<set _sucking = true>>
         <</if>>\
-        
-        (This interaction is work in progress, sorry 🙇🏼‍♂️)
       <</if>>`,
       npcStats(npc) {
         let temp = Temporary();
-        if (!temp.accepted) return null;
+        if (!temp.okBj) return null;
+        let stats = ["fear-5"];
+        if (npc.mouthTraining < 30) stats.push("mouthTraining%+40");
+        else stats.push("mouthTraining%+70");
+        if (temp.willing) stats.push("lust+10%");
+        return stats;
       },
       showNpcStats: true,
+      next() {
+        let thisPunish: NpcInteraction = {
+          optionText: "",
+          contents: "",
+        };
+        Object.assign(thisPunish, punishment);
+        thisPunish.canBeShown = () => !Temporary().okBj || Temporary().refused;
+        return {
+          balls: {
+            canBeShown: () => Temporary().okBj,
+            optionText: '👅🥚 "Lick my balls."',
+            minutesCost: 5,
+            contents: `<<set _okBj = true>>\
+            $npc.name pushes your dick upwards with $npc.possessive<<if $npc.age lt 7>> little<</if>> hands in order to reach your balls.
+            $npc.GenPronoun moves $npc.possessive mouth down to them and starts licking.
+            Your balls bounce a little bit with $npc.possessive<<if $npc.age lt 7>> little<</if>> tongue.
+            <<if $npc.mouthTraining gte 60>>\
+              $npc.GenPronoun then licks all around them while giving you gentle sucks on each ball.\
+            <</if>>`,
+            npcStats: ["fear-5", "mouthTraining%+40"],
+            showNpcStats: true,
+            next: () => window.Interactions["slave"].options.penToMouth.next,
+          },
+          shaft: {
+            canBeShown: () => Temporary().okBj,
+            optionText: '👅🍆 "Lick along my shaft."',
+            minutesCost: 5,
+            contents: `<<set _okBj = true>>\
+            $npc.name grabs your dick with $npc.possessive hands and licks you under your shaft.
+            Painting your dick with $npc.possessive saliva.
+            <<if $npc.mouthTraining gte 60>>\
+              Then $npc.genPronoun slowly slides $npc.possessive tongue from head to base using your cock's entire length.
+              And then moves back to the head doing rapid little licks along the way.
+            <</if>>`,
+            npcStats(npc) {
+              let stats = ["fear-5", "lust+3%"];
+              if (npc.mouthTraining < 30) stats.push("mouthTraining%+40");
+              else stats.push("mouthTraining%+70");
+              return stats;
+            },
+            showNpcStats: true,
+            next: () =>
+              (
+                window.Interactions["slave"].options.penToMouth
+                  .next as CallableFunction
+              )(),
+          },
+          deep: {
+            canBeShown: () => Temporary().okBj && Temporary().refused,
+            optionText:'🐍 Push it all the way',
+            minutesCost:10,
+            contents: `<<set _refused = $npc.love lt 80 || $npc.lust lt 60 || $npc.mouthTraining lt 60;
+            _okBj = _refused ? ($npc.lust gte 40 || $npc.love gte 30) : true>>\
+            You push your dick into $npc.possessive mouth. As much as you can.
+            <<if _refused>>\
+              $npc.name immediately pushes you and takes your dick out of $npc.possessive mouth while coughing.
+              <<if age gte 4>>\
+                ''$npc.name'': "Don't do that!!"
+              <</if>>\
+              <<if !_okBj>>\
+                $npc.name steps back surprised by the sudden thrust.
+                <<if age gte 4>>\
+                  ''$npc.name'': "I don't want to do this anymore..."
+                <<else>>\
+                  It seems that $npc.genPronoun doesn't want to continue sucking you.
+                <</if>>\
+              <</if>>\
+            <<else>>\
+              $npc.name looks surprised but allows you to penetrate $npc.possessive throat.
+            <</if>>`,
+          },
+          punish: thisPunish,
+          suck: {
+            canBeShown() {
+              let temp = Temporary();
+              return temp.okBj && !temp.sucking;
+            },
+            optionText: '👄🍆 "Suck my dick"',
+            contents: `(WIP)`,
+            minutesCost:5,
+            npcStats: (npc) =>
+              (
+                window.Interactions["slave"].options.penToMouth
+                  .next as CallableFunction
+              )().shaft.npcStats(npc),
+            showNpcStats: true,
+            next: () => window.Interactions["slave"].options.penToMouth.next,
+          },
+        };
+      },
     },
   },
   timeIncreaseNpcHunger: true,

@@ -15,7 +15,7 @@
     <<run $player.cash = Math.round(($player.cash + _args[0]) * 100) / 100
         ;_cashAction = _args[0] < 1 ? 'lost' : 'received'
         ;_cashColor = _args[0] < 1 ? 'red' : 'green'>>
-    @@color:_cashColor;You _cashAction $$_args[0]@@
+    @@color:_cashColor;You _cashAction ¤<<- _args[0].toFixed(2)>>@@
 <</widget>>
 <<widget workOption>>
     <<set _workEmoji = $player.gender != "male" ? "👷‍♀️" : "👷‍♂️">>

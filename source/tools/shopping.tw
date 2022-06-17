@@ -39,9 +39,6 @@ $buyProduct.description
     <</button>>\
 </span>\
 :: onlineStore [nobr]
-<<if $onlineStore.version < 2>>>
-    <<run OnlineStore.update()>>
-<</if>>
 <div class='container' style="text-align: center;">
     <div class='row'><!--https://fictionalcompanies.fandom.com/wiki/Amazoon-->
         <h2>Anazom</h2><h3>Next day delivery</h3>
@@ -71,7 +68,7 @@ $buyProduct.description
             <<keyOption Return $returnPassage 🔙>>
         </div>
         <div class="nine columns" style="text-align:right">
-            You currently own $$$player.cash
+            You currently own ¤<<- $player.cash.toFixed(2)>>
         </div>
     </div>
 </div>

@@ -4,7 +4,7 @@
 <<set $player.workedToday = true>>\
 You spend 8 hours working on your job as $player.job.name
 <<cash $player.job.pay>>
-You currently own $$$player.cash
+You currently own ¤<<- $player.cash.toFixed(2)>>
 
 <<keyOption "Return home" home 🏠>>
 :: home

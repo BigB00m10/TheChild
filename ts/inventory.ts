@@ -202,21 +202,11 @@ class OnlineStore {
     return store.bought.items.length > 0;
   }
   priceText(product: Product): string {
-    return "$" + product.price;
+    return "¤" + product.price;
   }
   productText(product: Product): string {
     let text = product.name;
     if (product.packQuantity > 1) text += " x " + product.packQuantity;
     return text + ": ";
-  }
-  update(): void {
-    const store = Variables().onlineStore as OnlineStore;
-    store.products[2].description = this.products[2].description;
-    for (
-      let productIndex = store.products.length;
-      productIndex < this.products.length;
-      productIndex++
-    )
-      store.products.push(this.products[productIndex]);
   }
 }

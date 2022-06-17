@@ -44,3 +44,5 @@ sugarcube-2:
       name: openNpcInteraction
     emoji:
       name: emoji
+    sleep:
+      name: sleep

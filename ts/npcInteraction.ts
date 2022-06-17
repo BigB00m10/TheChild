@@ -28,6 +28,7 @@ interface NpcInteractionCollection {
   contents: string;
   defaultStopOption?: string | false;
   timeIncreaseNpcHunger?: boolean;
+  hideEmptyOptions?: boolean;
 }
 Macro.add("openNpcInteraction", {
   handler: function () {
@@ -196,17 +197,13 @@ Macro.add("npcInteraction", {
         : vars.npcInteractionRoute;
     if (vars.player.energy <= 0)
       result += `@@color:red;You REALLY need to sleep@@<br>
-      <<keyAction Sleep 😴>>
-        <<set $player.sleeping to true
-          Now.skipTo("7:00 AM")>>
-        <<goto bed>>
-      <</keyAction>>`;
+      <<keyAction Sleep 😴>><<sleep>><</keyAction>>`;
     else {
       for (const name in options) {
         let option = options[name];
         let canBeShown = checkCanBeShown(option);
         if (!canBeShown) continue;
-        if (option.next && !option.showIfEmpty) {
+        if (collection.hideEmptyOptions && option.next && !option.showIfEmpty) {
           let next = getNext(option);
           if (option.altOptions) next = option.altOptions(npc, next);
           let empty = true;
@@ -217,7 +214,9 @@ Macro.add("npcInteraction", {
             }
           if (empty) continue;
         }
-        let optionText = option.optionText;
+        let optionText = option.optionText
+          .replace(/'/g, "\\'")
+          .replace(/"/g, "&quot;");
         let emoji = "";
         if (/^\p{Extended_Pictographic}/u.test(optionText)) {
           emoji = optionText.split(" ")[0];
@@ -237,7 +236,9 @@ Macro.add("npcInteraction", {
             : collection.defaultStopOption;
       }
       if (stopOptionText !== null) {
-        if (!stopOptionText) stopOptionText = "🔙 Return";
+        stopOptionText = !stopOptionText
+          ? "🔙 Return"
+          : stopOptionText.replace(/'/g, "\\'").replace(/"/g, "&quot;");
         let emoji = "";
         if (/^\p{Extended_Pictographic}/u.test(stopOptionText)) {
           emoji = stopOptionText.split(" ")[0];

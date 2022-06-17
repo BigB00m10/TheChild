@@ -15,11 +15,7 @@
         <<keyOption "Watch porn" watchPorn 💗>>: 30min
         <<keyOption "Shop online using your laptop" onlineStore 🛒>>
         <<if $player.workedToday or Now.isWeekend()>>\
-            <<keyAction Sleep 😴>>
-                <<set $player.sleeping to true
-                    Now.skipTo("7:00 AM")>>
-                <<goto bed>>
-            <</keyAction>>
+            <<keyAction Sleep 😴>><<sleep>><</keyAction>>
         <</if>>\
     <</unlessEmergency>>\
 <</if>>

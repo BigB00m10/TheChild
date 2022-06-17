@@ -67,7 +67,7 @@ const punishment: NpcInteraction = {
       showNpcStats: true,
     },
   },
-  stopOption: "🚫 Don\\'t do anything",
+  stopOption: "🚫 Don't do anything",
 };
 window.Interactions["slaveDemandHunger"] = {
   contents: `$npc.name is asking for food.

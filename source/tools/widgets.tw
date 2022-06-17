@@ -18,13 +18,18 @@
     @@color:_cashColor;You _cashAction ¤<<- _args[0].toFixed(2)>>@@
 <</widget>>
 <<widget workOption>>
-    <<set _workEmoji = $player.gender != "male" ? "👷‍♀️" : "👷‍♂️">>
-    <<keyOption "Go to work" work _workEmoji>>
+    <<set _workEmoji = $player.gender != "male" ? "👷‍♀️" : "👷‍♂️"; _workText = "Go to work" + (Now.isWeekend()?" (Optional)":"")>>
+    <<keyOption _workText work _workEmoji>>
+<</widget>>
+<<widget sleep>>
+    <<set $player.sleeping = true;
+        Now.skipTo("7:00 AM")>>
+    <<goto bed>>
 <</widget>>
 <<widget unlessEmergency container>>
-    <<if $player.energy < 1>>
+    <<if $player.energy lt 1>>
         @@color:red;You REALLY need to sleep@@<br>
-        <<keyOption 'Go to sleep' sleep 😴>>
+        <<keyAction 'Go to sleep' 😴>><<sleep>><</keyAction>>
     <<else>>
         <<if !Now.isWeekend() && !$player.workedToday && Now.isEqualOrLaterThan($player.job.enterTime)>>
             @@color:red;You need to go to work@@<br>

@@ -493,7 +493,7 @@ window.Interactions["slave"] = {
               next: afterStrip,
             },
             rubToSlaveFace: {
-              optionText: "Rub your $player.genitals on $npc.name\\'s face.",
+              optionText: "Rub your $player.genitals on $npc.name's face.",
               minutesCost: 10,
               contents: `You grab $npc.name head and press it between your legs and start rubbing.
                 $npc.Possessive nose and lips feel really good on your $player.genitals.
@@ -507,7 +507,7 @@ window.Interactions["slave"] = {
               next: afterStrip,
             },
             gentleRubSlaveGen: {
-              optionText: "👋 Gently rub $npc.name\\'s $npc.genitals.",
+              optionText: "👋 Gently rub $npc.name's $npc.genitals.",
               minutesCost: 5,
               contents: `You slowly rub $npc.name's $npc.genitals.
                 After a while, \
@@ -616,7 +616,7 @@ window.Interactions["slave"] = {
               settingsRequirements: ["anal"],
               inventoryRequirements: ["lube"],
               npcRequirements: ["!lubricatedAss"],
-              optionText: "💧 Apply lube to $npc.name\\'s ass.",
+              optionText: "💧 Apply lube to $npc.name's ass.",
               minutesCost: 2,
               contents:
                 "You squeeze some lube from the tube and thoroughly apply it to $npc.name's asshole making it nice and slippery.",
@@ -626,7 +626,7 @@ window.Interactions["slave"] = {
             applyLubePussy: {
               inventoryRequirements: ["lube"],
               npcRequirements: ["hasPussy", "!lubricatedPussy"],
-              optionText: "💧 Apply lube to $npc.name\\'s pussy.",
+              optionText: "💧 Apply lube to $npc.name's pussy.",
               minutesCost: 2,
               contents: `You squeeze some lube from the tube and thoroughly apply it to $npc.name's pussy making it nice and slippery.
                   It seems that your rubbing has caused a faint reaction in $npc.pronoun`,
@@ -791,11 +791,11 @@ window.Interactions["slave"] = {
             optionText: '👅🍆 "Lick along my shaft."',
             minutesCost: 5,
             contents: `<<set _okBj = true>>\
-            $npc.name grabs your dick with $npc.possessive hands and licks you under your shaft.
-            Painting your dick with $npc.possessive saliva.
-            <<if $npc.mouthTraining gte 60>>\
-              Then $npc.genPronoun slowly slides $npc.possessive tongue from head to base using your cock's entire length.
-              And then moves back to the head doing rapid little licks along the way.
+           $npc.name grabs your dick with $npc.possessive hands and licks you under your shaft.
+           Painting your dick with $npc.possessive saliva.
+           <<if $npc.mouthTraining gte 60>>\
+             Then $npc.genPronoun slowly slides $npc.possessive tongue from head to base using your cock's entire length.
+             And then moves back to the head doing rapid little licks along the way.
             <</if>>`,
             npcStats(npc) {
               let stats = ["fear-5", "lust+3%"];
@@ -812,8 +812,8 @@ window.Interactions["slave"] = {
           },
           deep: {
             canBeShown: () => Temporary().okBj && Temporary().refused,
-            optionText:'🐍 Push it all the way',
-            minutesCost:10,
+            optionText: "🐍 Push it all the way",
+            minutesCost: 20,
             contents: `<<set _refused = $npc.love lt 80 || $npc.lust lt 60 || $npc.mouthTraining lt 60;
             _okBj = _refused ? ($npc.lust gte 40 || $npc.love gte 30) : true>>\
             You push your dick into $npc.possessive mouth. As much as you can.
@@ -832,7 +832,14 @@ window.Interactions["slave"] = {
               <</if>>\
             <<else>>\
               $npc.name looks surprised but allows you to penetrate $npc.possessive throat.
+              $npc.GenPronoun sucks your cock while its filling all of the space inside $npc.possessive mouth.
             <</if>>`,
+            altMinutes: (current) => (Temporary().temp.refused ? 1 : current),
+            npcStats(npc) {
+              let temp = Temporary();
+              if (temp.refused) return temp.okBj ? ["fear+5"] : ["fear+10"];
+              return ["mouthTraining+20"];
+            },
           },
           punish: thisPunish,
           suck: {
@@ -841,8 +848,8 @@ window.Interactions["slave"] = {
               return temp.okBj && !temp.sucking;
             },
             optionText: '👄🍆 "Suck my dick"',
+            minutesCost: 5,
             contents: `(WIP)`,
-            minutesCost:5,
             npcStats: (npc) =>
               (
                 window.Interactions["slave"].options.penToMouth
@@ -851,7 +858,7 @@ window.Interactions["slave"] = {
             showNpcStats: true,
             next: () => window.Interactions["slave"].options.penToMouth.next,
           },
-        };
+        } as Record<string, NpcInteraction>;
       },
     },
   },

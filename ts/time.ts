@@ -47,6 +47,13 @@ class Now {
     if (currentDate.getHours() < 12) return currentTimeStamp <= toTimeStamp;
     return currentTimeStamp >= fromTimeStamp;
   }
+  is(timeString: string): boolean {
+    var currentDate = this.getCurrentDate();
+    return (
+      currentDate.getTime() ==
+      this.dateFromTimeString(timeString, currentDate).getTime()
+    );
+  }
   //readonly onDaysPassed = new LiteEvent<number>();
   daysPassed(amount: number) {
     if (amount < 1) return;
@@ -81,7 +88,7 @@ class Now {
   skipTo(timeString: string) {
     let currentDate = this.getCurrentDate();
     let target = this.dateFromTimeString(timeString, currentDate);
-    if (target.getTime() < currentDate.getTime()) {
+    if (target.getTime() <= currentDate.getTime()) {
       target.setDate(target.getDate() + 1);
       this.daysPassed(1);
     }

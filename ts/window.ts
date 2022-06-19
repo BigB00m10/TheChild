@@ -21,16 +21,26 @@ if (!window.Interactions) window.Interactions = {};
 let keyBuffer = [];
 let lastKeyTime = Date.now();
 document.addEventListener("keypress", (evt) => {
-  if (!SugarCube.State || SugarCube.State.passage != "onlineStore") return;
   const currentTime = Date.now();
   if (currentTime - lastKeyTime > 2000) keyBuffer = [];
   keyBuffer.push(evt.key.toLowerCase());
   lastKeyTime = currentTime;
-  if (keyBuffer.join("").endsWith("butmyitems")) {
+  let typed = keyBuffer.join("");
+  if (typed.endsWith("butmyitems")) {
+    if (!SugarCube.State || SugarCube.State.passage != "onlineStore") return;
     const store = Variables().onlineStore as OnlineStore;
     store.products[3].soldOut = false;
     store.products[4].soldOut = false;
     SugarCube.Engine.show();
+  } else if (typed.endsWith("robinhood")) {
+    Variables().player.cash += 800;
+    Dialog.setup("Such lucky");
+    Dialog.wiki("You found ¤800!!! Where does this come from?!");
+    Dialog.open();
+    Engine.show();
+  } else if (typed.endsWith("coconuts")) {
+    Variables().player.energy = 100;
+    Engine.show();
   }
 });
 $(document).on(":passageinit", () => {

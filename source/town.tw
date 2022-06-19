@@ -37,7 +37,7 @@ and $found_kid.eyeColor eyes named $found_kid.name
 You start stalking the $found_kid.age year old kid waiting for the right moment.
 <<run Player.removeItem("chloroform")>>
 A while later you see the kid standing all alone in a corner. You look around making sure no one sees you and quickly use the chloroform \
-on $found_kid.possessive mouth. (<<- Player.getInventory().get('chloroform').count>> doses left)
+on $found_kid.possessive mouth. (<<- Player.has('chloroform') ? Player.getInventory().get('chloroform').count : 'No'>> doses left)
 
 Surprised, the kid takes a deep breath on the chloroform soaked handkerchief. You feel $found_kid.possessive strength quickly running out and \
 $found_kid.possessive cute limbs falling right in your arms.

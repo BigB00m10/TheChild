@@ -6,7 +6,7 @@
         <<switch _slave.need>>\
             <<case "hunger">>\
                 <<if _slave.hunger gte 75>>\
-                    "<<if _slave.age gte 5>>Please!!! I'm so hungry!!! <<emoji 🙁>><<else>>"I'm hungryyyyyy!!! <<emoji 😢>><</if>>"
+                    "<<if _slave.age gte 5>>Please!!! I'm so hungry!!! <<emoji 🙁>><<else>>I'm hungryyyyyy!!! <<emoji 😢>><</if>>"
                 <<else>>\
                     "I'm hungry... <<emoji 🙁>>"
                 <</if>>\

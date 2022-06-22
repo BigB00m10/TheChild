@@ -27,7 +27,13 @@
 <</if>>\
 :: basement
 <<scenery basement>>
-You are currently in your basement.
+<<if !Player.hasAchievement("capturedSlave") && $slaves.length>>\
+    <<set $achievements.push("capturedSlave")>>\
+    You actually did it!! Now you have a personal $found_kid.age year old slave locked on your basement and no one knows about it!!
+    You could do anything you wanted to $found_kid.genPronoun and no one would stop you <<emoji 🤤>>.
+<<else>>\
+    You are currently in your basement.
+<</if>>\
 <<unlessEmergency>>\
     <<set _slaves = Basement.getDemandingSlaves()>>\
     <<set _demandIndex to 0>>\
@@ -63,21 +69,23 @@ You are currently in your basement.
         >>
         <<goto main>>
     <</keyAction>>
+    <<if Player.has("pizza")>>\
+        <<keyOption "Give pizza to all hungry slaves" giveSlavesPizza 🍕>>
+    <</if>>\
     <<include workOption>>\
 <</unlessEmergency>>\
-:: slaveApproach
-You approach $npc.name.
-<<include npcStats>>
-<<if $npc.fear gt 90>>\
-    $npc.GenPronoun walks back scared and wodering what you will do to $npc.pronoun.
-<<elseif $npc.hasPenis && $npc.lust gte 30 && $npc.fear lt 25>>\
-    <<set $npc.aroused = true>>\
-    $npc.GenPronoun looks at you with expectancy. <<if $npc.haveClothes>>@@color:deeppink;You can see a bump on his pants@@.<<else>>@@color:deeppink;He's already erected@@. <<emoji ❤>><</if>>
-    (High lust made $npc.pronoun "happy" to see you)
-<<elseif $npc.lust gte 50 && $npc.fear lt 25>>
-    <<set $npc.aroused = true>>\
-    $npc.GenPronoun looks at you with expectancy. <<if !$npc.haveClothes>>@@color:deeppink;$npc.Possessive pussy is wet and leaking@@. <<emoji ❤>><</if>>
-    (High lust made $npc.pronoun "happy" to see you)
-<<else>>\
-    $npc.GenPronoun nervously looks at you with $npc.possessive $npc.eyeColor eyes.
-<</if>>
+:: giveSlavesPizza
+<<scenery basement>>
+You lay down the pizza<<if Player.has("pizza", 2)>>s<</if>> and all the slaves get around it to eat.
+<<set
+    var hungrySlaves = Basement.getHungrySlaves();
+    var inventory = Player.getInventory();
+    var pizzaCount = inventory.get("pizza").count
+    var hungerDepletedPerSlave = (pizzaCount * (8/3) * 90) / hungrySlaves.length;
+    hungrySlaves.forEach(function(slave) {
+        slave.hunger = Math.max(0, slave.hunger - _hungerDepletedPerSlave);
+    });
+    inventory.removeByName("pizza", pizzaCount);
+>>\
+
+<<keyOption Return basement 🔙>>

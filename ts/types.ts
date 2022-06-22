@@ -17,7 +17,7 @@ class Player {
   gender: Gender;
   genitals: string;
   sexHole: string;
-  house: Home = Homes.smallUrban;
+  home: Home = Homes.smallUrban;
   job: Job = Jobs.garbageCollector;
   cash: number = 100;
   energy: number = 100;
@@ -50,6 +50,9 @@ class Player {
   hasAchievement(achievement: string) {
     return (Variables().achievements as string[]).includes(achievement);
   }
+  getAddressing(npc: Npc) {
+    return Variables().player.name;
+  }
 }
 interface HomeSpace {
   contents: Inventory;
@@ -75,7 +78,7 @@ class Basement implements HomeSpace {
       oldItem.name = "Mattress";
     return contents.get("Mattress").count - variables.slaves.length;
   }
-  getDemandingSlaves() {
+  getDemandingSlaves(): Person[] {
     let slaves = Variables().slaves as Person[];
     let candidates: Person[] = [];
     for (let slaveIndex = 0; slaveIndex < slaves.length; slaveIndex++) {
@@ -87,6 +90,9 @@ class Basement implements HomeSpace {
       }
     }
     return candidates.sort(() => PseudoRandom.getFloat(turns()) - 0.5);
+  }
+  getHungrySlaves(): Person[] {
+    return Variables().slaves.filter((slave: Person) => slave.hunger > 25);
   }
 }
 interface ILiteEvent<T> {

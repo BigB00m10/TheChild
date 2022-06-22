@@ -1,4 +1,20 @@
 type NpcStatus = "citizen" | "slave" | "accomplice" | "pet";
+interface NpcValue {
+  obedience: number;
+  obedienceRatio: string;
+  lust: number;
+  lustRatio: string;
+  pussy: number;
+  pussyRatio: string;
+  anus: number;
+  anusRatio: string;
+  mouth: number;
+  mouthRatio: string;
+  freedomWish?: number;
+  virginType?: string;
+  virginBonus?: number;
+  total?: number;
+}
 abstract class Npc {
   name: string;
   age: number;
@@ -29,6 +45,47 @@ abstract class Npc {
   index: number | false = false;
   achievements: string[] = [];
   punishments: string[] = [];
+  getValue(): NpcValue {
+    let npc = Variables().npc as Npc;
+    const maxNonVirgin = 1500;
+    const maxFwPenalty = -0.75; //Maximum freedom wish penalty 75%
+    let calcValue = (stat: number, ratio: number) =>
+      (maxNonVirgin * (stat * ratio)) / 100;
+    let value: NpcValue = npc.hasPussy
+      ? {
+          obedience: calcValue(npc.obedience, (0.27 * npc.obedience) / 100),
+          obedienceRatio: "(27%)",
+          lust: calcValue(npc.lust, 0.25),
+          lustRatio: "(25%)",
+          pussy: calcValue(npc.pussyTraining, 0.19),
+          pussyRatio: "(19%)",
+          anus: calcValue(npc.anusTraining, 0.16),
+          anusRatio: "(16%)",
+          mouth: calcValue(npc.mouthTraining, 0.13),
+          mouthRatio: "(13%)",
+        }
+      : {
+          obedience: calcValue(npc.obedience, (0.27 * npc.obedience) / 100),
+          obedienceRatio: "(31%)",
+          lust: calcValue(npc.lust, 0.3),
+          lustRatio: "(29%)",
+          pussy: 0,
+          pussyRatio: "(0%)",
+          anus: calcValue(npc.anusTraining, 0.23),
+          anusRatio: "(21%)",
+          mouth: calcValue(npc.mouthTraining, 0.2),
+          mouthRatio: "(19%)",
+        };
+    value.total =
+      value.obedience + value.lust + value.pussy + value.anus + value.mouth;
+    value.freedomWish = (value.total * maxFwPenalty * npc.freedomWish) / 100;
+    if (npc.hasPussy) {
+      if (npc.genitalVirgin) value.virginType = "virgin " + npc.genitals;
+    } else if (npc.analVirgin) value.virginType = "anal virginity";
+    value.virginBonus = value.virginType ? Math.max(5, value.total * 0.2) : 0;
+    value.total += value.freedomWish + value.virginBonus;
+    return value;
+  }
 }
 class Person extends Npc {
   title: string;
@@ -61,6 +118,8 @@ class Person extends Npc {
     person.age =
       Math.floor(Math.random() * (genGen.toAge - genGen.fromAge)) +
       genGen.fromAge;
+    if (person.age < 6)
+      person.freedomWish -= ((6 - person.age) / 6) * person.freedomWish;
     person.genitals =
       person.gender != "male" ? (person.age < 15 ? "cunny" : "pussy") : "penis";
     person.name = (person.gender != "male" ? femaleNames : maleNames).random();

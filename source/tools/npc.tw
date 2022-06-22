@@ -1,0 +1,91 @@
+:: npcStats [nobr]
+<<run
+    ['love', 'obedience', 'lust', 'pussyTraining', 'anusTraining', 'mouthTraining'].forEach(function(name) {
+        Meter.del(name);
+        Meter.add(name, { 
+            label: name.beautifyStat() + ':' + $npc[name],
+            height: '20px'
+        }, $npc[name] / 100);
+    });
+    ['freedomWish', 'hunger', 'fear'].forEach(function(name) {
+        Meter.del(name);
+        Meter.add(name, { 
+            label: name.beautifyStat() + ':' + $npc[name],
+            height: '20px',
+            full: '#FF4136',
+            empty: '#2ECC40'
+        }, $npc[name] / 100);
+    });
+>>
+<div class="row">
+    <<if $npc.fear>>
+        <div class="one-third column">
+            <<showmeter fear>>
+        </div>
+    <</if>>
+    <<if $npc.love>>
+        <div class="one-third column">
+            <<showmeter love>>
+        </div>
+    <</if>>
+    <<if $npc.obedience>>
+        <div class="one-third column">
+            <<showmeter obedience>>
+        </div>
+    <</if>>
+</div>
+<div class="row">
+    <<if $npc.lust>>
+        <div class="one-third column">
+            <<showmeter lust>>
+        </div>
+    <</if>>
+    <<if $npc.freedomWish>>
+        <div class="one-third column">
+            <<showmeter freedomWish>>
+        </div>
+    <</if>>
+    <<if $npc.hunger>>
+        <div class="one-third column">
+            <<showmeter hunger>>
+        </div>
+    <</if>>
+</div>
+<div class="row">
+    <<if $npc.pussyTraining>>
+        <div class="one-third column">
+            <<showmeter pussyTraining>>
+        </div>
+    <</if>>
+    <<if $npc.anusTraining>>
+        <div class="one-third column">
+            <<showmeter anusTraining>>
+        </div>
+    <</if>>
+    <<if $npc.mouthTraining>>
+        <div class="one-third column">
+            <<showmeter mouthTraining>>
+        </div>
+    <</if>>
+</div>
+:: npcInteraction [nobr]
+<<scenery $scenery>>
+<<unlessEmergency>>
+    <<npcInteraction>>
+<</unlessEmergency>>
+:: slaveApproach
+You approach $npc.name.
+<<include npcStats>>
+<<if $npc.fear gt 90>>\
+    $npc.GenPronoun walks back scared and wodering what you will do to $npc.pronoun.
+<<elseif $npc.hasPenis && $npc.lust gte 30 && $npc.fear lt 25>>\
+    <<set $npc.aroused = true>>\
+    $npc.GenPronoun looks at you with expectancy. <<if $npc.haveClothes>>@@color:deeppink;You can see a bump on his pants@@.<<else>>@@color:deeppink;He's already erected@@. <<emoji ❤>><</if>>
+    (High lust made $npc.pronoun "happy" to see you)
+<<elseif $npc.lust gte 50 && $npc.fear lt 25>>
+    <<set $npc.aroused = true>>\
+    $npc.GenPronoun looks at you with expectancy. <<if !$npc.haveClothes>>@@color:deeppink;$npc.Possessive pussy is wet and leaking@@. <<emoji ❤>><</if>>
+    (High lust made $npc.pronoun "happy" to see you)
+<<else>>\
+    $npc.GenPronoun nervously looks at you with $npc.possessive $npc.eyeColor eyes.
+<</if>>

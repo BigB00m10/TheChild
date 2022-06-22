@@ -197,7 +197,7 @@ window.Interactions["slave"] = {
                         <<else>>\
                           $npc.name is visibly enjoying your cock. You can hear $npc.pronoun loudly moaning:
                           "Ah!...Ah!...<<if $npc.age gt 4>> Yes... Please don't stop!!<</if>>\
-                          <<if $npc.age gt 3 && $npc.love gte 50>>I love you $player.name<<emoji ♥>><</if>>".\
+                          <<if $npc.age gt 3 && $npc.love gte 50>>I love you <<npcAddressPlayer>><<emoji ♥>><</if>>".\
                         <</if>>`,
                       minutesCost: 30,
                       npcStats: (npc) => {
@@ -235,10 +235,10 @@ window.Interactions["slave"] = {
                         $npc.name seems to have a hard time taking your thrusts while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
                       <<elseif $npc.lust lt 60>>\
                         $npc.GenPronoun seems to be able to withstand your piston and, after a while, even starts to feel good for $npc.pronoun.\
-                        <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you screw $npc.genPronoun.<<emoji ♥>><</if>>
+                        <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you screw $npc.pronoun.<<emoji ♥>><</if>>
                       <<else>>\
                         $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure $npc.genPronoun's experiencing.
-                        "Ah!, Ah!, Ah!<<if $npc.age gt 3 && $npc.love gte 50>>, $player.name!...<<emoji 💕>><</if>>"<<emoji 😫>>\
+                        "Ah!, Ah!, Ah!<<if $npc.age gt 3 && $npc.love gte 50>>, <<npcAddressPlayer>>!...<<emoji 💕>><</if>>"<<emoji 😫>>\
                       <</if>>`,
                       minutesCost: 10,
                       npcStats: (npc) => {
@@ -384,7 +384,7 @@ window.Interactions["slave"] = {
                         <<else>>\
                           $npc.name is visibly enjoying your cock. You can hear $npc.pronoun loudly moaning:
                           "Ah!...Ah!...<<if $npc.age gt 4>> Yes... Please don't stop!!<</if>>\
-                          <<if $npc.love gte 50>>I love you $player.name<<emoji ♥>>.<</if>>"\
+                          <<if $npc.love gte 50>>I love you <<npcAddressPlayer>><<emoji ♥>>.<</if>>"\
                         <</if>>`,
                       minutesCost: 30,
                       npcStats: (npc) => {
@@ -422,10 +422,10 @@ window.Interactions["slave"] = {
                         $npc.name seems to have a hard time taking your thrusts while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
                       <<elseif $npc.lust lt 60>>\
                         $npc.GenPronoun seems to be able to withstand your piston and, after a while, even starts to feel good for $npc.pronoun.\
-                        <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you screw $npc.genPronoun.<<emoji ♥>><</if>>
+                        <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you screw $npc.pronoun.<<emoji ♥>><</if>>
                       <<else>>\
                         $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure $npc.genPronoun's experiencing.
-                        "Ah!, Ah!, Ah!<<if $npc.age gt 3 && $npc.love gte 50>>, $player.name!...<<emoji 💕>><</if>>"<<emoji 😫>>\
+                        "Ah!, Ah!, Ah!<<if $npc.age gt 3 && $npc.love gte 50>>, <<npcAddressPlayer>>!...<<emoji 💕>><</if>>"<<emoji 😫>>\
                       <</if>>`,
                       minutesCost: 10,
                       npcStats: (npc) => {
@@ -483,7 +483,7 @@ window.Interactions["slave"] = {
                 <<else>>\
                   $npc.name starts moaning along. "Ah!...Ah!..." <<emoji 😩>>
                   <<if $npc.love gt 50>>
-                    $npc.genPronoun smiles at you and says: "I love you $player.name!!<<emoji ♥>>"
+                    $npc.genPronoun smiles at you and says: "I love you <<npcAddressPlayer>>!!<<emoji ♥>>"
                   <</if>>
                 <</if>>`,
               npcStats: (npc) => {
@@ -538,7 +538,7 @@ window.Interactions["slave"] = {
                 endure: {
                   optionText: "💪 Tell him to endure it.",
                   minutesCost: 10,
-                  contents: `$player.name: "Don't you dare cum in me"
+                  contents: `''$player.name'': "Don't you dare cum in me"
                     
                     $npc.name looks troubled but obeys.`,
                   npcStats: ["fear+1", "obedience+2"],
@@ -584,7 +584,7 @@ window.Interactions["slave"] = {
                 endure: {
                   optionText: "💪 Tell $npc.pronoun to endure it.",
                   minutesCost: 10,
-                  contents: `$player.name: "Don't you dare cum in me"
+                  contents: `''$player.name'': "Don't you dare cum in me"
                     
                     $npc.name looks troubled but obeys.`,
                   npcStats: ["fear+1", "obedience+2"],
@@ -656,7 +656,7 @@ window.Interactions["slave"] = {
       "Lick here!"
       
       <<if $npc.love gte 80>>\
-        ''$npc.name'': "Sure thing, $player.name!!"<<emoji ❤>>
+        ''$npc.name'': "Sure thing, <<npcAddressPlayer>>!!"<<emoji ❤>>
         Right after finishing $npc.possessive sentence, $npc.name places $npc.possessive<<if $npc.age lt 7>> little<</if>> hands on your legs as $npc.pronoun approaches his face to your pussy.
         You can see her $npc.eyeColor loving eyes looking at you while her mouth is being covered by your crotch as you feel the first contact of $npc.possessive<<if $npc.age lt 7>> little<</if>> tongue on your labia.
         <<if $npc.mouthTraining gte 30>>\
@@ -812,7 +812,7 @@ window.Interactions["slave"] = {
             canBeShown: () => Temporary().okBj && !Temporary().refused,
             optionText: "🐍 Push it all the way",
             minutesCost: 20,
-            contents: `<<set _refused = $npc.love lt 80 || $npc.lust lt 60 || $npc.mouthTraining lt 60;
+            contents: `<<set _refused = $npc.love lt 80 && $npc.lust lt 60 && $npc.mouthTraining lt 60;
             _okBj = _refused ? ($npc.lust gte 40 || $npc.love gte 30) : true;>>\
             You push your dick into $npc.possessive mouth. As much as you can.
             <<if _refused>>\
@@ -850,10 +850,7 @@ window.Interactions["slave"] = {
           },
           punish: thisPunish,
           suck: {
-            canBeShown() {
-              let temp = Temporary();
-              return temp.okBj && !temp.sucking;
-            },
+            canBeShown: () => Temporary().okBj,
             optionText: '👄🍆 "Suck it"',
             minutesCost: 10,
             contents: `$npc.name places his lips back to the tip of your dick and you help $npc.pronoun inserting it into $npc.possessive mouth.
@@ -870,6 +867,51 @@ window.Interactions["slave"] = {
           },
         } as Record<string, NpcInteraction>;
       },
+    },
+    value: {
+      optionText: "💵 See $npc.name's selling value.",
+      action: true,
+      contents: `<<set _dialogTitle = $npc.name + "'s value">>
+      <<dialog _dialogTitle>>
+          <<set _value = Person.getValue()>>\
+          Obedience_value.obedienceRatio: ¤<<- _value.obedience.toFixed(2)>>
+          Lust_value.lustRatio: ¤<<- _value.lust.toFixed(2)>>
+  
+          <<if $npc.hasPussy>>Pussy Training_value.pussyRatio: ¤<<- _value.pussy.toFixed(2)>>
+          <</if>>Anal Training_value.anusRatio: ¤<<- _value.anus.toFixed(2)>>
+          Oral Training_value.mouthRatio: ¤<<- _value.mouth.toFixed(2)>>
+          <<if $npc.freedomWish>>
+          Freedom Wish Penalty: @@color:red;¤<<- Math.abs(_value.freedomWish).toFixed(2)>>@@<</if>><<if _value.virginType>>
+          @@color:deeppink;Bonus _value.virginType: ¤<<- _value.virginBonus.toFixed(2)>>@@<</if>><<if  $npc.freedomWish ||  _value.virginType>>
+          <</if>>
+          Total: ¤<<- _value.total.toFixed(2)>>\
+
+          <span id="spaceAct">\
+            <<button "💵 (Space) Sell $npc.name">>\
+              <<set _dialogTitle = "Sell "+$npc.name>>\
+              <<dialog _dialogTitle>>\
+                Are you ''REALLY'' sure you want to sell out $npc.name for ¤<<- _value.total.toFixed(2)>>??
+                You won't see $npc.pronoun ever again!!
+
+                <<button "✅ Yes, sell $npc.pronoun">>
+                  <<cash _value.total>>
+                  <<run $slaves.deleteAt($npc.index);Dialog.close()>>
+                  <<goto basement>>
+                <</button>>\
+                <span id="escAct">\
+                  <<button "❌ (Esc) No!!">>\
+                    <<run Dialog.close()>>\
+                  <</button>>\
+                </span>\
+              <</dialog>>
+            <</button>>\
+          </span>\
+          <span id="escAct">\
+            <<button "🔙 (Esc) Go back">>\
+              <<run Dialog.close()>>\
+            <</button>>\
+          </span>\
+      <</dialog>>`,
     },
   },
   timeIncreaseNpcHunger: true,

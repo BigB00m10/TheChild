@@ -4,6 +4,7 @@
 !!!<<- Now.getTime()>>
 ----
 $player.name
+Cash: ¤<<- $player.cash.toFixed(2)>>
 Energy:
 <<showmeter playerEnergy `$player.energy / 100`>>
 :: StoryMenu
@@ -38,10 +39,10 @@ Energy:
             <input id="femalePercentDisplay" @value="$settings.childGeneration.femalePercentage" style="width: 1.7em;border: 0;pointer-events: none;" readonly> %</div>\
         </div>\
         Females:
-        <label>From<input type="number" id="femaleAgeFrom" style="width:3em">years old</label>
+        <label>From<input type="number" min="0" id="femaleAgeFrom" style="width:3em">years old</label>
         <label>To &nbsp;<input type="number" id="femaleAgeTo" style="width:3em">years old</label>
         Males:
-        <label>From<input type="number" id="maleAgeFrom" style="width:3em">years old</label>
+        <label>From<input type="number" min="0" id="maleAgeFrom" style="width:3em">years old</label>
         <label>To &nbsp;<input type="number" id="maleAgeTo" style="width:3em">years old</label>
         <script>
             var $settings = SugarCube.State.variables.settings

@@ -22,6 +22,7 @@ interface NpcInteraction {
   altMinutes?: (current: number) => number;
   baseRoute?: (npc: Npc) => string;
   showIfEmpty?: boolean;
+  action?: boolean;
 }
 interface NpcInteractionCollection {
   options: Record<string, NpcInteraction>;
@@ -222,7 +223,10 @@ Macro.add("npcInteraction", {
           emoji = optionText.split(" ")[0];
           optionText = optionText.slice(emoji.length + 1);
         }
-        result += `\n<<keyAction '${optionText}' ${emoji}>><<openNpcInteraction ${baseRoute}.${name}>><</keyAction>>`;
+        let action = option.action
+          ? option.contents
+          : `<<openNpcInteraction ${baseRoute}.${name}>>`;
+        result += `\n<<keyAction '${optionText}' ${emoji}>>${action}<</keyAction>>`;
         if (option.minutesCost) result += `: ${option.minutesCost}min`;
       }
       let stopOptionText: string;

@@ -7,6 +7,28 @@ You spend 8 hours working on your job as $player.job.name
 You currently own ¤<<- $player.cash.toFixed(2)>>
 
 <<keyOption "Return home" home 🏠>>
+<<if $slaves.length gt 1 >>
+    <<set 
+        _hungryBasementSlaveCount = Basement.getHungrySlaves().length;
+        _neededPizzas = Math.ceil((_hungryBasementSlaveCount * 3) / 8);
+        _pizzasPrice = _neededPizzas * 9;
+    >>\
+    <<if _hungryBasementSlaveCount && !Player.has("pizza", _neededPizzas) && $player.cash gte _pizzasPrice>>\
+        <<keyAction "Go buy pizza for all the hungry slaves in the basement (¤_pizzasPrice) and return home" 🍕>>\
+            <<run
+                $player.cash -= _pizzasPrice;
+                Player.getInventory().add({
+                    name:'Pizza',
+                    description:'Median basic pizza',
+                    count:_neededPizzas,
+                    tags: ["player", "food", "consumable"]
+                })
+            >>
+            <<addMinutes 10>>
+            <<goto home>>
+        <</keyAction>>: 10min detour\
+    <</if>>\
+<</if>>\
 :: home
 <<scenery home>>
 You are currently in front of your home.

@@ -83,6 +83,7 @@ $(document).on(":passageinit", () => {
           });
       }
       if (variables.settings.anal == undefined) variables.settings.anal = true;
+      if (variables.settings.slaveSelling == undefined) variables.settings.slaveSelling = true;
       if (variables.achievements == undefined) variables.achievements = [];
       let onlineStore = variables.onlineStore as OnlineStore;
       if (!onlineStore.version || onlineStore.version < 2) {

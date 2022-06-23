@@ -870,6 +870,7 @@ window.Interactions["slave"] = {
     },
     value: {
       optionText: "💵 See $npc.name's selling value.",
+      settingsRequirements: ["slaveSelling"],
       action: true,
       contents: `<<set _dialogTitle = $npc.name + "'s value">>
       <<dialog _dialogTitle>>

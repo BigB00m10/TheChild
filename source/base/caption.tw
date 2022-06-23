@@ -31,6 +31,9 @@ Energy:
         <label class="toggle-button">\
             <input id="toggleAnal" type="checkbox" class="macro-checkbox"><span>Show anal content</span>\
         </label>\
+        <label class="toggle-button">\
+            <input id="toggleSlaveSell" type="checkbox" class="macro-checkbox"><span>Slave selling</span>\
+        </label>\
         <h3 style="color:yellow">Child generator</h3>\
         Female percentage:\
         <div class="slidecontainer">\
@@ -57,6 +60,9 @@ Energy:
             $('#toggleAnal').change(function() {
                 $settings.anal = this.checked
             }).prop('checked', $settings.anal)
+            $('#toggleSlaveSell').change(function() {
+                $settings.slaveSelling = this.checked
+            }).prop('checked', $settings.slaveSelling)
             $("#femalePercentSlider").on("input", function () {
                 $settings.childGeneration.femalePercentage = parseInt($(this).val())
                 $("#femalePercentDisplay").val($settings.childGeneration.femalePercentage)

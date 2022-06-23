@@ -2,14 +2,14 @@
 <<run
     ['love', 'obedience', 'lust', 'pussyTraining', 'anusTraining', 'mouthTraining'].forEach(function(name) {
         Meter.del(name);
-        Meter.add(name, { 
+        Meter.add(name, {
             label: name.beautifyStat() + ':' + $npc[name],
             height: '20px'
         }, $npc[name] / 100);
     });
     ['freedomWish', 'hunger', 'fear'].forEach(function(name) {
         Meter.del(name);
-        Meter.add(name, { 
+        Meter.add(name, {
             label: name.beautifyStat() + ':' + $npc[name],
             height: '20px',
             full: '#FF4136',
@@ -74,13 +74,13 @@
     <<npcInteraction>>
 <</unlessEmergency>>
 :: slaveApproach
-You approach $npc.name.
+You approach $npc.age year old $npc.name.
 <<include npcStats>>
 <<if $npc.fear gt 90>>\
     $npc.GenPronoun walks back scared and wodering what you will do to $npc.pronoun.
 <<elseif $npc.hasPenis && $npc.lust gte 30 && $npc.fear lt 25>>\
     <<set $npc.aroused = true>>\
-    $npc.GenPronoun looks at you with expectancy. <<if $npc.haveClothes>>@@color:deeppink;You can see a bump on his pants@@.<<else>>@@color:deeppink;He's already erected@@. <<emoji ❤>><</if>>
+    $npc.GenPronoun looks at you with expectancy. <<if $npc.haveClothes>>@@color:deeppink;You can see a bump in $npc.pronoun pants@@.<<else>>@@color:deeppink;$npc.GenPronoun's already erected@@. <<emoji ❤>><</if>>
     (High lust made $npc.pronoun "happy" to see you)
 <<elseif $npc.lust gte 50 && $npc.fear lt 25>>
     <<set $npc.aroused = true>>\

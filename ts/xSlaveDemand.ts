@@ -74,7 +74,7 @@ window.Interactions["slaveDemandHunger"] = {
   <<run
     let name = 'hunger'
     Meter.del(name);
-    Meter.add(name, { 
+    Meter.add(name, {
         label: name.beautifyStat() + ':' + $npc[name],
         height: '20px',
         full: '#FF4136',
@@ -82,7 +82,7 @@ window.Interactions["slaveDemandHunger"] = {
     }, $npc[name] / 100);
     name = 'obedience'
     Meter.del(name);
-    Meter.add(name, { 
+    Meter.add(name, {
         label: name.beautifyStat() + ':' + $npc[name],
         height: '20px',
     }, $npc[name] / 100);
@@ -153,7 +153,7 @@ window.Interactions["slaveDemandHunger"] = {
         <<set _denied = true>>\
         <<emoji 😟>>Ugh!! no... I don't wanna...\
       <</if>>".<<if !_denied>>
-      
+
         <<if _willing>>$npc.name stretches out $npc.possessive hands to grab $npc.possessive "meal dispenser".
         <</if>>\
         With a hand in $npc.possessive $npc.hairColor $npc.hairStyle head you guide $npc.pronoun in giving you pleasure by licking and sucking your dick's.
@@ -223,7 +223,7 @@ window.Interactions["slaveDemandHunger"] = {
         <<set _denied = true>>\
         <<emoji 😟>>Ugh!! no... I don't wanna...\
       <</if>>".<<if !_denied>>
-      
+
         <<if _willing>>$npc.name doesn't hesitate and puts $npc.possessive face between your legs while grabbing your legs.
         <</if>>\
         With a hand in $npc.possessive $npc.hairColor $npc.hairStyle head you guide $npc.pronoun in giving you pleasure by licking and sucking your pussy and clit.
@@ -232,18 +232,18 @@ window.Interactions["slaveDemandHunger"] = {
         ''$player.name'': "That's it. Good $npc.title. Just a little more and you'll have your meal."
         The feeling of $npc.possessive<<if $npc.age lt 10>> little<</if>> lips and tongue caressing you down there finally brings you to the edge and start squirting.
         <<if $npc.hunger gte 80>>\
-          $npc.name is so hungry that, as soon as $npc.genPronoun feels your love juice on her tongue, eagerly drinks and sucks your nectar with passion till the last drop.
+          $npc.name is so hungry that, as soon as $npc.genPronoun feels your love juice on $npc.pronoun tongue, eagerly drinks and sucks your nectar with passion till the last drop.
 
           ''$npc.name'': "Haa... much better <<emoji 😫>>."
         <<elseif _willing>>\
           As you squirt, you can hear and feel $npc.name gulping down your nectar while $npc.possessive lips keep pressing on your pussy's.
 
-          Afterwards, $npc.genPronoun sucks out the remaining juice while doing a loud kiss down there. 
+          Afterwards, $npc.genPronoun sucks out the remaining juice while doing a loud kiss down there.
 
           ''$npc.name'': "Thanks <<npcAddressPlayer>>. That was yummy<<emoji 😋>>."
         <<else>>\
           You can see $npc.name making a weird face as you squirt in $npc.possessive mouth<<emoji 😫>>.
-          $npc.GenPronoun steps back after taking a good portion of your nectar. You can hear $npc.pronoun making a gulp with $npc.possessive hand covering her mouth.
+          $npc.GenPronoun steps back after taking a good portion of your nectar. You can hear $npc.pronoun making a gulp with $npc.possessive hand covering $npc.pronoun mouth.
 
           <<if $npc.age gte 5>>\
             ''$npc.name'': "It tastes weird<<emoji 😑>>".\

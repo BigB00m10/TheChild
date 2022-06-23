@@ -814,7 +814,7 @@ window.Interactions["slave"] = {
             canBeShown: () => Temporary().okBj && !Temporary().refused,
             optionText: "🐍 Push it all the way",
             minutesCost: 20,
-            contents: `<<set _refused = $npc.love lt 80 && $npc.lust lt 60 && $npc.mouthTraining lt 60 && $npc.hunger lt 80;
+            contents: `<<set _refused = $npc.love lt 80 && $npc.lust lt 60 && $npc.mouthTraining lt 60 && $npc.hunger lt 80 && $npc.fear lt 80;
             _okBj = _refused ? ($npc.lust gte 40 || $npc.love gte 30) : true;>>\
             You push your dick into $npc.possessive mouth. As much as you can.
             <<if _refused>>\
@@ -832,15 +832,20 @@ window.Interactions["slave"] = {
               <</if>>\
             <<else>>\
               <<if $npc.hunger gt 80>>\
-                $npc.name is so hungry that $npc.genPronoun\
+                $npc.name is so hungry that $npc.genPronoun allows you to \
+              <<elseif $npc.fear gt 80>>\
+                $npc.name is so scared of you that $npc.genPronoun doesn't fight as you\
               <<else>>\
-                $npc.name looks surprised but\
+                $npc.name looks surprised but allows you to \
               <</if>>\
-              allows you to penetrate $npc.possessive throat.
+              penetrate $npc.possessive throat.
               $npc.GenPronoun sucks your cock while its filling all of the space inside $npc.possessive mouth.
               You can feel all of $npc.possessive insides from the lips pursed near the base of your cock all the way to $npc.pronoun throat.
               <<if $npc.lust gte 80>>\
-                It does't take long until $npc.genPronoun has to retreat for air but $npc.possessive high lust <<if $npc.hunger gt 80>>and hunger <</if>>makes $npc.pronoun gobble your dick up again and again.\
+                It doesn't take long until $npc.genPronoun has to retreat for air but $npc.possessive high lust <<if $npc.hunger gt 80>>and hunger <</if>>makes $npc.pronoun gobble your dick up again and again.\
+                <<set _sucking = true>>\
+              <<elseif $npc.fear gte 80>>\
+                She is terrified of you, but it doesn't take long until $npc.genPronoun has to retreat for air.  Fear that you will hurt her makes $npc.pronoun gobble your dick up again and again.\
                 <<set _sucking = true>>\
               <<else>>\
                 $npc.GenPronoun tries to give you as much pleasure as possible but in the end $npc.genPronoun has to take it out making a big breath of air afterwards.\

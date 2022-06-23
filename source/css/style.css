@@ -81,3 +81,6 @@ label.toggle-button span {
   max-width: 95%;
   max-height: 178px;
 }
+.emoji {
+  margin: 0 5px;
+}

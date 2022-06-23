@@ -8,7 +8,7 @@ window.Interactions["slave"] = {
   options: {
     pushDown: {
       optionText: "👇 Push $npc.pronoun down",
-      contents: `You push $npc.name down placing your body over.
+      contents: `You push $npc.name down, placing your body over $npc.pronoun.
         <<if $npc.fear gt 25>>\
           $npc.GenPronoun trembles in fear under your shadow.
         <<elseif $npc.love gt 50>>\

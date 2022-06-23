@@ -74,7 +74,7 @@
     <<npcInteraction>>
 <</unlessEmergency>>
 :: slaveApproach
-You approach $npc.name.
+You approach $npc.age year old $npc.name.
 <<include npcStats>>
 <<if $npc.fear gt 90>>\
     $npc.GenPronoun walks back scared and wodering what you will do to $npc.pronoun.

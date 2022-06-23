@@ -74,7 +74,7 @@ window.Interactions["slaveDemandHunger"] = {
   <<run
     let name = 'hunger'
     Meter.del(name);
-    Meter.add(name, { 
+    Meter.add(name, {
         label: name.beautifyStat() + ':' + $npc[name],
         height: '20px',
         full: '#FF4136',
@@ -82,7 +82,7 @@ window.Interactions["slaveDemandHunger"] = {
     }, $npc[name] / 100);
     name = 'obedience'
     Meter.del(name);
-    Meter.add(name, { 
+    Meter.add(name, {
         label: name.beautifyStat() + ':' + $npc[name],
         height: '20px',
     }, $npc[name] / 100);
@@ -153,7 +153,7 @@ window.Interactions["slaveDemandHunger"] = {
         <<set _denied = true>>\
         <<emoji 😟>>Ugh!! no... I don't wanna...\
       <</if>>".<<if !_denied>>
-      
+
         <<if _willing>>$npc.name stretches out $npc.possessive hands to grab $npc.possessive "meal dispenser".
         <</if>>\
         With a hand in $npc.possessive $npc.hairColor $npc.hairStyle head you guide $npc.pronoun in giving you pleasure by licking and sucking your dick's.
@@ -223,7 +223,7 @@ window.Interactions["slaveDemandHunger"] = {
         <<set _denied = true>>\
         <<emoji 😟>>Ugh!! no... I don't wanna...\
       <</if>>".<<if !_denied>>
-      
+
         <<if _willing>>$npc.name doesn't hesitate and puts $npc.possessive face between your legs while grabbing your legs.
         <</if>>\
         With a hand in $npc.possessive $npc.hairColor $npc.hairStyle head you guide $npc.pronoun in giving you pleasure by licking and sucking your pussy and clit.

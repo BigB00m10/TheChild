@@ -2,14 +2,14 @@
 <<run
     ['love', 'obedience', 'lust', 'pussyTraining', 'anusTraining', 'mouthTraining'].forEach(function(name) {
         Meter.del(name);
-        Meter.add(name, { 
+        Meter.add(name, {
             label: name.beautifyStat() + ':' + $npc[name],
             height: '20px'
         }, $npc[name] / 100);
     });
     ['freedomWish', 'hunger', 'fear'].forEach(function(name) {
         Meter.del(name);
-        Meter.add(name, { 
+        Meter.add(name, {
             label: name.beautifyStat() + ':' + $npc[name],
             height: '20px',
             full: '#FF4136',

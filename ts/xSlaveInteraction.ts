@@ -497,12 +497,14 @@ window.Interactions["slave"] = {
             rubToSlaveFace: {
               optionText: "Rub your $player.genitals on $npc.name's face.",
               minutesCost: 10,
-              contents: `You grab $npc.name head and press it between your legs and start rubbing.
+              contents: `You grab $npc.name's head and press it between your legs and start rubbing.
                 $npc.Possessive nose and lips feel really good on your $player.genitals.
-                $npc.GenPronoun looks at you with <<- $player.gender!='male'?$npc.possessive+' now wet':'some precum on '+$npc.possessive>> face. <<emoji 🥺>>`,
+                $npc.GenPronoun looks at you with <<- $player.gender!='male'?$npc.possessive+' now wet':'some precum on '+$npc.possessive>> face. <<emoji 🥺>>
+                <<if $npc.hunger gt 50>>$npc.GenPronoun is so hungry that the smell of your precum makes her even more hungry.<</if>>`,
               npcStats: (npc) => {
                 let stats = ["fear-1"];
                 if (npc.lust >= 50) stats.push("lust+5%");
+                if (npc.hunger > 50) stats.push("hunger+2");
                 return stats;
               },
               showNpcStats: true,
@@ -736,7 +738,7 @@ window.Interactions["slave"] = {
       npcRequirements: ["age>0"],
       optionText: "👄🍆 Put your dick in $npc.possessive mouth.",
       contents: `You place a hand on the back of $npc.possessive $npc.hairColor head and with the other hand you guide your erected penis to $npc.possessive mouth.
-      <<set _okBj = $npc.love gte 80 || $npc.lust gte 60 || $npc.obedience gte 30 || $npc.mouthTraining gte 30;
+      <<set _okBj = $npc.love gte 80 || $npc.lust gte 60 || $npc.hunger gte 90 || $npc.obedience gte 30 || $npc.mouthTraining gte 30;
       _willing = $npc.love gte 80 || $npc.lust gte 60>>\
       <<if !_okBj>>\
         <<if $npc.age lt 5>>\
@@ -745,13 +747,13 @@ window.Interactions["slave"] = {
           ''$npc.name'': "Eww! No!".<<emoji 😟>>\
         <</if>>\
       <<else>>\
-        <<if $npc.mouthTraining lt 60>>\
+        <<if $npc.mouthTraining lt 60 && $npc.hunger lt 80>>\
           $npc.name <<if _willing>>blushes at the sight of your dick pointing to $npc.possessive mouth and <</if>>starts licking the under your dick head while timidly looking at you with $npc.possessive $npc.eyeColor eyes.<<emoji 🥺>>
           $npc.Possessive<<if $npc.age lt 7>> little<</if>> tongue rubbing and wetting your dick feels really good.\
         <<else>>\
-          $npc.name does not hesitate and opens $npc.possessive mouth allowing you to enter.
+          $npc.name <<if $npc.hunger gt 80>>is so hungry that $npc.genPronoun <</if>>does not hesitate and opens $npc.possessive mouth allowing you to enter.
           You can feel the warmth inside $npc.possessive mouth wrapping around your dick and $npc.possessive lips closing on it.
-          $npc.GenPronoun starts suckling on your member and rubbing with $npc.possessive tongue while inside $npc.possessive mouth, making a lot of noise.\
+          $npc.GenPronoun starts suckling on your member and rubbing with $npc.possessive tongue while inside $npc.possessive mouth, <<if $npc.hunger gt 80>>desperate to get whatever sustenance $npc.genPronoun can get, <</if>>making a lot of noise.\
           <<set _sucking = true>>\
         <</if>>\
       <</if>>`,
@@ -812,7 +814,7 @@ window.Interactions["slave"] = {
             canBeShown: () => Temporary().okBj && !Temporary().refused,
             optionText: "🐍 Push it all the way",
             minutesCost: 20,
-            contents: `<<set _refused = $npc.love lt 80 && $npc.lust lt 60 && $npc.mouthTraining lt 60;
+            contents: `<<set _refused = $npc.love lt 80 && $npc.lust lt 60 && $npc.mouthTraining lt 60 && $npc.hunger lt 80;
             _okBj = _refused ? ($npc.lust gte 40 || $npc.love gte 30) : true;>>\
             You push your dick into $npc.possessive mouth. As much as you can.
             <<if _refused>>\
@@ -829,15 +831,21 @@ window.Interactions["slave"] = {
                 <</if>>\
               <</if>>\
             <<else>>\
-              $npc.name looks surprised but allows you to penetrate $npc.possessive throat.
+              <<if $npc.hunger gt 80>>\
+                $npc.name is so hungry that $npc.genPronoun\
+              <<else>>\
+                $npc.name looks surprised but\
+              <</if>>\
+              allows you to penetrate $npc.possessive throat.
               $npc.GenPronoun sucks your cock while its filling all of the space inside $npc.possessive mouth.
               You can feel all of $npc.possessive insides from the lips pursed near the base of your cock all the way to $npc.pronoun throat.
               <<if $npc.lust gte 80>>\
-                It does't take long until $npc.pronoun has to retreat for air but $npc.possessive's high lust makes $npc.pronoun gobble your dick up again and again.\
+                It does't take long until $npc.genPronoun has to retreat for air but $npc.possessive high lust <<if $npc.hunger gt 80>>and hunger <</if>>makes $npc.pronoun gobble your dick up again and again.\
                 <<set _sucking = true>>\
               <<else>>\
                 $npc.GenPronoun tries to give you as much pleasure as possible but in the end $npc.genPronoun has to take it out making a big breath of air afterwards.\
               <</if>>\
+              <<if $npc.hunger gt 80 && $npc.age gt 3>>$npc.GenPronoun is so hungry that her big $npc.eyeColor eyes look up at you, begging you to cum and give her at least some sustenance.<</if>>\
             <</if>>`,
             altMinutes: (current) => (Temporary().refused ? 1 : current),
             npcStats(npc) {
@@ -860,7 +868,11 @@ window.Interactions["slave"] = {
               You can see $npc.pronoun head bobbing down on you at the rhythm of your pleasure peaks.\
             <<else>>\
               $npc.name sucks and licks your tip. Feels good, but you think it could be better. So you grab $npc.possessive head with both hands and penetrate $npc.possessive lips a little more than $npc.genPronoun was doing.\
-            <</if>>`,
+            <</if>>\
+            <<if $npc.hunger gte 80>>\
+              $npc.GenPronoun looks up at you, so hungry that she sucks desperately on your cock.\
+            <</if>>\
+            `,
             npcStats: (npc) => afterPenToMouth().shaft.npcStats(npc),
             showNpcStats: true,
             next: afterPenToMouth,

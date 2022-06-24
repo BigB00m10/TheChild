@@ -43,12 +43,21 @@ You are currently in front of your home.
 You found a $found_kid.age year old $found_kid.skin $found_kid.title with $found_kid.hairLength $found_kid.hairStyle $found_kid.hairColor hair \
 and $found_kid.eyeColor eyes named $found_kid.name
 
-<<if !Player.has('chloroform')>>\
+<<set
+	_hasChloroform = Player.has('chloroform');
+	_hasCandy = Player.has('Candy');
+>>\
+<<if !_hasChloroform and !_hasCandy>>\
     (You don't have anything at your disposal to obtain kids)
 <<elseif Basement.availableBeds() lte 0>>\
     (Not enough space for a new kid back at home)
 <<else>>\
-    <<keyOption "Kidnap $found_kid.pronoun" kidnap 🖐>>: 30min
+	<<if _hasCandy>>\
+		<<keyOption "Offer $found_kid.name some Candy." CandyLure 🍬>>: 9min
+	<</if>>\
+	<<if _hasChloroform>>\
+		<<keyOption "Kidnap $found_kid.pronoun" kidnap 🖐>>: 30min
+	<</if>>\
 <</if>>\
 <<keyOption "Keep searching" playground 🔍>>
 <<keyOption "Return home" home 🏠>>
@@ -67,3 +76,28 @@ $found_kid.possessive cute limbs falling right in your arms.
 You cover $found_kid.possessive body in a blanket and sneak up back to your home with your new toy.
 
 <<keyOption "Enter the basement" basement 🚪>>
+
+:: CandyLure
+<<scenery playground>>
+<<set $found_kid.status to "slave"; $slaves.push($found_kid)>>\
+<<addMinutes 3>>\
+You sit on the park bench with a Candy Bar and wait for the $found_kid.age $found_kid.title to approach you. It 
+takes a few minutes. But $found_kid.GenPronoun finally approaches you.
+<<run Player.removeItem("Candy")>>
+Hi, my name's $found_kid.name and I was wondering if perhaps I can have that Candybar? You smile 
+and say, Unfortunately $found_kid.name this is all I have on me. BUT, you see that house down the
+road? You turn and point to your house. Yeah? says the $found_kid.age yo $found_kid.title.
+Well, that's my house and I have a 30 lb. Bag Of Candy downstairs. If you follow me back. You
+can help yourself. (<<- Player.has('Candy') ? Player.getInventory().get('Candy').count : 'No'>> pieces left)
+
+
+OK! says the $found_kid.title with SURPRISING Enthusiasm.
+The $found_kid.age yo $found_kid.title follows you closely. It takes 6 minutes to reach 
+your house.
+<<addMinutes 6>>
+
+You and the $found_kid.age yo enter your house. You and $found_kid.pronoun then head into the basement. 
+As soon as $found_kid.name realizes what's going on $found_kid.GenPronoun tries to escape but you
+quickly grab $found_kid.pronoun and chain him to the wall.
+
+<<keyOption "Head Back Upstairs" house 🚪>>

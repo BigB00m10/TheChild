@@ -125,14 +125,23 @@ class Person extends Npc {
     person.name = (person.gender != "male" ? femaleNames : maleNames).random();
     person.skin = genGen.skins.random();
     person.hairColor = [
-      "black",
-      "dark brown",
-      "brown",
-      "light brown",
-      "dirty blonde",
-      "blonde",
-      "red",
-      "auburn",
+      "Black",
+      "Dark Brown",
+      "Brown",
+      "Light Brown",
+      "Dirty Blonde",
+      "Blonde",
+      "Red",
+      "Auburn",
+      "Midnight Blue",
+      "Rainbow",
+      "Pale Pink",
+      "Hot Pink",
+      "Burgundy",
+      "Royal Purple",
+      "Violet",
+      "Indigo",
+      "Blue",
     ].random();
     person.hairLength =
       person.age == 0
@@ -140,7 +149,7 @@ class Person extends Npc {
         : person.age == 1
         ? ["short", "medium"].random()
         : ["short", "medium", "long"].random();
-    person.hairStyle = ["curly", "wavey", "straight"].random();
+    person.hairStyle = ["Curly", "Wavey", "Straight", "Emo Bangs", "Fauxhawkian", "Front Spikes", "Wavy Side Part", "Asymmetrical"].random();
     person.eyeColor = ["green", "blue", "brown", "hazel"].random();
     return person;
   }

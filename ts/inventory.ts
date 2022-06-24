@@ -114,18 +114,18 @@ class OnlineStore {
     }),
     new Product({
       name: "Candy",
-      description: "Most people like these. Kids, specially<<emoji 🤭>>.",
-      price: 0,
+      description: "Most people like these. Kids, especially<<emoji 🤭>>.",
+      price: 5,
       tags: new Set(["player", "lure", "bribery", "capture", "food"]),
-      available: 1,
+      available: 5,
       soldOut: true, //Hidden product, for now
     }),
     new Product({
       name: "Sleeping pills",
-      description: "Sweet dreams are made of this<<emoji 💤>>.",
-      price: 0,
+      description: "Sweet dreams are made of these.<<emoji 💤>>.",
+      price: 12,
       tags: new Set(["player", "capture", "medicine"]),
-      available: 1,
+      available: 20,
       soldOut: true, //Hidden product, for now
     }),
   ];

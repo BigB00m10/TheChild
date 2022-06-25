@@ -83,7 +83,8 @@ $(document).on(":passageinit", () => {
           });
       }
       if (variables.settings.anal == undefined) variables.settings.anal = true;
-      if (variables.settings.slaveSelling == undefined) variables.settings.slaveSelling = true;
+      if (variables.settings.slaveSelling == undefined)
+        variables.settings.slaveSelling = true;
       if (variables.achievements == undefined) variables.achievements = [];
       let onlineStore = variables.onlineStore as OnlineStore;
       if (!onlineStore.version || onlineStore.version < 2) {
@@ -97,6 +98,10 @@ $(document).on(":passageinit", () => {
           window.OnlineStore.products[2].description;
         if (onlineStore.products[1].name == "Matress")
           onlineStore.products[1] = window.OnlineStore.products[1];
+      }
+      if (onlineStore.version < 3) {
+        onlineStore.products[2] = window.OnlineStore.products[2];
+        onlineStore.version = 3;
       }
     });
   }

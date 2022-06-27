@@ -30,10 +30,11 @@
 <<if !Player.hasAchievement("capturedSlave") && $slaves.length>>\
     <<set $achievements.push("capturedSlave")>>\
     You actually did it!! Now you have a personal $found_kid.age year old slave locked on your basement and no one knows about it!!
-    You could do anything you wanted to $found_kid.genPronoun and no one would stop you <<emoji 🤤>>.
+    You could do anything you wanted to $found_kid.genPronoun and no one would stop you<<emoji 🤤>>.
 <<else>>\
     You are currently in your basement.
 <</if>>\
+
 <<unlessEmergency>>\
     <<set _slaves = Basement.getDemandingSlaves()>>\
     <<set _demandIndex to 0>>\

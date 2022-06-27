@@ -82,7 +82,7 @@ You cover $found_kid.possessive body in a blanket and sneak up back to your home
 <<set $found_kid.status to "slave"; $slaves.push($found_kid)>>\
 <<addMinutes 3>>\
 You sit on the park bench with a Candy Bar and wait for the $found_kid.age $found_kid.title to approach you. It 
-takes a few minutes. But $found_kid.GenPronoun finally approaches you.
+takes a few minutes. But $found_kid.genPronoun finally approaches you.
 <<run Player.removeItem("Candy")>>
 Hi, my name's $found_kid.name and I was wondering if perhaps I can have that Candybar? You smile 
 and say, Unfortunately $found_kid.name this is all I have on me. BUT, you see that house down the
@@ -98,7 +98,7 @@ your house.
 
 
 You and the $found_kid.age yo enter your house. You and $found_kid.pronoun then head into the basement. 
-As soon as $found_kid.name realizes what's going on $found_kid.GenPronoun tries to escape but you
-quickly grab $found_kid.pronoun and chain him to the wall.
+As soon as $found_kid.name realizes what's going on $found_kid.genPronoun tries to escape but you
+quickly grab and chain $found_kid.pronoun to the wall.
 
 <<keyOption Continue basement ▶>>

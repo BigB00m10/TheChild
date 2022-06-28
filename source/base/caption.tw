@@ -24,7 +24,7 @@ Energy:
     <</dialog>>
 <</link>>
 <<link "⚙ Settings">>
-    <<dialog Settings>>
+    <<dialog Settings>>\
         <label class="toggle-button">\
             <input id="toggleEmoji" type="checkbox" class="macro-checkbox"><span>Show emojis</span>\
         </label>\
@@ -34,27 +34,45 @@ Energy:
         <label class="toggle-button">\
             <input id="toggleSlaveSell" type="checkbox" class="macro-checkbox"><span>Slave selling</span>\
         </label>\
-        <h3 style="color:yellow">Child generator</h3>\
-        Female percentage:\
-        <div class="slidecontainer">\
-            <div style="display:inline-block"><input type="range" min="0" max="100" value="50" class="slider" id="femalePercentSlider"></div>\
-            <div style="display:inline-block;position: relative;top: -11px;">\
-            <input id="femalePercentDisplay" @value="$settings.childGeneration.femalePercentage" style="width: 1.7em;border: 0;pointer-events: none;" readonly> %</div>\
+        <div class="row">\
+            <div class="one-half column">\
+                <h3 style="color:yellow">Child generator</h3>\
+                Female percentage:\
+                <div class="slidecontainer">\
+                    <div style="display:inline-block"><input type="range" min="0" max="100" value="50" class="slider" id="femalePercentSlider"></div>\
+                    <div style="display:inline-block;position: relative;top: -11px;">\
+                    <input id="femalePercentDisplay" @value="$settings.childGeneration.femalePercentage" style="width: 1.7em;border: 0;pointer-events: none;" readonly> %</div>\
+                </div>\
+                Females:
+                <label>From<input type="number" min="0" id="femaleAgeFrom" style="width:3em">years old</label>
+                <label>To &nbsp;<input type="number" id="femaleAgeTo" style="width:3em">years old</label>
+                Males:
+                <label>From<input type="number" min="0" id="maleAgeFrom" style="width:3em">years old</label>
+                <label>To &nbsp;<input type="number" id="maleAgeTo" style="width:3em">years old</label>
+                <<button "Hair Colors">>
+                    <<dialog>>
+                <</button>>
+                <<button "Hair Styles">>
+                <</button>>
+            </div>\
+            <div class="one-half column">\
+                <h3 style="color:yellow">Change job</h3>\
+                Current job: <<- $player.job ? $player.job.name.toUpperFirst() : "Unemployed">>
+                <<for _jobKey, _job range Jobs>>\
+                    <<set _jobDesc = _job.name.toUpperFirst() + ": Pay:¤" + _job.pay.toFixed(2) + "/day, Go time:" + _job.enterTime>>\
+                    <<print '<<button _jobDesc>><<run $player.job = ' + JSON.stringify(_job) + ';Engine.show()>><<dialog "Job changed">>Your job is now: ' + _job.name.toUpperFirst() + '.<</dialog>><</button>>'>>
+                <</for>>\
+                <<button '<<emoji 🚫>>None'>><<run $player.job = null;Engine.show()>><<dialog "Job changed">>You're now unemployed.<</dialog>><</button>>
+            </div>\
         </div>\
-        Females:
-        <label>From<input type="number" min="0" id="femaleAgeFrom" style="width:3em">years old</label>
-        <label>To &nbsp;<input type="number" id="femaleAgeTo" style="width:3em">years old</label>
-        Males:
-        <label>From<input type="number" min="0" id="maleAgeFrom" style="width:3em">years old</label>
-        <label>To &nbsp;<input type="number" id="maleAgeTo" style="width:3em">years old</label>
         <script>
             var $settings = SugarCube.State.variables.settings
             $('#toggleEmoji').change(function() {
-                var emoji = $('.emoji')
+                var $emoji = $('.emoji')
                 if(this.checked)
-                    emoji.show()
+                    $emoji.show()
                 else
-                    emoji.hide()
+                    $emoji.hide()
                 $settings.emoji = this.checked
             }).prop('checked', $settings.emoji)
             $('#toggleAnal').change(function() {
@@ -67,17 +85,37 @@ Energy:
                 $settings.childGeneration.femalePercentage = parseInt($(this).val())
                 $("#femalePercentDisplay").val($settings.childGeneration.femalePercentage)
             }).val($settings.childGeneration.femalePercentage)
-            $('#femaleAgeFrom').change(function(){
-                $settings.childGeneration.females.fromAge = parseInt($(this).val())
+            var $femaleAgeFrom = $('#femaleAgeFrom')
+            var $femaleAgeTo = $('#femaleAgeTo')
+            var $maleAgeFrom = $('#maleAgeFrom')
+            var $maleAgeTo = $('#maleAgeTo')
+            $femaleAgeFrom.change(function(){
+                var toValue = parseInt($femaleAgeTo.val())
+                var $this = $(this)
+                var value = Math.min(toValue, parseInt($this.val()))
+                $this.val(value)
+                $settings.childGeneration.females.fromAge = value
             }).val($settings.childGeneration.females.fromAge)
-            $('#femaleAgeTo').change(function(){
-                $settings.childGeneration.females.toAge = parseInt($(this).val())
+            $femaleAgeTo.change(function(){
+                var fromValue = parseInt($femaleAgeFrom.val())
+                var $this = $(this)
+                var value = Math.max(fromValue, parseInt($this.val()))
+                $this.val(value)
+                $settings.childGeneration.females.toAge = value
             }).val($settings.childGeneration.females.toAge)
-            $('#maleAgeFrom').change(function(){
-                $settings.childGeneration.males.fromAge = parseInt($(this).val())
+            $maleAgeFrom.change(function(){
+                var toValue = parseInt($maleAgeTo.val())
+                var $this = $(this)
+                var value = Math.min(toValue, parseInt($this.val()))
+                $this.val(value)
+                $settings.childGeneration.males.fromAge = value
             }).val($settings.childGeneration.males.fromAge)
-            $('#maleAgeTo').change(function(){
-                $settings.childGeneration.males.toAge = parseInt($(this).val())
+            $maleAgeTo.change(function(){
+                var fromValue = parseInt($maleAgeFrom.val())
+                var $this = $(this)
+                var value = Math.max(fromValue, parseInt($this.val()))
+                $this.val(value)
+                $settings.childGeneration.males.toAge = value
             }).val($settings.childGeneration.males.toAge)
         </script>
     <</dialog>>

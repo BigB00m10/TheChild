@@ -50,37 +50,29 @@ $(document).on(":passageinit", () => {
       let variables = save.state.history[stateIndex].variables;
       let slaves = variables.slaves as Person[];
       if (slaves && slaves.length) {
-        if (!slaves[0].GenPronoun)
-          slaves.forEach((slave: Person) => {
+        slaves.forEach((slave: Person) => {
+          if (!slave.GenPronoun) {
             slave.GenPronoun = slave.gender != "male" ? "She" : "He";
             slave.genPronoun = slave.gender != "male" ? "she" : "he";
             slave.Possessive = slave.gender != "male" ? "Her" : "His";
-          });
-        if (slaves[0].anusTraining == undefined)
-          slaves.forEach((slave: Person) => {
+          }
+          if (slave.anusTraining == undefined) {
             slave.anusTraining = 0;
             slave.pussyTraining = 0;
             slave.mouthTraining = 0;
-          });
-        if (slaves[0].hasPenis == undefined)
-          slaves.forEach((slave: Person) => {
+          }
+          if (slave.hasPenis == undefined) {
             slave.hasPenis = slave.gender == "male";
             slave.hasPussy = slave.gender == "female";
-          });
-        if (slaves[0].analVirgin == undefined)
-          slaves.forEach((slave: Person) => {
+          }
+          if (slave.analVirgin == undefined) {
             slave.analVirgin = true;
             slave.genitalVirgin = true;
             slave.mouthVirgin = true;
-          });
-        if (slaves[0].status == undefined)
-          slaves.forEach((slave: Person) => {
-            slave.status = "slave";
-          });
-        if (slaves[0].punishments == undefined)
-          slaves.forEach((slave: Person) => {
-            slave.punishments = [];
-          });
+          }
+          if (slave.status == undefined) slave.status = "slave";
+          if (slave.punishments == undefined) slave.punishments = [];
+        });
       }
       if (variables.settings.anal == undefined) variables.settings.anal = true;
       if (variables.settings.slaveSelling == undefined)
@@ -103,6 +95,12 @@ $(document).on(":passageinit", () => {
         onlineStore.products[2] = window.OnlineStore.products[2];
         onlineStore.version = 3;
       }
+      if (!variables.settings.childGeneration.hairStyles)
+        variables.settings.childGeneration.hairStyles =
+          window.PersonGeneration.hairStyles;
+      if (!variables.settings.childGeneration.eyeColors)
+        variables.settings.childGeneration.eyeColors =
+          window.PersonGeneration.eyeColors;
     });
   }
 });

@@ -13,7 +13,8 @@ The Child Trainer
     $settings = {
         emoji: true,
         anal: true,
-        childGeneration: PersonGeneration
+        childGeneration: PersonGeneration,
+        slaveSelling: true
     };
     $onlineStore = OnlineStore;
     $basement = Basement;

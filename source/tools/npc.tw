@@ -74,7 +74,8 @@
     <<npcInteraction>>
 <</unlessEmergency>>
 :: slaveApproach
-You approach $npc.age year old $npc.name.
+$npc.name is a $npc.age year old $npc.skin $npc.title with $npc.hairLength $npc.hairStyle $npc.hairColor hair and $npc.eyeColor eyes
+You approach $npc.pronoun.
 <<include npcStats>>
 <<if $npc.fear gt 90>>\
     $npc.GenPronoun walks back scared and wodering what you will do to $npc.pronoun.

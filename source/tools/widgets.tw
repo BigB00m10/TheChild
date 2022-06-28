@@ -26,7 +26,7 @@
         @@color:red;You REALLY need to sleep@@<br>
         <<keyAction 'Go to sleep' 😴>><<sleep>><</keyAction>>
     <<else>>
-        <<if !Now.isWeekend() && !$player.workedToday && Now.isEqualOrLaterThan($player.job.enterTime)>>
+        <<if $player.job && !Now.isWeekend() && !$player.workedToday && Now.isEqualOrLaterThan($player.job.enterTime)>>
             @@color:red;You need to go to work@@<br>
             <<workOption>>
         <<else>>
@@ -35,7 +35,7 @@
     <</if>>
 <</widget>>
 <<widget checkNpcVirgin>>
-    <<set _fieldName to _args[0]+'Virgin'>>
+    <<set _fieldName to _args[0] + 'Virgin'>>
     <<if $npc[_fieldName]>>
         <<set $npc[_fieldName] to false>>
         <<if $npc.index != undefined>>
@@ -44,8 +44,22 @@
         @@color:red;$npc.name just lost $npc.possessive _args[0] virginity!!!@@<br>
     <</if>>
 <</widget>>
+<<widget editSettingsList>>
+    <<set _list = eval(_args[0]).join('\n')>>
+    <<dialog _args[1]>>
+        <<textarea $newList _list>>
+        <<button "✅ Save">>
+            <<set eval(_args[0] + '=' + JSON.stringify($newList.explode('\n')))>>
+        <</button>>
+        <span id="escAct">
+            <<button "❌ (Esc) Cancel">>
+                <<run Dialog.close()>>
+            <</button>>
+        </span>
+    <</dialog>>
+<</widget>>
 <<widget npcAddressPlayer>><<- Player.getAddressing($npc)>><</widget>>
 :: workOption
-<<if !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
+<<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>
 <</if>>\

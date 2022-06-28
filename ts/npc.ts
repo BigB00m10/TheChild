@@ -124,24 +124,15 @@ class Person extends Npc {
       person.gender != "male" ? (person.age < 15 ? "cunny" : "pussy") : "penis";
     person.name = (person.gender != "male" ? femaleNames : maleNames).random();
     person.skin = genGen.skins.random();
-    person.hairColor = [
-      "black",
-      "dark brown",
-      "brown",
-      "light brown",
-      "dirty blonde",
-      "blonde",
-      "red",
-      "auburn",
-    ].random();
+    person.hairColor = gen.hairColors.random();
     person.hairLength =
       person.age == 0
         ? "short"
         : person.age == 1
         ? ["short", "medium"].random()
         : ["short", "medium", "long"].random();
-    person.hairStyle = ["curly", "wavey", "straight"].random();
-    person.eyeColor = ["green", "blue", "brown", "hazel"].random();
+    person.hairStyle = gen.hairStyles.random();
+    person.eyeColor = gen.eyeColors.random();
     return person;
   }
 }
@@ -162,6 +153,27 @@ class PersonGeneration {
     skins: ["tan", "brown", "black", "white", "pale", "olive"],
   };
   femalePercentage: number = 50;
+  hairStyles = ["curly", "wavey", "straight", "emo bangs", "fauxhawkian", "front spikes", "wavy side part", "asymmetrical"];
+  eyeColors = ["green", "blue", "brown", "hazel"];
+  hairColors = [
+    "black",
+    "dark brown",
+    "brown",
+    "light brown",
+    "dirty blonde",
+    "blonde",
+    "red",
+    "auburn",
+    "midnight blue",
+    "rainbow",
+    "pale pink",
+    "hot pink",
+    "burgundy",
+    "royal purple",
+    "violet",
+    "indigo",
+    "blue",
+  ];
   load(definition: Object | string) {
     if (typeof definition == "string") definition = JSON.parse(definition);
     Object.assign(this, definition);

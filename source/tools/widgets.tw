@@ -44,12 +44,13 @@
         @@color:red;$npc.name just lost $npc.possessive _args[0] virginity!!!@@<br>
     <</if>>
 <</widget>>
-<<widget editSettingsList>>
+<<widget userEditListVar>>
+    <<run console.info(_args)>>
     <<set _list = eval(_args[0]).join('\n')>>
     <<dialog _args[1]>>
-        <<textarea $newList _list>>
+        <<textarea "_newList" _list>><br>
         <<button "✅ Save">>
-            <<set eval(_args[0] + '=' + JSON.stringify($newList.explode('\n')))>>
+            <<run eval(_args[0] + '=' + JSON.stringify(_newList.split(/\r?\n/)));Dialog.close()>>
         <</button>>
         <span id="escAct">
             <<button "❌ (Esc) Cancel">>

@@ -49,11 +49,15 @@ Energy:
                 Males:
                 <label>From<input type="number" min="0" id="maleAgeFrom" style="width:3em">years old</label>
                 <label>To &nbsp;<input type="number" id="maleAgeTo" style="width:3em">years old</label>
-                <<button "Hair Colors">>
-                    <<dialog>>
-                <</button>>
-                <<button "Hair Styles">>
-                <</button>>
+                <<button "Hair colors">>\
+                    <<userEditListVar "$settings.childGeneration.hairColors" "Edit hair colors">>
+                <</button>>\
+                <<button "Hair styles">>\
+                    <<userEditListVar "$settings.childGeneration.hairStyles" "Edit hair styles">>
+                <</button>>\
+                <<button "Eye colors">>\
+                    <<userEditListVar "$settings.childGeneration.eyeColors" "Edit eye colors">>
+                <</button>>\
             </div>\
             <div class="one-half column">\
                 <h3 style="color:yellow">Change job</h3>\

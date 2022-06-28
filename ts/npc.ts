@@ -123,7 +123,7 @@ class Person extends Npc {
     person.genitals =
       person.gender != "male" ? (person.age < 15 ? "cunny" : "pussy") : "penis";
     person.name = (person.gender != "male" ? femaleNames : maleNames).random();
-    person.skin = genGen.skins.random();
+    person.skin = gen.skins.random();
     person.hairColor = gen.hairColors.random();
     person.hairLength =
       person.age == 0
@@ -139,21 +139,30 @@ class Person extends Npc {
 interface GenderGeneration {
   fromAge: number;
   toAge: number;
-  skins: string[];
 }
 class PersonGeneration {
   females: GenderGeneration = {
     fromAge: 1,
     toAge: 15,
-    skins: ["tan", "brown", "black", "white", "pale", "olive"],
   };
   males: GenderGeneration = {
     fromAge: 1,
     toAge: 15,
-    skins: ["tan", "brown", "black", "white", "pale", "olive"],
   };
   femalePercentage: number = 50;
-  hairStyles = ["curly", "wavey", "straight", "emo bangs", "fauxhawkian", "front spikes", "wavy side part", "asymmetrical"];
+  hairStyles = [
+    "curly",
+    "wavey",
+    "straight",
+    "emo bangs",
+    "fauxhawkian",
+    "front spikes",
+    "wavy side part",
+    "asymmetrical",
+    "ponytail",
+    "twin tails",
+    "pig tails"
+  ];
   eyeColors = ["green", "blue", "brown", "hazel"];
   hairColors = [
     "black",
@@ -174,6 +183,7 @@ class PersonGeneration {
     "indigo",
     "blue",
   ];
+  skins = ["tan", "brown", "black", "white", "pale", "olive"];
   load(definition: Object | string) {
     if (typeof definition == "string") definition = JSON.parse(definition);
     Object.assign(this, definition);

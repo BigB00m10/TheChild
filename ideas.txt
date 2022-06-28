@@ -9,7 +9,6 @@ Finish character creator
 Finish first day intro
 Finish slave generator
 Add activities around the house and town
-Implement slave-training
 Implement job events/details
 Implement post-slave-training options
 Implement black market
@@ -259,3 +258,5 @@ You could also give these girls some random unique dialog first time see a dick 
 
 If you plan to add pregnancy it would be an easy ways to make twins, triplets, ... yourself. Either by drugs, chance or hormonal overdose ^^
 But somehow you need a workaround for lesbians...
+Double sided dildo
+ collars and dog tags you can write custom names on

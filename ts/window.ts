@@ -104,6 +104,9 @@ $(document).on(":passageinit", () => {
       if (!variables.settings.childGeneration.hairColors)
         variables.settings.childGeneration.hairColors =
           window.PersonGeneration.hairColors;
+      if (!variables.settings.childGeneration.skins)
+        variables.settings.childGeneration.skins =
+          window.PersonGeneration.skins;
     });
   }
 });

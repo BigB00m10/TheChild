@@ -126,6 +126,13 @@ class OnlineStore {
       available: 20,
       soldOut: true, //Hidden product, for now
     }),
+    new Product({
+      name: "Dildo",
+      description: "Stimulating toy to play until complete satisfaction.",
+      price: 20,
+      tags: new Set(["player", "sex", "toy"]),
+      available: 1,
+    }),
   ];
   bought: Inventory = new Inventory();
   get(name: string): Product {

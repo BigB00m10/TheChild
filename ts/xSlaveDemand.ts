@@ -32,7 +32,7 @@ const punishment: NpcInteraction = {
     },
     scold: {
       optionText: "🗯 Scold $npc.pronoun.",
-      contents: "You scold $npc.name for demanding too much.",
+      contents: "You scold $npc.name for $punishReason.",
       minutesCost: 2,
       npcStats: ["obedience+5"],
       showNpcStats: true,
@@ -72,7 +72,7 @@ const punishment: NpcInteraction = {
 window.Interactions["slaveDemandHunger"] = {
   contents: `$npc.name is asking for food.
   <<run
-    let name = 'hunger'
+    var name = 'hunger'
     Meter.del(name);
     Meter.add(name, {
         label: name.beautifyStat() + ':' + $npc[name],
@@ -86,6 +86,7 @@ window.Interactions["slaveDemandHunger"] = {
         label: name.beautifyStat() + ':' + $npc[name],
         height: '20px',
     }, $npc[name] / 100);
+    $punishReason = 'demanding too much';
   >>\
   <<showmeter hunger>>\
   <<showmeter obedience>>\

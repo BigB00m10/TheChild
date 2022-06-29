@@ -58,8 +58,8 @@ Energy:
                 <<button "Eye colors">>\
                     <<userEditListVar "$settings.childGeneration.eyeColors" "Edit eye colors">>
                 <</button>>\
-                <<button "Skin colors">>\
-                    <<userEditListVar "$settings.childGeneration.skinColors" "Edit skin colors">>
+                <<button "Skins">>\
+                    <<userEditListVar "$settings.childGeneration.skins" "Edit skins">>
                 <</button>>\
             </div>\
             <div class="one-half column">\

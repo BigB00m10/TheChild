@@ -4,24 +4,27 @@
 !!!<<- Now.getTime()>>
 ----
 $player.name
-<<if $cheat == 1>>
-    <<link "+10k">>
-        <<set $player.cash= ($player.cash+10000)>>
-    <</link>>\
-    <<link "+100k">>
-        <<set $player.cash= ($player.cash+100000)>>
-    <</link>>\
+<<if $cheat>>\
+    <<link "+10k">>\
+        <<set $player.cash += 10000;Engine.show()>>
+    <</link>> \
+    <<link "+100k">>\
+        <<set $player.cash += 100000;Engine.show()>>
+    <</link>> \
+<</if>>\
     Cash: ¤<<- $player.cash.toFixed(2)>>
-    <<link "+">>
-        <<set $player.energy=100>> 
-    <</link>>\
-    Energy:
-    <<showmeter playerEnergy `$player.energy / 100`>>
-<<else>>
-    Cash: ¤<<- $player.cash.toFixed(2)>>
-    Energy:
-    <<showmeter playerEnergy `$player.energy / 100`>>
-<</if>>
+<<if $cheat>>\
+    <<link "+">>\
+        <<set $player.energy = 100;Engine.show()>> 
+    <</link>> \
+<</if>>\
+Energy:<<if $cheat>>\
+<<set _infiniteEnergyText = "Make " + ($settings.infiniteEnergy ? "Finite" : "Infinite")>>\
+ <span id="infiniteEnergy"><<link _infiniteEnergyText>><<set 
+    $settings.infiniteEnergy = ~$settings.infiniteEnergy;
+    $('#infiniteEnergy a').html("Make " + ($settings.infiniteEnergy ? "Finite" : "Infinite"));
+>><</link>></span><</if>>
+<<showmeter playerEnergy `$player.energy / 100`>>
 
 :: StoryMenu
 <<link "👨‍👩‍👧‍👦 Character stats">>
@@ -85,7 +88,16 @@ $player.name
                     <<set _jobDesc = _job.name.toUpperFirst() + ": Pay:¤" + _job.pay.toFixed(2) + "/day, Go time:" + _job.enterTime>>\
                     <<print '<<button _jobDesc>><<run $player.job = ' + JSON.stringify(_job) + ';Engine.show()>><<dialog "Job changed">>Your job is now: ' + _job.name.toUpperFirst() + '.<</dialog>><</button>>'>>
                 <</for>>\
-                <<button '<<emoji 🚫>>None'>><<run $player.job = null;Engine.show()>><<dialog "Job changed">>You're now unemployed.<</dialog>><</button>>
+                <<button '<<emoji 🚫>>None'>><<run $player.job = null;Engine.show()>><<dialog "Job changed">>You're now unemployed.<</dialog>><</button>>\
+                <h3 style="color:yellow">Cheats</h3>\
+                <<set _cheatButtonText = ($cheat ? "Disable" : "Enable") + " Cheats">>\
+                <span id='cheatsButton'><<button _cheatButtonText>>
+                    <<run 
+                        $cheat = ~$cheat;/*Inverse $cheat value. Anything but true becomes true and true becomes false*/
+                        Engine.show();
+                        $('#cheatsButton button').text(($cheat ? "Disable" : "Enable") + " Cheats");
+                    >>
+                <</button>></span>\
             </div>\
         </div>\
         <script>
@@ -141,14 +153,5 @@ $player.name
                 $settings.childGeneration.males.toAge = value
             }).val($settings.childGeneration.males.toAge)
         </script>
-        <<if $cheat == 0 || $cheat == null>>
-            <<button "Enable Cheats">>
-                <<set $cheat = 1>>
-            <</button>>\
-        <<else>>
-            <<button "Disable Cheats">>
-                <<set $cheat = 0>>
-            <</button>>\
-        <</if>>
     <</dialog>>
 <</link>>

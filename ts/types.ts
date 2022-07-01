@@ -36,7 +36,7 @@ class Player {
   }
   manageEnergy(hoursPassed: number) {
     let player = Variables().player as Player;
-    let multiplier = player.sleeping ? 1 : -0.46;
+    let multiplier = (player.sleeping || Variables().settings.infiniteEnergy) ? 1 : -0.46;
     let increment = Math.round((hoursPassed / 8) * 100 * multiplier);
     if (increment == 0) increment = multiplier < 0 ? -1 : 1;
     player.energy = (player.energy + increment).clamp(0, 100);

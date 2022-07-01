@@ -768,7 +768,7 @@ window.Interactions["slave"] = {
                   showNpcStats: true,
                   next: {
                     slow: {
-                      optionText: "🦥 Fuck $npc.pronoun slowly with the dildo.",
+                      optionText: "🦥 Fuck $npc.pronoun bottom slowly with the dildo.",
                       contents: `You try your best in slowly going in and out of $npc.name's $npc.age year old rectum.
                         <<if $npc.anusTraining lt 20>>\
                           $npc.GenPronoun keeps crying<<if $npc.age gt 0>> and pushing your hand while saying "Stop! It hurts!!"<</if>>.<<emoji 😢>>
@@ -840,6 +840,55 @@ window.Interactions["slave"] = {
                           "+aroused",
                           "fear-5",
                           "hunger+5",
+                        ];
+                        if (
+                          (npc.lust < 30 && npc.love >= 75) ||
+                          (npc.lust >= 30 && npc.love >= 50)
+                        )
+                          stats.push("love+5");
+                        return stats;
+                      },
+                      showNpcStats: true,
+                      next: () => afterStrip().dildoAnus.next.ram.next,
+                    },
+                    gentleRubSlaveGen: {
+                      optionText: "👋 Gently rub $npc.name's $npc.genitals.",
+                      minutesCost: 5,
+                      contents: `You slowly rub $npc.name's $npc.genitals while keeping the dildo in her bottom, moving only slowy.
+                        <<if $npc.hasPussy>>\
+                          @@color:deeppink;$npc.Possessive cunny gets wetter@@\
+                        <</if>>\
+                        <<if $npc.hasPenis>>\
+                          @@color:deeppink;$npc.GenPronoun gets harder@@\
+                        <</if>>\
+                        <<if $npc.anusTraining lt 20>>\
+                          despite the pain in $npc.pronoun bottom.  $npc.GenPronoun keeps crying the pleasure and pain is tormenting $npc.pronoun.<<emoji 😢>>
+                        <<elseif $npc.anusTraining lt 40>>\
+                          even though $npc.name seems to have a hard time taking the dildo.
+                        <<elseif $npc.lust lt 30>>\
+                          and $npc.pronoun body even starts to enjoy the feel of the dildo in $npc.pronoun bottom.  $npc.GenPronoun is very confused and conflicted by the mix of feelings. \
+                          <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you move the dildo in and out of $npc.possessive ass.<<emoji ♥>><</if>>
+                        <<else>>\
+                          and $npc.name is visibly enjoying the anal dildo as you rub $npc.pronoun. You can hear $npc.pronoun loudly moaning:
+                          "Ah!...Ah!...<<if $npc.age gt 4>> Yes... Please don't stop!!<</if>>\
+                          <<if $npc.love gte 50>>I love you <<npcAddressPlayer>><<emoji ♥>>.<</if>>"\
+                        <</if>>`,
+                      npcStats: (npc) => {
+                        if (npc.anusTraining < 20)
+                          return [
+                            "fear+5",
+                            "lust+10%",
+                            "+aroused",
+                            "freedomWish+5",
+                            "anusTraining%+10",
+                          ];
+                        if (npc.anusTraining < 40)
+                          return ["fear+5", "lust+10%","+aroused","anusTraining%+10"];
+                        let stats = [
+                          "anusTraining%+40",
+                          "lust+10%",
+                          "+aroused",
+                          "fear-5",
                         ];
                         if (
                           (npc.lust < 30 && npc.love >= 75) ||

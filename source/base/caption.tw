@@ -34,6 +34,9 @@ Energy:
         <label class="toggle-button">\
             <input id="toggleSlaveSell" type="checkbox" class="macro-checkbox"><span>Slave selling</span>\
         </label>\
+        <<button "Enable Cheats">>
+            <<set $cheat = 1>>
+        <</button>>\
         <div class="row">\
             <div class="one-half column">\
                 <h3 style="color:yellow">Child generator</h3>\
@@ -127,16 +130,19 @@ Energy:
         </script>
     <</dialog>>
 <</link>>
-<<link "Cheat">>
-    <<dialog "Cheat Menu">>
-        <<button "Energy set to 100">>
-            <<set $player.energy=100>> 
-        <</button>>
-        <<button "Add ¤10000">>
-            <<set $player.cash= ($player.cash+10000)>>
-        <</button>>
-        <<button "Add ¤100000">>
-            <<set $player.cash= ($player.cash+100000)>>
-        <</button>>
-    <</dialog>>
-<</link>>
+<<if $cheat == 1>>
+    <<link "Cheat">>
+        <<dialog "Cheat Menu">>
+            <<button "Energy set to 100">>
+                <<set $player.energy=100>> 
+            <</button>>
+            <<button "Add ¤10000">>
+                <<set $player.cash= ($player.cash+10000)>>
+            <</button>>
+            <<button "Add ¤100000">>
+                <<set $player.cash= ($player.cash+100000)>>
+            <</button>>
+        <</dialog>>
+    <</link>>
+else
+<</if>>

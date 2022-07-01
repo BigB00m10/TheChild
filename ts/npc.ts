@@ -1,4 +1,4 @@
-type NpcStatus = "citizen" | "slave" | "accomplice" | "pet";
+type NpcStatus = "citizen" | "slave" | "accomplice" | "pet" | "tool" | "lover";
 interface NpcValue {
   obedience: number;
   obedienceRatio: string;
@@ -45,6 +45,7 @@ abstract class Npc {
   index: number | false = false;
   achievements: string[] = [];
   punishments: string[] = [];
+  location: string = "unknown";
   getValue(): NpcValue {
     let npc = Variables().npc as Npc;
     const maxNonVirgin = 1500;
@@ -65,16 +66,16 @@ abstract class Npc {
           mouthRatio: "(13%)",
         }
       : {
-          obedience: calcValue(npc.obedience, (0.27 * npc.obedience) / 100),
-          obedienceRatio: "(31%)",
-          lust: calcValue(npc.lust, 0.3),
-          lustRatio: "(29%)",
+          obedience: calcValue(npc.obedience, (0.3 * npc.obedience) / 100),
+          obedienceRatio: "(30%)",
+          lust: calcValue(npc.lust, 0.27),
+          lustRatio: "(27%)",
           pussy: 0,
           pussyRatio: "(0%)",
           anus: calcValue(npc.anusTraining, 0.23),
-          anusRatio: "(21%)",
+          anusRatio: "(23%)",
           mouth: calcValue(npc.mouthTraining, 0.2),
-          mouthRatio: "(19%)",
+          mouthRatio: "(20%)",
         };
     value.total =
       value.obedience + value.lust + value.pussy + value.anus + value.mouth;
@@ -131,7 +132,10 @@ class Person extends Npc {
         : person.age == 1
         ? ["short", "medium"].random()
         : ["short", "medium", "long"].random();
-    person.hairStyle = gen.hairStyles.random();
+    let hairStyles = gen.hairStyles;
+    if (person.gender == "male")
+      hairStyles.delete("pig tails", "twin tails", "ponytail");
+    person.hairStyle = hairStyles.random();
     person.eyeColor = gen.eyeColors.random();
     return person;
   }
@@ -161,7 +165,7 @@ class PersonGeneration {
     "asymmetrical",
     "ponytail",
     "twin tails",
-    "pig tails"
+    "pig tails",
   ];
   eyeColors = ["green", "blue", "brown", "hazel"];
   hairColors = [

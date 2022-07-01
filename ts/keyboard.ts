@@ -20,7 +20,7 @@ Macro.add("keyOption", {
       this.args.length > 3 && this.args[3] == "btn" ? "button" : "link";
     $wrapper
       .wiki(
-        `<<${widget} "<<emoji ${emoji}>>(${keyOptionIndex + 1}) ${
+        `<<${widget} "<<emoji ${emoji}>>(${(keyOptionIndex + 1) % 10}) ${
           this.args[0]
         }" "${this.args[1]}">><</${widget}>>`
       )

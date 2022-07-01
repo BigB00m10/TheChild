@@ -16,6 +16,7 @@ The Child Trainer
         childGeneration: PersonGeneration,
         slaveSelling: true
     };
+    $cheat = 0
     $onlineStore = OnlineStore;
     $basement = Basement;
     $slaves = [];

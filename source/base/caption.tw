@@ -4,9 +4,25 @@
 !!!<<- Now.getTime()>>
 ----
 $player.name
-Cash: ¤<<- $player.cash.toFixed(2)>>
-Energy:
-<<showmeter playerEnergy `$player.energy / 100`>>
+<<if $cheat == 1>>
+    <<link "+10k">>
+        <<set $player.cash= ($player.cash+10000)>>
+    <</link>>\
+    <<link "+100k">>
+        <<set $player.cash= ($player.cash+100000)>>
+    <</link>>\
+    Cash: ¤<<- $player.cash.toFixed(2)>>
+    <<link "+">>
+        <<set $player.energy=100>> 
+    <</link>>\
+    Energy:
+    <<showmeter playerEnergy `$player.energy / 100`>>
+<<else>>
+    Cash: ¤<<- $player.cash.toFixed(2)>>
+    Energy:
+    <<showmeter playerEnergy `$player.energy / 100`>>
+<</if>>
+
 :: StoryMenu
 <<link "👨‍👩‍👧‍👦 Character stats">>
     <<dialog "Character stats">>
@@ -125,18 +141,14 @@ Energy:
                 $settings.childGeneration.males.toAge = value
             }).val($settings.childGeneration.males.toAge)
         </script>
-    <</dialog>>
-<</link>>
-<<link "Cheat">>
-    <<dialog "Cheat Menu">>
-        <<button "Energy set to 100">>
-            <<set $player.energy=100>> 
-        <</button>>
-        <<button "Add ¤10000">>
-            <<set $player.cash= ($player.cash+10000)>>
-        <</button>>
-        <<button "Add ¤100000">>
-            <<set $player.cash= ($player.cash+100000)>>
-        <</button>>
+        <<if $cheat == 0 || $cheat == null>>
+            <<button "Enable Cheats">>
+                <<set $cheat = 1>>
+            <</button>>\
+        <<else>>
+            <<button "Disable Cheats">>
+                <<set $cheat = 0>>
+            <</button>>\
+        <</if>>
     <</dialog>>
 <</link>>

@@ -17,8 +17,7 @@ $player.name
     <</link>>\
     Energy:
     <<showmeter playerEnergy `$player.energy / 100`>>
-<</if>>\
-<<if $cheat == 0>>
+<<else>>
     Cash: ¤<<- $player.cash.toFixed(2)>>
     Energy:
     <<showmeter playerEnergy `$player.energy / 100`>>
@@ -142,7 +141,7 @@ $player.name
                 $settings.childGeneration.males.toAge = value
             }).val($settings.childGeneration.males.toAge)
         </script>
-        <<if $cheat == 0>>
+        <<if $cheat == 0 || $cheat == null>>
             <<button "Enable Cheats">>
                 <<set $cheat = 1>>
             <</button>>\

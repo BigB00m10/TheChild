@@ -34,9 +34,6 @@ Energy:
         <label class="toggle-button">\
             <input id="toggleSlaveSell" type="checkbox" class="macro-checkbox"><span>Slave selling</span>\
         </label>\
-        <<button "Enable Cheats">>
-            <<set $cheat = 1>>
-        <</button>>\
         <div class="row">\
             <div class="one-half column">\
                 <h3 style="color:yellow">Child generator</h3>\
@@ -128,6 +125,15 @@ Energy:
                 $settings.childGeneration.males.toAge = value
             }).val($settings.childGeneration.males.toAge)
         </script>
+        <<if $cheat == 0>>
+            <<button "Enable Cheats">>
+                <<set $cheat = 1>>
+            <</button>>\
+        <<else>>
+            <<button "Disable Cheats">>
+                <<set $cheat = 0>>
+            <</button>>\
+        <</if>>
     <</dialog>>
 <</link>>
 <<if $cheat == 1>>

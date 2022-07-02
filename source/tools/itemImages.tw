@@ -1,4 +1,4 @@
-:: itemImages [widget nobr]
+:: itemImages [widget nobr] {"position":"1250,0"}
 <<widget itemImage>>/*Max size: 212x183*/
   <<set _base64 = false>>
   <<switch _args[0]>>

@@ -248,7 +248,7 @@ Macro.add("npcInteraction", {
           emoji = stopOptionText.split(" ")[0];
           stopOptionText = stopOptionText.slice(emoji.length + 1);
         }
-        result += `\n<<keyOption '${stopOptionText}' $returnPassage ${emoji}>>`;
+        result += `\n<<keyOption [[${stopOptionText}|$returnPassage]] ${emoji}>>`;
       }
     }
     $(document.createElement("span")).wiki(result).appendTo(this.output);

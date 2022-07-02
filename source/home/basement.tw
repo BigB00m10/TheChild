@@ -1,4 +1,4 @@
-:: slaveDemand
+:: slaveDemand {"position":"375,0"}
 <<if _slaves[_demandIndex]>>\
     <span id="slaveDemand">\
         <<set _slave to _slaves[_demandIndex]>>
@@ -25,7 +25,7 @@
         </span>
     </span>\
 <</if>>\
-:: basement
+:: basement {"position":"250,625"}
 <<scenery basement>>
 <<if !Player.hasAchievement("capturedSlave") && $slaves.length>>\
     <<set $achievements.push("capturedSlave")>>\
@@ -61,7 +61,7 @@
             <</if>>\
         </div>\
     </div>
-    /*<<keyOption "Go back upstairs" main 🚪>>*/\
+    /*<<keyOption [[Go back upstairs|main]] 🚪>>*/\
     <<keyAction "Go back upstairs" 🚪>>
         <<run
             $slaves.forEach(slave => {
@@ -71,11 +71,11 @@
         <<goto main>>
     <</keyAction>>
     <<if Player.has("pizza")>>\
-        <<keyOption "Give pizza to all hungry slaves" giveSlavesPizza 🍕>>
+        <<keyOption [[Give pizza to all hungry slaves|giveSlavesPizza]] 🍕>>
     <</if>>\
     <<include workOption>>\
 <</unlessEmergency>>\
-:: giveSlavesPizza
+:: giveSlavesPizza {"position":"100,675"}
 <<scenery basement>>
 You lay down the pizza<<if Player.has("pizza", 2)>>s<</if>> and all the slaves get around it to eat.
 <<set
@@ -89,4 +89,4 @@ You lay down the pizza<<if Player.has("pizza", 2)>>s<</if>> and all the slaves g
     inventory.removeByName("pizza", pizzaCount);
 >>\
 
-<<keyOption Return basement 🔙>>
+<<keyOption [[Return|basement]] 🔙>>

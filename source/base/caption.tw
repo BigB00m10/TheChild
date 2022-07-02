@@ -1,4 +1,4 @@
-:: StoryCaption
+:: StoryCaption {"position":"250,0"}
 ----
 !<<- Now.getWeekDay()>>
 !!!<<- Now.getTime()>>
@@ -15,12 +15,12 @@ $player.name
     Cash: ¤<<- $player.cash.toFixed(2)>>
 <<if $cheat>>\
     <<link "+">>\
-        <<set $player.energy = 100;Engine.show()>> 
+        <<set $player.energy = 100;Engine.show()>>
     <</link>> \
 <</if>>\
 Energy:<<if $cheat>>\
 <<set _infiniteEnergyText = "Make " + ($settings.infiniteEnergy ? "Finite" : "Infinite")>>\
- <span id="infiniteEnergy"><<link _infiniteEnergyText>><<set 
+ <span id="infiniteEnergy"><<link _infiniteEnergyText>><<set
     $settings.infiniteEnergy = ~$settings.infiniteEnergy;
     $('#infiniteEnergy a').html("Make " + ($settings.infiniteEnergy ? "Finite" : "Infinite"));
 >><</link>></span><</if>>
@@ -92,7 +92,7 @@ Energy:<<if $cheat>>\
                 <h3 style="color:yellow">Cheats</h3>\
                 <<set _cheatButtonText = ($cheat ? "Disable" : "Enable") + " Cheats">>\
                 <span id='cheatsButton'><<button _cheatButtonText>>
-                    <<run 
+                    <<run
                         $cheat = ~$cheat;/*Inverse $cheat value. Anything but true becomes true and true becomes false*/
                         Engine.show();
                         $('#cheatsButton button').text(($cheat ? "Disable" : "Enable") + " Cheats");

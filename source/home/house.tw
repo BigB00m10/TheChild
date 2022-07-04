@@ -1,4 +1,4 @@
-:: bed
+:: bed {"position":"700,825"}
 <<scenery bed>>
 <<if $player.sleeping>>\
 	As the sun reveals the world to a nice <<- Now.getWeekDay()>> morning, you climb out of bed, ready to start a new day. <<- either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
@@ -8,35 +8,35 @@
 <<if $player.sleeping && OnlineStore.pendingOrder()>>
     Someone is knocking at the front door!!
     Who might that be?
-    <<keyOption "Go check" receivePacket 🚪>>
+    <<keyOption [[Go check|receivePacket]] 🚪>>
 <<else>>
     <<unlessEmergency>>\
-        <<keyOption "Leave your room" main 🚪>>
-        <<keyOption "Watch porn" watchPorn 💗>>: 30min
-        <<keyOption "Shop online using your laptop" onlineStore 🛒>>
+        <<keyOption [[Leave your room|main]] 🚪>>
+        <<keyOption [[Watch porn|watchPorn]] 💗>>: 30min
+        <<keyOption [[Shop online using your laptop|onlineStore]] 🛒>>
         <<if !$player.job or $player.workedToday or Now.isWeekend()>>\
             <<keyAction Sleep 😴>><<sleep>><</keyAction>>
         <</if>>\
     <</unlessEmergency>>\
 <</if>>
 <<set $player.sleeping to false>>
-:: main
+:: main {"position":"700,650"}
 <<scenery mainRoom>>
 You are currently standing in the middle of the main room of your house.
-	
+
 ''Is there something you want to do in here?''
 <<unlessEmergency>>\
-    <<keyOption "Watch TV" watchTv 📺>>: 30min
+    <<keyOption [[Watch TV|watchTv]] 📺>>: 30min
     <<include workOption>>\
-    <<keyOption "Go outside" home 🚪>>
-    <<keyOption "The Basement" basement 🔒>>
-    <<keyOption "Your Bedroom" bed 🛌>>
+    <<keyOption [[Go outside|home]] 🚪>>
+    <<keyOption [[The Basement|basement]] 🔒>>
+    <<keyOption [[Your Bedroom|bed]] 🛌>>
 <</unlessEmergency>>\
-:: watchTv
+:: watchTv {"position":"875,825"}
 <<addMinutes 30>>\
 @@color:yellow;You spend the next half hour skimming through channels and shows.@@
 <<include main>>\
-:: watchPorn
+:: watchPorn {"position":"600,1000"}
 <<addMinutes 30>>\
 @@color:yellow;You spend the next half hour skimming through porn and jerking off.@@
 <<include bed>>\

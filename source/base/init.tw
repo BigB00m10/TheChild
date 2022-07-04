@@ -1,10 +1,10 @@
-:: StoryData
+:: StoryData {"position":"500,0"}
 {
     "ifid": "A1AB4B27-D446-4DA4-9B25-47E8F99367E8",
     "format":"SugarCube",
     "format-version":"2.36.1"
 }
-:: StoryTitle
+:: StoryTitle {"position":"125,0"}
 The Child Trainer
 :: StoryInit
 <<set

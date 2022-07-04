@@ -1,4 +1,4 @@
-:: npcStats [nobr]
+:: npcStats [nobr] {"position":"750,0"}
 <<run
     ['love', 'obedience', 'lust', 'pussyTraining', 'anusTraining', 'mouthTraining'].forEach(function(name) {
         Meter.del(name);
@@ -68,12 +68,12 @@
         </div>
     <</if>>
 </div>
-:: npcInteraction [nobr]
+:: npcInteraction [nobr] {"position":"625,0"}
 <<scenery $scenery>>
 <<unlessEmergency>>
     <<npcInteraction>>
 <</unlessEmergency>>
-:: slaveApproach
+:: slaveApproach {"position":"1000,0"}
 $npc.name is a $npc.age year old $npc.skin $npc.title with $npc.hairLength $npc.hairStyle $npc.hairColor hair and $npc.eyeColor eyes
 You approach $npc.pronoun.
 <<include npcStats>>

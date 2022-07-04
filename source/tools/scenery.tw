@@ -1,4 +1,4 @@
-:: scenery [widget]
+:: scenery [widget] {"position":"1125,0"}
 <<widget scenery>>\
     <<nobr>>\
         <<set _base64 to null;$scenery to _args[0]>>

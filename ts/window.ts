@@ -72,6 +72,7 @@ $(document).on(":passageinit", () => {
           }
           if (slave.status == undefined) slave.status = "slave";
           if (slave.punishments == undefined) slave.punishments = [];
+          if (slave.location == undefined) slave.location = "basement";
         });
       }
       if (variables.settings.anal == undefined) variables.settings.anal = true;
@@ -107,6 +108,8 @@ $(document).on(":passageinit", () => {
       if (!variables.settings.childGeneration.skins)
         variables.settings.childGeneration.skins =
           window.PersonGeneration.skins;
+      if (variables.player.home.spaces == undefined)
+        variables.player.home.spaces = Homes.smallUrban.spaces;
     });
   }
 });

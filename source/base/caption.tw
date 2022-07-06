@@ -44,6 +44,7 @@ Energy:<<if $cheat>>\
 <</link>>
 <<link "⚙ Settings">>
     <<dialog Settings>>\
+        <style>.addressing{width: 6em;min-width: 0 !important}</style>
         <label class="toggle-button">\
             <input id="toggleEmoji" type="checkbox" class="macro-checkbox"><span>Show emojis</span>\
         </label>\
@@ -89,19 +90,76 @@ Energy:<<if $cheat>>\
                     <<print '<<button _jobDesc>><<run $player.job = ' + JSON.stringify(_job) + ';Engine.show()>><<dialog "Job changed">>Your job is now: ' + _job.name.toUpperFirst() + '.<</dialog>><</button>>'>>
                 <</for>>\
                 <<button '<<emoji 🚫>>None'>><<run $player.job = null;Engine.show()>><<dialog "Job changed">>You're now unemployed.<</dialog>><</button>>\
-                <h3 style="color:yellow">Cheats</h3>\
-                <<set _cheatButtonText = ($cheat ? "Disable" : "Enable") + " Cheats">>\
-                <span id='cheatsButton'><<button _cheatButtonText>>
-                    <<run
-                        $cheat = ~$cheat;/*Inverse $cheat value. Anything but true becomes true and true becomes false*/
-                        Engine.show();
-                        $('#cheatsButton button').text(($cheat ? "Disable" : "Enable") + " Cheats");
-                    >>
-                <</button>></span>\
+                <div class="row">\
+                    <div class="nine columns">\
+                        <h3 style="color:yellow">Addressing</h3>\
+                        How should your kids call you? (leaving them blank reverts them to default value)
+                        Slaves: <input type="text" class="addressing" data-target="slave">
+                        Servants: <input type="text" class="addressing" data-target="servant">
+                        Lovers: <input type="text" class="addressing" data-target="lover">
+                        Your Sons/Daughters: <input type="text" class="addressing" data-target="offspring">
+                    </div>\
+                    <div class="three columns">\
+                        <h3 style="color:yellow">Cheats</h3>\
+                        <<set _cheatButtonText = ($cheat ? "Disable" : "Enable") + " Cheats">>\
+                        <span id='cheatsButton'><<button _cheatButtonText>>\
+                            <<run
+                                $cheat = ~$cheat;/*Inverse $cheat value. Anything but true becomes true and true becomes false*/
+                                Engine.show();
+                                $('#cheatsButton button').text(($cheat ? "Disable" : "Enable") + " Cheats");
+                            >>
+                        <</button>></span>\
+                    </div>\
+                </div>\
             </div>\
         </div>\
         <script>
-            var $settings = SugarCube.State.variables.settings
+            var $variables = SugarCube.State.variables
+            var $settings = $variables.settings
+            var defaultOffspringAddr = $variables.player.gender != 'male' ? 'mommy' : 'daddy'
+            var addrUpdateValue = function(element){
+                var addrDefault = $settings.addressing.slave ? $settings.addressing.slave : $variables.player.name
+                switch (element.dataset.target) {
+                    case 'slave':
+                        element.value = addrDefault
+                        break
+                    case 'servant':
+                        element.value = $settings.addressing.servant ? $settings.addressing.servant : addrDefault
+                        break
+                    case 'lover':
+                        element.value = $settings.addressing.lover ? $settings.addressing.lover : addrDefault
+                        break
+                    case 'offspring':
+                        element.value = $settings.addressing.offspring ? $settings.addressing.offspring : defaultOffspringAddr
+                        break
+                }
+            }
+            if($settings.addressing)
+                $('.addressing').each(function() {addrUpdateValue(this)})
+            else {
+                $('.addressing:not([data-target="offspring"])').val($variables.player.name)
+                $('.addressing[data-target="offspring"]').val(defaultOffspringAddr)
+            }
+            $('.addressing').on('input blur', function() {
+                var value = this.value.trim()
+                if(!$settings.addressing)
+                    $settings.addressing = {}
+                switch (this.dataset.target) {
+                    case 'slave':
+                        $settings.addressing.slave = value
+                        $('.addressing:not([data-target="offspring"]):not([data-target="slave"])').each(function() {addrUpdateValue(this)})
+                        break
+                    case 'servant':
+                        $settings.addressing.servant = value
+                        break
+                    case 'lover':
+                        $settings.addressing.lover = value
+                        break
+                    case 'offspring':
+                        $settings.addressing.offspring = value
+                        break
+                }
+            })
             $('#toggleEmoji').change(function() {
                 var $emoji = $('.emoji')
                 if(this.checked)
@@ -152,6 +210,6 @@ Energy:<<if $cheat>>\
                 $this.val(value)
                 $settings.childGeneration.males.toAge = value
             }).val($settings.childGeneration.males.toAge)
-        </script>
-    <</dialog>>
+        </script>\
+    <</dialog>>\
 <</link>>

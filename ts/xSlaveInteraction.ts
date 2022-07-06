@@ -469,7 +469,7 @@ window.Interactions["slave"] = {
                 },
               },
             },
-            dildoVag:{
+            dildoVag: {
               inventoryRequirements: ["dildo"],
               npcRequirements: ["hasPussy"],
               optionText:
@@ -591,7 +591,7 @@ window.Interactions["slave"] = {
                           $npc.GenPronoun seems to be able to take the dildo in and, after a while, even starts to feel good for $npc.pronoun.\
                           <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you fuck her with your dildo. <<emoji ♥>><</if>>
                         <<else>>\
-                          $npc.name is visibly enjoying your dildo. You can hear $npc.pronoun loudly moaning:
+                          $npc.name is visibly enjoying your dildo in $npc.possessive $npc.genitals. You can hear $npc.pronoun loudly moaning:
                           "Ah!...Ah!...<<if $npc.age gt 4>> Yes... Please don't stop!!<</if>>\
                           <<if $npc.age gt 3 && $npc.love gte 50>>I love you <<npcAddressPlayer>><<emoji ♥>><</if>>".\
                         <</if>>`,
@@ -623,10 +623,10 @@ window.Interactions["slave"] = {
                     },
                     fast: {
                       optionText: "⏩ Fast piston.",
-                      contents: `You trust your dick into $npc.name's $npc.genitals. Making $npc.genPronoun bounce with a fast pelvic piston movement.
-                      <<run Player.manageEnergy(3)>>\
+                      contents: `You trust the dildo into $npc.name's $npc.genitals. Making $npc.genPronoun bounce with a fast piston movement.
+                      <<run Player.manageEnergy(1)>>\
                       <<if $npc.pussyTraining lt 40>>\
-                        $npc.GenPronoun <<if $npc.age gt 0>>pushes you while crying<<else>>cries<</if>> desperately. <<emoji 😭>>
+                        $npc.GenPronoun <<if $npc.age gt 0>>pushes you while crying<<else>>cries<</if>> desperately.<<emoji 😭>>
                       <<elseif $npc.pussyTraining lt 60>>\
                         $npc.name seems to have a hard time taking your thrusts while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
                       <<elseif $npc.lust lt 60>>\
@@ -678,11 +678,11 @@ window.Interactions["slave"] = {
                 },
               },
             },
-            dildoAnus:{
+            dildoAnus: {
               inventoryRequirements: ["dildo"],
               settingsRequirements: ["anal"],
               optionText: "🥒 Push dildo into $npc.possessive ass.",
-              contents: `You press your dildo against $npc.possessive asshole.`,
+              contents: `You press the dildo against $npc.possessive asshole.`,
               next: {
                 carefully: {
                   optionText: "🍬 Carefully press it in.",
@@ -768,7 +768,8 @@ window.Interactions["slave"] = {
                   showNpcStats: true,
                   next: {
                     slow: {
-                      optionText: "🦥 Fuck $npc.pronoun bottom slowly with the dildo.",
+                      optionText:
+                        "🦥 Fuck $npc.pronoun bottom slowly with the dildo.",
                       contents: `You try your best in slowly going in and out of $npc.name's $npc.age year old rectum.
                         <<if $npc.anusTraining lt 20>>\
                           $npc.GenPronoun keeps crying<<if $npc.age gt 0>> and pushing your hand while saying "Stop! It hurts!!"<</if>>.<<emoji 😢>>
@@ -810,7 +811,7 @@ window.Interactions["slave"] = {
                     },
                     fast: {
                       optionText: "⏩ Fuck $npc.pronoun fast.",
-                      contents: `You trust your dick into $npc.name's anus. Making $npc.genPronoun bounce with a fast pelvic piston movement.
+                      contents: `You trust the dildo into $npc.name's anus. Making $npc.genPronoun bounce with a fast piston movement.
                       <<run Player.manageEnergy(1)>>\
                       <<if $npc.anusTraining lt 40>>\
                         $npc.GenPronoun <<if $npc.age gt 0>>pushes your hand while crying<<else>>cries<</if>> desperately. <<emoji 😭>>
@@ -883,7 +884,12 @@ window.Interactions["slave"] = {
                             "anusTraining%+10",
                           ];
                         if (npc.anusTraining < 40)
-                          return ["fear+5", "lust+10%","+aroused","anusTraining%+10"];
+                          return [
+                            "fear+5",
+                            "lust+10%",
+                            "+aroused",
+                            "anusTraining%+10",
+                          ];
                         let stats = [
                           "anusTraining%+40",
                           "lust+10%",
@@ -1137,7 +1143,7 @@ window.Interactions["slave"] = {
           contents: "",
         };
         Object.assign(thisPunish, punishment);
-        Variables().punishReason = 'refusing your request';
+        Variables().punishReason = "refusing your request";
         thisPunish.canBeShown = () => Temporary().refused;
         return {
           pushDown: window.Interactions["slave"].options.pushDown,
@@ -1203,7 +1209,7 @@ window.Interactions["slave"] = {
           contents: "",
         };
         Object.assign(thisPunish, punishment);
-        Variables().punishReason = 'refusing your request';
+        Variables().punishReason = "refusing your request";
         thisPunish.canBeShown = () => !Temporary().okBj || Temporary().refused;
         return {
           balls: {
@@ -1331,6 +1337,32 @@ window.Interactions["slave"] = {
       },
       showNpcStats: true,
       next: afterStrip,
+    },
+    bringUpstairs: {
+      npcRequirements: ["freedomWish<=25"],
+      optionText: "🚪 Let $npc.name roam the house.",
+      contents: `You carefully open the door letting only $npc.name out of the basement.
+      <<if !Person.hasAchievement('beenOnHomeMain')>>\
+        $npc.GenPronoun starts exploring each room of your home that $npc.genPronoun has never fully seen.
+        <<set $npc.achievements.push('beenOnHomeMain')>>\
+      <</if>>\
+      <<set $npc.location = 'mainRoom'>>\
+      <<if $npc.love lt 60 && $npc.age gte 1>>\
+        The taste of a little more freedom makes $npc.name wanting it even more.
+      <</if>>`,
+      npcStats: (npc) =>
+        npc.love < 60 && npc.age >= 1
+          ? ["freedomWish+" + Math.floor(Math.min((npc.age * 25) / 6, 25))]
+          : null,
+      showNpcStats: true,
+      next: {
+        up: {
+          optionText: "🔼 Go upstairs",
+          contents: "<<goto main>>",
+          action: true,
+        },
+      },
+      stopOption: "🔽 Return to the basement",
     },
     value: {
       optionText: "💵 See $npc.name's selling value.",

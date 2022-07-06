@@ -1,4 +1,10 @@
-type NpcStatus = "citizen" | "slave" | "accomplice" | "pet" | "tool" | "lover";
+type NpcStatus =
+  | "citizen"
+  | "slave"
+  | "accomplice"
+  | "pet"
+  | "servant"
+  | "lover";
 interface NpcValue {
   obedience: number;
   obedienceRatio: string;
@@ -46,6 +52,10 @@ abstract class Npc {
   achievements: string[] = [];
   punishments: string[] = [];
   location: string = "unknown";
+  hasAchievement(achievement: string, npc: Npc): boolean {
+    if (!npc) npc = Variables().npc;
+    return npc.achievements.includes(achievement);
+  }
   getValue(): NpcValue {
     let npc = Variables().npc as Npc;
     const maxNonVirgin = 1500;
@@ -86,6 +96,11 @@ abstract class Npc {
     value.virginBonus = value.virginType ? Math.max(5, value.total * 0.2) : 0;
     value.total += value.freedomWish + value.virginBonus;
     return value;
+  }
+  capture(npc: Npc): void {
+    npc.status = "slave";
+    npc.location = "basement";
+    Variables().slaves.push(npc);
   }
 }
 class Person extends Npc {

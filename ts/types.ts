@@ -2,9 +2,14 @@ type Gender = "male" | "female";
 interface Home {
   name: string;
   rent: number;
+  spaces: string[];
 }
 let Homes: Record<string, Home> = {
-  smallUrban: { name: "small urban house", rent: 400 },
+  smallUrban: {
+    name: "small urban house",
+    rent: 400,
+    spaces: ["basement", "mainRoom", "bed"],
+  },
 };
 function Variables(): any {
   return variables() as any;
@@ -36,7 +41,8 @@ class Player {
   }
   manageEnergy(hoursPassed: number) {
     let player = Variables().player as Player;
-    let multiplier = (player.sleeping || Variables().settings.infiniteEnergy) ? 1 : -0.46;
+    let multiplier =
+      player.sleeping || Variables().settings.infiniteEnergy ? 1 : -0.46;
     let increment = Math.round((hoursPassed / 8) * 100 * multiplier);
     if (increment == 0) increment = multiplier < 0 ? -1 : 1;
     player.energy = (player.energy + increment).clamp(0, 100);
@@ -51,7 +57,23 @@ class Player {
     return (Variables().achievements as string[]).includes(achievement);
   }
   getAddressing(npc: Npc) {
-    return Variables().player.name;
+    let variables = Variables();
+    let $player: Player = variables.player;
+    if (npc.status == "citizen")
+      return $player.gender != "male" ? "lady" : "mister";
+    let $addressing = variables.settings.addressing;
+    if ($player.gender != "male" ? npc.mom == $player : npc.dad == $player)
+      return $addressing && $addressing.offspring
+        ? $addressing.offspring
+        : $player.gender != "male"
+        ? "mommy"
+        : "daddy";
+    let result = $player.name;
+    if (!$addressing) return result;
+    if ($addressing.slave) result = $addressing.slave;
+    if (npc.status == "slave") return result;
+    var specific = $addressing[npc.status];
+    return specific ? specific : result;
   }
 }
 interface HomeSpace {

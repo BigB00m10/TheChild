@@ -1,5 +1,6 @@
 :: bed {"position":"700,825"}
 <<scenery bed>>
+<<- Person.getWanderingPhrase()>>\
 <<if $player.sleeping>>\
 	As the sun reveals the world to a nice <<- Now.getWeekDay()>> morning, you climb out of bed, ready to start a new day. <<- either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
 <<else>>\
@@ -22,6 +23,7 @@
 <<set $player.sleeping to false>>
 :: main {"position":"700,650"}
 <<scenery mainRoom>>
+<<- Person.getWanderingPhrase()>>\
 You are currently standing in the middle of the main room of your house.
 
 ''Is there something you want to do in here?''

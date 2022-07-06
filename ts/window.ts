@@ -73,6 +73,7 @@ $(document).on(":passageinit", () => {
           if (slave.status == undefined) slave.status = "slave";
           if (slave.punishments == undefined) slave.punishments = [];
           if (slave.location == undefined) slave.location = "basement";
+          if (slave.achievements == undefined) slave.achievements = [];
         });
       }
       if (variables.settings.anal == undefined) variables.settings.anal = true;
@@ -108,8 +109,12 @@ $(document).on(":passageinit", () => {
       if (!variables.settings.childGeneration.skins)
         variables.settings.childGeneration.skins =
           window.PersonGeneration.skins;
+      if (variables.player.house) {
+        variables.player.home = variables.player.house;
+        delete variables.player.house;
+      }
       if (variables.player.home.spaces == undefined)
-        variables.player.home.spaces = Homes.smallUrban.spaces;
+        variables.player.home.spaces = window.Homes.smallUrban.spaces;
     });
   }
 });

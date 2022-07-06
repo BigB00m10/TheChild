@@ -1,6 +1,6 @@
 class Now {
   date: Date = new Date(2022, 3, 4, 7);
-  private getCurrentDate(): Date {
+  getCurrentDate(): Date {
     return Variables().now.date;
   }
   private dateFromTimeString(timeString: string, ref?: Date): Date {
@@ -29,8 +29,8 @@ class Now {
       this.dateFromTimeString(timeString, currentDate).getTime()
     );
   }
-  isBetween(fromTimeString: string, toTimeString: string): boolean {
-    var currentDate = this.getCurrentDate();
+  isBetween(fromTimeString: string, toTimeString: string, currentDate?: Date): boolean {
+    if (!currentDate) currentDate = this.getCurrentDate();
     var currentTimeStamp = currentDate.getTime();
     var fromTimeStamp = this.dateFromTimeString(
       fromTimeString,
@@ -85,6 +85,7 @@ class Now {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
     currentDate.setHours(currentDate.getHours() + amount);
+    Npc.updateLocations(currentDate);
     window.Player.manageEnergy(amount);
     this.daysPassed(currentDate.getDay() - originalDay);
   }
@@ -99,11 +100,13 @@ class Now {
       Math.abs(target.getTime() - currentDate.getTime()) / 36e5
     );
     currentDate.setTime(target.getTime());
+    Npc.updateLocations(currentDate);
   }
   addMinutes(amount: number) {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
     currentDate.setMinutes(currentDate.getMinutes() + amount);
+    Npc.updateLocations(currentDate);
     window.Player.manageEnergy(amount / 60);
     this.daysPassed(currentDate.getDay() - originalDay);
   }

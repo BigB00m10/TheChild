@@ -102,6 +102,22 @@ abstract class Npc {
     npc.location = "basement";
     Variables().slaves.push(npc);
   }
+  static updateLocations(currentDate: Date): void {
+    let variables = Variables();
+    if (!currentDate) currentDate = variables.now.date;
+    //let sleepTime = window.Now.isBetween("10:00 PM", "7:00 AM", currentDate);
+    let spaces = variables.player.home.spaces.filter(
+      (space: string) => space != "basement"
+    );
+    let baseSeed = currentDate.getTime() - 1649048400000;
+    variables.slaves.forEach((slave: Person) => {
+      if (!spaces.includes(slave.location)) return;
+      let seed = baseSeed + slave.age;
+      for (let charIndex = 0; charIndex < slave.name.length; charIndex++)
+        seed = (seed << 5) - seed + slave.name.charCodeAt(charIndex);
+      slave.location = PseudoRandom.either(Math.abs(seed), spaces);
+    });
+  }
 }
 class Person extends Npc {
   title: string;
@@ -153,6 +169,19 @@ class Person extends Npc {
     person.hairStyle = hairStyles.random();
     person.eyeColor = gen.eyeColors.random();
     return person;
+  }
+  getWandering(): Person[] {
+    let variables = Variables();
+    return variables.slaves.filter(
+      (slave: Person) => slave.location == variables.scenery
+    );
+  }
+  getWanderingPhrase(): string {
+    let names = this.getWandering().map((slave: Person) => slave.name);
+    if (names.length == 0) return '';
+    if (names.length == 1) return names[0] + ' is here.\n';
+    let last = names.pop();
+    return names.join(", ") + " and " + last + ' are here.\n';
   }
 }
 interface GenderGeneration {

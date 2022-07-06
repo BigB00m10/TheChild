@@ -1344,9 +1344,9 @@ window.Interactions["slave"] = {
       contents: `You carefully open the door letting only $npc.name out of the basement.
       <<if !Person.hasAchievement('beenOnHomeMain')>>\
         $npc.GenPronoun starts exploring each room of your home that $npc.genPronoun has never fully seen.
-        <<set $npc.achievements.push('beenOnHomeMain')>>\
+        <<set $slaves[$npc.index].achievements.push('beenOnHomeMain')>>\
       <</if>>\
-      <<set $npc.location = 'mainRoom'>>\
+      <<set $slaves[$npc.index].location = 'mainRoom'>>\
       <<if $npc.love lt 60 && $npc.age gte 1>>\
         The taste of a little more freedom makes $npc.name wanting it even more.
       <</if>>`,

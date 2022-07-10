@@ -22,6 +22,7 @@ interface NpcValue {
   total?: number;
 }
 abstract class Npc {
+  uid: Uid;
   name: string;
   age: number;
   gender: Gender;
@@ -35,9 +36,9 @@ abstract class Npc {
   genitalVirgin: boolean = true;
   analVirgin: boolean = true;
   mouthVirgin: boolean = true;
-  children: Npc[] = [];
-  mom: Npc | Player = null;
-  dad: Npc | Player = null;
+  children: Uid[] = [];
+  mom: Uid = null;
+  dad: Uid = null;
   aroused: boolean = false;
   hunger: number = 0;
   fear: number = 50;
@@ -45,7 +46,7 @@ abstract class Npc {
   obedience: number = 25;
   lust: number = 0;
   freedomWish: number = 75;
-  genitals: string;
+  genitals: Genitals;
   status: NpcStatus = "citizen";
   need: string;
   index: number | false = false;
@@ -168,6 +169,7 @@ class Person extends Npc {
       hairStyles.delete("pig tails", "twin tails", "ponytail");
     person.hairStyle = hairStyles.random();
     person.eyeColor = gen.eyeColors.random();
+    person.uid = getUid();
     return person;
   }
   getWandering(): Person[] {
@@ -641,3 +643,6 @@ const femaleNames: string[] = [
   "Summer",
   "Alana",
 ];
+class Personality {
+  
+}

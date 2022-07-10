@@ -1,16 +1,10 @@
 type Gender = "male" | "female";
+type Genitals = "cunny" | "pussy" | "penis" | "dick";
 interface Home {
   name: string;
   rent: number;
   spaces: string[];
 }
-let Homes: Record<string, Home> = {
-  smallUrban: {
-    name: "small urban house",
-    rent: 400,
-    spaces: ["basement", "mainRoom", "bed"],
-  },
-};
 function Variables(): any {
   return variables() as any;
 }
@@ -18,9 +12,10 @@ function Temporary(): any {
   return temporary() as any;
 }
 class Player {
+  uid: Uid = 0;
   name: string;
   gender: Gender;
-  genitals: string;
+  genitals: Genitals;
   sexHole: string;
   home: Home = Homes.smallUrban;
   job: Job = Jobs.garbageCollector;
@@ -62,7 +57,7 @@ class Player {
     if (npc.status == "citizen")
       return $player.gender != "male" ? "lady" : "mister";
     let $addressing = variables.settings.addressing;
-    if ($player.gender != "male" ? npc.mom == $player : npc.dad == $player)
+    if ($player.gender != "male" ? npc.mom == this.uid : npc.dad == this.uid)
       return $addressing && $addressing.offspring
         ? $addressing.offspring
         : $player.gender != "male"
@@ -74,47 +69,6 @@ class Player {
     if (npc.status == "slave") return result;
     var specific = $addressing[npc.status];
     return specific ? specific : result;
-  }
-}
-interface HomeSpace {
-  contents: Inventory;
-  muffleBase: number;
-  securityBase: number;
-}
-class Basement implements HomeSpace {
-  contents: Inventory = new Inventory();
-  muffleBase: number = 90;
-  securityBase: number = 25;
-  constructor() {
-    window.OnlineStore.get("Mattress").transferTo(this.contents);
-  }
-  has(itemName: string, count: number = 1): boolean {
-    return new Inventory(Variables().basement.contents).has(itemName, count);
-  }
-  availableBeds(): number {
-    let variables = Variables();
-    var contents = new Inventory(variables.basement.contents);
-    var oldItem = contents.get("Matress");
-    if (oldItem)
-      //TODO: fix old misspelling, remove later
-      oldItem.name = "Mattress";
-    return contents.get("Mattress").count - variables.slaves.length;
-  }
-  getDemandingSlaves(): Person[] {
-    let slaves = Variables().slaves as Person[];
-    let candidates: Person[] = [];
-    for (let slaveIndex = 0; slaveIndex < slaves.length; slaveIndex++) {
-      const slave = slaves[slaveIndex];
-      if (slave.age >= 1 && slave.hunger >= 25) {
-        slave.index = slaveIndex;
-        slave.need = "hunger";
-        candidates.push(slave);
-      }
-    }
-    return candidates.sort(() => PseudoRandom.getFloat(turns()) - 0.5);
-  }
-  getHungrySlaves(): Person[] {
-    return Variables().slaves.filter((slave: Person) => slave.hunger > 25);
   }
 }
 interface ILiteEvent<T> {
@@ -159,4 +113,10 @@ class PseudoRandom {
   static either<T>(seed: number, options: Array<T>): T {
     return options[this.getFromRange(seed, 0, options.length)];
   }
+}
+type Uid = number;
+function getUid(): Uid {
+  let variables = Variables();
+  variables.lastUid = variables.lastUid ? variables.lastUid + 1 : 1;
+  return variables.lastUid;
 }

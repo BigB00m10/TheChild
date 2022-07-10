@@ -74,6 +74,7 @@ $(document).on(":passageinit", () => {
           if (slave.punishments == undefined) slave.punishments = [];
           if (slave.location == undefined) slave.location = "basement";
           if (slave.achievements == undefined) slave.achievements = [];
+          if (slave.uid == undefined) slave.uid = getUid();
         });
       }
       if (variables.settings.anal == undefined) variables.settings.anal = true;

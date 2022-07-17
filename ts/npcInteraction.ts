@@ -37,6 +37,7 @@ Macro.add("openNpcInteraction", {
     if (SugarCube.State.passage != "npcInteraction")
       variables.returnPassage = SugarCube.State.passage;
     variables.npcInteractionRoute = this.args[0];
+    if (this.args[1]) variables.npc = Npc.get(this.args[1]);
     SugarCube.State.display("npcInteraction");
   },
 });
@@ -84,6 +85,7 @@ const checkCanBeShown = (option: NpcInteraction) => {
 Macro.add("npcInteraction", {
   handler: function () {
     let vars = variables() as any;
+    vars.npc = Npc.get(vars.npc.uid);
     const npc = vars.npc;
     const steps = vars.npcInteractionRoute.split(".");
     const collection = window.Interactions[steps[0]];
@@ -180,11 +182,6 @@ Macro.add("npcInteraction", {
               break;
           }
           eval(`${varPath} = ${value}`);
-          switch (npc.status) {
-            case "slave":
-              (variables() as any).slaves[npc.index][varName] = eval(varPath);
-              break;
-          }
         });
         result += "@@\n";
       }

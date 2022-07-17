@@ -855,7 +855,7 @@ window.Interactions["slave"] = {
                     gentleRubSlaveGen: {
                       optionText: "👋 Gently rub $npc.name's $npc.genitals.",
                       minutesCost: 5,
-                      contents: `You slowly rub $npc.name's $npc.genitals while keeping the dildo in her bottom, moving only slowy.
+                      contents: `You slowly rub $npc.name's $npc.genitals while keeping the dildo in her bottom, moving only slowly.
                         <<if $npc.hasPussy>>\
                           @@color:deeppink;$npc.Possessive cunny gets wetter@@\
                         <</if>>\
@@ -1344,9 +1344,9 @@ window.Interactions["slave"] = {
       contents: `You carefully open the door letting only $npc.name out of the basement.
       <<if !Person.hasAchievement('beenOnHomeMain')>>\
         $npc.GenPronoun starts exploring each room of your home that $npc.genPronoun has never fully seen.
-        <<set $slaves[$npc.index].achievements.push('beenOnHomeMain')>>\
+        <<set $npc.achievements.push('beenOnHomeMain')>>\
       <</if>>\
-      <<set $slaves[$npc.index].location = 'mainRoom'>>\
+      <<set $npc.location = 'mainRoom';$npc.status = "home slave">>\
       <<if $npc.love lt 60 && $npc.age gte 1>>\
         The taste of a little more freedom makes $npc.name wanting it even more.
       <</if>>`,

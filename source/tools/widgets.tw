@@ -45,7 +45,6 @@
     <</if>>
 <</widget>>
 <<widget userEditListVar>>
-    <<run console.info(_args)>>
     <<set _list = eval(_args[0]).join('\n')>>
     <<dialog _args[1]>>
         <<textarea "_newList" _list>><br>
@@ -60,6 +59,10 @@
     <</dialog>>
 <</widget>>
 <<widget npcAddressPlayer>><<- Player.getAddressing($npc)>><</widget>>
+<<widget npcGenderSymbol>>
+    <<set _genderSymbol = _args[0].gender != 'male' ? '♀' : '♂'>>
+    <<emoji _genderSymbol>>
+<</widget>>
 :: workOption {"position":"875,0"}
 <<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>

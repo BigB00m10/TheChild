@@ -1,6 +1,7 @@
 type NpcStatus =
   | "citizen"
   | "slave"
+  | "home slave"
   | "accomplice"
   | "pet"
   | "servant"
@@ -107,17 +108,26 @@ abstract class Npc {
     let variables = Variables();
     if (!currentDate) currentDate = variables.now.date;
     //let sleepTime = window.Now.isBetween("10:00 PM", "7:00 AM", currentDate);
-    let spaces = variables.player.home.spaces.filter(
+    let homeSpaces = variables.player.home.spaces.filter(
       (space: string) => space != "basement"
     );
     let baseSeed = currentDate.getTime() - 1649048400000;
     variables.slaves.forEach((slave: Person) => {
-      if (!spaces.includes(slave.location)) return;
-      let seed = baseSeed + slave.age;
-      for (let charIndex = 0; charIndex < slave.name.length; charIndex++)
-        seed = (seed << 5) - seed + slave.name.charCodeAt(charIndex);
-      slave.location = PseudoRandom.either(Math.abs(seed), spaces);
+      switch (slave.status) {
+        case "home slave":
+        case "lover":
+          slave.location = PseudoRandom.either(
+            PseudoRandom.getSeed(baseSeed, slave.age, slave.name),
+            homeSpaces
+          );
+          break;
+      }
     });
+  }
+  static get(uid: Uid): Npc {
+    return Variables().slaves.firstOrDefault(
+      (slave: Person) => slave.uid == uid
+    );
   }
 }
 class Person extends Npc {
@@ -180,10 +190,10 @@ class Person extends Npc {
   }
   getWanderingPhrase(): string {
     let names = this.getWandering().map((slave: Person) => slave.name);
-    if (names.length == 0) return '';
-    if (names.length == 1) return names[0] + ' is here.\n';
+    if (names.length == 0) return "";
+    if (names.length == 1) return names[0] + " is here.\n";
     let last = names.pop();
-    return names.join(", ") + " and " + last + ' are here.\n';
+    return names.join(", ") + " and " + last + " are here.\n";
   }
 }
 interface GenderGeneration {
@@ -643,6 +653,4 @@ const femaleNames: string[] = [
   "Summer",
   "Alana",
 ];
-class Personality {
-  
-}
+class Personality {}

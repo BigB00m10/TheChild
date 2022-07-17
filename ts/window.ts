@@ -41,6 +41,12 @@ document.addEventListener("keypress", (evt) => {
   } else if (typed.endsWith("coconuts")) {
     Variables().player.energy = 100;
     Engine.show();
+  } else if (typed.endsWith("goblind")) {
+    Variables().settings.hideScenery = true;
+    Engine.show();
+  } else if (typed.endsWith("letsee")) {
+    Variables().settings.hideScenery = false;
+    Engine.show();
   }
 });
 $(document).on(":passageinit", () => {
@@ -75,6 +81,8 @@ $(document).on(":passageinit", () => {
           if (slave.location == undefined) slave.location = "basement";
           if (slave.achievements == undefined) slave.achievements = [];
           if (slave.uid == undefined) slave.uid = getUid();
+          if (slave.status == "slave" && slave.location != "basement")
+            slave.status = "home slave";
         });
       }
       if (variables.settings.anal == undefined) variables.settings.anal = true;

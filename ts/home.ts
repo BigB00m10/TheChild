@@ -8,7 +8,6 @@ let Homes: Record<string, Home> = {
 interface NpcEvent {
   description: string;
   canBeShown?: (npc: Npc) => boolean;
-  //TODO: merge with demands
 }
 interface HomeSpace {
   contents?: Inventory;
@@ -57,5 +56,5 @@ class MainRoom implements HomeSpace {
 }
 class BedRoom implements HomeSpace {
   muffleBase: number = 25;
-  bedAssignedNpc: Npc[] = [];
+  bedAssignedNpc: Uid[] = [];
 }

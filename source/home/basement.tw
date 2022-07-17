@@ -43,12 +43,9 @@
         <div class="one-half column">\
             <<if $slaves.length > 0>>\
                 Approach slave:
-                <<set _slaveIndex to 0>>\
                 <<for _slave range $slaves>>\
-                    <<set _genderSymbol = _slave.gender != 'male'?'♀':'♂'>>\
-                    <<emoji _genderSymbol>>\
-                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $npc to " + JSON.stringify(_slave) + ", $npc.index to " + _slaveIndex + ">><<openNpcInteraction slave>><</link>>">>
-                    <<set _slaveIndex++>>\
+                    <<npcGenderSymbol _slave>>\
+                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<openNpcInteraction slave " + _slave.uid + ">><</link>>">>
                 <</for>>\
             <</if>>\
         </div>\

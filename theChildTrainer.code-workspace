@@ -17,6 +17,7 @@
 			"fauxhawkian",
 			"ldquo",
 			"newmeter",
+			"nobr",
 			"passageinit",
 			"passagestart",
 			"precum",
@@ -26,5 +27,10 @@
 			"Trib"
 		],
 		"twee3LanguageTools.passageCounter.openStoryMapWithoutConfirmation": true
+	},
+	"extensions": {
+		"recommendations": [
+			"file-icons.file-icons"
+		]
 	}
 }

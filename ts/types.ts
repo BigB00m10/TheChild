@@ -100,6 +100,23 @@ String.prototype.beautifyStat = function () {
   return this.toUpperFirst().replace(/(\B[A-Z])/g, " $1");
 };
 class PseudoRandom {
+  static getSeed(...components: any[]): number {
+    let seed = 0;
+    for (const index in components) {
+      const component = components[index];
+      switch (typeof component) {
+        case "boolean":
+        case "number":
+          seed += component as number;
+          break;
+        case "string":
+          for (let charIndex = 0; charIndex < component.length; charIndex++)
+            seed = (seed << 5) - seed + component.charCodeAt(charIndex);
+          break;
+      }
+    }
+    return Math.abs(seed);
+  }
   static getInt(seed: number): number {
     //27 is a coprime of 100 and 10-1 is divisible by 27's factors (3)
     return (27 * seed + 10) % 100;

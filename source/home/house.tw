@@ -23,7 +23,12 @@
 <<set $player.sleeping to false>>
 :: main {"position":"700,650"}
 <<scenery mainRoom>>
-<<- Person.getWanderingPhrase()>>\
+<<set _wandering = Person.getWandering()>>\
+<<if _wandering.length>>\
+    <<if _wandering.length == 1>>
+    <<else>>
+    <</if>>
+<</if>>\
 You are currently standing in the middle of the main room of your house.
 
 ''Is there something you want to do in here?''

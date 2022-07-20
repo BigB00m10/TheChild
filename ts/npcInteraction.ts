@@ -25,7 +25,9 @@ interface NpcInteraction {
   action?: boolean;
 }
 interface NpcInteractionCollection {
-  options: Record<string, NpcInteraction>;
+  options:
+    | Record<string, NpcInteraction>
+    | (() => Record<string, NpcInteraction>);
   contents: string;
   defaultStopOption?: string | false;
   timeIncreaseNpcHunger?: boolean;
@@ -79,6 +81,9 @@ const checkCanBeShown = (option: NpcInteraction) => {
       (itemName) => (canBeShown &&= window.Player.has(itemName))
     );
   if (!canBeShown) return false;
+  if (option.locationRequirements)
+    canBeShown = option.locationRequirements.includes(Variables().scenery);
+  //TODO: also check room inventory for locationRequirements
   if (option.canBeShown) canBeShown = option.canBeShown();
   return canBeShown;
 };
@@ -89,7 +94,10 @@ Macro.add("npcInteraction", {
     const npc = vars.npc;
     const steps = vars.npcInteractionRoute.split(".");
     const collection = window.Interactions[steps[0]];
-    let options = collection.options;
+    let options =
+      typeof collection.options != "function"
+        ? collection.options
+        : collection.options();
     let interaction: NpcInteraction;
     const getNext = (interaction: NpcInteraction) =>
       typeof interaction.next != "function"

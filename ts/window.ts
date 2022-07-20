@@ -83,6 +83,21 @@ $(document).on(":passageinit", () => {
           if (slave.uid == undefined) slave.uid = getUid();
           if (slave.status == "slave" && slave.location != "basement")
             slave.status = "home slave";
+          if (!slave.version) {
+            slave.version = 1;
+            if (!slave.analVirgin)
+              window.Person.setAchievement("playerTookAnalVirginity", slave);
+            if (!slave.genitalVirgin)
+              window.Person.setAchievement("playerTookGenitalVirginity", slave);
+            if (!slave.mouthVirgin)
+              window.Person.setAchievement("playerTookMouthVirginity", slave);
+            if (slave.mouthTraining)
+              window.Person.setAchievement("hadMouthSexWithPlayer", slave);
+            slave.assSpermAmount = 0;
+            slave.pussySpermAmount = 0;
+            slave.faceSpermAmount = 0;
+            slave.bodySpermAmount = 0;
+          }
         });
       }
       if (variables.settings.anal == undefined) variables.settings.anal = true;

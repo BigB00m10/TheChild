@@ -37,6 +37,10 @@ abstract class Npc {
   genitalVirgin: boolean = true;
   analVirgin: boolean = true;
   mouthVirgin: boolean = true;
+  assSpermAmount: number = 0;
+  pussySpermAmount: number = 0;
+  bodySpermAmount: number = 0;
+  faceSpermAmount: number = 0;
   children: Uid[] = [];
   mom: Uid = null;
   dad: Uid = null;
@@ -54,9 +58,14 @@ abstract class Npc {
   achievements: string[] = [];
   punishments: string[] = [];
   location: string = "unknown";
-  hasAchievement(achievement: string, npc: Npc): boolean {
+  hasAchievement(achievement: string, npc?: Npc): boolean {
     if (!npc) npc = Variables().npc;
     return npc.achievements.includes(achievement);
+  }
+  setAchievement(achievement: string, npc?: Npc): void {
+    if (!npc) npc = Variables().npc;
+    if (!this.hasAchievement(achievement, npc))
+      npc.achievements.push(achievement);
   }
   getValue(): NpcValue {
     let npc = Variables().npc as Npc;
@@ -99,9 +108,20 @@ abstract class Npc {
     value.total += value.freedomWish + value.virginBonus;
     return value;
   }
+  setStatus(status: NpcStatus, npc?: Npc): void {
+    if (!npc) npc = Variables().npc;
+    switch (status) {
+      case "slave":
+        npc.location = "basement";
+        break;
+      case "home slave":
+        npc.location = "mainRoom";
+        break;
+    }
+    npc.status = status;
+  }
   capture(npc: Npc): void {
-    npc.status = "slave";
-    npc.location = "basement";
+    this.setStatus("slave", npc);
     Variables().slaves.push(npc);
   }
   static updateLocations(currentDate: Date): void {
@@ -131,6 +151,7 @@ abstract class Npc {
   }
 }
 class Person extends Npc {
+  version: number = 1;
   title: string;
   pronoun: string;
   genPronoun: string;

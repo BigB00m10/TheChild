@@ -26,6 +26,7 @@
 <<set _wandering = Person.getWandering()>>\
 <<if _wandering.length>>\
     <<if _wandering.length == 1>>
+        <<link _wandering[0].name>><<openNpcInteraction houseSlave _wandering[0].uid>><</link>> is here.
     <<else>>
     <</if>>
 <</if>>\

@@ -1,7 +1,7 @@
 let afterStrip = () =>
-  window.Interactions.slave.options.pushDown.next["strip"].next;
+  window.Interactions.slave.options["pushDown"].next.strip.next;
 let afterPenToMouth = () =>
-  (window.Interactions["slave"].options.penToMouth.next as CallableFunction)();
+  (window.Interactions.slave.options["penToMouth"].next as CallableFunction)();
 window.Interactions["slave"] = {
   defaultStopOption: "✋ Leave $npc.pronoun alone",
   contents: "<<include slaveApproach>>",
@@ -267,6 +267,33 @@ window.Interactions["slave"] = {
                       },
                       showNpcStats: true,
                       next: () => afterStrip().pushDickVag.next.ram.next,
+                    },
+                    cumInside: {
+                      optionText: "⛽ Cum inside $npc.pronoun.",
+                      contents: `You release your seed inside $npc.name's body. Filling up $npc.possessive womb.
+                      <<set 
+                        Player.manageEnergy(1);
+                        $npc.pussySpermAmount++;
+                        $player.lust = 0;
+                      >>\
+                      After shooting all your load you pull out your dick leaving $npc.pronoun with your present inside.`,
+                      next: () => afterStrip(),
+                    },
+                    cumBody: {
+                      optionText: "💦 Cum on $npc.possessive body.",
+                      contents: `Right when you're about to cum you pull out your dick from $npc.pronoun and shoot all your hot sperm all over her body.
+                      <<set 
+                        Player.manageEnergy(1);
+                        $npc.bodySpermAmount++;
+                        $player.lust = 0;
+                      >>\
+                      `,//TODO: describe cum dripping on the body
+                      next: () => afterStrip(),
+                    },
+                    cumFace: {
+                      optionText: "🌚 Cum on $npc.possessive face.",
+                      contents: ``,//TODO
+                      next: () => afterStrip(),
                     },
                     out: {
                       optionText: "🔙 Pull out",
@@ -1080,7 +1107,7 @@ window.Interactions["slave"] = {
           contents: null,
           npcStats: ["-haveClothes"],
           next: () =>
-            window.Interactions["slave"].options.pushDown.next["strip"].next,
+            window.Interactions.slave.options["pushDown"].next["strip"].next,
         },
       },
     },
@@ -1146,7 +1173,7 @@ window.Interactions["slave"] = {
         Variables().punishReason = "refusing your request";
         thisPunish.canBeShown = () => Temporary().refused;
         return {
-          pushDown: window.Interactions["slave"].options.pushDown,
+          pushDown: window.Interactions.slave.options["pushDown"],
           more: {
             canBeShown: () => !Temporary().refused,
             optionText: "👅 keep going.",
@@ -1161,7 +1188,7 @@ window.Interactions["slave"] = {
             showNpcStats: true,
             next: () =>
               (
-                window.Interactions["slave"].options.askLickPus
+                window.Interactions.slave.options["askLickPus"]
                   .next as CallableFunction
               )(),
           },
@@ -1339,14 +1366,16 @@ window.Interactions["slave"] = {
       next: afterStrip,
     },
     bringUpstairs: {
+      locationRequirements: ["basement"],
       npcRequirements: ["freedomWish<=25"],
       optionText: "🚪 Let $npc.name roam the house.",
+      altMinutes: () => 2,
       contents: `You carefully open the door letting only $npc.name out of the basement.
       <<if !Person.hasAchievement('beenOnHomeMain')>>\
         $npc.GenPronoun starts exploring each room of your home that $npc.genPronoun has never fully seen.
         <<set $npc.achievements.push('beenOnHomeMain')>>\
       <</if>>\
-      <<set $npc.location = 'mainRoom';$npc.status = "home slave">>\
+      <<run Person.setStatus("home slave")>>\
       <<if $npc.love lt 60 && $npc.age gte 1>>\
         The taste of a little more freedom makes $npc.name wanting it even more.
       <</if>>`,
@@ -1365,6 +1394,7 @@ window.Interactions["slave"] = {
       stopOption: "🔽 Return to the basement",
     },
     value: {
+      locationRequirements: ["basement"],
       optionText: "💵 See $npc.name's selling value.",
       settingsRequirements: ["slaveSelling"],
       action: true,
@@ -1413,8 +1443,8 @@ window.Interactions["slave"] = {
   },
   timeIncreaseNpcHunger: true,
 };
-window.Interactions["slave"].options.pushDown.next["stealClothes"].contents =
-  window.Interactions["slave"].options.pushDown.next["strip"].contents +
+window.Interactions.slave.options["pushDown"].next.stealClothes.contents =
+  window.Interactions.slave.options["pushDown"].next.strip.contents +
   `<<set _item = {
 name:'Used clothes(' + $npc.age + ' y.o.)',
 description:'Used clothes from a ' + $npc.age + ' year old',

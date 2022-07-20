@@ -37,12 +37,13 @@
 <<widget checkNpcVirgin>>
     <<set _fieldName to _args[0] + 'Virgin'>>
     <<if $npc[_fieldName]>>
-        <<set $npc[_fieldName] to false>>
-        <<if $npc.index != undefined>>
-            <<set $slaves[$npc.index][_fieldName] to false>>
-        <</if>>
+        <<set
+            $npc[_fieldName] = false;
+            Person.setAchievement("playerTook" + _args[0].toUpperFirst() + "Virginity");
+        >>
         @@color:red;$npc.name just lost $npc.possessive _args[0] virginity!!!@@<br>
     <</if>>
+    <<run Person.setAchievement('had' + _args[0].toUpperFirst() + 'SexWithPlayer')>>
 <</widget>>
 <<widget userEditListVar>>
     <<set _list = eval(_args[0]).join('\n')>>

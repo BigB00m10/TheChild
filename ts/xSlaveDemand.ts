@@ -254,7 +254,7 @@ window.Interactions["slaveDemandHunger"] = {
       altMinutes: (minutes) => (Temporary().denied ? 0 : minutes),
       npcStats: () =>
         (
-          window.Interactions.slaveDemandHunger.options.cum
+          window.Interactions.slaveDemandHunger.options['cum']
             .npcStats as CallableFunction
         )(),
       showNpcStats: true,

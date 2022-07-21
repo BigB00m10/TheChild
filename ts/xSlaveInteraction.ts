@@ -2,6 +2,31 @@ let afterStrip = () =>
   window.Interactions.slave.options["pushDown"].next.strip.next;
 let afterPenToMouth = () =>
   (window.Interactions.slave.options["penToMouth"].next as CallableFunction)();
+let cumOutsideOptions: Record<string, NpcInteraction> = {
+  cumBody: {
+    optionText: "💦 Cum on $npc.possessive body.",
+    contents: `Right when you're about to cum you pull out your dick from $npc.pronoun and shoot all your hot sperm all over $npc.possessive body.
+    <<set 
+      Player.manageEnergy(1);
+      $npc.bodySpermAmount++;
+      $player.lust = 0;
+    >>\
+    Your sperm drips around $npc.name's body, impregnating $npc.possessive skin.`,
+    next: () => afterStrip(),
+  },
+  cumFace: {
+    optionText: "🌚 Cum on $npc.possessive face.",
+    contents: `You take out your penis and quickly point it towards $npc.possessive face.
+    <<set
+      Player.manageEnergy(1);
+      $npc.faceSpermAmount++;
+      $player.lust = 0;
+    >>
+    $npc.name closes $npc.possessive eyes when the first cumshot lands on $npc.possessive face.
+    You splatter a ful load on $npc.pronoun while you hold $npc.name's chin.`,
+    next: () => afterStrip(),
+  },
+};
 window.Interactions["slave"] = {
   defaultStopOption: "✋ Leave $npc.pronoun alone",
   contents: "<<include slaveApproach>>",
@@ -279,22 +304,7 @@ window.Interactions["slave"] = {
                       After shooting all your load you pull out your dick leaving $npc.pronoun with your present inside.`,
                       next: () => afterStrip(),
                     },
-                    cumBody: {
-                      optionText: "💦 Cum on $npc.possessive body.",
-                      contents: `Right when you're about to cum you pull out your dick from $npc.pronoun and shoot all your hot sperm all over her body.
-                      <<set 
-                        Player.manageEnergy(1);
-                        $npc.bodySpermAmount++;
-                        $player.lust = 0;
-                      >>\
-                      `,//TODO: describe cum dripping on the body
-                      next: () => afterStrip(),
-                    },
-                    cumFace: {
-                      optionText: "🌚 Cum on $npc.possessive face.",
-                      contents: ``,//TODO
-                      next: () => afterStrip(),
-                    },
+                    ...cumOutsideOptions,
                     out: {
                       optionText: "🔙 Pull out",
                       contents: `You pull out your dick on $npc.name`,
@@ -482,6 +492,18 @@ window.Interactions["slave"] = {
                       showNpcStats: true,
                       next: () => afterStrip().pushDickAnus.next.ram.next,
                     },
+                    cumInside: {
+                      optionText: "⛽ Cum inside $npc.pronoun.",
+                      contents: `You release your seed inside $npc.name's body. Filling up $npc.possessive bowels.
+                      <<set 
+                        Player.manageEnergy(1);
+                        $npc.assSpermAmount++;
+                        $player.lust = 0;
+                      >>\
+                      After shooting all your load you pull out your dick leaving $npc.pronoun with your present inside.`,
+                      next: () => afterStrip(),
+                    },
+                    ...cumOutsideOptions,
                     out: {
                       optionText: "🔙 Pull out",
                       contents: `You pull out your dick on $npc.name`,
@@ -1331,7 +1353,10 @@ window.Interactions["slave"] = {
             optionText: '👄🍆 "Suck it"',
             minutesCost: 10,
             contents: `$npc.name places $npc.pronoun lips back to the tip of your dick and you help $npc.pronoun inserting it into $npc.possessive mouth.
-            <<set _okBj = true>>\
+            <<set
+              _okBj = true
+              _sucking = true
+            >>\
             <<if $npc.mouthTraining gte 50>>\
               $npc.GenPronoun then starts sucking and jerking while your dick goes in and out of $npc.possessive mouth.
               You can see $npc.pronoun head bobbing down on you at the rhythm of your pleasure peaks.\
@@ -1346,6 +1371,25 @@ window.Interactions["slave"] = {
             showNpcStats: true,
             next: afterPenToMouth,
           },
+          cumInside: {
+            canBeShown: () => Temporary().okBj && Temporary().sucking,
+            optionText: "⛽ Cum inside $npc.pronoun mouth.",
+            contents: `You reach your climax and release your seed inside $npc.name's mouth.
+            <<set 
+              Player.manageEnergy(1);
+              $player.lust = 0;
+            >>\
+            <<if $npc.hunger gte 50 || $npc.lust gte 80>>\
+              $npc.GenPronoun gulps all of your load directly after each spurt.
+            <<else>>\
+              $npc.GenPronoun does not seem to appreciate your sperm very much and quickly retreats while coughing and spitting.
+            <</if>>`,
+            npcStats: (npc) =>
+              npc.hunger >= 50 || npc.lust >= 80 ? ["hunger-5"] : null,
+            showNpcStats: true,
+            next: () => afterStrip(),
+          },
+          ...cumOutsideOptions,
         } as Record<string, NpcInteraction>;
       },
     },

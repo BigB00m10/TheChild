@@ -50,3 +50,5 @@ sugarcube-2:
       name: userEditListVar
     npcGenderSymbol:
       name: npcGenderSymbol
+    wanderingSlaves:
+      name: wanderingSlaves

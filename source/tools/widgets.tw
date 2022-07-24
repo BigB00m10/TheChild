@@ -64,6 +64,19 @@
     <<set _genderSymbol = _args[0].gender != 'male' ? '♀' : '♂'>>
     <<emoji _genderSymbol>>
 <</widget>>
+<<widget wanderingSlaves>>
+    <<set _wandering = Person.getWandering()>>
+    <<if _wandering.length>>
+        <<if _wandering.length == 1>>
+            <<link _wandering[0].name>><<openNpcInteraction houseSlave _wandering[0].uid>><</link>> is here.<br>
+        <<else>>\
+            <<set _last = _wandering.pop()>>
+            <<for _slave range _wandering>>
+                <<link _slave.name>><<openNpcInteraction houseSlave _slave.uid>><</link>>, 
+            <</for>> and <<link _last.name>><<openNpcInteraction houseSlave _last.uid>><</link>> are here.<br>
+        <</if>>
+    <</if>>
+<</widget>>
 :: workOption {"position":"875,0"}
 <<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>

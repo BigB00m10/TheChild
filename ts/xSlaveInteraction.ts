@@ -1373,7 +1373,7 @@ window.Interactions["slave"] = {
           },
           cumInside: {
             canBeShown: () => Temporary().okBj && Temporary().sucking,
-            optionText: "⛽ Cum inside $npc.pronoun mouth.",
+            optionText: "⛽ Cum inside $npc.possessive mouth.",
             contents: `You reach your climax and release your seed inside $npc.name's mouth.
             <<set 
               Player.manageEnergy(1);

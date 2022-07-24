@@ -94,7 +94,7 @@ You received: <<- $onlineStore.bought.items.map(function(item){return item.count
 
 <<if !Player.hasAchievement("boughtMattress") && OnlineStore.isBought("mattress")>>\
     <<set $achievements.push("boughtMattress")>>\
-    ''Delivery man'': "Do you need help you carring the Matress?<<emoji 🙂>>"
+    ''Delivery man'': "Do you need help you carrying the Mattress?<<emoji 🙂>>"
     ''$player.name'': "NO!!.. No thanks, I can do it myself.<<emoji 😅>>"
 
 <</if>>\

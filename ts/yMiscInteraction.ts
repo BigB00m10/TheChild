@@ -21,6 +21,13 @@ window.Interactions["houseSlave"] = {
       altOptions(npc, current) {
         if (Temporary().askedToStay) return current;
         window.Person.setStatus("slave");
+        return {
+          back: {
+            optionText: "🔙 Go back.",
+            contents: "<<goto $returnPassage>>",
+            action: true,
+          },
+        };
       },
       next: {
         letGo: {

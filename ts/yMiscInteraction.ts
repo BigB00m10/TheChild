@@ -36,6 +36,7 @@ window.Interactions["houseSlave"] = {
           ''$npc.name'': Thank you!!<<emoji 😊>>`,
           npcStats: ["obedience+30", "love+5"],
           showNpcStats: true,
+          timeIncreaseNpcHunger: false,
         },
         persist: {
           optionText: "👇 Ignore $npc.pronoun.",
@@ -77,4 +78,5 @@ window.Interactions["houseSlave"] = {
     ...window.Interactions.slave.options,
   },
   defaultStopOption: "✋ Leave $npc.pronoun alone",
+  timeIncreaseNpcHunger: true,
 };

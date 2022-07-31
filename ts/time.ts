@@ -69,6 +69,7 @@ class Now {
         slave.fear = Math.max(0, slave.fear - 10);
         slave.hunger = Math.min(100, slave.hunger + 10);
         slave.freedomWish = Math.max(0, slave.freedomWish - 5);
+        slave.lust = Math.max(0, slave.lust - 1);
         if (slave.hunger >= 90)
           slave.love = Math.max(0, slave.love - (slave.hunger - 80));
         if (slave.punishments.includes("naked")) {

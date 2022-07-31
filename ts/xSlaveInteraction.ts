@@ -85,18 +85,35 @@ window.Interactions["slave"] = {
               optionText: "👉 Finger-train $npc.possessive $npc.genitals.",
               minutesCost: 10,
               contents: `<<if $npc.pussyTraining lt 20>>\
-                You gently rub your finger in $npc.name's $npc.genitals hole.
-                You can feel your finger getting wet <<emoji 💧>>.
+                  You gently rub your finger in $npc.name's $npc.genitals hole.
+                  You can feel your finger getting wet <<emoji 💧>>.
                 <<elseif $npc.pussyTraining lt 40>>\
-                You manage to push your finger inside $npc.name.
-                You can feel $npc.possessive $npc.genitals tightening around your finger. <<emoji 😛>>
+                  You manage to push your finger inside $npc.name.
+                  You can feel $npc.possessive $npc.genitals tightening around your finger. <<emoji 😛>>
                 <<else>>\
-                After just a little bit of meddling, your finger slides right in!
-                You rub $npc.name's insides making $npc.pronoun body react to it. <<emoji 😇>>\
+                  After just a little bit of meddling, your finger slides right in!
+                  You rub $npc.name's insides making $npc.pronoun body react to it. <<emoji 😇>>\
                 <</if>>`,
               npcStats: ["pussyTraining%+40", "lust+10%", "+aroused"],
               showNpcStats: true,
               next: afterStrip,
+              altOptions(npc, current) {
+                if (npc.pussyTraining >= 40 && npc.lust >= 80)
+                  return {
+                    cum: {
+                      optionText: "💦 Make $npc.pronoun cum",
+                      contents: `You vigorously rub inside $npc.name's vagina while you rub $npc.possessive clitoris at the same time making $npc.pronoun arc her body with the pleasure.
+                      It doesn't take long until $npc.pronoun cums making your hand wet all over.`,
+                      next: afterStrip,
+                    },
+                    else: {
+                      optionText: "↩ Do something else",
+                      contents: "What do you want to do next?",
+                      next: afterStrip,
+                    },
+                  };
+                return current;
+              },
             },
             pushDickVag: {
               playerRequirements: ["gender=male"],

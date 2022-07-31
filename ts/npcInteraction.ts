@@ -23,6 +23,7 @@ interface NpcInteraction {
   baseRoute?: (npc: Npc) => string;
   showIfEmpty?: boolean;
   action?: boolean;
+  timeIncreaseNpcHunger?: boolean | undefined;
 }
 interface NpcInteractionCollection {
   options:
@@ -124,7 +125,7 @@ Macro.add("npcInteraction", {
         ? interaction.altMinutes(interaction.minutesCost)
         : interaction.minutesCost;
       window.Now.addMinutes(minutes);
-      if (collection.timeIncreaseNpcHunger && interaction.showNpcStats)
+      if ((collection.timeIncreaseNpcHunger || interaction.timeIncreaseNpcHunger) && interaction.showNpcStats && interaction.timeIncreaseNpcHunger !== false)
         npcHungerIncrease = Math.max(1, Math.round((minutes / 8) * 0.46));
     }
     if (interaction && interaction.npcStats) {

@@ -92,27 +92,38 @@ window.Interactions["slave"] = {
                   You can feel $npc.possessive $npc.genitals tightening around your finger. <<emoji 😛>>
                 <<else>>\
                   After just a little bit of meddling, your finger slides right in!
-                  You rub $npc.name's insides making $npc.pronoun body react to it. <<emoji 😇>>\
+                  You rub $npc.name's insides making $npc.pronoun body react to it. <<emoji 😇>>
+                  <<if $npc.lust gte 60>>\
+
+                    $npc.GenPronoun is breathing hard. Looks like $npc.name is really enjoying this.\
+                  <</if>>\
                 <</if>>`,
               npcStats: ["pussyTraining%+40", "lust+10%", "+aroused"],
               showNpcStats: true,
-              next: afterStrip,
+              next: {
+                cum: {
+                  optionText: "💦 Make $npc.pronoun cum",
+                  contents: `You vigorously rub inside $npc.name's vagina while you rub $npc.possessive clitoris at the same time making $npc.pronoun arc her body with the pleasure.
+                  It doesn't take long until $npc.pronoun cums making your hand wet all over.`,
+                  npcStats: [
+                    "lust+5%",
+                    "love+5",
+                    "freedomWish-10",
+                    "hunger+10",
+                  ],
+                  showNpcStats: true,
+                  next: afterStrip,
+                },
+                else: {
+                  optionText: "↩ Do something else",
+                  contents: "What do you want to do next?",
+                  next: afterStrip,
+                },
+              },
               altOptions(npc, current) {
-                if (npc.pussyTraining >= 40 && npc.lust >= 80)
-                  return {
-                    cum: {
-                      optionText: "💦 Make $npc.pronoun cum",
-                      contents: `You vigorously rub inside $npc.name's vagina while you rub $npc.possessive clitoris at the same time making $npc.pronoun arc her body with the pleasure.
-                      It doesn't take long until $npc.pronoun cums making your hand wet all over.`,
-                      next: afterStrip,
-                    },
-                    else: {
-                      optionText: "↩ Do something else",
-                      contents: "What do you want to do next?",
-                      next: afterStrip,
-                    },
-                  };
-                return current;
+                if (npc.pussyTraining >= 40 && npc.lust >= 60) return current;
+                Variables().npcInteractionRoute = "slave.pushDown.strip";
+                return afterStrip();
               },
             },
             pushDickVag: {

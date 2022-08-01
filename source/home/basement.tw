@@ -43,10 +43,10 @@
         <div class="one-half column">\
             <<if $slaves.length > 0>>\
                 Approach slave:
-                <<for _slave range $slaves>>\
+                <<for _slave range $slaves>><<if _slave.location == 'basement'>>\
                     <<npcGenderSymbol _slave>>\
                     <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<openNpcInteraction slave " + _slave.uid + ">><</link>>">>
-                <</for>>\
+                <</if>><</for>>\
             <</if>>\
         </div>\
         <div class="one-half column">\
@@ -54,7 +54,7 @@
             <<if _availableBeds <= 0>>\
                 There's no more room for more slaves. You need to buy Mattresses if you want more.
             <<else>>\
-                There's room for <<- _availableBeds>> more slave<<if _availableBeds gt 1>>s<</if>>.
+                There's room for _availableBeds more slave<<if _availableBeds gt 1>>s<</if>>.
             <</if>>\
         </div>\
     </div>

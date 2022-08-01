@@ -1,6 +1,5 @@
 :: bed {"position":"700,825"}
 <<scenery bed>>
-<<wanderingSlaves>>\
 <<if $player.sleeping>>\
 	As the sun reveals the world to a nice <<- Now.getWeekDay()>> morning, you climb out of bed, ready to start a new day. <<- either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
 <<else>>\
@@ -12,6 +11,10 @@
     <<keyOption [[Go check|receivePacket]] 🚪>>
 <<else>>
     <<unlessEmergency>>\
+        <<wanderingSlaves>>\
+        <<set _slaves = BedRoom.getDemandingSlaves()>>\
+        <<set _demandIndex to 0>>\
+        <<include slaveDemand>>\
         <<keyOption [[Leave your room|main]] 🚪>>
         <<keyOption [[Watch porn|watchPorn]] 💗>>: 30min
         <<keyOption [[Shop online using your laptop|onlineStore]] 🛒>>
@@ -24,10 +27,14 @@
 :: main {"position":"700,650"}
 <<scenery mainRoom>>
 You are currently standing in the middle of the main room of your house.
-<<wanderingSlaves>>\
 
 ''Is there something you want to do in here?''
+
 <<unlessEmergency>>\
+    <<wanderingSlaves>>\
+    <<set _slaves = MainRoom.getDemandingSlaves()>>\
+    <<set _demandIndex to 0>>\
+    <<include slaveDemand>>\
     <<keyOption [[Watch TV|watchTv]] 📺>>: 30min
     <<include workOption>>\
     <<keyOption [[Go outside|home]] 🚪>>
@@ -40,5 +47,5 @@ You are currently standing in the middle of the main room of your house.
 <<include main>>\
 :: watchPorn {"position":"600,1000"}
 <<addMinutes 30>>\
-@@color:yellow;You spend the next half hour skimming through porn and jerking off.@@
+@@color:yellow;You spend the next half hour skimming through porn and <<if $player.gender!='male'>>buffing the muffin<<else>>jerking off<</if>>.@@
 <<include bed>>\

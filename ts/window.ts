@@ -6,6 +6,8 @@ interface Window {
   Person: Person;
   PersonGeneration: PersonGeneration;
   Basement: Basement;
+  MainRoom: MainRoom;
+  BedRoom: BedRoom;
   OnlineStore: OnlineStore;
   Interactions: Record<string, NpcInteractionCollection>;
 }
@@ -16,6 +18,8 @@ window.Player = new Player();
 window.Person = new Person();
 window.OnlineStore = new OnlineStore();
 window.Basement = new Basement();
+window.MainRoom = new MainRoom();
+window.BedRoom = new BedRoom();
 window.PersonGeneration = new PersonGeneration();
 if (!window.Interactions) window.Interactions = {};
 let keyBuffer = [];

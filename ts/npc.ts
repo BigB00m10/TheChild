@@ -674,4 +674,15 @@ const femaleNames: string[] = [
   "Summer",
   "Alana",
 ];
-class Personality {}
+class PersonUniqueness {
+  name: string;
+  curious: boolean;
+  naughty: boolean;
+  energetic: boolean;
+  shy: boolean;
+  nerd: boolean;
+  homePersons: PersonUniqueness[];
+  homeOtherNpc: Npc[];
+  apply: (person: Person) => void;
+  appearingChance: number;
+}

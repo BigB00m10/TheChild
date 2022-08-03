@@ -1,4 +1,7 @@
 :: npcStats [nobr] {"position":"750,0"}
+<<if typeof $npc == 'number'>>
+    <<set $npc to Person.get($npc)>>
+<</if>>
 <<run
     ['love', 'obedience', 'lust', 'pussyTraining', 'anusTraining', 'mouthTraining'].forEach(function(name) {
         Meter.del(name);

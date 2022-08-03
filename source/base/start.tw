@@ -1,4 +1,4 @@
-:: Start {"position":"0,125"}
+:: Start {"position":"1075,875"}
 <<set _genderOptions = ["man", "woman"]>>\
 Your name is <<textbox "$player.name" "David">>, a young <<listbox '_gender' autoselect>><<optionsfrom _genderOptions>><</listbox>>
  living by <span id="pronoun">him</span>self in a small home. To the outside world, you’re the definition of an average person, but behind closed doors, you're anything but normal.
@@ -12,7 +12,7 @@ It's currently a nice Monday morning and the start of a new life. For too long h
     Player.setGender(_gender == "man" ? "male" : "female");
     $player.name to $('#textbox-playername').val();
     >>
-  <<goto IntroBed>>
+  <<goto IntroBed>>/*[[IntroBed]]*/
 <</keyAction>>
 <<done>>
   <<run

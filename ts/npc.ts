@@ -144,7 +144,7 @@ abstract class Npc {
       }
     });
   }
-  static get(uid: Uid): Npc {
+  get(uid: Uid): Npc {
     return Variables().slaves.firstOrDefault(
       (slave: Person) => slave.uid == uid
     );

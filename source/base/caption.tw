@@ -34,9 +34,9 @@ Energy:<<if $cheat>>\
             <div class="eight columns" id="stats"><br></div>\
             <div class="four columns">\
                 <<for _slaveIndex = 0; _slaveIndex lt $slaves.length; _slaveIndex++>>\
-                    <<set _slave = $slaves[_slaveIndex]; _genderSymbol = _slave.gender != 'male'?'♀':'♂'>>\
-                    <<emoji _genderSymbol>>\
-                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $npc to " + JSON.stringify(_slave) + ", $npc.index to " + _slaveIndex + ">><<replace '#stats'>><<include npcStats>><</replace>><</link>>">>
+                    <<set _slave = $slaves[_slaveIndex];>>\
+                    <<npcGenderSymbol _slave>>\
+                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $npc to " + _slave.uid + ">><<replace '#stats'>><<include npcStats>>\nLocation: $npc.location<</replace>><</link>>">>
                 <</for>>\
             </div>\
         </div>\

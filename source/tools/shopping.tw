@@ -1,4 +1,4 @@
-:: buyProduct {"position":"125,125"}
+:: buyProduct {"position":"0,125"}
 $buyProduct.description
 
 <<set

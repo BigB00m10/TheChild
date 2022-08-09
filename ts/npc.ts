@@ -54,10 +54,11 @@ abstract class Npc {
   genitals: Genitals;
   status: NpcStatus = "citizen";
   need: string;
-  index: number | false = false;
+  index: undefined;
   achievements: string[] = [];
   punishments: string[] = [];
   location: string = "unknown";
+  uniqueness: PersonUniqueness;
   hasAchievement(achievement: string, npc?: Npc): boolean {
     if (!npc) npc = Variables().npc;
     return npc.achievements.includes(achievement);
@@ -151,7 +152,7 @@ abstract class Npc {
   }
 }
 class Person extends Npc {
-  version: number = 1;
+  version: number = 2;
   title: string;
   pronoun: string;
   genPronoun: string;

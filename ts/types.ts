@@ -132,8 +132,8 @@ class PseudoRandom {
   }
 }
 type Uid = number;
-function getUid(): Uid {
-  let variables = Variables();
+function getUid(variables?: any): Uid {
+  if (!variables) variables = Variables();
   variables.lastUid = variables.lastUid ? variables.lastUid + 1 : 1;
   return variables.lastUid;
 }

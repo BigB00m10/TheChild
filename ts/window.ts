@@ -60,6 +60,11 @@ $(document).on(":passageinit", () => {
       let variables = save.state.history[stateIndex].variables;
       let slaves = variables.slaves as Person[];
       if (slaves && slaves.length) {
+        let reassignUid = false;
+        if (slaves[0].version == 1) {
+          variables.lastUid = 0;
+          reassignUid = true;
+        }
         slaves.forEach((slave: Person) => {
           if (!slave.GenPronoun) {
             slave.GenPronoun = slave.gender != "male" ? "She" : "He";
@@ -84,11 +89,13 @@ $(document).on(":passageinit", () => {
           if (slave.punishments == undefined) slave.punishments = [];
           if (slave.location == undefined) slave.location = "basement";
           if (slave.achievements == undefined) slave.achievements = [];
-          if (slave.uid == undefined) slave.uid = getUid();
+          if (slave.uid == undefined || reassignUid){
+            slave.uid = getUid(variables);
+            delete slave.index;
+          }
           if (slave.status == "slave" && slave.location != "basement")
             slave.status = "home slave";
           if (!slave.version) {
-            slave.version = 1;
             if (!slave.analVirgin)
               window.Person.setAchievement("playerTookAnalVirginity", slave);
             if (!slave.genitalVirgin)
@@ -102,6 +109,7 @@ $(document).on(":passageinit", () => {
             slave.faceSpermAmount = 0;
             slave.bodySpermAmount = 0;
           }
+          slave.version = window.Person.version;
         });
       }
       if (variables.settings.anal == undefined) variables.settings.anal = true;

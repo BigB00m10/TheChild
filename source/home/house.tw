@@ -18,7 +18,7 @@
         <<keyOption [[Leave your room|main]] 🚪>>
         <<keyOption [[Watch porn|watchPorn]] 💗>>: 30min
         <<keyOption [[Shop online using your laptop|onlineStore]] 🛒>>
-        <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '07:00 AM')>>\
+        <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>\
             <<keyAction Sleep 😴>><<sleep>><</keyAction>>
         <</if>>\
     <</unlessEmergency>>\

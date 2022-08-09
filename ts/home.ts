@@ -21,7 +21,6 @@ abstract class HomeSpace {
       const slave = slaves[slaveIndex];
       if (slave.location != location || slave.age < 1) continue;
       if (slave.hunger >= 25) {
-        slave.index = slaveIndex;
         slave.need = "hunger";
         candidates.push(slave);
       }
@@ -55,6 +54,11 @@ class Basement implements HomeSpace {
   }
   getHungrySlaves(): Person[] {
     return Variables().slaves.filter((slave: Person) => slave.hunger > 25);
+  }
+  deleteSlave(slave: Person) {
+    let slaves: Person[] = Variables().slaves;
+    let index = slaves.indexOf(slave);
+    if (index != -1) slaves.splice(index, 1);
   }
 }
 class MainRoom implements HomeSpace {

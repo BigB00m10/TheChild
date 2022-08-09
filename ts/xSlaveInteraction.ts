@@ -303,7 +303,7 @@ window.Interactions["slave"] = {
                             "hunger+5",
                           ];
                         if (npc.pussyTraining < 60)
-                          return ["fear+5", "pussyTraining%+80"];
+                          return ["fear+5", "pussyTraining%+80", "hunger+5"];
                         let stats = [
                           "pussyTraining+10",
                           "lust+10%",
@@ -502,7 +502,7 @@ window.Interactions["slave"] = {
                             "hunger+5",
                           ];
                         if (npc.anusTraining < 60)
-                          return ["fear+5", "anusTraining%+80"];
+                          return ["fear+5", "anusTraining%+80", "hunger+5"];
                         let stats = [
                           "anusTraining+10",
                           "lust+10%",
@@ -723,7 +723,7 @@ window.Interactions["slave"] = {
                             "hunger+5",
                           ];
                         if (npc.pussyTraining < 60)
-                          return ["fear+5", "pussyTraining%+80"];
+                          return ["fear+5", "pussyTraining%+80", "hunger+5"];
                         let stats = [
                           "pussyTraining+10",
                           "lust+10%",
@@ -911,7 +911,7 @@ window.Interactions["slave"] = {
                             "hunger+5",
                           ];
                         if (npc.anusTraining < 60)
-                          return ["fear+5", "anusTraining%+80"];
+                          return ["fear+5", "anusTraining%+80", "hunger+5"];
                         let stats = [
                           "anusTraining+10",
                           "lust+10%",
@@ -1494,7 +1494,7 @@ window.Interactions["slave"] = {
 
                 <<button "✅ Yes, sell $npc.pronoun">>
                   <<cash _value.total>>
-                  <<run $slaves.deleteAt($npc.index);Dialog.close()>>
+                  <<run Basement.deleteSlave($npc);Dialog.close()>>
                   <<goto basement>>
                 <</button>>\
                 <span id="escAct">\

@@ -17,14 +17,15 @@
                 Approach slave:
                 <<set _charcode = 97>>\
                 <<for _slave range $slaves>><<if _slave.location == 'basement'>>\
-                    <<if _charcode == 104>><<set _charcode += 2>><</if>>\
                     <<set 
+                        if(_charcode == 104) _charcode += 2; 
                         _char = String.fromCharCode(_charcode++);
                         _keyId = _char + "KeyAct";
                     >>\
                     <span @id="_keyId">\
-                    <<npcGenderSymbol _slave>>\
-                    <<print "<<link '(" + _char.toUpperCase() + ") _slave.name (_slave.age y.o. _slave.hairColor hair)'>><<openNpcInteraction slave " + _slave.uid + ">><</link>>">></span>
+                        <<npcGenderSymbol _slave>>\
+                        <<print "<<link '(" + _char.toUpperCase() + ") _slave.name (_slave.age y.o. _slave.hairColor hair)'>><<openNpcInteraction slave " + _slave.uid + ">><</link>>">>
+                    </span>\
                 <</if>><</for>>\
             <</if>>\
         </div>\

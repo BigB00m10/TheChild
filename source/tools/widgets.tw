@@ -68,12 +68,29 @@
     <<set _wandering = Person.getWandering()>>
     <<if _wandering.length>>
         <<if _wandering.length == 1>>
-            <span @id="_keyId"><<link _wandering[0].name>><<openNpcInteraction houseSlave _wandering[0].uid>><</link>></span> is here.<br>
-        <<else>>\
-            <<set _last = _wandering.pop()>>
+            <<set _linkText = "(A) " + _wandering[0].name>>
+            <span id="aKeyAct"><<link _linkText>><<openNpcInteraction houseSlave _wandering[0].uid>><</link>></span> is here.<br>
+        <<else>>
+            <<set 
+                _last = _wandering.pop();
+                _charcode = 97;
+            >>
             <<for _slave range _wandering>>
-                <<print '<<link _slave.name>><<openNpcInteraction houseSlave ' + _slave.uid + '>><</link>>'>>,
-            <</for>> and <<link _last.name>><<openNpcInteraction houseSlave _last.uid>><</link>> are here.<br>
+                <<set
+                    if(_charcode == 104) _charcode += 2; 
+                    _char = String.fromCharCode(_charcode++);
+                    _linkText = '(' + _char.toUpperCase() + ') ' + _slave.name;
+                    _keyId = _char + 'KeyAct';
+                >><span @id='_keyId'><<print '<<link _linkText>><<openNpcInteraction houseSlave ' + _slave.uid + '>><</link>>'>></span>,
+            <</for>>
+            <<set 
+                _char = String.fromCharCode(_charcode);
+                _linkText = '(' + _char.toUpperCase() + ') ' + _last.name;
+                _keyId = _char + 'KeyAct';
+            >>
+            and <span @id='_keyId'>
+                <<link _linkText>><<openNpcInteraction houseSlave _last.uid>><</link>>
+            </span> are here.<br>
         <</if>>
     <</if>>
 <</widget>>

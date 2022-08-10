@@ -58,7 +58,6 @@ abstract class Npc {
   achievements: string[] = [];
   punishments: string[] = [];
   location: string = "unknown";
-  uniqueness: PersonUniqueness;
   hasAchievement(achievement: string, npc?: Npc): boolean {
     if (!npc) npc = Variables().npc;
     return npc.achievements.includes(achievement);
@@ -128,11 +127,11 @@ abstract class Npc {
   static updateLocations(currentDate: Date): void {
     let variables = Variables();
     if (!currentDate) currentDate = variables.now.date;
-    //let sleepTime = window.Now.isBetween("10:00 PM", "7:00 AM", currentDate);
+    //const sleepTime = window.Now.isBetween("10:00 PM", "7:00 AM", currentDate);
     let homeSpaces = variables.player.home.spaces.filter(
       (space: string) => space != "basement"
     );
-    let baseSeed = currentDate.getTime() - 1649048400000;
+    const baseSeed = currentDate.getTime() - 1649048400000;
     variables.slaves.forEach((slave: Person) => {
       switch (slave.status) {
         case "home slave":
@@ -165,6 +164,7 @@ class Person extends Npc {
   eyeColor: string;
   skin: string;
   haveClothes: boolean = true;
+  uniqueness: PersonUniqueness;
   generate(gen?: PersonGeneration): Person {
     if (gen === undefined) gen = new PersonGeneration();
     let person = new Person();
@@ -676,14 +676,79 @@ const femaleNames: string[] = [
   "Alana",
 ];
 class PersonUniqueness {
-  name: string;
-  curious: boolean;
-  naughty: boolean;
-  energetic: boolean;
-  shy: boolean;
-  nerd: boolean;
-  homePersons: PersonUniqueness[];
-  homeOtherNpc: Npc[];
-  apply: (person: Person) => void;
-  appearingChance: number;
+  name: string; //Personality name or personality role in home
+  curious?: boolean; //Likes to learn new things, gives attention to others, high empathy
+  naughty?: boolean; //Not easily disgusted, interested in feeling good mutually, open to every kink like incest or bestiality
+  energetic?: boolean; //Optimistic, brave, takes initiative, wants to get attention, can become sadist
+  shy?: boolean; //Not very talkative, tendency to blush, secretive, can become masochist
+  diligent?: boolean; //Knowledgeable, does not hesitate, strict, does what it needs to be done
+  homePersons?: PersonUniqueness[]; //Personalities of other persons at home (family, guardians, roommates, etc...)
+  homeOtherNpc?: Npc[]; //Other NPCs in this person home that are not persons (pets basically)
+  apply?: (person: Person) => void; //Function to modify the person that this uniqueness is applied, if necessary (remove virginity, change stat, etc...)
+  appearingChance?: number = 50; //Mathematical weight, the higher the default value is the rarer will be for the lower values
+  ageRange?:Range;
 }
+const commonHomeMates: Record<string, PersonUniqueness[]> = {
+};
+const personUniquenessPresets: PersonUniqueness[] = [
+  {
+    name: "Bottom",
+    curious: true,
+    shy: true,
+    homePersons: [
+      {
+        name: "dad",
+        diligent: true,
+      },
+      {
+        name: "mom",
+        curious: true,
+      },
+    ],
+  },
+  {
+    name: "Jumpy",
+    curious: true,
+    naughty: true,
+    energetic: true,
+    homePersons: [
+      {
+        name: "dad",
+        shy: true,
+      },
+      {
+        name: "mom",
+        curious: true,
+        diligent: true,
+      },
+      {
+        name: "sister",
+        shy: true,
+      },
+    ],
+  },
+  {
+    name: "ExperiencedShy",
+    shy: true,
+    homePersons: [
+      {
+        name: "dad",
+        shy: true,
+        curious: true,
+        naughty: true,
+      },
+      {
+        name: "mom",
+        curious: true,
+        diligent: true,
+      },
+      {
+        name: "brother",
+        naughty: true,
+        energetic: true,
+      },
+    ],
+    apply(person) {
+    },
+  },
+];

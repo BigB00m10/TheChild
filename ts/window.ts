@@ -10,6 +10,7 @@ interface Window {
   BedRoom: BedRoom;
   OnlineStore: OnlineStore;
   Interactions: Record<string, NpcInteractionCollection>;
+  PersonUniquenessPresets : PersonUniqueness[];
 }
 window.Now = new Now();
 window.Homes = Homes;
@@ -21,6 +22,7 @@ window.Basement = new Basement();
 window.MainRoom = new MainRoom();
 window.BedRoom = new BedRoom();
 window.PersonGeneration = new PersonGeneration();
+window.PersonUniquenessPresets = personUniquenessPresets;
 if (!window.Interactions) window.Interactions = {};
 let keyBuffer = [];
 let lastKeyTime = Date.now();
@@ -65,6 +67,7 @@ $(document).on(":passageinit", () => {
           variables.lastUid = 0;
           reassignUid = true;
         }
+        let addSlaveUniqueness = !slaves[0].uniqueness;
         slaves.forEach((slave: Person) => {
           if (!slave.GenPronoun) {
             slave.GenPronoun = slave.gender != "male" ? "She" : "He";
@@ -89,7 +92,7 @@ $(document).on(":passageinit", () => {
           if (slave.punishments == undefined) slave.punishments = [];
           if (slave.location == undefined) slave.location = "basement";
           if (slave.achievements == undefined) slave.achievements = [];
-          if (slave.uid == undefined || reassignUid){
+          if (slave.uid == undefined || reassignUid) {
             slave.uid = getUid(variables);
             delete slave.index;
           }
@@ -110,7 +113,15 @@ $(document).on(":passageinit", () => {
             slave.bodySpermAmount = 0;
           }
           slave.version = window.Person.version;
+          if (!slave.uniqueness) PersonUniqueness.applyRandom(slave, false);
         });
+        if (addSlaveUniqueness) {
+          Dialog.setup("Slave personalities");
+          Dialog.wiki(
+            "Old save file loaded.\nRandom personalities have been assigned to the already captured slaves."
+          );
+          Dialog.open();
+        }
       }
       if (variables.settings.anal == undefined) variables.settings.anal = true;
       if (variables.settings.slaveSelling == undefined)

@@ -150,6 +150,12 @@ abstract class Npc {
     );
   }
 }
+type AnimalSpecies = "dog" | "cat" | "rabbit" | "horse" | "pig" | "cow";
+type RoughSize = "tiny" | "small" | "normal" | "big" | "very big";
+class Animal extends Npc {
+  species: AnimalSpecies;
+  roughSize?: RoughSize;
+}
 class Person extends Npc {
   version: number = 2;
   title: string;
@@ -202,6 +208,7 @@ class Person extends Npc {
     person.hairStyle = hairStyles.random();
     person.eyeColor = gen.eyeColors.random();
     person.uid = getUid();
+    PersonUniqueness.applyRandom(person);
     return person;
   }
   getWandering(): Person[] {
@@ -675,6 +682,43 @@ const femaleNames: string[] = [
   "Summer",
   "Alana",
 ];
+type PersonGrowthStage =
+  | "baby"
+  | "toddler"
+  | "junior"
+  | "elementary"
+  | "pubescent"
+  | "postPubescent";
+interface PersonGrowthStageRange {
+  from: number;
+  to: number;
+}
+const GrowthStageAge: Record<PersonGrowthStage, PersonGrowthStageRange> = {
+  baby: {
+    from: 0,
+    to: 0,
+  },
+  toddler: {
+    from: 1,
+    to: 4,
+  },
+  junior: {
+    from: 5,
+    to: 7,
+  },
+  elementary: {
+    from: 8,
+    to: 11,
+  },
+  pubescent: {
+    from: 12,
+    to: 15,
+  },
+  postPubescent: {
+    from: 16,
+    to: 25,
+  },
+};
 class PersonUniqueness {
   name: string; //Personality name or personality role in home
   curious?: boolean; //Likes to learn new things, gives attention to others, high empathy
@@ -684,50 +728,71 @@ class PersonUniqueness {
   diligent?: boolean; //Knowledgeable, does not hesitate, strict, does what it needs to be done
   homePersons?: PersonUniqueness[]; //Personalities of other persons at home (family, guardians, roommates, etc...)
   homeOtherNpc?: Npc[]; //Other NPCs in this person home that are not persons (pets basically)
-  apply?: (person: Person) => void; //Function to modify the person that this uniqueness is applied, if necessary (remove virginity, change stat, etc...)
+  apply?: (person: Person) => void = () => {}; //Function to modify the person that this uniqueness is applied, if necessary (remove virginity, change stat, etc...)
   appearingChance?: number = 50; //Mathematical weight, the higher the default value is the rarer will be for the lower values
-  ageRange?:Range;
+  ageRange?: PersonGrowthStageRange;
+  constructor(prototype: PersonUniqueness) {
+    Object.assign(this, prototype);
+  }
+  static applyRandom(person: Person, apply = true): PersonUniqueness {
+    let randomNumber = PseudoRandom.getFromRange(
+      PseudoRandom.getSeed(person.age, person.name),
+      0,
+      personUniquenessPresets.reduce(
+        (acc, preset) => acc + preset.appearingChance,
+        0
+      )
+    );
+    for (const preset of personUniquenessPresets) {
+      if (randomNumber < preset.appearingChance) {
+        person.uniqueness = preset;
+        if (apply) preset.apply(person);
+        console.info(preset);
+        return;
+      }
+      randomNumber -= preset.appearingChance;
+    }
+  }
 }
-const commonHomeMates: Record<string, PersonUniqueness[]> = {
-};
+const commonHomeMates: Record<string, PersonUniqueness[]> = {};
 const personUniquenessPresets: PersonUniqueness[] = [
-  {
+  new PersonUniqueness({
     name: "Bottom",
     curious: true,
     shy: true,
     homePersons: [
       {
-        name: "dad",
-        diligent: true,
-      },
-      {
         name: "mom",
         curious: true,
       },
+      {
+        name: "dad",
+        diligent: true,
+      },
     ],
-  },
-  {
+  }),
+  new PersonUniqueness({
     name: "Jumpy",
     curious: true,
     naughty: true,
     energetic: true,
     homePersons: [
       {
-        name: "dad",
-        shy: true,
-      },
-      {
         name: "mom",
         curious: true,
         diligent: true,
       },
       {
-        name: "sister",
+        name: "dad",
+        shy: true,
+      },
+      {
+        name: "sis",
         shy: true,
       },
     ],
-  },
-  {
+  }),
+  new PersonUniqueness({
     name: "ExperiencedShy",
     shy: true,
     homePersons: [
@@ -743,12 +808,162 @@ const personUniquenessPresets: PersonUniqueness[] = [
         diligent: true,
       },
       {
-        name: "brother",
+        name: "bro",
         naughty: true,
         energetic: true,
       },
     ],
-    apply(person) {
+    apply(kid) {
+      kid.mouthVirgin = false;
+      kid.mouthTraining = Math.min(100, kid.age * 9);
+      if (!kid.hasPussy || kid.age < 6) {
+        kid.analVirgin = false;
+        kid.anusTraining = 60;
+      } else {
+        kid.genitalVirgin = false;
+        kid.pussyTraining = 60;
+      }
     },
-  },
+    appearingChance: 2,
+  }),
+  new PersonUniqueness({
+    name: "Carrabina",
+    curious: true,
+    naughty: true,
+    shy: true,
+    diligent: true,
+    homePersons: [
+      {
+        name: "mom",
+        curious: true,
+      },
+      {
+        name: "dad",
+        diligent: true,
+        energetic: true,
+      },
+      {
+        name: "bro",
+        naughty: true,
+        curious: true,
+        energetic: true,
+      },
+    ],
+    apply(kid) {
+      if (kid.age > 4) {
+        kid.lust = 40;
+        if (kid.age > 7) {
+          kid.mouthVirgin = false;
+          kid.mouthTraining = Math.min(100, (kid.age - 7) * 34);
+          kid.lust = 60;
+          if (kid.age > 8) {
+            kid.analVirgin = false;
+            kid.anusTraining = Math.min(80, (kid.age - 8) * 60);
+          }
+        }
+      }
+    },
+    appearingChance: 10,
+  }),
+  new PersonUniqueness({
+    name: "ExperiencedOrphan",
+    naughty: true,
+    energetic: true,
+    diligent: true,
+    homePersons: [
+      {
+        name: "uncle",
+        curious: true,
+        naughty: true,
+      },
+      {
+        name: "sibling",
+        naughty: true,
+        energetic: true,
+      },
+      {
+        name: "uncle's girlfriend",
+        curious: true,
+        naughty: true,
+      },
+    ],
+    homeOtherNpc: [
+      {
+        name: "Poppy",
+        species: "rabbit",
+        status: "pet",
+      } as Animal,
+    ],
+    apply(kid) {
+      if (kid.age > 5) {
+        kid.genitalVirgin = false;
+        if (kid.hasPussy) kid.pussyTraining = 100;
+        kid.lust = 60;
+        kid.mouthVirgin = false;
+        kid.mouthTraining = 100;
+        kid.anusTraining = 10;
+      }
+    },
+    appearingChance: 5,
+  }),
+  new PersonUniqueness({
+    name: "Top",
+    curious: true,
+    energetic: true,
+    homePersons: [
+      {
+        name: "mom",
+        shy: true,
+      },
+      {
+        name: "dad",
+        shy: true,
+      },
+      {
+        name: "sis",
+        curious: true,
+        energetic: true,
+      },
+    ],
+    appearingChance: 75,
+  }),
+  new PersonUniqueness({
+    name: "Spy",
+    energetic: true,
+    homePersons: [
+      {
+        name: "pa",
+        diligent: true,
+      },
+      {
+        name: "ma",
+        curious: true,
+        energetic: true,
+      },
+    ],
+    homeOtherNpc: [
+      {
+        name: "Bond",
+        species: "dog",
+        roughSize: "big",
+      } as Animal,
+    ],
+    appearingChance: 30,
+  }),
+  new PersonUniqueness({
+    name: "strictParents",
+    energetic: true,
+    diligent: true,
+    curious: true,
+    homePersons: [
+      {
+        name: "mom",
+        diligent: true,
+      },
+      {
+        name: "dad",
+        diligent: true,
+      },
+    ],
+  }),
 ];

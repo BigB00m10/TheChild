@@ -12,7 +12,7 @@ $player.name
         <<set $player.cash += 100000;Engine.show()>>
     <</link>> \
 <</if>>\
-    Cash: ¤<<- $player.cash.toFixed(2)>>
+Cash: ¤<<- $player.cash.toFixed(2)>>
 <<if $cheat>>\
     <<link "+">>\
         <<set $player.energy = 100;Engine.show()>>
@@ -26,17 +26,28 @@ Energy:<<if $cheat>>\
 >><</link>></span><</if>>
 <<showmeter playerEnergy `$player.energy / 100`>>
 
-:: StoryMenu
+:: personProperties {"position":"250,125","size":"200,100"}
+<<include npcStats>>
+location: $npc.location
+<<if $cheat>>\
+    Personality preset: $npc.uniqueness.name <<button change>><<set _dialogTitle = "Personality for " + $npc.name>><<dialog _dialogTitle>>\
+        <<for _presetIndex = 0; _presetIndex lt PersonUniquenessPresets.length; _presetIndex++>>\
+            <<set _preset = PersonUniquenessPresets[_presetIndex]>>\
+            <<print '<<button "_preset.name (' + Person.getPersonalityDescription(_preset) + ')">><<set $npc.uniqueness = PersonUniquenessPresets[' + _presetIndex + '];Dialog.close()>><</button>>'>>
+        <</for>>\
+    <</dialog>><</button>>
+    Characteristics: <<- Person.getPersonalityDescription($npc.uniqueness)>>
+<</if>>\
+:: StoryMenu {"position":"125,125"}
 <<link "👨‍👩‍👧‍👦 Character stats">>
     <<dialog "Character stats">>
         <<set _dialogWidth = 'width:' + Math.min(1022, window.innerWidth - 84) + 'px'>>\
         <div class="row" @style="_dialogWidth">\
             <div class="eight columns" id="stats"><br></div>\
             <div class="four columns">\
-                <<for _slaveIndex = 0; _slaveIndex lt $slaves.length; _slaveIndex++>>\
-                    <<set _slave = $slaves[_slaveIndex];>>\
+                <<for _slave range $slaves>>\
                     <<npcGenderSymbol _slave>>\
-                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $npc to " + _slave.uid + ">><<replace '#stats'>><<include npcStats>>\nLocation: $npc.location<</replace>><</link>>">>
+                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $npc to " + _slave.uid + ">><<replace '#stats'>><<include personProperties>><</replace>><</link>>">>
                 <</for>>\
             </div>\
         </div>\

@@ -217,12 +217,10 @@ class Person extends Npc {
       (slave: Person) => slave.location == variables.scenery
     );
   }
-  getWanderingPhrase(): string {
-    let names = this.getWandering().map((slave: Person) => slave.name);
-    if (names.length == 0) return "";
-    if (names.length == 1) return names[0] + " is here.\n";
-    let last = names.pop();
-    return names.join(", ") + " and " + last + " are here.\n";
+  getPersonalityDescription(uniqueness: PersonUniqueness): string {
+    return Object.keys(uniqueness)
+      .filter((keyName) => typeof uniqueness[keyName] == "boolean")
+      .join(", ");
   }
 }
 interface GenderGeneration {
@@ -757,7 +755,7 @@ class PersonUniqueness {
 const commonHomeMates: Record<string, PersonUniqueness[]> = {};
 const personUniquenessPresets: PersonUniqueness[] = [
   new PersonUniqueness({
-    name: "Bottom",
+    name: "bottom",
     curious: true,
     shy: true,
     homePersons: [
@@ -772,7 +770,7 @@ const personUniquenessPresets: PersonUniqueness[] = [
     ],
   }),
   new PersonUniqueness({
-    name: "Jumpy",
+    name: "jumpy",
     curious: true,
     naughty: true,
     energetic: true,
@@ -793,7 +791,7 @@ const personUniquenessPresets: PersonUniqueness[] = [
     ],
   }),
   new PersonUniqueness({
-    name: "ExperiencedShy",
+    name: "experiencedShy",
     shy: true,
     homePersons: [
       {
@@ -866,7 +864,7 @@ const personUniquenessPresets: PersonUniqueness[] = [
     appearingChance: 10,
   }),
   new PersonUniqueness({
-    name: "ExperiencedOrphan",
+    name: "experiencedOrphan",
     naughty: true,
     energetic: true,
     diligent: true,
@@ -907,7 +905,7 @@ const personUniquenessPresets: PersonUniqueness[] = [
     appearingChance: 5,
   }),
   new PersonUniqueness({
-    name: "Top",
+    name: "top",
     curious: true,
     energetic: true,
     homePersons: [
@@ -928,7 +926,7 @@ const personUniquenessPresets: PersonUniqueness[] = [
     appearingChance: 75,
   }),
   new PersonUniqueness({
-    name: "Spy",
+    name: "spyX",
     energetic: true,
     homePersons: [
       {
@@ -948,7 +946,7 @@ const personUniquenessPresets: PersonUniqueness[] = [
         roughSize: "big",
       } as Animal,
     ],
-    appearingChance: 30,
+    appearingChance: 15,
   }),
   new PersonUniqueness({
     name: "strictParents",

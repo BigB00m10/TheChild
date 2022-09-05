@@ -31,6 +31,39 @@ window.Interactions["slave"] = {
   defaultStopOption: "✋ Leave $npc.pronoun alone",
   contents: "<<include slaveApproach>>",
   options: {
+    talk: {
+      optionText: "Talk to $npc.pronoun",
+      contents: `<<if $npc.fear gte 40>>\
+        <<emoji 😨>>$npc.name is trembling at your presence and is too scared to talk!\
+      <<else>>\
+        ''What do you want to ask $npc.name?''\
+      <</if>>`,
+      altOptions(npc, current) {
+        return npc.fear >= 40
+          ? (window.Interactions["slave"].options as Record<
+              string,
+              NpcInteraction
+            >)
+          : current;
+      },
+      next: {
+        howAreYou: {
+          canBeShown: () => !window.Person.hasAchievement("howAreYou"),
+          optionText: '"How are you today, $npc.name?"',
+          contents: `<<run Person.setAchievement("howAreYou")>>\
+          <<if $npc.uniqueness.shy && $npc.love lt 40>>\
+            ''$npc.name'': "..."<<if $npc.love gte 10 || $npc.lust gte 60>>\
+            $npc.name blushes but $npc.genPronoun doesn't say anything.<</if>>\
+          <<elseif $npc.uniqueness.energetic>>\
+            
+          <<else>>\
+          <</if>>`,
+          npcStats: ["love+1%"],
+          showNpcStats: true,
+          baseRoute: () => "slave.talk",
+        },
+      },
+    },
     pushDown: {
       optionText: "👇 Push $npc.pronoun down",
       contents: `You push $npc.name down, placing your body over $npc.pronoun.

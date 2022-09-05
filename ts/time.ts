@@ -29,7 +29,11 @@ class Now {
       this.dateFromTimeString(timeString, currentDate).getTime()
     );
   }
-  isBetween(fromTimeString: string, toTimeString: string, currentDate?: Date): boolean {
+  isBetween(
+    fromTimeString: string,
+    toTimeString: string,
+    currentDate?: Date
+  ): boolean {
     if (!currentDate) currentDate = this.getCurrentDate();
     var currentTimeStamp = currentDate.getTime();
     var fromTimeStamp = this.dateFromTimeString(
@@ -77,6 +81,7 @@ class Now {
             slave.obedience += Math.round((61 - slave.obedience) * 0.25);
           else slave.punishments.delete("naked");
         } else slave.obedience = Math.max(0, slave.obedience - 1);
+        window.Person.removeAchievement("howAreYou");
       });
       player.lust = Math.min(100, player.lust + 10);
     }

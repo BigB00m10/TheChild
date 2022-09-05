@@ -67,6 +67,10 @@ abstract class Npc {
     if (!this.hasAchievement(achievement, npc))
       npc.achievements.push(achievement);
   }
+  removeAchievement(achievement: string, npc?: Npc): void {
+    if (!npc) npc = Variables().npc;
+    npc.achievements.delete(achievement);
+  }
   getValue(): NpcValue {
     let npc = Variables().npc as Npc;
     const maxNonVirgin = 1500;

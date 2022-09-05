@@ -1,3 +1,4 @@
+type NpcInteractionOptions = Record<string, NpcInteraction>;
 interface NpcInteraction {
   canBeShown?: () => boolean;
   playerRequirements?: string[];
@@ -9,16 +10,14 @@ interface NpcInteraction {
   contents: string;
   npcStats?: string[] | ((npc: Npc) => string[]);
   playerStats?: string[];
-  next?:
-    | Record<string, NpcInteraction>
-    | (() => Record<string, NpcInteraction>);
+  next?: NpcInteractionOptions | (() => NpcInteractionOptions);
   stopOption?: string | false;
   showNpcStats?: boolean;
   minutesCost?: number;
   altOptions?: (
     npc: Npc,
-    current: Record<string, NpcInteraction>
-  ) => Record<string, NpcInteraction>;
+    current: NpcInteractionOptions
+  ) => NpcInteractionOptions;
   altMinutes?: (current: number) => number;
   baseRoute?: (npc: Npc) => string;
   showIfEmpty?: boolean;
@@ -26,9 +25,7 @@ interface NpcInteraction {
   timeIncreaseNpcHunger?: boolean | undefined;
 }
 interface NpcInteractionCollection {
-  options:
-    | Record<string, NpcInteraction>
-    | (() => Record<string, NpcInteraction>);
+  options: NpcInteractionOptions | (() => NpcInteractionOptions);
   contents: string;
   defaultStopOption?: string | false;
   timeIncreaseNpcHunger?: boolean;
@@ -125,7 +122,12 @@ Macro.add("npcInteraction", {
         ? interaction.altMinutes(interaction.minutesCost)
         : interaction.minutesCost;
       window.Now.addMinutes(minutes);
-      if ((collection.timeIncreaseNpcHunger || interaction.timeIncreaseNpcHunger) && interaction.showNpcStats && interaction.timeIncreaseNpcHunger !== false)
+      if (
+        (collection.timeIncreaseNpcHunger ||
+          interaction.timeIncreaseNpcHunger) &&
+        interaction.showNpcStats &&
+        interaction.timeIncreaseNpcHunger !== false
+      )
         npcHungerIncrease = Math.max(1, Math.round((minutes / 8) * 0.46));
     }
     if (interaction && interaction.npcStats) {

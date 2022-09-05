@@ -2,7 +2,7 @@ let afterStrip = () =>
   window.Interactions.slave.options["pushDown"].next.strip.next;
 let afterPenToMouth = () =>
   (window.Interactions.slave.options["penToMouth"].next as CallableFunction)();
-let cumOutsideOptions: Record<string, NpcInteraction> = {
+let cumOutsideOptions: NpcInteractionOptions = {
   cumBody: {
     optionText: "💦 Cum on $npc.possessive body.",
     contents: `Right when you're about to cum you pull out your dick from $npc.pronoun and shoot all your hot sperm all over $npc.possessive body.
@@ -27,40 +27,56 @@ let cumOutsideOptions: Record<string, NpcInteraction> = {
     next: () => afterStrip(),
   },
 };
+let baseInteractionRoute = () => Variables().npcInteractionRoute.split(".")[0];
+let talkOptions = () =>
+  window.Interactions[baseInteractionRoute()].options["talk"]
+    .next as NpcInteractionOptions;
 window.Interactions["slave"] = {
   defaultStopOption: "✋ Leave $npc.pronoun alone",
   contents: "<<include slaveApproach>>",
   options: {
     talk: {
-      optionText: "Talk to $npc.pronoun",
+      optionText: "👄 Talk to $npc.pronoun",
       contents: `<<if $npc.fear gte 40>>\
         <<emoji 😨>>$npc.name is trembling at your presence and is too scared to talk!\
       <<else>>\
         ''What do you want to ask $npc.name?''\
       <</if>>`,
       altOptions(npc, current) {
-        return npc.fear >= 40
-          ? (window.Interactions["slave"].options as Record<
-              string,
-              NpcInteraction
-            >)
-          : current;
+        if (npc.fear >= 40) {
+          Variables().npcInteractionRoute = baseInteractionRoute();
+          return window.Interactions[Variables().npcInteractionRoute]
+            .options as NpcInteractionOptions;
+        }
+        return current;
       },
       next: {
         howAreYou: {
           canBeShown: () => !window.Person.hasAchievement("howAreYou"),
-          optionText: '"How are you today, $npc.name?"',
+          optionText: '👄 "How are you today, $npc.name?"',
           contents: `<<run Person.setAchievement("howAreYou")>>\
           <<if $npc.uniqueness.shy && $npc.love lt 40>>\
             ''$npc.name'': "..."<<if $npc.love gte 10 || $npc.lust gte 60>>\
             $npc.name blushes but $npc.genPronoun doesn't say anything.<</if>>\
           <<elseif $npc.uniqueness.energetic>>\
-            
+            ''$npc.name'':\
+            <<if $npc.lust gte 80>>\
+              <<if $npc.age lt 5>>\
+              <<elseif $npc.age lt 11>>\
+              <<else>>\
+              <</if>>\
+            <<else>>\
+            <</if>>\
           <<else>>\
           <</if>>`,
           npcStats: ["love+1%"],
           showNpcStats: true,
-          baseRoute: () => "slave.talk",
+          next: talkOptions,
+        },
+        back: {
+          optionText: "🔙 Go back",
+          action: true,
+          contents: '<<openNpcInteraction $npcInteractionRoute.split(".")[0]>>',
         },
       },
     },
@@ -72,7 +88,7 @@ window.Interactions["slave"] = {
         <<elseif $npc.love gt 50>>\
           $npc.GenPronoun leaves <<- $npc.pronoun>>self completely open as $npc.genPronoun smiles at you<<emoji ♥>>.
         <</if>>`,
-      altOptions(npc: Npc, current: Record<string, NpcInteraction>) {
+      altOptions(npc: Npc, current: NpcInteractionOptions) {
         if ((npc as Person).haveClothes) return current;
         return afterStrip(); //If slave has no clothes we can skip stripping.
       },
@@ -240,7 +256,7 @@ window.Interactions["slave"] = {
                     if (Temporary().cockEntered) {
                       Variables().npcInteractionRoute =
                         "slave.pushDown.strip.pushDickVag.ram";
-                      return current.ram.next as Record<string, NpcInteraction>;
+                      return current.ram.next as NpcInteractionOptions;
                     }
                     return current;
                   },
@@ -449,7 +465,7 @@ window.Interactions["slave"] = {
                     if (Temporary().cockEntered) {
                       Variables().npcInteractionRoute =
                         "slave.pushDown.strip.pushDickAnus.ram";
-                      return current.ram.next as Record<string, NpcInteraction>;
+                      return current.ram.next as NpcInteractionOptions;
                     }
                     return current;
                   },
@@ -660,7 +676,7 @@ window.Interactions["slave"] = {
                     if (Temporary().cockEntered) {
                       Variables().npcInteractionRoute =
                         "slave.pushDown.strip.dildoVag.ram";
-                      return current.ram.next as Record<string, NpcInteraction>;
+                      return current.ram.next as NpcInteractionOptions;
                     }
                     return current;
                   },
@@ -857,7 +873,7 @@ window.Interactions["slave"] = {
                     if (Temporary().cockEntered) {
                       Variables().npcInteractionRoute =
                         "slave.pushDown.strip.dildoAnus.ram";
-                      return current.ram.next as Record<string, NpcInteraction>;
+                      return current.ram.next as NpcInteractionOptions;
                     }
                     return current;
                   },
@@ -1451,7 +1467,7 @@ window.Interactions["slave"] = {
             next: () => afterStrip(),
           },
           ...cumOutsideOptions,
-        } as Record<string, NpcInteraction>;
+        } as NpcInteractionOptions;
       },
     },
     rubToSlaveFace: {

@@ -56,7 +56,7 @@ window.Interactions["slave"] = {
           optionText: '👄 "How are you today, $npc.name?"',
           contents: `<<run Person.setAchievement("howAreYou")>>\
           <<if $npc.uniqueness.shy && $npc.love lt 40>>\
-            ''$npc.name'': "..."<<if $npc.love gte 10 || $npc.lust gte 60>>\
+            <<npcSay ...>><<if $npc.love gte 10 || $npc.lust gte 60>>\
             $npc.name blushes but $npc.genPronoun doesn't say anything.<</if>>\
           <<elseif $npc.uniqueness.energetic>>\
             ''$npc.name'':\
@@ -1101,7 +1101,7 @@ window.Interactions["slave"] = {
                 endure: {
                   optionText: "💪 Tell him to endure it.",
                   minutesCost: 10,
-                  contents: `''$player.name'': "Don't you dare cum in me"
+                  contents: `<<playerSay "Don't you dare cum in me">>
 
                     $npc.name looks troubled but obeys.`,
                   npcStats: ["fear+1", "obedience+2"],
@@ -1147,7 +1147,7 @@ window.Interactions["slave"] = {
                 endure: {
                   optionText: "💪 Tell $npc.pronoun to endure it.",
                   minutesCost: 10,
-                  contents: `''$player.name'': "Don't you dare cum in me"
+                  contents: `<<playerSay "Don't you dare cum in me">>
 
                     $npc.name looks troubled but obeys.`,
                   npcStats: ["fear+1", "obedience+2"],
@@ -1219,7 +1219,7 @@ window.Interactions["slave"] = {
       "Lick here!"
 
       <<if $npc.love gte 80>>\
-        ''$npc.name'': "Sure thing, <<npcAddressPlayer>>!!"<<emoji ❤>>
+        <<npcSay "Sure thing, <<npcAddressPlayer>>!!">><<emoji ❤>>
         Right after finishing $npc.possessive sentence, $npc.name places $npc.possessive<<if $npc.age lt 7>> little<</if>> hands on your legs as $npc.pronoun approaches his face to your pussy.
         You can see $npc.pronoun $npc.eyeColor loving eyes looking at you while $npc.pronoun mouth is being covered by your crotch as you feel the first contact of $npc.possessive<<if $npc.age lt 7>> little<</if>> tongue on your labia.
         <<if $npc.mouthTraining gte 30>>\
@@ -1242,7 +1242,7 @@ window.Interactions["slave"] = {
           <<if $npc.age lt 5>>\
             $npc.name shakes $npc.possessive head, refusing your request.<<emoji 😟>>
           <<else>>\
-            ''$npc.name'': "Eww! No!".<<emoji 😟>>
+            <<npcSay "Eww! No!">><<emoji 😟>>
           <</if>>\
         <<elseif $npc.mouthTraining lt 60>>\
           <<if $npc.mouthTraining gte 30>> $npc.name has no problem approaching and licking your pussy. $npc.GenPronoun's pretty used to it by now.
@@ -1277,7 +1277,7 @@ window.Interactions["slave"] = {
             canBeShown: () => !Temporary().refused,
             optionText: "👅 keep going.",
             minutesCost: 30,
-            contents: `''$player.name'': "Don't stop. Keep licking me down there."
+            contents: `<<playerSay "Don't stop. Keep licking me down there.">>
             $npc.name obeys and keeps licking you making lots of lewd noises. $npc.GenPronoun's face gets covered by your juices more and more as it keeps liking.`,
             npcStats(npc) {
               let stats = ["mouthTraining+10", "fear-5", "hunger-1"];
@@ -1306,7 +1306,7 @@ window.Interactions["slave"] = {
         <<if $npc.age lt 5>>\
           $npc.name turns $npc.possessive face away, refusing your request.<<emoji 😟>>\
         <<else>>\
-          ''$npc.name'': "Eww! No!".<<emoji 😟>>\
+          <<npcSay "Eww! No!">><<emoji 😟>>\
         <</if>>\
       <<else>>\
         <<if $npc.mouthTraining lt 60 && $npc.hunger lt 80>>\
@@ -1383,12 +1383,12 @@ window.Interactions["slave"] = {
             <<if _refused>>\
               $npc.name immediately pushes you and takes your dick out of $npc.possessive mouth while coughing.
               <<if $npc.age gte 4>>\
-                ''$npc.name'': "Don't do that!!"
+                <<npcSay "Don't do that!!">>
               <</if>>\
               <<if !_okBj>>\
                 $npc.name steps back surprised by the sudden thrust.
                 <<if $npc.age gte 4>>\
-                  ''$npc.name'': "I don't want to do this anymore..."
+                  <<npcSay "I don't want to do this anymore...">>
                 <<else>>\
                   It seems that $npc.genPronoun doesn't want to continue sucking you.\
                 <</if>>\

@@ -62,7 +62,7 @@
 <<widget npcAddressPlayer>><<- Player.getAddressing($npc)>><</widget>>
 <<widget npcGenderSymbol>>
     <<set _genderSymbol = _args[0].gender != 'male' ? '♀' : '♂'>>
-    <<emoji _genderSymbol>>
+    <<emoji _genderSymbol>><<unset _genderSymbol>>
 <</widget>>
 <<widget wanderingSlaves>>
     <<set _wandering = Person.getWandering()>>
@@ -93,6 +93,12 @@
             </span> are here.<br>
         <</if>>
     <</if>>
+<</widget>>
+<<widget playerSay>>''$player.name'': "_args[0]"<</widget>>
+<<widget npcSay>>
+    <<set _npc = _args[1] ? _args[1] : $npc>>
+    ''_npc.name'': "_args[0]"
+    <<unset _npc>>
 <</widget>>
 :: workOption {"position":"875,0"}
 <<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\

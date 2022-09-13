@@ -1,42 +1,96 @@
+interface UniquenessCase {
+  default: string;
+  condition: string;
+  curious?: string;
+  naughty?: string;
+  energetic?: string;
+  shy?: string;
+  diligent?: string;
+}
 class UniquenessTables {
   static howAreYou = [
-    ["fear<20", "lust60", "love80"], //conditions on each line
+    ["fear<20", "love60", "lust80"], //global conditions for each line without specified condition
     [
       0,
       {
-        //normal case (else)
-        shy: "$npc.name does not say anything and tries to avoid eye contact.",
-        else: "$npc.name looks at you without saying anything.",
+        //first object without specified condition is default output
+        default: "$npc.name looks at you without saying anything.", //default option, when it doesn't match any other characteristic
+        shy: "$npc.name does not say anything and tries to avoid eye contact.", //output on shy characteristic
       },
       {
-        //fear<20
-        shy: "=normal", //same as shy in normal case
-        else: "$npc.name looks at you with a mild smile<<emoji 馃檪>>",
+        //fear<20 condition
+        default: "$npc.name looks at you with a mild smile<<emoji 🙂>>",
+        shy: "=default", //same as shy in default condition (not default characteristic)
       },
       {
         //love60
-        shy: "$npc.name ",
-        energetic: `say:<<npcAddressPlayer>>!! $npc.GenPronoun says with a big smile as $npc.pronoun jumps on you.`,
-        else: "$npc.name smiles at you and blushes a little<<emoji 馃槉>>",
+        default: "$npc.name smiles at you and blushes a little<<emoji 😊>>",
+        shy: "$npc.name is blushes a lot while showing a mild smile<<emoji 🙂>>",
+        energetic: `say:<<npcAddressPlayer>>!!
+        $npc.GenPronoun says with a big smile as $npc.pronoun jumps on you.`, //say: is a shortcut to <<npcSay>> widget using the rest of the line as input
       },
       {
-        //lust60
-        shy: "say:...\n($npc.GenPronoun blushes while $npc.possessive eyes keep looking between your legs.)",
-        energetic: `say:<<npcAddressPlayer>>!! $npc.GenPronoun says smiling while rubbing $npc.possessive $npc.genitals.`,
-        else: "$npc.name stretches out $npc.possessive hands towards your $player.genitals",
+        //lust80 (adding condition:"lust80" field would also do the same)
+        default:
+          "$npc.name stretches out $npc.possessive hands towards your $player.genitals",
+        shy: `say:...
+        ($npc.GenPronoun blushes while $npc.possessive eyes keep looking between your legs.)`,
+        energetic: `say:<<npcAddressPlayer>>!!
+        $npc.GenPronoun says smiling while rubbing $npc.possessive $npc.genitals.`,
       },
     ],
     [
       5, //From 5 yo onwards
-      { shy: "=age0", energetic: "" },
-      { shy: "", energetic: "" }, //lust60
-      { shy: "", energetic: "" },
+      {
+        default: "=age0", //use the same as age0 for all personalities
+      },
+      {
+        //fear<20
+        default: "say:Fine...",
+        shy: "=age0",
+        energetic:
+          "say:<<if $npc.freedomWish gte 40>>I wanna go home!<<emoji 😢>><<else>>I'm good!!<</if>>",
+      },
+      {
+        //love60
+        default: "say:I'm good <<npcAddressPlayer>><<emoji 😚>>",
+        shy: "$npc.name blushes and smiles at you. $npc.GenPronoun looks happy<<emoji 🥰>>",
+        energetic: `say:I'm so happy with you <<npcAddressPlayer>>!<<emoji 😊>>
+        $npc.GenPronoun jumps at you and gives you a loving hug<<emoji 💗>>`,
+      },
+      {
+        //lust80
+        default: `say:I'm fine <<npcAddressPlayer>><<emoji 🤤>>
+        ($npc.GenPronoun is shamelessly masturbating in front of you)`,
+        shy: `say:I..um...want to <<if $npc.diligent or $npc.age gte 11>>have...sex...<<else>>do...that...<</if>><<emoji 😳>>
+        $npc.GenPronoun says with a hand over his $npc.genitals. It seems that he can't bear the excitement and slowly rubs it a little bit.`,
+        energetic: `say:<<npcAddressPlayer>>!! Let's do naughty things!!
+        $npc.GenPronoun approaches you and gently touches your $player.genitals<<emoji 😋>>`,
+      },
     ],
     [
       11,
-      { energetic: "" },
-      { shy: "", energetic: "" }, //lust60
-      { shy: "", energetic: "" },
+      {
+        default: "say:Ok, I guess...",
+        shy: "=age0",
+      },
+      {
+        //fear<20
+        default: "say:I'm fine <<npcPlayerAddress>><<emoji 🙂>>",
+        shy: `say:...
+        (blushes and looks down)`,
+        energetic:
+          "say:<<if $npc.freedomWish gte 40>>I miss my home<<emoji 😑>><<else>>I'm good!!<</if>>",
+      },
+      {
+        default: "=age5",
+      },
+      {
+        default: "say:I'm horny...Can we have sex? <<emoji 😛>>",
+        shy: "=age5",
+        energetic: `$npc.name comes closer to you and says "I'm ready anytime<<emoji 😛>>".
+        $npc.GenPronoun touches you gently while drooling a little bit<<emoji 🤤>>`,
+      },
     ],
   ];
 }

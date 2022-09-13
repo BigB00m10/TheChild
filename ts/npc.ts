@@ -756,7 +756,6 @@ class PersonUniqueness {
     }
   }
 }
-const commonHomeMates: Record<string, PersonUniqueness[]> = {};
 const personUniquenessPresets: PersonUniqueness[] = [
   new PersonUniqueness({
     name: "bottom",

@@ -262,3 +262,67 @@ Macro.add("npcInteraction", {
     $(document.createElement("span")).wiki(result).appendTo(this.output);
   },
 });
+Macro.add("personUniqueness", {
+  handler: function () {
+    let person: Person = this.args[1] || Variables().npc;
+    const table: any[][] = UniquenessTables[this.args[0]];
+    let defaultCase: UniquenessCase;
+    const checkCondition = (condition: string) => {
+      var match = condition.match(/^([a-z]+)([^\d]*)(\d+)$/);
+      return eval(person[match[1]] + (match[2] || ">=") + match[3]);
+    };
+    const processAgeRow = (cases: Array<UniquenessCase>) => {
+      let conditionIndex = 0;
+      for (const uniquenessCase of cases) {
+        if (!uniquenessCase.condition) {
+          if (defaultCase == null) {
+            defaultCase = uniquenessCase;
+            continue;
+          }
+          if (checkCondition(table[0][conditionIndex++])) {
+            setOutput(uniquenessCase);
+            return;
+          }
+        } else if (checkCondition(uniquenessCase.condition)) {
+          setOutput(uniquenessCase);
+          return;
+        }
+      }
+      setOutput(defaultCase);
+    };
+    const setOutput = (uniquenessCase: UniquenessCase) => {
+      let output: string;
+      for (let fieldName in uniquenessCase) {
+        switch (fieldName) {
+          case "condition":
+          case "default":
+            continue;
+          default:
+            if (person.uniqueness[fieldName])
+              output = uniquenessCase[fieldName];
+            break;
+        }
+        break;
+      }
+      if (!output) output = uniquenessCase.default;
+      if (output == "=default") {
+        setOutput(defaultCase);
+        return;
+      } else if (output.startsWith("=age")) {
+        processAgeRow(
+          table
+            .firstOrDefault<any[]>((row: any[]) => row[0] == output.slice(4))
+            .slice(1)
+        );
+        return;
+      }
+      output = output.replace(/^say:(.+)/, "<<npcSay $1>>");
+      $(document.createElement("span")).wiki(output).appendTo(this.output);
+    };
+    for (let ageIndex = table.length - 1; ageIndex > 0; ageIndex--) {
+      if (table[ageIndex][0] > person.age) continue;
+      processAgeRow(table[ageIndex].slice(1));
+      return;
+    }
+  },
+});

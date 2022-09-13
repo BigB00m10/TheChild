@@ -55,21 +55,8 @@ window.Interactions["slave"] = {
           canBeShown: () => !window.Person.hasAchievement("howAreYou"),
           optionText: '👄 "How are you today, $npc.name?"',
           contents: `<<run Person.setAchievement("howAreYou")>>\
-          <<if $npc.uniqueness.shy && $npc.love lt 40>>\
-            <<npcSay ...>><<if $npc.love gte 10 || $npc.lust gte 60>>\
-            $npc.name blushes but $npc.genPronoun doesn't say anything.<</if>>\
-          <<elseif $npc.uniqueness.energetic>>\
-            ''$npc.name'':\
-            <<if $npc.lust gte 80>>\
-              <<if $npc.age lt 5>>\
-              <<elseif $npc.age lt 11>>\
-              <<else>>\
-              <</if>>\
-            <<else>>\
-            <</if>>\
-          <<else>>\
-          <</if>>`,
-          npcStats: ["love+1%"],
+          <<personUniqueness howAreYou>>`,
+          npcStats: ["love+5%"],
           showNpcStats: true,
           next: talkOptions,
         },

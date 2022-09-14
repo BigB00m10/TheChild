@@ -32,7 +32,7 @@ class UniquenessTables {
       {
         //lust80 (adding condition:"lust80" field would also do the same)
         default:
-          "$npc.name stretches out $npc.possessive hands towards your $player.genitals",
+          "$npc.name doesn't answer and stretches out $npc.possessive hands towards your $player.genitals while making toddler sounds.",
         shy: `say:...
         ($npc.GenPronoun blushes while $npc.possessive eyes keep looking between your legs.)`,
         energetic: `say:<<npcAddressPlayer>>!!
@@ -61,8 +61,8 @@ class UniquenessTables {
       {
         //lust80
         default: `say:I'm fine <<npcAddressPlayer>><<emoji 🤤>>
-        ($npc.GenPronoun is shamelessly masturbating in front of you)`,
-        shy: `say:I..um...want to <<if $npc.diligent or $npc.age gte 11>>have...sex...<<else>>do...that...<</if>><<emoji 😳>>
+        ($npc.GenPronoun's shamelessly masturbating in front of you)`,
+        shy: `say:I..um...want to <<if $npc.diligent || $npc.age gte 11>>have...sex...<<else>>do...that...<</if>><<emoji 😳>>
         $npc.GenPronoun says with a hand over his $npc.genitals. It seems that he can't bear the excitement and slowly rubs it a little bit.`,
         energetic: `say:<<npcAddressPlayer>>!! Let's do naughty things!!
         $npc.GenPronoun approaches you and gently touches your $player.genitals<<emoji 😋>>`,
@@ -90,6 +90,25 @@ class UniquenessTables {
         shy: "=age5",
         energetic: `$npc.name comes closer to you and says "I'm ready anytime<<emoji 😛>>".
         $npc.GenPronoun touches you gently while drooling a little bit<<emoji 🤤>>`,
+      },
+    ],
+  ];
+  static hug = [
+    ["fear40", "love40", "love60", "love80", "fear60", "fear80"],
+    [
+      0,
+      {
+        default: `You grab $npc.name on your arms and give $npc.pronoun a tight loving hug<<emoji 🥰>>
+          The baby feels pretty warm on your body.`,
+      },
+    ],
+    [
+      1,
+      {
+        default: `You can feel $npc.possessive body warmth but $npc.genPronoun doesn't react much to it.`,
+      },
+      {
+        default: ``,
       },
     ],
   ];

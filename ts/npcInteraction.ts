@@ -272,14 +272,16 @@ Macro.add("personUniqueness", {
       return eval(person[match[1]] + (match[2] || ">=") + match[3]);
     };
     const processAgeRow = (cases: Array<UniquenessCase>) => {
-      let conditionIndex = 0;
-      for (const uniquenessCase of cases) {
+      defaultCase = cases.firstOrDefault(
+        (uniquenessCase: UniquenessCase) => !uniquenessCase.condition
+      );
+      let conditionIndex = table[0].length;
+      for (let caseIndex = cases.length - 1; caseIndex >= 0; caseIndex--) {
+        const uniquenessCase = cases[caseIndex];
         if (!uniquenessCase.condition) {
-          if (defaultCase == null) {
-            defaultCase = uniquenessCase;
+          if(uniquenessCase == defaultCase)
             continue;
-          }
-          if (checkCondition(table[0][conditionIndex++])) {
+          if (checkCondition(table[0][--conditionIndex])) {
             setOutput(uniquenessCase);
             return;
           }
@@ -316,7 +318,7 @@ Macro.add("personUniqueness", {
         );
         return;
       }
-      output = output.replace(/^say:(.+)/, "<<npcSay $1>>");
+      output = output.replace(/^say:(.+)/, `''${person.name}'': "$1"`);
       $(document.createElement("span")).wiki(output).appendTo(this.output);
     };
     for (let ageIndex = table.length - 1; ageIndex > 0; ageIndex--) {

@@ -36,6 +36,8 @@ window.Interactions["slave"] = {
   contents: "<<include slaveApproach>>",
   options: {
     talk: {
+      npcRequirements: ["age>1"],
+      canBeShown: () => !window.Person.hasAchievement("howAreYou"),
       optionText: "👄 Talk to $npc.pronoun",
       contents: `<<if $npc.fear gte 40>>\
         <<emoji 😨>>$npc.name is trembling at your presence and is too scared to talk!\
@@ -54,9 +56,10 @@ window.Interactions["slave"] = {
         howAreYou: {
           canBeShown: () => !window.Person.hasAchievement("howAreYou"),
           optionText: '👄 "How are you today, $npc.name?"',
-          contents: `<<run Person.setAchievement("howAreYou")>>\
-          <<personUniqueness howAreYou>>`,
-          npcStats: ["love+5%"],
+          minutesCost: 2,
+          contents:
+            '<<run Person.setAchievement("howAreYou")>><<personUniqueness howAreYou>>',
+          npcStats: ["love+5%", "fear-5"],
           showNpcStats: true,
           next: talkOptions,
         },
@@ -66,6 +69,13 @@ window.Interactions["slave"] = {
           contents: '<<openNpcInteraction $npcInteractionRoute.split(".")[0]>>',
         },
       },
+    },
+    hug: {
+      canBeShown: () => false, //TODO: Disabled until fully implemented
+      optionText: "🤗 give a hug to $npc.name.",
+      contents: `<<if $npc.age gt 0>>\
+        You grab $npc.name $npc.age year old <<if $npc.age lt 6>>little<</if>> body and press it into you.
+      <</if>><<personUniqueness hug>>`,
     },
     pushDown: {
       optionText: "👇 Push $npc.pronoun down",
@@ -1458,7 +1468,7 @@ window.Interactions["slave"] = {
       },
     },
     rubToSlaveFace: {
-      optionText: "Rub your $player.genitals on $npc.name's face.",
+      optionText: "😐🍆 Rub your $player.genitals on $npc.name's face.",
       minutesCost: 10,
       contents: `You grab $npc.name's head and press it between your legs and start rubbing.
         $npc.Possessive nose and lips feel really good on your $player.genitals.
@@ -1471,7 +1481,9 @@ window.Interactions["slave"] = {
         return stats;
       },
       showNpcStats: true,
-      next: afterStrip,
+      next: () =>
+        window.Interactions[baseInteractionRoute()]
+          .options as NpcInteractionOptions,
     },
     bringUpstairs: {
       locationRequirements: ["basement"],

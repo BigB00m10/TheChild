@@ -42,6 +42,9 @@
             Person.setAchievement("playerTook" + _args[0].toUpperFirst() + "Virginity");
         >>
         @@color:red;$npc.name just lost $npc.possessive _args[0] virginity!!!@@<br>
+    <<elseif _args[0] != 'mouth' && !Person.hasAchievement("playerTook" + _args[0].toUpperFirst() + "Virginity") && !Person.hasAchievement("playerRealizedNonVirgin")>>
+        @@color:yellow;You realize that $npc.name was not a virgin!!@@<br>
+        <<run Person.setAchievement("playerRealizedNonVirgin")>>
     <</if>>
     <<run Person.setAchievement('had' + _args[0].toUpperFirst() + 'SexWithPlayer')>>
 <</widget>>

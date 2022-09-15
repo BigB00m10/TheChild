@@ -36,7 +36,7 @@ abstract class Npc {
   mouthTraining: number = 0;
   genitalVirgin: boolean = true;
   analVirgin: boolean = true;
-  mouthVirgin: boolean = true;
+  mouthVirgin: boolean = true; //Due to a personal error only slaves with previous personal experience have this at false.
   assSpermAmount: number = 0;
   pussySpermAmount: number = 0;
   bodySpermAmount: number = 0;
@@ -61,6 +61,10 @@ abstract class Npc {
   hasAchievement(achievement: string, npc?: Npc): boolean {
     if (!npc) npc = Variables().npc;
     return npc.achievements.includes(achievement);
+  }
+  hasAnyAchievement(achievements: string[], npc?: Npc) {
+    if (!npc) npc = Variables().npc;
+    return npc.achievements.includesAny(achievements);
   }
   setAchievement(achievement: string, npc?: Npc): void {
     if (!npc) npc = Variables().npc;

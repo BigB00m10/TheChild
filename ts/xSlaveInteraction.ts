@@ -37,7 +37,7 @@ window.Interactions["slave"] = {
   options: {
     talk: {
       npcRequirements: ["age>1"],
-      canBeShown: () => !window.Person.hasAchievement("howAreYou"),
+      //canBeShown: () => !window.Person.hasAchievement("howAreYou"),
       optionText: "👄 Talk to $npc.pronoun",
       contents: `<<if $npc.fear gte 40>>\
         <<emoji 😨>>$npc.name is trembling at your presence and is too scared to talk!\
@@ -52,6 +52,7 @@ window.Interactions["slave"] = {
         }
         return current;
       },
+      showIfEmpty: false,
       next: {
         howAreYou: {
           canBeShown: () => !window.Person.hasAchievement("howAreYou"),
@@ -62,6 +63,23 @@ window.Interactions["slave"] = {
           npcStats: ["love+5%", "fear-5"],
           showNpcStats: true,
           next: talkOptions,
+        },
+        sexExp: {
+          canBeShown: () =>
+            window.Person.hasAnyAchievement([
+              "playerRealizedNonVirgin",
+              "playerNoticedPreviousOralTraining",
+            ]),
+          optionText: "👀 Ask about previous sex experience.",
+          contents: `<<set
+            _obs = [];
+            if(Person.hasAchievement('playerRealizedNonVirgin'))
+              _obs.push("you were not a virgin");
+            if(Person.hasAchievement('playerNoticedPreviousOralTraining'))
+              _obs.push("you");//TODO
+          >>`,
+          minutesCost: 10,
+          npcStats: ["lust+%60"],
         },
         back: {
           optionText: "🔙 Go back",
@@ -1319,6 +1337,8 @@ window.Interactions["slave"] = {
       npcStats(npc) {
         let temp = Temporary();
         if (!temp.okBj) return null;
+        if (!npc.mouthVirgin)
+          window.Person.setAchievement("playerNoticedPreviousOralTraining");
         let stats = ["fear-5"];
         if (npc.mouthTraining < 30) stats.push("mouthTraining%+40");
         else stats.push("mouthTraining%+70");

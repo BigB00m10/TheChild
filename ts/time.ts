@@ -81,7 +81,7 @@ class Now {
             slave.obedience += Math.round((61 - slave.obedience) * 0.25);
           else slave.punishments.delete("naked");
         } else slave.obedience = Math.max(0, slave.obedience - 1);
-        window.Person.removeAchievement("howAreYou");
+        window.Person.removeAchievement("howAreYou", slave);
       });
       player.lust = Math.min(100, player.lust + 10);
     }

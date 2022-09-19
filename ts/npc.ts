@@ -230,6 +230,35 @@ class Person extends Npc {
       .filter((keyName) => typeof uniqueness[keyName] == "boolean")
       .join(", ");
   }
+  getHomePersonName(word: string, npc?: Npc) {
+    if (!npc) npc = Variables().npc;
+    if (word == "sibling") word = npc.gender != "male" ? "bro" : "sis";
+    if (npc.age < 5) {
+      switch (word) {
+        case "uncle":
+          return "uncle";
+        case "dad":
+          return "dada";
+        case "mom":
+          return "mama";
+      }
+      if (word.includes(" ")) {
+        if (word.includes("girl")) return "a girl";
+        if (word.includes("boy")) return "a boy";
+      }
+      return word;
+    }
+    if (npc.age > 10) {
+      switch (word) {
+        case "bro":
+          word = "brother";
+        case "sis":
+          word = "sister";
+      }
+    }
+    if (!word.includes(" ")) word = "my " + word;
+    return word;
+  }
 }
 interface GenderGeneration {
   fromAge: number;

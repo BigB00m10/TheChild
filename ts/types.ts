@@ -99,6 +99,12 @@ interface String {
 String.prototype.beautifyStat = function () {
   return this.toUpperFirst().replace(/(\B[A-Z])/g, " $1");
 };
+interface Array {
+  getSentence(): string;
+}
+Array.prototype.getSentence = function () {
+  
+};
 class PseudoRandom {
   static getSeed(...components: any[]): number {
     let seed = 0;

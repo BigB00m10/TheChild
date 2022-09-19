@@ -76,10 +76,22 @@ window.Interactions["slave"] = {
             if(Person.hasAchievement('playerRealizedNonVirgin'))
               _obs.push("you were not a virgin");
             if(Person.hasAchievement('playerNoticedPreviousOralTraining'))
-              _obs.push("you");//TODO
-          >>`,
+              _obs.push($player.genitals != 'dick' ? "you were so good liking my pussy" : "you sucked my dick so well");
+            _playerSay = 'I noticed that ' + _obs.join(' and ') + '. Did you do these things before?';
+          >><<playerSay _playerSay>>
+          <<if $npc.age lt 5 || $npc.uniqueness.shy>>$npc.name nods.<<elseif $npc.uniqueness.naughty>><<npcSay 'Yeah!'>><<emoji 😁>>
+          $npc.GenPronoun smiles and looks proud about it.
+
+          <<else>><<npcSay '...yes'>><</if>>
+          <<playerSay 'So, who was the one that you did it with?'>>
+          <<set
+            _hpNames = $npc.uniqueness.homePersons.filter(p=>p.naughty).map(p=>Person.getHomePersonName(p.name))
+            //TODO: select naughty family members and construct a name list sentence.
+          >>
+          `,
           minutesCost: 10,
-          npcStats: ["lust+%60"],
+          npcStats: ["lust%+60"],
+          showNpcStats: true,
         },
         back: {
           optionText: "🔙 Go back",
@@ -1268,6 +1280,9 @@ window.Interactions["slave"] = {
           $npc.GenPronoun starts by sinking $npc.possessive tongue under your labia and lick inside. You feel $npc.possessive<<if $npc.age lt 7>> little<</if>> warm lips over your labia while $npc.pronoun does it.
           $npc.GenPronoun can surely taste your flavor and $npc.genPronoun has to gulp down the excess of saliva and love juice more than once during the process.
         <</if>>\
+      <</if>><<if !_refused && !$npc.mouthVirgin && !Person.hasAchievement("playerNoticedPreviousOralTraining")>>\
+        <<set Person.setAchievement("playerNoticedPreviousOralTraining")>>\
+        @@color:yellow;You notice that $npc.name's cunnilingus skill is unusually high!!@@
       <</if>>`,
       npcStats(npc) {
         let temp = Temporary();
@@ -1333,12 +1348,14 @@ window.Interactions["slave"] = {
           $npc.GenPronoun starts suckling on your member and rubbing with $npc.possessive tongue while inside $npc.possessive mouth, <<if $npc.hunger gt 80>>desperate to get whatever sustenance $npc.genPronoun can get, <</if>>making a lot of noise.\
           <<set _sucking = true>>\
         <</if>>\
+        <<if !$npc.mouthVirgin && !Person.hasAchievement("playerNoticedPreviousOralTraining")>>\
+          <<set Person.setAchievement("playerNoticedPreviousOralTraining")>>
+          @@color:yellow;You notice that $npc.name's blowjob skill is unusually high!!@@
+        <</if>>\
       <</if>>`,
       npcStats(npc) {
         let temp = Temporary();
         if (!temp.okBj) return null;
-        if (!npc.mouthVirgin)
-          window.Person.setAchievement("playerNoticedPreviousOralTraining");
         let stats = ["fear-5"];
         if (npc.mouthTraining < 30) stats.push("mouthTraining%+40");
         else stats.push("mouthTraining%+70");

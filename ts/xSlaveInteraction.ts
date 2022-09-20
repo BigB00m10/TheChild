@@ -84,11 +84,8 @@ window.Interactions["slave"] = {
 
           <<else>><<npcSay '...yes'>><</if>>
           <<playerSay 'So, who was the one that you did it with?'>>
-          <<set
-            _hpNames = $npc.uniqueness.homePersons.filter(p=>p.naughty).map(p=>Person.getHomePersonName(p.name))
-            //TODO: select naughty family members and construct a name list sentence.
-          >>
-          `,
+          <<set _hp = $npc.uniqueness.homePersons.filter(p => p.naughty)>>\
+          <<- _hp.map(p => Person.getHomePersonName(p.name)).getSentence().toUpperFirst()>>`,
           minutesCost: 10,
           npcStats: ["lust%+60"],
           showNpcStats: true,

@@ -252,8 +252,10 @@ class Person extends Npc {
       switch (word) {
         case "bro":
           word = "brother";
+          break;
         case "sis":
           word = "sister";
+          break;
       }
     }
     if (!word.includes(" ")) word = "my " + word;

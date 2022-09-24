@@ -69,9 +69,11 @@ window.Interactions["slave"] = {
             window.Person.hasAnyAchievement([
               "playerRealizedNonVirgin",
               "playerNoticedPreviousOralTraining",
-            ]),
+            ]) &&
+            !window.Person.hasAchievement("playerAskedPreviousExperience"),
           optionText: "👀 Ask about previous sex experience.",
           contents: `<<set
+            Person.setAchievement('playerAskedPreviousExperience');
             _obs = [];
             if(Person.hasAchievement('playerRealizedNonVirgin'))
               _obs.push("you were not a virgin");
@@ -79,16 +81,39 @@ window.Interactions["slave"] = {
               _obs.push($player.genitals != 'dick' ? "you were so good liking my pussy" : "you sucked my dick so well");
             _playerSay = 'I noticed that ' + _obs.join(' and ') + '. Did you do these things before?';
           >><<playerSay _playerSay>>
-          <<if $npc.age lt 5 || $npc.uniqueness.shy>>$npc.name nods.<<elseif $npc.uniqueness.naughty>><<npcSay 'Yeah!'>><<emoji 😁>>
+          <<if $npc.age lt 5 || $npc.uniqueness.shy>>$npc.name <<if $npc.uniqueness.shy>>blushes and <</if>>nods.<<elseif $npc.uniqueness.naughty>><<npcSay 'Yeah!'>><<emoji 😁>>
           $npc.GenPronoun smiles and looks proud about it.
 
           <<else>><<npcSay '...yes'>><</if>>
           <<playerSay 'So, who was the one that you did it with?'>>
-          <<set _hp = $npc.uniqueness.homePersons.filter(p => p.naughty)>>\
-          <<- _hp.map(p => Person.getHomePersonName(p.name)).getSentence().toUpperFirst()>>`,
-          minutesCost: 10,
-          npcStats: ["lust%+60"],
+          <<set
+            _hp = $npc.uniqueness.homePersons.filter(p => p.naughty);
+            _hpSentence = _hp.map(p => Person.getHomePersonName(p.name)).getSentence();
+            _hpSentence = $npc.age gt 10 && !$npc.uniqueness.shy ? "I did it with " + _hpSentence : _hpSentence.toUpperFirst();
+          >>\
+          <<npcSay _hpSentence>>`,
+          minutesCost: 5,
+          npcStats: ["lust%+40"],
           showNpcStats: true,
+          next: {
+            askThingsDone: {
+              optionText: '❓ "What kinds of things did you do?"',
+              minutesCost: 5,
+              contents: `<<set
+                _hp = $npc.uniqueness.homePersons.filter(p => p.naughty);
+              >>`,
+            },
+            askLiked:{
+              optionText: '❓ "Did you like it?"',
+              minutesCost: 5,
+              contents: ``,
+            },
+            back: {
+              optionText: "🔙 Go back",
+              action: true,
+              contents: '<<openNpcInteraction $npcInteractionRoute.split(".")[0]>>',
+            },
+          },
         },
         back: {
           optionText: "🔙 Go back",

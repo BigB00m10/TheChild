@@ -257,9 +257,33 @@ class Person extends Npc {
           word = "sister";
           break;
       }
+      if (!word.includes(" ")) word = "my " + word;
+    } else {
+      switch (word) {
+        case "dad":
+          word = "daddy";
+          break;
+        case "mom":
+          word = "mommy";
+          break;
+      }
     }
-    if (!word.includes(" ")) word = "my " + word;
     return word;
+  }
+  getHomePersonGender(word: string): Gender {
+    switch (word) {
+      case "dad":
+      case "bro":
+      case "uncle":
+      case "pa":
+        return "male";
+      case "mom":
+      case "sis":
+      case "aunt":
+      case "ma":
+        return "female";
+    }
+    return word.includes("boy") ? "male" : "female";
   }
 }
 interface GenderGeneration {

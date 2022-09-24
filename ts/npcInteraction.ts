@@ -212,12 +212,15 @@ Macro.add("npcInteraction", {
         let option = options[name];
         let canBeShown = checkCanBeShown(option);
         if (!canBeShown) continue;
-        if (collection.hideEmptyOptions && option.next && !option.showIfEmpty) {
+        if (
+          option.showIfEmpty === false ||
+          (collection.hideEmptyOptions && option.next && !option.showIfEmpty)
+        ) {
           let next = getNext(option);
           if (option.altOptions) next = option.altOptions(npc, next);
           let empty = true;
           for (const nextName in next)
-            if (checkCanBeShown(next[nextName])) {
+            if (nextName != "back" && checkCanBeShown(next[nextName])) {
               empty = false;
               break;
             }
@@ -279,8 +282,7 @@ Macro.add("personUniqueness", {
       for (let caseIndex = cases.length - 1; caseIndex >= 0; caseIndex--) {
         const uniquenessCase = cases[caseIndex];
         if (!uniquenessCase.condition) {
-          if(uniquenessCase == defaultCase)
-            continue;
+          if (uniquenessCase == defaultCase) continue;
           if (checkCondition(table[0][--conditionIndex])) {
             setOutput(uniquenessCase);
             return;

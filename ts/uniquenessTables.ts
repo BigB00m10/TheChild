@@ -112,4 +112,13 @@ class UniquenessTables {
       },
     ],
   ];
+  static likedPreviousNaughty = [
+    [],
+    [
+      2,
+      {
+        
+      }
+    ]
+  ]
 }

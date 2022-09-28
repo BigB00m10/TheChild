@@ -9,17 +9,17 @@ Array.prototype.firstOrDefault = function <T>(predicate: Function) {
 };
 class Product {
   name: string;
-  itemName: string;
+  itemName?: string;
   price: number;
   description: string;
-  packQuantity: number = 1;
-  available: number;
-  soldOut: boolean = false;
+  packQuantity?: number = 1;
+  available?: number;
+  soldOut?: boolean = false;
   tags: Set<string>;
-  constructor(init?: Partial<Product>) {
+  constructor(init?: Product) {
     Object.assign(this, init);
   }
-  transferTo(inventory: Inventory, count: number = 1) {
+  transferTo?(inventory: Inventory, count: number = 1) {
     inventory.add({
       name: this.itemName ? this.itemName : this.name,
       description: this.description,

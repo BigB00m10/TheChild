@@ -2,7 +2,7 @@ let Homes: Record<string, Home> = {
   smallUrban: {
     name: "small urban house",
     rent: 400,
-    spaces: ["basement", "mainRoom", "bed"],
+    spaces: ["basement", "mainRoom", "bed","bathroom","wc","garden","kitchen","torture"],
   },
 };
 interface NpcEvent {
@@ -78,5 +78,55 @@ class BedRoom implements HomeSpace {
   bedAssignedNpc: Uid[] = [];
   getDemandingSlaves(): Person[] {
     return HomeSpace.getDemandingSlavesFromLocation("bed");
+  }
+}
+class Bathroom implements HomeSpace {
+  contents: Inventory;
+  securityBase?: number;
+  npcEvents?: NpcEvent[];
+  muffleBase: number = 25;
+  bedAssignedNpc: Uid[] = [];
+  getDemandingSlaves(): Person[] {
+    return HomeSpace.getDemandingSlavesFromLocation("bathroom");
+  }
+}
+class Wc implements HomeSpace {
+  contents: Inventory;
+  securityBase?: number;
+  npcEvents?: NpcEvent[];
+  muffleBase: number = 25;
+  bedAssignedNpc: Uid[] = [];
+  getDemandingSlaves(): Person[] {
+    return HomeSpace.getDemandingSlavesFromLocation("wc");
+  }
+}
+class Kitchen implements HomeSpace {
+  contents: Inventory;
+  securityBase?: number;
+  npcEvents?: NpcEvent[];
+  muffleBase: number = 25;
+  bedAssignedNpc: Uid[] = [];
+  getDemandingSlaves(): Person[] {
+    return HomeSpace.getDemandingSlavesFromLocation("kitchen");
+  }
+}
+class Garden implements HomeSpace {
+  contents: Inventory;
+  securityBase?: number;
+  npcEvents?: NpcEvent[];
+  muffleBase: number = 25;
+  bedAssignedNpc: Uid[] = [];
+  getDemandingSlaves(): Person[] {
+    return HomeSpace.getDemandingSlavesFromLocation("garden");
+  }
+}
+class Torture implements HomeSpace {
+  contents: Inventory;
+  securityBase?: number;
+  npcEvents?: NpcEvent[];
+  muffleBase: number = 25;
+  bedAssignedNpc: Uid[] = [];
+  getDemandingSlaves(): Person[] {
+    return HomeSpace.getDemandingSlavesFromLocation("tort");
   }
 }

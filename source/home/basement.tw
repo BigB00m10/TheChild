@@ -39,6 +39,7 @@
         </div>\
     </div>
     /*<<keyOption [[Go back upstairs|main]] 🚪>>*/\
+    <<keyOption [[The torture room|basement]] ⛓️>>: [in dev]
     <<keyAction "Go back upstairs" 🚪>>
         <<run
             $slaves.forEach(slave => {
@@ -65,5 +66,5 @@ You lay down the pizza<<if Player.has("pizza", 2)>>s<</if>> and all the slaves g
     });
     inventory.removeByName("pizza", pizzaCount);
 >>\
-
+<<keyOption [[The torture room|main]] ⛓️>>: [in dev]
 <<keyOption [[Return|basement]] 🔙>>

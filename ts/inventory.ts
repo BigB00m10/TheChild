@@ -133,6 +133,12 @@ class OnlineStore {
       tags: new Set(["player", "sex", "toy"]),
       available: 1,
     }),
+    new Product({
+      name: "Condom",
+      description: "The condom or condom is a thin and flexible case, impermeable to blood",
+      price: 8,
+      tags: new Set(["player", "sexe", "toy"]),
+    }),
   ];
   bought: Inventory = new Inventory();
   get(name: string): Product {

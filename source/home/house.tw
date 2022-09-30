@@ -16,8 +16,7 @@
         <<set _demandIndex to 0>>\
         <<include slaveDemand>>
         <<keyOption [[Leave your room|main]] 🚪>>
-        <<keyOption [[Watch porn|watchPorn]] 💗>>: 30min
-        <<keyOption [[Shop online using your laptop|onlineStore]] 🛒>>
+        <<keyOption [[go to your computer|pc]] 💻>>
         <<keyOption [[Your bathroom|bat]] 🛀>>
         <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>\
             <<keyAction Sleep 😴>><<sleep>><</keyAction>>
@@ -42,7 +41,7 @@ You are currently standing in the middle of the main room of your house.
     <<keyOption [[The Basement|basement]] 🔒>>
     <<keyOption [[Your Bedroom|bed]] 🛌>>
     <<keyOption [[Your garden|garden]] 🌺>>
-    <<keyOption [[Your kitchen|main]] ☕>>: [in dev]
+    <<keyOption [[Your kitchen|kitchen]] ☕>>
     <<keyOption [[Your toilet|wc]] 🚽>>
     <<keyOption [[Your bathroom|bat]] 🛀>>
 <</unlessEmergency>>\

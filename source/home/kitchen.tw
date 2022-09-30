@@ -16,6 +16,7 @@
         <<set _demandIndex to 0>>\
         <<include slaveDemand>>
         <<keyOption [[Leave your kitchen|main]] 🚪>>
+        <<set $player.energy = ($player.energy + 18).clamp(0, 100)>>
         <<keyOption [[Have a meal|kitchen]] ☕>>: 45min + 6 Energy
         <<addMinutes 45>>\
         <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>\

@@ -33,7 +33,10 @@
 	},
 	"extensions": {
 		"recommendations": [
-			"file-icons.file-icons"
+			"file-icons.file-icons",
+			"cyrusfirheir.twee3-language-tools",
+			"techer.open-in-browser",
+			"esbenp.prettier-vscode"
 		]
 	}
 }

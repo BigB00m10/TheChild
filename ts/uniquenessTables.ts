@@ -117,8 +117,21 @@ class UniquenessTables {
     [
       2,
       {
-        
-      }
-    ]
-  ]
+        default: "$npc.name shrugs and doesn't say anything.",
+        naughtyAndShy: "$npc.name blushes and nods.",
+        naughty: "$npc.name smiles and nods.<<emoji 🙂>>",
+      },
+      5,
+      {
+        default: "Say:I don't know...<<emoji 🙁>>",
+        naughtyAndShy: "=age2",
+        naughty: "Say:Yeah! I like naughty stuff!!<<emoji 😃>>",
+      },
+      8,
+      {
+        default: "=age5",
+        diligent: "Say:I just did what I was told to...<<emoji 🥺>>",
+      },
+    ],
+  ];
 }

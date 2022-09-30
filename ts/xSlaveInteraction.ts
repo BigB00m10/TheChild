@@ -37,7 +37,6 @@ window.Interactions["slave"] = {
   options: {
     talk: {
       npcRequirements: ["age>1"],
-      //canBeShown: () => !window.Person.hasAchievement("howAreYou"),
       optionText: "👄 Talk to $npc.pronoun",
       contents: `<<if $npc.fear gte 40>>\
         <<emoji 😨>>$npc.name is trembling at your presence and is too scared to talk!\
@@ -69,11 +68,9 @@ window.Interactions["slave"] = {
             window.Person.hasAnyAchievement([
               "playerRealizedNonVirgin",
               "playerNoticedPreviousOralTraining",
-            ]) &&
-            !window.Person.hasAchievement("playerAskedPreviousExperience"),
+            ]),
           optionText: "👀 Ask about previous sex experience.",
           contents: `<<set
-            Person.setAchievement('playerAskedPreviousExperience');
             _obs = [];
             if(Person.hasAchievement('playerRealizedNonVirgin'))
               _obs.push("you were not a virgin");
@@ -95,23 +92,30 @@ window.Interactions["slave"] = {
           minutesCost: 5,
           npcStats: ["lust%+40"],
           showNpcStats: true,
+          showIfEmpty: false,
           next: {
             askThingsDone: {
+              canBeShown: () => !window.Person.hasAchievement("playerAskedPreviousExperienceDone"),
               optionText: '❓ "What kinds of things did you do?"',
               minutesCost: 5,
               contents: `<<set
+                Person.setAchievement('playerAskedPreviousExperienceDone');
                 _hp = $npc.uniqueness.homePersons.filter(p => p.naughty);
               >>`,
+              next: () => talkOptions().sexExp.next as NpcInteractionOptions,
             },
-            askLiked:{
+            askLiked: {
+              canBeShown: () => !window.Person.hasAchievement("playerAskedPreviousExperienceLiked"),
               optionText: '❓ "Did you like it?"',
               minutesCost: 5,
-              contents: ``,
+              contents: "<<set Person.setAchievement('playerAskedPreviousExperienceLiked')>><<personUniqueness likedPreviousNaughty>>",
+              next: () => talkOptions().sexExp.next as NpcInteractionOptions,
             },
             back: {
               optionText: "🔙 Go back",
               action: true,
-              contents: '<<openNpcInteraction $npcInteractionRoute.split(".")[0]>>',
+              contents:
+                '<<openNpcInteraction $npcInteractionRoute.split(".")[0]>>',
             },
           },
         },

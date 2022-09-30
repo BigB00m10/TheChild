@@ -271,6 +271,7 @@ Macro.add("personUniqueness", {
     const table: any[][] = UniquenessTables[this.args[0]];
     let defaultCase: UniquenessCase;
     const checkCondition = (condition: string) => {
+      if (!condition) return false;
       var match = condition.match(/^([a-z]+)([^\d]*)(\d+)$/);
       return eval(person[match[1]] + (match[2] || ">=") + match[3]);
     };
@@ -302,8 +303,15 @@ Macro.add("personUniqueness", {
           case "default":
             continue;
           default:
-            if (person.uniqueness[fieldName])
-              output = uniquenessCase[fieldName];
+            let okOutput = true;
+            if (fieldName.includes("And"))
+              fieldName
+                .split("And")
+                .forEach(
+                  (c) => (okOutput &&= person.uniqueness[c.toLowerCase()])
+                );
+            else okOutput = person.uniqueness[fieldName];
+            if (okOutput) output = uniquenessCase[fieldName];
             break;
         }
         break;

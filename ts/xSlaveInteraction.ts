@@ -68,6 +68,10 @@ window.Interactions["slave"] = {
             window.Person.hasAnyAchievement([
               "playerRealizedNonVirgin",
               "playerNoticedPreviousOralTraining",
+            ]) &&
+            !window.Person.hasAllAchievements([
+              "playerAskedPreviousExperienceDone",
+              "playerAskedPreviousExperienceLiked",
             ]),
           optionText: "👀 Ask about previous sex experience.",
           contents: `<<set
@@ -92,10 +96,12 @@ window.Interactions["slave"] = {
           minutesCost: 5,
           npcStats: ["lust%+40"],
           showNpcStats: true,
-          showIfEmpty: false,
           next: {
             askThingsDone: {
-              canBeShown: () => !window.Person.hasAchievement("playerAskedPreviousExperienceDone"),
+              canBeShown: () =>
+                !window.Person.hasAchievement(
+                  "playerAskedPreviousExperienceDone"
+                ),
               optionText: '❓ "What kinds of things did you do?"',
               minutesCost: 5,
               contents: `<<set
@@ -143,10 +149,14 @@ window.Interactions["slave"] = {
               next: () => talkOptions().sexExp.next as NpcInteractionOptions,
             },
             askLiked: {
-              canBeShown: () => !window.Person.hasAchievement("playerAskedPreviousExperienceLiked"),
+              canBeShown: () =>
+                !window.Person.hasAchievement(
+                  "playerAskedPreviousExperienceLiked"
+                ),
               optionText: '❓ "Did you like it?"',
               minutesCost: 5,
-              contents: "<<set Person.setAchievement('playerAskedPreviousExperienceLiked')>><<personUniqueness likedPreviousNaughty>>",
+              contents:
+                "<<set Person.setAchievement('playerAskedPreviousExperienceLiked')>><<personUniqueness likedPreviousNaughty>>",
               next: () => talkOptions().sexExp.next as NpcInteractionOptions,
             },
             back: {

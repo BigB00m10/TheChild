@@ -66,6 +66,10 @@ abstract class Npc {
     if (!npc) npc = Variables().npc;
     return npc.achievements.includesAny(achievements);
   }
+  hasAllAchievements(achievements: string[], npc?: Npc) {
+    if (!npc) npc = Variables().npc;
+    return npc.achievements.includesAll(achievements);
+  }
   setAchievement(achievement: string, npc?: Npc): void {
     if (!npc) npc = Variables().npc;
     if (!this.hasAchievement(achievement, npc))

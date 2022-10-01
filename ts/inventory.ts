@@ -26,7 +26,6 @@ class Product {
       count: count * this.packQuantity,
       tags: this.tags,
     });
-    //if (this.available > 0) this.available -= count;
   }
 }
 class Item {

@@ -1,19 +1,19 @@
 :: pc {"position":"700,825"}
 <<scenery pc>>
-	welcome to your computer.
-    <<unlessEmergency>>\
-        <<wanderingSlaves>>\
-        <<set _slaves = BedRoom.getDemandingSlaves()>>\
-        <<set _demandIndex to 0>>\
-        <<include slaveDemand>>
-        <<keyOption [[Leave your your computer|bed]] 💻>>
-        <<keyOption [[Watch porn|watchPorn]] 💗>>: 30min
-        <<keyOption [[Shop online |onlineStore]] 🛒>>
-        <<keyOption [[change your name |changenames]]  💬>>
-    <</unlessEmergency>>\
+welcome to your computer.
+<<unlessEmergency>>\
+    <<wanderingSlaves>>\
+    <<set _slaves = BedRoom.getDemandingSlaves()>>\
+    <<set _demandIndex to 0>>\
+    <<include slaveDemand>>
+    <<keyOption [[Leave your your computer|bed]] 💻>>
+    <<keyOption [[Watch porn|watchPorn]] 💗>>: 30min
+    <<keyOption [[Shop online |onlineStore]] 🛒>>
+    <<keyOption [[change your name |changenames]]  💬>>
+<</unlessEmergency>>\
 
-:: changenames {"position":"375,0"}
-        <<set _dialogTitle = 'Change ' + $player.name + "name to:";>>\
+:: changenames {"position":"1000,1000"}
+        <<set _dialogTitle = 'Change ' + $player.name + " name to:";>>\
         <<dialog _dialogTitle>>\
         <<textbox '_newName' $player.name>>
         <span id="enterAct">\

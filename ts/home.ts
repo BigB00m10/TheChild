@@ -120,7 +120,7 @@ class Garden implements HomeSpace {
     return HomeSpace.getDemandingSlavesFromLocation("garden");
   }
 }
-class Torture implements HomeSpace {
+class TortureRoom implements HomeSpace {
   contents: Inventory;
   securityBase?: number;
   npcEvents?: NpcEvent[];

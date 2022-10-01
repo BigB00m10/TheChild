@@ -1,26 +1,14 @@
 :: bat {"position":"700,825"}
 <<scenery bat>>
-<<if $player.sleeping>>\
-	As the sun reveals the world to a nice <<- Now.getWeekDay()>> morning, you climb out of bed, ready to start a new day. <<- either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
-<<else>>\
-	You are currently standing in your bathroom.
-<</if>>\
-<<if $player.sleeping && OnlineStore.pendingOrder()>>
-    Someone is knocking at the front door!!
-    Who might that be?
-    <<keyOption [[Go check|receivePacket]] 🚪>>
-<<else>>
-    <<unlessEmergency>>\
-        <<wanderingSlaves>>\
-        <<set _slaves = BedRoom.getDemandingSlaves()>>\
-        <<set _demandIndex to 0>>\
-        <<include slaveDemand>>
-        <<keyOption [[Leave your bathroom|main]] 🚪>>
-        <<keyOption [[Take a shower|bat]] 🛀>>: 1hours
-        <<addHours 1>>\
-        <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>\
-            <<keyAction Sleep 😴>><<sleep>><</keyAction>>
-        <</if>>\
-    <</unlessEmergency>>\
-<</if>>
-<<set $player.sleeping to false>>\
+You are currently standing in your bathroom.
+<<unlessEmergency>>\
+    <<wanderingSlaves>>\
+    <<set _slaves = Bathroom.getDemandingSlaves()>>\
+    <<set _demandIndex to 0>>\
+    <<include slaveDemand>>
+    <<keyOption [[Leave your bathroom|main]] 🚪>>
+    <<keyAction 'Take a shower' 🛀>><<addHours 1>><</keyAction>>: 1 hour
+    <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>\
+        <<keyAction 'Go to sleep' 😴>><<sleep>><</keyAction>>
+    <</if>>\
+<</unlessEmergency>>\

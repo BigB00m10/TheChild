@@ -2,7 +2,6 @@
 <<scenery tort>>
 You are currently standing in your torture room.
 <<unlessEmergency>>\
-    <<wanderingSlaves>>\
     <<set _slaves = Basement.getDemandingSlaves()>>\
     <<set _demandIndex to 0>>\
     <<include slaveDemand>>

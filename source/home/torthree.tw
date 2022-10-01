@@ -2,7 +2,6 @@
 <<scenery tortone>>
 You are currently standing in your cages three.
 <<unlessEmergency>>\
-    <<wanderingSlaves>>\
     <<set _slaves = Basement.getDemandingSlaves()>>\
     <<set _demandIndex to 0>>\
     <<include slaveDemand>>

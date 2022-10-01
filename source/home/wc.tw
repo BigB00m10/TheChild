@@ -3,11 +3,11 @@
 You are currently standing in your wc.
 <<unlessEmergency>>\
     <<wanderingSlaves>>\
-    <<set _slaves = BedRoom.getDemandingSlaves()>>\
+    <<set _slaves = Wc.getDemandingSlaves()>>\
     <<set _demandIndex to 0>>\
     <<include slaveDemand>>
     <<keyOption [[Leave your wc|main]] 🚪>>
-    <<keyAction 'Go to the toilet' 🚽>><<addMinutes 5>><</keyAction>>: 5min
+    <<keyAction 'Go to the toilet' 🚽>><<addMinutes 5>><<run Engine.show()>><</keyAction>>: 5min
     <<if Player.getInventory().items.firstOrDefault(function(item){return item.name.startsWith('Used clothes')}) != null>>
         <<keyOption [[this masturbate in panties|pantiescum]] 💦>>: 30min
     <</if>>\

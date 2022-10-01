@@ -2,7 +2,6 @@
 <<scenery pc>>
 welcome to your computer.
 <<unlessEmergency>>\
-    <<wanderingSlaves>>\
     <<set _slaves = BedRoom.getDemandingSlaves()>>\
     <<set _demandIndex to 0>>\
     <<include slaveDemand>>

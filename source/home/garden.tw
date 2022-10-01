@@ -2,8 +2,9 @@
 <<scenery garden>>
 You are currently standing in your garden.
 <<unlessEmergency>>\
+    <<wanderingSlaves>>\
     <<keyOption [[Leave your garden|main]] 🚪>>
-    <<keyAction 'gardening' 🌺>><<addMinutes 30>><</keyAction>>: 30min
+    <<keyAction 'gardening' 🌺>><<addMinutes 30>><<run Engine.show()>><</keyAction>>: 30min
     <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>\
         <<keyAction 'Go to sleep' 😴>><<sleep>><</keyAction>>
     <</if>>\

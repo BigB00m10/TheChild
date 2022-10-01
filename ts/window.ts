@@ -173,6 +173,14 @@ $(document).on(":passageinit", () => {
       }
       if (variables.player.home.spaces == undefined)
         variables.player.home.spaces = window.Homes.smallUrban.spaces;
+      else
+        for (let houseKey in window.Homes)
+          if (
+            window.Homes[houseKey].name == variables.player.home.name &&
+            variables.player.home.spaces.length <
+              window.Homes[houseKey].spaces.length
+          )
+            variables.player.home.spaces = window.Homes[houseKey].spaces;
     });
   }
 });

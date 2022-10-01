@@ -100,8 +100,46 @@ window.Interactions["slave"] = {
               minutesCost: 5,
               contents: `<<set
                 Person.setAchievement('playerAskedPreviousExperienceDone');
-                _hp = $npc.uniqueness.homePersons.filter(p => p.naughty);
-              >>`,
+                let hps = $npc.uniqueness.homePersons.filter(p => p.naughty);
+                let suckedDick = [];
+                let lickedPussy = [];
+                let getFuckedAss = [];
+                let getFuckedPussy = [];
+                let fuckedPussy = [];
+                let fuckedAss = [];
+                for(var hp of hps){
+                  if(Person.getHomePersonGender(hp.name) != 'male'){
+                    if(!$npc.mouthVirgin)
+                      lickedPussy.push(Person.getHomePersonName(hp.name));
+                    if($npc.hasPenis && !$npc.genitalVirgin && !Person.hasAchievement('playerTookGenitalVirginity'))
+                      fuckedPussy.push(Person.getHomePersonName(hp.name));
+                  } else {
+                    if(!$npc.mouthVirgin)
+                      suckedDick.push(Person.getHomePersonName(hp.name));
+                    if(!$npc.analVirgin && !Person.hasAchievement('playerTookAnalVirginity'))
+                      getFuckedAss.push(Person.getHomePersonName(hp.name));
+                    if($npc.hasPussy && !$npc.genitalVirgin && !Person.hasAchievement('playerTookGenitalVirginity'))
+                      getFuckedPussy.push(Person.getHomePersonName(hp.name));
+                    if($npc.hasPenis && !$npc.genitalVirgin && !Person.hasAchievement('playerTookGenitalVirginity'))
+                      fuckedAss.push(Person.getHomePersonName(hp.name));
+                  }
+                }
+                let thingsDone = [];
+                if(suckedDick.length)
+                  thingsDone.push('sucked ' + suckedDick.getSentence() + ' pepee');
+                if(lickedPussy.length)
+                  thingsDone.push('licked ' + lickedPussy.getSentence() + ' pussy');
+                if(getFuckedAss.length)
+                  thingsDone.push(getFuckedAss.getSentence() + ' put ' + (getFuckedAss.length > 1 ? 'their' : 'his') + ' pepee in my butt');
+                if(getFuckedPussy.length)
+                  thingsDone.push(getFuckedPussy.getSentence() + ' put ' + (getFuckedPussy.length > 1 ? 'their' : 'his') + ' pepee in my pussy');
+                if(fuckedPussy.length)
+                  thingsDone.push('put my pepee in ' + fuckedPussy.getSentence() + ' pussy');
+                if(fuckedAss.length)
+                  thingsDone.push('put my pepee in ' + fuckedAss.getSentence() + ' butt');
+                _say = 'I ' + thingsDone.getSentence();
+                _emoji = $npc.uniqueness.shy ? '😳' : ($npc.uniqueness.naughty ? '😃' : '')
+              >><<npcSay _say>><<emoji _emoji>>`,
               next: () => talkOptions().sexExp.next as NpcInteractionOptions,
             },
             askLiked: {

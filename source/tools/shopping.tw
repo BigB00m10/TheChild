@@ -101,6 +101,5 @@ You received: <<- $onlineStore.bought.items.map(function(item){return item.count
 <<unlessEmergency>>\
     <<keyOption [[Go back inside|main]] 🔙>>
     <<include workOption>>\
-    <<keyOption [[Look for kids in the playground|playground]] ⚽>>
-<</unlessEmergency>>\
+<</unlessEmergency>>
 <<run OnlineStore.receiveBought()>>\

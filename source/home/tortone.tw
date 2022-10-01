@@ -1,0 +1,12 @@
+:: tortone {"position":"325,500"}
+<<scenery tortone>>
+You are currently standing in your cages one.
+<<unlessEmergency>>\
+    <<set _slaves = Basement.getDemandingSlaves()>>\
+    <<set _demandIndex to 0>>\
+    <<include slaveDemand>>
+    <<keyOption [[Leave your cages one|tort]] 🚪>>
+    <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>\
+        <<keyAction Sleep 😴>><<sleep>><</keyAction>>
+    <</if>>\
+<</unlessEmergency>>\

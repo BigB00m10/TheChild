@@ -9,24 +9,23 @@ Array.prototype.firstOrDefault = function <T>(predicate: Function) {
 };
 class Product {
   name: string;
-  itemName: string;
+  itemName?: string;
   price: number;
   description: string;
-  packQuantity: number = 1;
-  available: number;
-  soldOut: boolean = false;
+  packQuantity?: number = 1;
+  available?: number;
+  soldOut?: boolean = false;
   tags: Set<string>;
-  constructor(init?: Partial<Product>) {
+  constructor(init?: Product) {
     Object.assign(this, init);
   }
-  transferTo(inventory: Inventory, count: number = 1) {
+  transferTo?(inventory: Inventory, count: number = 1) {
     inventory.add({
       name: this.itemName ? this.itemName : this.name,
       description: this.description,
       count: count * this.packQuantity,
       tags: this.tags,
     });
-    //if (this.available > 0) this.available -= count;
   }
 }
 class Item {
@@ -132,6 +131,12 @@ class OnlineStore {
       price: 20,
       tags: new Set(["player", "sex", "toy"]),
       available: 1,
+    }),
+    new Product({
+      name: "Condom",
+      description: "The condom or condom is a thin and flexible case, impermeable to blood",
+      price: 8,
+      tags: new Set(["player", "sexe", "toy"]),
     }),
   ];
   bought: Inventory = new Inventory();

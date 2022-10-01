@@ -1,0 +1,24 @@
+:: wc {"position":"700,825"}
+<<scenery wc>>
+You are currently standing in your wc.
+<<unlessEmergency>>\
+    <<wanderingSlaves>>\
+    <<set _slaves = Wc.getDemandingSlaves()>>\
+    <<set _demandIndex to 0>>\
+    <<include slaveDemand>>
+    <<keyOption [[Leave your wc|main]] 🚪>>
+    <<keyAction 'Go to the toilet' 🚽>><<addMinutes 5>><<run Engine.show()>><</keyAction>>: 5min
+    <<if Player.getInventory().items.firstOrDefault(function(item){return item.name.startsWith('Used clothes')}) != null>>
+        <<keyOption [[this masturbate in panties|pantiescum]] 💦>>: 30min
+    <</if>>\
+    <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>\
+        <<keyAction 'Go to sleep' 😴>><<sleep>><</keyAction>>
+    <</if>>\
+<</unlessEmergency>>\
+:: pantiescum {"position":"450,950"}
+<<addMinutes 30>>
+@@color:yellow;you have cum on the panties.@@
+<<include wc>>\
+<<run
+    Player.getInventory().add({name:'PantiesCum',description:'cum filled panties',quantity:1,tags:['pantiescum']})
+>>

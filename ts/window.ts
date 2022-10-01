@@ -8,9 +8,14 @@ interface Window {
   Basement: Basement;
   MainRoom: MainRoom;
   BedRoom: BedRoom;
+  BathRoom: Bathroom;
+  Wc: Wc;
+  Kitchen: Kitchen;
+  Garden: Garden;
+  TortureRoom: TortureRoom;
   OnlineStore: OnlineStore;
   Interactions: Record<string, NpcInteractionCollection>;
-  PersonUniquenessPresets : PersonUniqueness[];
+  PersonUniquenessPresets: PersonUniqueness[];
 }
 window.Now = new Now();
 window.Homes = Homes;
@@ -21,6 +26,11 @@ window.OnlineStore = new OnlineStore();
 window.Basement = new Basement();
 window.MainRoom = new MainRoom();
 window.BedRoom = new BedRoom();
+window.BathRoom = new Bathroom();
+window.Wc = new Wc();
+window.Kitchen = new Kitchen();
+window.Garden = new Garden();
+window.TortureRoom = new TortureRoom();
 window.PersonGeneration = new PersonGeneration();
 window.PersonUniquenessPresets = personUniquenessPresets;
 if (!window.Interactions) window.Interactions = {};
@@ -128,13 +138,14 @@ $(document).on(":passageinit", () => {
         variables.settings.slaveSelling = true;
       if (variables.achievements == undefined) variables.achievements = [];
       let onlineStore = variables.onlineStore as OnlineStore;
-      if (!onlineStore.version || onlineStore.version < 2) {
+      if (onlineStore.products.length < window.OnlineStore.products.length)
         for (
           let productIndex = onlineStore.products.length;
           productIndex < window.OnlineStore.products.length;
           productIndex++
         )
           onlineStore.products.push(window.OnlineStore.products[productIndex]);
+      if (!onlineStore.version || onlineStore.version < 2) {
         onlineStore.products[2].description =
           window.OnlineStore.products[2].description;
         if (onlineStore.products[1].name == "Matress")
@@ -162,6 +173,14 @@ $(document).on(":passageinit", () => {
       }
       if (variables.player.home.spaces == undefined)
         variables.player.home.spaces = window.Homes.smallUrban.spaces;
+      else
+        for (let houseKey in window.Homes)
+          if (
+            window.Homes[houseKey].name == variables.player.home.name &&
+            variables.player.home.spaces.length <
+              window.Homes[houseKey].spaces.length
+          )
+            variables.player.home.spaces = window.Homes[houseKey].spaces;
     });
   }
 });

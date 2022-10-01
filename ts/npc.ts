@@ -141,7 +141,7 @@ abstract class Npc {
     if (!currentDate) currentDate = variables.now.date;
     //const sleepTime = window.Now.isBetween("10:00 PM", "7:00 AM", currentDate);
     let homeSpaces = variables.player.home.spaces.filter(
-      (space: string) => space != "basement"
+      (space: string) => space != "basement" && !space.startsWith('tort')
     );
     const baseSeed = currentDate.getTime() - 1649048400000;
     variables.slaves.forEach((slave: Person) => {

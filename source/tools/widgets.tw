@@ -1,4 +1,4 @@
-:: widgets [widget nobr] {"position":"875,225"}
+:: widgets [widget nobr] {"position":"850,250"}
 <<widget emoji>><<if $settings.emoji === false>><<set _style to "display:none">><</if>><span class='emoji' @style="_style">_args[0]</span><</widget>>
 <<widget addMinutes>>
     <<run Now.addMinutes(_args[0])>>

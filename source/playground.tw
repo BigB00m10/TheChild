@@ -1,4 +1,4 @@
-:: playground {"position":"475,350"}
+:: playground {"position":"450,375"}
 <<scenery playground>>
 <<set $found_kid = Person.generate($settings.childGeneration)>>\
 You found a $found_kid.age year old $found_kid.skin $found_kid.title with $found_kid.hairLength $found_kid.hairStyle $found_kid.hairColor hair \

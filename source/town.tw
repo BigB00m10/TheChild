@@ -1,4 +1,4 @@
-:: work {"position":"700,225"}
+:: work {"position":"700,250"}
 <<scenery dump>>
 <<addHours 8>>\
 <<set $player.workedToday = true>>\
@@ -29,7 +29,7 @@ You currently own ¤<<- $player.cash.toFixed(2)>>
         <</keyAction>>: 10min detour\
     <</if>>\
 <</if>>\
-:: home {"position":"700,425"}
+:: home {"position":"700,375"}
 <<scenery home>>
 You are currently in front of your home.
 <<unlessEmergency>>

@@ -26,7 +26,7 @@ Energy:<<if $cheat>>\
 >><</link>></span><</if>>
 <<showmeter playerEnergy `$player.energy / 100`>>
 
-:: personProperties {"position":"250,125","size":"200,100"}
+:: personProperties {"position":"1150,125","size":"200,100"}
 <<include npcStats>>
 location: $npc.location
 <<if $cheat>>\
@@ -38,7 +38,7 @@ location: $npc.location
     <</dialog>><</button>>
     Characteristics: <<- Person.getPersonalityDescription($npc.uniqueness)>>
 <</if>>\
-:: StoryMenu {"position":"125,125"}
+:: StoryMenu {"position":"1025,125"}
 <<link "👨‍👩‍👧‍👦 Character stats">>
     <<dialog "Character stats">>
         <<set _dialogWidth = 'width:' + Math.min(1022, window.innerWidth - 84) + 'px'>>\

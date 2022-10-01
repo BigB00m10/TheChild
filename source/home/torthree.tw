@@ -1,9 +1,9 @@
-:: tort {"position":"700,825"}
-<<scenery tort>>
+:: torthree {"position":"700,825"}
+<<scenery tortone>>
 <<if $player.sleeping>>\
 	As the sun reveals the world to a nice <<- Now.getWeekDay()>> morning, you climb out of bed, ready to start a new day. <<- either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
 <<else>>\
-	You are currently standing in your torture room.
+	You are currently standing in your cages three.
 <</if>>\
 <<if $player.sleeping && OnlineStore.pendingOrder()>>
     Someone is knocking at the front door!!
@@ -15,10 +15,7 @@
         <<set _slaves = BedRoom.getDemandingSlaves()>>\
         <<set _demandIndex to 0>>\
         <<include slaveDemand>>
-        <<keyOption [[Leave your torture|basement]] 🚪>>
-        <<keyOption [[go to cage one|tortone]] ⛓️>>
-        <<keyOption [[go to cage two|tortwo]] ⛓️>>
-        <<keyOption [[go to cage three|torthree]] ⛓️>>
+        <<keyOption [[Leave your cages three|tort]] 🚪>>
         <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>\
             <<keyAction Sleep 😴>><<sleep>><</keyAction>>
         <</if>>\

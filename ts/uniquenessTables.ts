@@ -76,7 +76,7 @@ class UniquenessTables {
       },
       {
         //fear<20
-        default: "say:I'm fine <<npcPlayerAddress>><<emoji 🙂>>",
+        default: "say:I'm fine <<npcAddressPlayer>><<emoji 🙂>>",
         shy: `say:...
         (blushes and looks down)`,
         energetic:

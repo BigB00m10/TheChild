@@ -888,7 +888,7 @@ const personUniquenessPresets: PersonUniqueness[] = [
         kid.pussyTraining = 60;
       }
     },
-    appearingChance: 3,
+    appearingChance: 9,
   }),
   new PersonUniqueness({
     name: "Carrabina",
@@ -968,7 +968,7 @@ const personUniquenessPresets: PersonUniqueness[] = [
         kid.anusTraining = 10;
       }
     },
-    appearingChance: 7,
+    appearingChance: 9,
   }),
   new PersonUniqueness({
     name: "top",

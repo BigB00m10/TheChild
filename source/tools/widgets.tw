@@ -103,6 +103,42 @@
     ''_npc.name'': "_args[0]"
     <<unset _npc>>
 <</widget>>
+<<widget personHunting>>
+    <<set $found_kid = Person.generate($settings.childGeneration)>>
+    You found a $found_kid.age year old $found_kid.skin $found_kid.title with $found_kid.hairLength $found_kid.hairStyle $found_kid.hairColor hair \
+    and $found_kid.eyeColor eyes named $found_kid.name<br><br>
+    <<if Player.has('magic sunglasses')>>
+        <label style="cursor:pointer"><<checkbox '$settings.usingMagicSunglasses' false true autocheck>> Put on magic sunglasses.<<emoji 😎>></label><br>
+        <<set 
+            _npcStatsStyle = $settings.usingMagicSunglasses ? '' : 'display:none';
+            $npc = $found_kid;
+        >>
+        <span id='npcStats' @style='_npcStatsStyle'>
+            <<include npcStats>>
+        </span><br>
+        <script>
+            $('#checkbox-settingsusingmagicsunglasses').on('change', function() {
+                $('#npcStats').toggle(this.checked)
+            })
+        </script>
+    <</if>>
+    <<set
+        _hasChloroform = Player.has('chloroform');
+        _hasCandy = Player.has('Candy');
+    >>
+    <<if !_hasChloroform and !_hasCandy>>
+        (You don't have anything at your disposal to obtain kids)<br>
+    <<elseif Basement.availableBeds() lte 0>>
+        (Not enough space for a new kid back at home)<br>
+    <<else>>
+        <<if _hasCandy>>
+            <<keyOption [[Offer $found_kid.name some Candy.|CandyLure]] 🍬>>: 9min<br>
+        <</if>>\
+        <<if _hasChloroform>>
+            <<keyOption [[Kidnap $found_kid.pronoun|kidnap]] 🖐>>: 30min<br>
+        <</if>>
+    <</if>>
+<</widget>>
 :: workOption {"position":"875,0"}
 <<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>

@@ -1,4 +1,4 @@
 {
-  "presets": ["@babel/preset-typescript", "minify"],
+  "presets": ["@babel/preset-typescript", ["minify", { "builtIns": false }]],
   "comments": false
 }

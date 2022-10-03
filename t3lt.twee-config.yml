@@ -52,3 +52,5 @@ sugarcube-2:
       name: npcGenderSymbol
     wanderingSlaves:
       name: wanderingSlaves
+    personHunting:
+      name: personHunting

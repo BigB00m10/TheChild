@@ -134,9 +134,17 @@ class OnlineStore {
     }),
     new Product({
       name: "Condom",
-      description: "The condom or condom is a thin and flexible case, impermeable to blood",
+      description:
+        "The condom or condom is a thin and flexible case, impermeable to blood",
       price: 8,
-      tags: new Set(["player", "sexe", "toy"]),
+      tags: new Set(["player", "sex", "toy"]),
+    }),
+    new Product({
+      name: "Magic sunglasses",
+      description: "These hi-tec sunglasses detect subtle variations on people behavior and allows you to see more details about them.",
+      price: 500,
+      available: 1,
+      tags: new Set(["player", "wearable", "eyes", "tech", "cheat"]),
     }),
   ];
   bought: Inventory = new Inventory();

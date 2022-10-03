@@ -1430,7 +1430,7 @@ window.Interactions["slave"] = {
       npcStats(npc) {
         let temp = Temporary();
         if (!temp.okBj) return null;
-        let stats = ["fear-5"];
+        let stats = ["fear-5", "hunger+1"];
         if (npc.mouthTraining < 30) stats.push("mouthTraining%+40");
         else stats.push("mouthTraining%+70");
         if (temp.willing) stats.push("lust+10%");

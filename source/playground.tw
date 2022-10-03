@@ -1,25 +1,6 @@
 :: playground {"position":"450,375"}
 <<scenery playground>>
-<<set $found_kid = Person.generate($settings.childGeneration)>>\
-You found a $found_kid.age year old $found_kid.skin $found_kid.title with $found_kid.hairLength $found_kid.hairStyle $found_kid.hairColor hair \
-and $found_kid.eyeColor eyes named $found_kid.name
-
-<<set
-	_hasChloroform = Player.has('chloroform');
-	_hasCandy = Player.has('Candy');
->>\
-<<if !_hasChloroform and !_hasCandy>>\
-    (You don't have anything at your disposal to obtain kids)
-<<elseif Basement.availableBeds() lte 0>>\
-    (Not enough space for a new kid back at home)
-<<else>>\
-	<<if _hasCandy>>\
-		<<keyOption [[Offer $found_kid.name some Candy.|CandyLure]] 🍬>>: 9min
-	<</if>>\
-	<<if _hasChloroform>>\
-		<<keyOption [[Kidnap $found_kid.pronoun|kidnap]] 🖐>>: 30min
-	<</if>>\
-<</if>>\
+<<personHunting>>
 <<keyOption [[Keep searching|playground]] 🔍>>
 <<keyOption [[Return home|home]] 🏠>>
 :: kidnap {"position":"150,475"}

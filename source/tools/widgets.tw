@@ -105,7 +105,7 @@
 <</widget>>
 <<widget personHunting>>
     <<set $found_kid = Person.generate($settings.childGeneration)>>
-    You found a $found_kid.age year old $found_kid.skin $found_kid.title with $found_kid.hairLength $found_kid.hairStyle $found_kid.hairColor hair \
+    You found a $found_kid.age year old $found_kid.skin $found_kid.title with $found_kid.hairLength $found_kid.hairStyle $found_kid.hairColor hair 
     and $found_kid.eyeColor eyes named $found_kid.name<br><br>
     <<if Player.has('magic sunglasses')>>
         <label style="cursor:pointer"><<checkbox '$settings.usingMagicSunglasses' false true autocheck>> Put on magic sunglasses.<<emoji 😎>></label><br>

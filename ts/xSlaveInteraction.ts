@@ -1521,7 +1521,7 @@ window.Interactions["slave"] = {
               <<else>>\
                 $npc.GenPronoun tries to give you as much pleasure as possible but in the end $npc.genPronoun has to take it out making a big breath of air afterwards.\
               <</if>>\
-              <<if $npc.hunger gt 80 && $npc.age gt 3>>$npc.GenPronoun is so hungry that $npc.pronoun big $npc.eyeColor eyes look up at you, begging you to cum and give $npc.pronoun at least some sustenance.<</if>>\
+              <<if $npc.hunger gt 80 && $npc.age gt 3>>$npc.GenPronoun is so hungry that $npc.possessive big $npc.eyeColor eyes look up at you, begging you to cum and give $npc.pronoun at least some sustenance.<</if>>\
             <</if>>`,
             altMinutes: (current) => (Temporary().refused ? 1 : current),
             npcStats(npc) {

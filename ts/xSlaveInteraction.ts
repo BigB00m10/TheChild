@@ -430,7 +430,7 @@ window.Interactions["slave"] = {
                     },
                     fast: {
                       optionText: "⏩ Fast piston.",
-                      contents: `You trust your dick into $npc.name's $npc.genitals. Making $npc.genPronoun bounce with a fast pelvic piston movement.
+                      contents: `You thrust your dick into $npc.name's $npc.genitals. Making $npc.genPronoun bounce with a fast pelvic piston movement.
                       <<run Player.manageEnergy(3)>>\
                       <<if $npc.pussyTraining lt 40>>\
                         $npc.GenPronoun <<if $npc.age gt 0>>pushes you while crying<<else>>cries<</if>> desperately. <<emoji 😭>>
@@ -629,7 +629,7 @@ window.Interactions["slave"] = {
                     },
                     fast: {
                       optionText: "⏩ Fast piston.",
-                      contents: `You trust your dick into $npc.name's anus. Making $npc.genPronoun bounce with a fast pelvic piston movement.
+                      contents: `You thrust your dick into $npc.name's anus. Making $npc.pronoun bounce with a fast pelvic piston movement.
                       <<run Player.manageEnergy(3)>>\
                       <<if $npc.anusTraining lt 40>>\
                         $npc.GenPronoun <<if $npc.age gt 0>>pushes you while crying<<else>>cries<</if>> desperately. <<emoji 😭>>
@@ -850,7 +850,7 @@ window.Interactions["slave"] = {
                     },
                     fast: {
                       optionText: "⏩ Fast piston.",
-                      contents: `You trust the dildo into $npc.name's $npc.genitals. Making $npc.genPronoun bounce with a fast piston movement.
+                      contents: `You thrust the dildo into $npc.name's $npc.genitals. Making $npc.genPronoun bounce with a fast piston movement.
                       <<run Player.manageEnergy(1)>>\
                       <<if $npc.pussyTraining lt 40>>\
                         $npc.GenPronoun <<if $npc.age gt 0>>pushes you while crying<<else>>cries<</if>> desperately.<<emoji 😭>>
@@ -1038,7 +1038,7 @@ window.Interactions["slave"] = {
                     },
                     fast: {
                       optionText: "⏩ Fuck $npc.pronoun fast.",
-                      contents: `You trust the dildo into $npc.name's anus. Making $npc.genPronoun bounce with a fast piston movement.
+                      contents: `You thrust the dildo into $npc.name's anus. Making $npc.genPronoun bounce with a fast piston movement.
                       <<run Player.manageEnergy(1)>>\
                       <<if $npc.anusTraining lt 40>>\
                         $npc.GenPronoun <<if $npc.age gt 0>>pushes your hand while crying<<else>>cries<</if>> desperately. <<emoji 😭>>

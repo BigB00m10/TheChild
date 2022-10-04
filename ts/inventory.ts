@@ -8,14 +8,14 @@ Array.prototype.firstOrDefault = function <T>(predicate: Function) {
   }, null);
 };
 class Product {
-  name: string;
-  itemName?: string;
+  name: string; //Product name displayed. If itemName is not specified it will also be the item's name.
+  itemName?: string; //The item's name (once purchased)
   price: number;
   description: string;
-  packQuantity?: number = 1;
-  available?: number;
-  soldOut?: boolean = false;
-  tags: Set<string>;
+  packQuantity?: number = 1; //How many items are transferred to the inventory for each product bought
+  available?: number; //How many times this product can be purchased. This value will decrease after each purchase and set soldOut to true when it reaches zero.
+  soldOut?: boolean = false; //If set to true it will not appear available for purchasing.
+  tags: Set<string>; //Keywords related to the product. The first keyword indicates where the item go after receiving it. It will be used to filter the products in the future.
   constructor(init?: Product) {
     Object.assign(this, init);
   }
@@ -31,9 +31,9 @@ class Product {
 class Item {
   name: string;
   description: string;
-  count: number = 1;
-  tags: Set<string>;
-  constructor(init?: Partial<Item>) {
+  count?: number = 1;
+  tags: Set<string>; //Keywords related to this item. It will be used to filter the items in a inventory in the future.
+  constructor(init?: Item) {
     Object.assign(this, init);
   }
 }
@@ -77,6 +77,7 @@ class Inventory {
     destination.add(this.items[itemIndex]);
     this.items.deleteAt(itemIndex);
   }
+  //Remove all items in this inventory
   clear(): void {
     this.items = [];
   }
@@ -85,6 +86,7 @@ class Inventory {
   }
 }
 class OnlineStore {
+  //Updating this class does not automatically updates the $onlineStore story variable unless a new product is added, the version number is used to know if the story variable object should be updated when loading an old save.
   version: number = 3;
   products: Product[] = [
     new Product({
@@ -141,13 +143,15 @@ class OnlineStore {
     }),
     new Product({
       name: "Magic sunglasses",
-      description: "These hi-tec sunglasses detect subtle variations on people behavior and allows you to see more details about them.",
+      description:
+        "These hi-tec sunglasses detect subtle variations on people behavior and allows you to see more details about them.",
       price: 500,
       available: 1,
       tags: new Set(["player", "wearable", "eyes", "tech", "cheat"]),
     }),
   ];
-  bought: Inventory = new Inventory();
+  bought: Inventory = new Inventory();//Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
+  //Get a product from the store
   get(name: string): Product {
     let store: OnlineStore = Variables().onlineStore as OnlineStore;
     if (!store) store = this;
@@ -155,6 +159,7 @@ class OnlineStore {
       (p: Product) => p.name.toLowerCase() == name.toLowerCase()
     );
   }
+  //Check if a product on the store can be bought with the current available player's money.
   canBuy(productIndex: number, count: number = 1): boolean {
     let variables = Variables();
     let player = variables.player as Player;
@@ -162,6 +167,7 @@ class OnlineStore {
     let product = store.products[productIndex];
     return player.cash >= product.price * count;
   }
+  //Performs a purchase on a product
   buy(productIndex: number, count: number = 1): boolean {
     let variables = Variables();
     let player = variables.player as Player;
@@ -179,6 +185,7 @@ class OnlineStore {
     }
     return true;
   }
+  //Gets the product or item final destination
   destination(product: Product | Item): Inventory {
     switch ([...product.tags][0]) {
       case "basement":
@@ -191,9 +198,11 @@ class OnlineStore {
         return player.inventory;
     }
   }
+  //Check if an item it's bought and has a pending delivery
   isBought(itemName: string): boolean {
     return new Inventory(Variables().onlineStore.bought).has(itemName);
   }
+  //Transfer all bought products to the respective destinations.
   receiveBought(): void {
     let variables = Variables();
     let store = variables.onlineStore as OnlineStore;
@@ -215,13 +224,16 @@ class OnlineStore {
     store.bought = new Inventory(store.bought);
     store.bought.clear();
   }
+  //Checks if there are items pending delivery
   pendingOrder(): boolean {
     let store = Variables().onlineStore as OnlineStore;
     return store.bought.items.length > 0;
   }
+  //Builds a price string to be displayed
   priceText(product: Product): string {
     return "¤" + product.price;
   }
+  //Builds a text to display as a product name
   productText(product: Product): string {
     let text = product.name;
     if (product.packQuantity > 1) text += " x " + product.packQuantity;

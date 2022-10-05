@@ -133,7 +133,7 @@
     <<else>>
         <<if _hasCandy>>
             <<keyOption [[Offer $found_kid.name some Candy.|CandyLure]] 🍬>>: 9min<br>
-        <</if>>\
+        <</if>>
         <<if _hasChloroform>>
             <<keyOption [[Kidnap $found_kid.pronoun|kidnap]] 🖐>>: 30min<br>
         <</if>>

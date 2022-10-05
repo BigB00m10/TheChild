@@ -26,6 +26,7 @@ abstract class Npc {
   uid: Uid;
   name: string;
   age: number;
+  sex: Sex
   gender: Gender;
   hasPussy: boolean;
   hasPenis: boolean;
@@ -34,7 +35,8 @@ abstract class Npc {
   pussyTraining: number = 0;
   anusTraining: number = 0;
   mouthTraining: number = 0;
-  genitalVirgin: boolean = true;
+  penisVirgin: boolean = true;
+  vaginaVirgin: boolean = true;
   analVirgin: boolean = true;
   mouthVirgin: boolean = true; //Due to a personal error only slaves with previous personal experience have this at false.
   assSpermAmount: number = 0;
@@ -51,7 +53,7 @@ abstract class Npc {
   obedience: number = 25;
   lust: number = 0;
   freedomWish: number = 75;
-  genitals: Genitals;
+  genitals: AllGenitals;
   status: NpcStatus = "citizen";
   need: string;
   index: undefined;
@@ -114,7 +116,7 @@ abstract class Npc {
       value.obedience + value.lust + value.pussy + value.anus + value.mouth;
     value.freedomWish = (value.total * maxFwPenalty * npc.freedomWish) / 100;
     if (npc.hasPussy) {
-      if (npc.genitalVirgin) value.virginType = "virgin " + npc.genitals;
+      if (npc.vaginaVirgin) value.virginType = "virgin " + npc.genitals.female;
     } else if (npc.analVirgin) value.virginType = "anal virginity";
     value.virginBonus = value.virginType ? Math.max(5, value.total * 0.2) : 0;
     value.total += value.freedomWish + value.virginBonus;
@@ -168,6 +170,7 @@ class Animal extends Npc {
   species: AnimalSpecies;
   roughSize?: RoughSize;
 }
+const genderList: Gender[] = ["boy", "girl"];
 class Person extends Npc {
   version: number = 2;
   title: string;
@@ -186,26 +189,31 @@ class Person extends Npc {
   generate(gen?: PersonGeneration): Person {
     if (gen === undefined) gen = new PersonGeneration();
     let person = new Person();
-    person.gender =
+    person.sex =
       Math.random() * 100 + 1 < gen.femalePercentage ? "female" : "male";
-    person.title = person.gender != "male" ? "girl" : "boy";
-    person.pronoun = person.gender != "male" ? "her" : "him";
-    person.GenPronoun = person.gender != "male" ? "She" : "He";
-    person.genPronoun = person.gender != "male" ? "she" : "he";
-    person.possessive = person.gender != "male" ? "her" : "his";
-    person.Possessive = person.gender != "male" ? "Her" : "His";
-    person.hasPussy = person.gender == "female";
-    person.hasPenis = person.gender == "male";
+    person.sex = Math.random() *100 + 1 < gen.hermPercentage ? "herm" : person.sex
+    person.gender = person.sex == "male" ? "boy" : person.sex == "female" ? "girl" : genderList.random();
+    person.title = person.sex == "male" ? "boy" : person.sex == "female" ? "girl" : "child";
+    person.pronoun = person.gender == "boy" ? "him" : person.gender == "girl" ? "her" : "them";
+    person.GenPronoun = person.gender == "boy" ? "He" : person.gender == "girl" ? "She" : "They";
+    person.genPronoun = person.gender == "boy" ? "he" : person.gender == "girl" ? "she" : "they";
+    person.possessive = person.gender == "boy" ? "his" : person.gender == "girl" ? "her" : "their";
+    person.Possessive = person.gender == "boy" ? "His" : person.gender == "girl" ? "Her" : "Their";
+    person.hasPussy = person.sex == "female" || person.sex =="herm";
+    person.hasPenis = person.sex == "male" || person.sex =="herm";
     let genGen: GenderGeneration =
-      person.gender != "male" ? gen.females : gen.males;
+      person.sex == "male" ? gen.males : person.sex == "female" ? gen.females : gen.herms;
     person.age =
       Math.floor(Math.random() * (genGen.toAge - genGen.fromAge)) +
       genGen.fromAge;
     if (person.age < 6)
       person.freedomWish -= ((6 - person.age) / 6) * person.freedomWish;
-    person.genitals =
-      person.gender != "male" ? (person.age < 15 ? "cunny" : "pussy") : "penis";
-    person.name = (person.gender != "male" ? femaleNames : maleNames).random();
+    person.genitals = {
+      "male": person.sex == "male" || person.sex == "herm" ? "dick": null,
+      "female": person.sex == "female" || person.sex == "herm" ? (person.age < 15 ? "cunny" : "pussy"): null,
+      "all": "dick"
+    }
+    person.name = (person.gender != "boy" ? femaleNames : maleNames).random();
     person.skin = gen.skins.random();
     person.hairColor = gen.hairColors.random();
     person.hairLength =
@@ -215,7 +223,7 @@ class Person extends Npc {
         ? ["short", "medium"].random()
         : ["short", "medium", "long"].random();
     let hairStyles = gen.hairStyles;
-    if (person.gender == "male")
+    if (person.gender == "boy")
       hairStyles.delete("pig tails", "twin tails", "ponytail");
     person.hairStyle = hairStyles.random();
     person.eyeColor = gen.eyeColors.random();
@@ -236,7 +244,7 @@ class Person extends Npc {
   }
   getHomePersonName(word: string, npc?: Npc) {
     if (!npc) npc = Variables().npc;
-    if (word == "sibling") word = npc.gender != "male" ? "bro" : "sis";
+    if (word == "sibling") word = npc.sex != "male" ? "bro" : "sis";
     if (npc.age < 5) {
       switch (word) {
         case "uncle":
@@ -274,7 +282,7 @@ class Person extends Npc {
     }
     return word;
   }
-  getHomePersonGender(word: string): Gender {
+  getHomePersonSex(word: string): Sex {
     switch (word) {
       case "dad":
       case "bro":
@@ -303,7 +311,12 @@ class PersonGeneration {
     fromAge: 1,
     toAge: 15,
   };
+  herms: GenderGeneration = {
+    fromAge: 1,
+    toAge: 15
+  }
   femalePercentage: number = 50;
+  hermPercentage: number = 0;
   hairStyles = [
     "curly",
     "wavey",
@@ -884,7 +897,7 @@ const personUniquenessPresets: PersonUniqueness[] = [
         kid.analVirgin = false;
         kid.anusTraining = 60;
       } else {
-        kid.genitalVirgin = false;
+        kid.vaginaVirgin = false;
         kid.pussyTraining = 60;
       }
     },
@@ -960,7 +973,8 @@ const personUniquenessPresets: PersonUniqueness[] = [
     ],
     apply(kid) {
       if (kid.age > 5) {
-        kid.genitalVirgin = false;
+        if (kid.hasPussy) kid.vaginaVirgin = false;
+        if(kid.hasPenis) kid.penisVirgin = false;
         if (kid.hasPussy) kid.pussyTraining = 100;
         kid.lust = 60;
         kid.mouthVirgin = false;

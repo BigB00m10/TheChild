@@ -80,9 +80,9 @@ $(document).on(":passageinit", () => {
         let addSlaveUniqueness = !slaves[0].uniqueness;
         slaves.forEach((slave: Person) => {
           if (!slave.GenPronoun) {
-            slave.GenPronoun = slave.gender != "male" ? "She" : "He";
-            slave.genPronoun = slave.gender != "male" ? "she" : "he";
-            slave.Possessive = slave.gender != "male" ? "Her" : "His";
+            slave.GenPronoun = slave.gender != "boy" ? "She" : "He";
+            slave.genPronoun = slave.gender != "boy" ? "she" : "he";
+            slave.Possessive = slave.gender != "boy" ? "Her" : "His";
           }
           if (slave.anusTraining == undefined) {
             slave.anusTraining = 0;
@@ -90,12 +90,13 @@ $(document).on(":passageinit", () => {
             slave.mouthTraining = 0;
           }
           if (slave.hasPenis == undefined) {
-            slave.hasPenis = slave.gender == "male";
-            slave.hasPussy = slave.gender == "female";
+            slave.hasPenis = slave.sex == "male" || slave.sex == "herm";
+            slave.hasPussy = slave.sex == "female" || slave.sex == "herm";
           }
           if (slave.analVirgin == undefined) {
             slave.analVirgin = true;
-            slave.genitalVirgin = true;
+            slave.vaginaVirgin = true;
+            slave.penisVirgin = true;
             slave.mouthVirgin = true;
           }
           if (slave.status == undefined) slave.status = "slave";
@@ -111,8 +112,10 @@ $(document).on(":passageinit", () => {
           if (!slave.version) {
             if (!slave.analVirgin)
               window.Person.setAchievement("playerTookAnalVirginity", slave);
-            if (!slave.genitalVirgin)
-              window.Person.setAchievement("playerTookGenitalVirginity", slave);
+            if (!slave.vaginaVirgin)
+              window.Person.setAchievement("playerTookVaginaVirginity", slave);
+            if (!slave.penisVirgin)
+              window.Person.setAchievement("playerTookPenisVirginity", slave);
             if (!slave.mouthVirgin)
               window.Person.setAchievement("playerTookMouthVirginity", slave);
             if (slave.mouthTraining)

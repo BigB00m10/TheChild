@@ -1,5 +1,11 @@
-type Gender = "male" | "female";
+type Sex = "male" | "female" | "herm";
+type Gender = "boy" | "girl" | "nb";
 type Genitals = "cunny" | "pussy" | "penis" | "dick";
+type AllGenitals = {
+  "male": Genitals
+  "female": Genitals
+  "all": string
+}
 interface Home {
   name: string;
   rent: number;
@@ -14,8 +20,11 @@ function Temporary(): any {
 class Player {
   uid: Uid = 0;
   name: string;
+  sex: Sex;
   gender: Gender;
-  genitals: Genitals;
+  genitals: AllGenitals;
+  hasPussy: boolean;
+  hasPenis: boolean;
   sexHole: string;
   home: Home = Homes.smallUrban;
   job: Job = Jobs.garbageCollector;
@@ -45,8 +54,40 @@ class Player {
   setGender(gender: Gender) {
     let player = Variables().player as Player;
     player.gender = gender;
-    player.genitals = gender != "male" ? "pussy" : "dick";
-    player.sexHole = gender != "male" ? "pussy" : "ass";
+  }
+  setSex(sex: Sex) {
+    let player = Variables().player as Player;
+    player.sex = sex;
+    if (sex == "male") {
+      player.genitals = {
+        "male": "dick",
+        "female": null,
+        "all": "dick"
+      };
+      player.hasPenis = true;
+      player.hasPussy = false;
+      player.sexHole = "ass";
+    }
+    if (sex == "female") {
+      player.genitals = {
+        "male": null,
+        "female": "pussy",
+        "all": "pussy"
+      };
+      player.hasPenis = false;
+      player.hasPussy = true;
+      player.sexHole = "pussy";
+    }
+    if (sex == "herm") {
+      player.genitals = {
+        "male": "dick",
+        "female": "pussy",
+        "all": "dick and pussy"
+      };
+      player.hasPenis = true;
+      player.hasPussy = true;
+      player.sexHole = "pussy";
+    }
   }
   hasAchievement(achievement: string) {
     return (Variables().achievements as string[]).includes(achievement);
@@ -55,12 +96,12 @@ class Player {
     let variables = Variables();
     let $player: Player = variables.player;
     if (npc.status == "citizen")
-      return $player.gender != "male" ? "lady" : "mister";
+      return $player.gender != "boy" ? "lady" : "mister";
     let $addressing = variables.settings.addressing;
-    if ($player.gender != "male" ? npc.mom == this.uid : npc.dad == this.uid)
+    if (npc.mom == this.uid || npc.dad == this.uid)
       return $addressing && $addressing.offspring
         ? $addressing.offspring
-        : $player.gender != "male"
+        : $player.gender != "boy"
         ? "mommy"
         : "daddy";
     let result = $player.name;

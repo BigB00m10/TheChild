@@ -77,14 +77,14 @@
     <<npcInteraction>>
 <</unlessEmergency>>
 :: slaveApproach {"position":"1000,0"}
-$npc.name is a $npc.age year old $npc.skin $npc.title with $npc.hairLength $npc.hairStyle $npc.hairColor hair and $npc.eyeColor eyes
+$npc.name is a $npc.age year old $npc.skin $npc.title with $npc.hairLength $npc.hairStyle $npc.hairColor hair and $npc.eyeColor eyes.
 You approach $npc.pronoun.
 <<include npcStats>>
 <<if $npc.fear gt 90>>\
     $npc.GenPronoun walks back scared and wodering what you will do to $npc.pronoun.
 <<elseif $npc.hasPenis && $npc.lust gte 30 && $npc.fear lt 25>>\
     <<set $npc.aroused = true>>\
-    $npc.GenPronoun looks at you with expectancy. <<if $npc.haveClothes>>@@color:deeppink;You can see a bump in $npc.pronoun pants@@.<<else>>@@color:deeppink;$npc.GenPronoun's already erected@@. <<emoji ❤>><</if>>
+    $npc.GenPronoun looks at you with expectancy. <<if $npc.haveClothes>>@@color:deeppink;You can see a bump in $npc.possessive pants@@.<<else>>@@color:deeppink;$npc.GenPronoun's already erected@@. <<emoji ❤>><</if>>
     (High lust made $npc.pronoun "happy" to see you)
 <<elseif $npc.lust gte 50 && $npc.fear lt 25>>
     <<set $npc.aroused = true>>\

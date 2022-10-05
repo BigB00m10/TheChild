@@ -244,7 +244,7 @@ class Person extends Npc {
   }
   getHomePersonName(word: string, npc?: Npc) {
     if (!npc) npc = Variables().npc;
-    if (word == "sibling") word = npc.sex != "male" ? "bro" : "sis";
+    if (word == "sibling") word = npc.sex == "male" ? "bro" : "sis";
     if (npc.age < 5) {
       switch (word) {
         case "uncle":

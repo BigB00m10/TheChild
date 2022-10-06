@@ -211,7 +211,7 @@ class Person extends Npc {
     person.genitals = {
       "male": person.sex == "male" || person.sex == "herm" ? "dick": null,
       "female": person.sex == "female" || person.sex == "herm" ? (person.age < 15 ? "cunny" : "pussy"): null,
-      "all": "dick"
+      "all": person.sex == "male" ? "dick" : person.sex == "female" ? (person.age < 15 ? "cunny" : "pussy") : (person.age < 15 ? "dick and cunny" : "dick and pussy")
     }
     person.name = (person.gender != "boy" ? femaleNames : maleNames).random();
     person.skin = gen.skins.random();

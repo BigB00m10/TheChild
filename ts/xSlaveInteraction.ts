@@ -1,7 +1,10 @@
+//Returns the options after stripping the slave
 let afterStrip = () =>
   window.Interactions.slave.options["pushDown"].next.strip.next;
+//Returns the options that are after putting penis in the mouth
 let afterPenToMouth = () =>
   (window.Interactions.slave.options["penToMouth"].next as CallableFunction)();
+//returns the different options when cumming outside
 let cumOutsideOptions: NpcInteractionOptions = {
   cumBody: {
     optionText: "💦 Cum on $npc.possessive body.",
@@ -27,7 +30,9 @@ let cumOutsideOptions: NpcInteractionOptions = {
     next: () => afterStrip(),
   },
 };
+//Returns the first member in the interaction route that points to the interaction collection.
 let baseInteractionRoute = () => Variables().npcInteractionRoute.split(".")[0];
+//Returns the different talk options
 let talkOptions = () =>
   window.Interactions[baseInteractionRoute()].options["talk"]
     .next as NpcInteractionOptions;
@@ -1412,7 +1417,7 @@ window.Interactions["slave"] = {
         },
         stealClothes: {
           optionText: "🖐 Strip $npc.pronoun and keep $npc.possessive clothes.",
-          contents: null,
+          contents: null, //These contents are assigned right after this interaction tree definition.
           npcStats: ["-haveClothes"],
           next: () =>
             window.Interactions.slave.options["pushDown"].next["strip"].next,
@@ -1800,6 +1805,7 @@ window.Interactions["slave"] = {
   },
   timeIncreaseNpcHunger: true,
 };
+//Instead of duplicating same text on the two interactions I just copy the contents and add the code that steals the clothes.
 window.Interactions.slave.options["pushDown"].next.stealClothes.contents =
   window.Interactions.slave.options["pushDown"].next.strip.contents +
   `<<set _item = {

@@ -117,17 +117,20 @@ class UniquenessTables {
     [
       2,
       {
+        //If none of the below personalities matches the person this will appear:
         default: "$npc.name shrugs and doesn't say anything.",
+        //If the person is naughty and shy this will appear:
         naughtyAndShy: "$npc.name blushes and nods.",
         naughty: "$npc.name smiles and nods.<<emoji 🙂>>",
       },
-      5,
+      5, //From 5 years old onwards do this:
       {
         default: "Say:I don't know...<<emoji 🙁>>",
+        //If the person is naughty and shy use the same as in 2 year old.
         naughtyAndShy: "=age2",
         naughty: "Say:Yeah! I like naughty stuff!!<<emoji 😃>>",
       },
-      8,
+      8, //From 8 years old onwards do this:
       {
         default: "=age5",
         diligent: "Say:I just did what I was told to...<<emoji 🥺>>",

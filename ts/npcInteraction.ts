@@ -1,4 +1,11 @@
 type NpcInteractionOptions = Record<string, NpcInteraction>;
+type complexRequirement = {
+  playerRequirements?: string[];
+  npcRequirements?: string[];
+  inventoryRequirements?: string[];
+  locationRequirements?: string[];
+  settingsRequirements?: string[];
+}
 //Describes an option that once selected will display a passage and optionally affect the relationship between the player and an NPC
 interface NpcInteraction {
   //If this function is specified it will be called in order to know if this interaction can be shown in a list of options
@@ -14,6 +21,9 @@ interface NpcInteraction {
   locationRequirements?: string[];
   //A list of requirements that the settings need to comply in order to show this option
   settingsRequirements?: string[];
+  //A list of object containing the previous requirement variables, used when more than one combination of settings is acceptable.
+  //Example: Allowing the lube option to show if anal is enabled and isn't lubricated, or if they have a pussy that is not lubricated.
+  complexRequirements?: complexRequirement[];
   //The text in the option (before selecting the option).
   //if an emoji followed by a space is prepended it will be used as the emoji parameter in the keyOption or keyAction macro.
   //Sugarcube markup can be written on it.
@@ -136,6 +146,36 @@ const checkCanBeShown = (option: NpcInteraction) => {
   if (option.locationRequirements)
     canBeShown = option.locationRequirements.includes(Variables().scenery);
   //TODO: also check room inventory for locationRequirements
+  //ComplexRequirements should be used on a parent choice, to disable it when the conditions for none of its children are met.
+  if(option.complexRequirements) {
+    let complexCanBeShown = false;
+    option.complexRequirements.forEach(
+      (combination) => {
+        canBeShown = true;
+        if (combination.playerRequirements)
+          combination.playerRequirements.forEach(
+            (condition) => (canBeShown &&= checkCondition("player", condition))
+          );
+        if (combination.npcRequirements)
+          combination.npcRequirements.forEach(
+            (condition) => (canBeShown &&= checkCondition("npc", condition))
+          );
+        if (combination.settingsRequirements)
+          combination.settingsRequirements.forEach(
+            (condition) => (canBeShown &&= checkCondition("settings", condition))
+          );
+        if (combination.inventoryRequirements)
+          combination.inventoryRequirements.forEach(
+            (itemName) => (canBeShown &&= window.Player.has(itemName))
+          );
+        if (combination.locationRequirements)
+          canBeShown = option.locationRequirements.includes(Variables().scenery);
+        if (canBeShown) complexCanBeShown = true;
+      }
+    )
+    canBeShown = complexCanBeShown;
+  }
+  if (!canBeShown) return false;
   if (option.canBeShown) canBeShown = option.canBeShown();
   return canBeShown;
 };

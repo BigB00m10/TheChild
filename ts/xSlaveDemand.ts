@@ -119,7 +119,7 @@ window.Interactions["slaveDemandHunger"] = {
       showNpcStats: true,
     },
     cum: {
-      playerRequirements: ["gender=male"],
+      playerRequirements: ["hasPenis"],
       optionText:
         "💦 Offer $npc.pronoun your ==sperm== white jelly. (-5 hunger)",
       minutesCost: 30,
@@ -157,7 +157,7 @@ window.Interactions["slaveDemandHunger"] = {
 
         <<if _willing>>$npc.name stretches out $npc.possessive hands to grab $npc.possessive "meal dispenser".
         <</if>>\
-        With a hand in $npc.possessive $npc.hairColor $npc.hairStyle head you guide $npc.pronoun in giving you pleasure by licking and sucking your dick's.
+        With a hand in $npc.possessive $npc.hairColor $npc.hairStyle head you guide $npc.pronoun in giving you pleasure by licking and sucking your dick.
         The sounds of $npc.possessive wet tongue rubbing your penis inside $npc.possessive $npc.age year old mouth echoes on the basement's walls.
 
         ''<<npcAddressPlayer>>'': "That's it. Good $npc.title. Just a little more and you'll have your meal."

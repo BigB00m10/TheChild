@@ -74,12 +74,21 @@ location: $npc.location
                     <div style="display:inline-block;position: relative;top: -11px;">\
                     <input id="femalePercentDisplay" @value="$settings.childGeneration.femalePercentage" style="width: 1.7em;border: 0;pointer-events: none;" readonly> %</div>\
                 </div>\
+                Herm percentage (100 is all characters replaced with herms):\
+                <div class="slidecontainer">\
+                    <div style="display:inline-block"><input type="range" min="0" max="100" value="50" class="slider" id="hermPercentSlider"></div>\
+                    <div style="display:inline-block;position: relative;top: -11px;">\
+                    <input id="hermPercentDisplay" @value="$settings.childGeneration.hermPercentage" style="width: 1.7em;border: 0;pointer-events: none;" readonly> %</div>\
+                </div>\
                 Females:
                 <label>From<input type="number" min="0" id="femaleAgeFrom" style="width:3em">years old</label>
                 <label>To &nbsp;<input type="number" id="femaleAgeTo" style="width:3em">years old</label>
                 Males:
                 <label>From<input type="number" min="0" id="maleAgeFrom" style="width:3em">years old</label>
                 <label>To &nbsp;<input type="number" id="maleAgeTo" style="width:3em">years old</label>
+                Herms:
+                <label>From<input type="number" min="0" id="hermAgeFrom" style="width:3em">years old</label>
+                <label>To &nbsp;<input type="number" id="hermAgeTo" style="width:3em">years old</label>
                 <<button "Hair colors">>\
                     <<userEditListVar "$settings.childGeneration.hairColors" "Edit hair colors">>
                 <</button>>\
@@ -189,10 +198,16 @@ location: $npc.location
                 $settings.childGeneration.femalePercentage = parseInt($(this).val())
                 $("#femalePercentDisplay").val($settings.childGeneration.femalePercentage)
             }).val($settings.childGeneration.femalePercentage)
+            $("#hermPercentSlider").on("input", function () {
+                $settings.childGeneration.hermPercentage = parseInt($(this).val())
+                $("#hermPercentDisplay").val($settings.childGeneration.hermPercentage)
+            }).val($settings.childGeneration.hermPercentage)
             var $femaleAgeFrom = $('#femaleAgeFrom')
             var $femaleAgeTo = $('#femaleAgeTo')
             var $maleAgeFrom = $('#maleAgeFrom')
             var $maleAgeTo = $('#maleAgeTo')
+            var $hermAgeFrom = $('#hermAgeFrom')
+            var $hermAgeTo = $('#hermAgeTo')
             $femaleAgeFrom.change(function(){
                 var toValue = parseInt($femaleAgeTo.val())
                 var $this = $(this)
@@ -221,6 +236,20 @@ location: $npc.location
                 $this.val(value)
                 $settings.childGeneration.males.toAge = value
             }).val($settings.childGeneration.males.toAge)
+            $hermAgeFrom.change(function(){
+                var toValue = parseInt($hermAgeTo.val())
+                var $this = $(this)
+                var value = Math.min(toValue, parseInt($this.val()))
+                $this.val(value)
+                $settings.childGeneration.herms.fromAge = value
+            }).val($settings.childGeneration.herms.fromAge)
+            $hermAgeTo.change(function(){
+                var fromValue = parseInt($hermAgeFrom.val())
+                var $this = $(this)
+                var value = Math.max(fromValue, parseInt($this.val()))
+                $this.val(value)
+                $settings.childGeneration.herms.toAge = value
+            }).val($settings.childGeneration.herms.toAge)
         </script>\
     <</dialog>>\
 <</link>>

@@ -1,7 +1,8 @@
 :: Start {"position":"1075,875"}
-<<set _genderOptions = ["man", "woman"]>>\
-Your name is <<textbox "$player.name" "David">>, a young <<listbox '_gender' autoselect>><<optionsfrom _genderOptions>><</listbox>>
- living by <span id="pronoun">him</span>self in a small home. To the outside world, you’re the definition of an average person, but behind closed doors, you're anything but normal.
+<<set _sexOptions = ["man", "woman", "futanari"]>>\
+<<set _genderOptions = ["him", "her", "them"]>>
+Your name is <<textbox "$player.name" "David">>, a young <<listbox '_sex' autoselect>><<optionsfrom _sexOptions>><</listbox>>
+ living by <<listbox '_gender' autoselect>><<optionsfrom _genderOptions>><</listbox>>self in a small home. To the outside world, you’re the definition of an average person, but behind closed doors, you're anything but normal.
 
 If anyone where to know what type of person you really were, you’d probably find yourself under heavy surveillance in a prison cell. Let’s just say that your tastes in life, are a bit too exotic for most people.
 
@@ -9,7 +10,8 @@ It's currently a nice Monday morning and the start of a new life. For too long h
 
 <<keyAction Start ▶️ btn>>
   <<set
-    Player.setGender(_gender == "man" ? "male" : "female");
+    Player.setSex(_sex == "man" ? "male" : _sex == "woman" ? "female" : "herm");
+    Player.setGender(_gender == "him" ? "male" : _gender == "her" ? "female" : "nb");
     $player.name to $('#textbox-playername').val();
     >>
   <<goto IntroBed>>/*[[IntroBed]]*/

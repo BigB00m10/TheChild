@@ -70,6 +70,12 @@ $(document).on(":passageinit", () => {
     Save.onLoad.add((save) => {
       let stateIndex = save.state.history.length - 1;
       let variables = save.state.history[stateIndex].variables;
+      if (!variables.player.genitals.all) {
+        //Change to new gender/sex format from a 0.1.8.2 save or older
+        window.Player.setSex(variables.player.gender, variables.player);
+        variables.player.gender =
+          variables.player.gender != "male" ? "girl" : "boy";
+      }
       let slaves = variables.slaves as Person[];
       if (slaves && slaves.length) {
         let reassignUid = false;
@@ -90,8 +96,8 @@ $(document).on(":passageinit", () => {
             slave.mouthTraining = 0;
           }
           if (slave.hasPenis == undefined) {
-            slave.hasPenis = slave.sex == "male" || slave.sex == "herm";
-            slave.hasPussy = slave.sex == "female" || slave.sex == "herm";
+            slave.hasPenis = slave.sex == "male";
+            slave.hasPussy = slave.sex == "female";
           }
           if (slave.analVirgin == undefined) {
             slave.analVirgin = true;
@@ -127,6 +133,26 @@ $(document).on(":passageinit", () => {
           }
           slave.version = window.Person.version;
           if (!slave.uniqueness) PersonUniqueness.applyRandom(slave, false);
+          if (!slave.genitals.all) {
+            //Change to new gender/sex format from a 0.1.8.2 save or older
+            slave.sex = slave.gender as Sex;
+            slave.gender = slave.sex == "male" ? "boy" : "girl";
+            slave.genitals = {
+              male: slave.sex == "male" ? "dick" : null,
+              female:
+                slave.sex == "female"
+                  ? slave.age < 15
+                    ? "cunny"
+                    : "pussy"
+                  : null,
+              all:
+                slave.sex == "male"
+                  ? "dick"
+                  : slave.age < 15
+                  ? "cunny"
+                  : "pussy",
+            };
+          }
         });
         if (addSlaveUniqueness) {
           Dialog.setup("Slave personalities");
@@ -158,18 +184,22 @@ $(document).on(":passageinit", () => {
         onlineStore.products[2] = window.OnlineStore.products[2];
         onlineStore.version = 3;
       }
-      if (!variables.settings.childGeneration.hairStyles)
-        variables.settings.childGeneration.hairStyles =
-          window.PersonGeneration.hairStyles;
-      if (!variables.settings.childGeneration.eyeColors)
-        variables.settings.childGeneration.eyeColors =
-          window.PersonGeneration.eyeColors;
-      if (!variables.settings.childGeneration.hairColors)
-        variables.settings.childGeneration.hairColors =
-          window.PersonGeneration.hairColors;
-      if (!variables.settings.childGeneration.skins)
-        variables.settings.childGeneration.skins =
-          window.PersonGeneration.skins;
+      let childGen: PersonGeneration = variables.settings.childGeneration;
+      if (!childGen.hairStyles)
+        childGen.hairStyles = window.PersonGeneration.hairStyles;
+      if (!childGen.eyeColors)
+        childGen.eyeColors = window.PersonGeneration.eyeColors;
+      if (!childGen.hairColors)
+        childGen.hairColors = window.PersonGeneration.hairColors;
+      if (!childGen.skins) childGen.skins = window.PersonGeneration.skins;
+      if (!childGen.herms) {
+        //New settings added not present in a 0.1.8.2 save or older
+        childGen.hermPercentage = 0;
+        childGen.herms = {
+          fromAge: 1,
+          toAge: 15,
+        };
+      }
       if (variables.player.house) {
         variables.player.home = variables.player.house;
         delete variables.player.house;

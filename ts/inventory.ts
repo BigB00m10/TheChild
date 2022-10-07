@@ -44,7 +44,7 @@ class Inventory {
       (i: Item) => i.name == item.name
     );
     if (existing) existing.count += item.count;
-    else this.items.push(item);
+    else this.items.push(new Item(item));
   }
   remove(item: Item, count: number = 1): void {
     if (!item) return;
@@ -150,7 +150,7 @@ class OnlineStore {
       tags: new Set(["player", "wearable", "eyes", "tech", "cheat"]),
     }),
   ];
-  bought: Inventory = new Inventory();//Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
+  bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
   //Get a product from the store
   get(name: string): Product {
     let store: OnlineStore = Variables().onlineStore as OnlineStore;

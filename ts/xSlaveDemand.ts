@@ -6,7 +6,7 @@ const punishment: NpcInteraction = {
       npcRequirements: ["haveClothes"],
       optionText: "🩲 Steal $npc.possessive clothes.",
       contents: `You take all off $npc.possessive clothes leaving $npc.name completely naked and say:
-      "I'll be keeping this as punishment. From now on you'll go without clothes all day. And your $npc.genitals will bring good views for the house<<emoji 🤤>>."
+      "I'll be keeping this as punishment. From now on you'll go without clothes all day. And your $npc.genitals.all will bring good views for the house<<emoji 🤤>>."
 
       <<if $npc.lust gte 60>>\
         $npc.name blushes a little bit and says: "Ah!.. O-Okay <<emoji 🥺>>"

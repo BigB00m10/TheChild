@@ -36,5 +36,5 @@ You are currently in front of your home.
     <<keyOption [[Go inside|main]] 🚪>>
     <<include workOption>>\
     <<keyOption [[Go to the park|playground]] ⚽>>
-    <<keyOption [[Go to the shool|shool]] 🏫>>
+    <<keyOption [[Go to the school|shool]] 🏫>>
 <</unlessEmergency>>\

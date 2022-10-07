@@ -18,6 +18,7 @@ function Temporary(): any {
   return temporary() as any;
 }
 class Player {
+  //Zero UID identifies the player.
   uid: Uid = 0;
   name: string;
   sex: Sex;
@@ -25,12 +26,14 @@ class Player {
   genitals: AllGenitals;
   hasPussy: boolean;
   hasPenis: boolean;
+  //The name of the hole where the player can be fucked by default (not sure if this will be used)
   sexHole: string;
   home: Home = Homes.smallUrban;
   job: Job = Jobs.garbageCollector;
   cash: number = 100;
   energy: number = 100;
   lust: number;
+  //Set to true when the player goes to sleep so the bed passage knows that the player just woke up and to know if energy should be reduced or restored
   sleeping: boolean;
   workedToday: boolean = false;
   inventory: Inventory = new Inventory();
@@ -55,8 +58,9 @@ class Player {
     let player = Variables().player as Player;
     player.gender = gender;
   }
-  setSex(sex: Sex) {
-    let player = Variables().player as Player;
+  setSex(sex: Sex, player?: Player) {
+    if(!player)
+      player = Variables().player as Player;
     player.sex = sex;
     if (sex == "male") {
       player.genitals = {
@@ -89,9 +93,11 @@ class Player {
       player.sexHole = "pussy";
     }
   }
+  //Achievements are used to keep track of what things are already done before.
   hasAchievement(achievement: string) {
     return (Variables().achievements as string[]).includes(achievement);
   }
+  //Get how the specified NPC calls the player (how is the player addressed)
   getAddressing(npc: Npc) {
     let variables = Variables();
     let $player: Player = variables.player;

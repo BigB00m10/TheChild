@@ -170,7 +170,7 @@ class Animal extends Npc {
   species: AnimalSpecies;
   roughSize?: RoughSize;
 }
-const genderList: Gender[] = ["boy", "girl"];
+const genderList: Gender[] = ["boy", "girl", "nb"];
 class Person extends Npc {
   version: number = 2;
   title: string;

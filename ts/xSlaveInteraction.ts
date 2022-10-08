@@ -1095,7 +1095,7 @@ window.Interactions["slave"] = {
                             return stats;
                           },
                           showNpcStats: true,
-                          next: () => afterStrip().dildoAnus.next.ram.next,
+                          next: () => afterStrip().useDildo.next.dildoAnus.next.ram.next,
                         },
                         fast: {
                           optionText: "⏩ Fuck $npc.pronoun fast.",
@@ -1138,7 +1138,8 @@ window.Interactions["slave"] = {
                             return stats;
                           },
                           showNpcStats: true,
-                          next: () => afterStrip().dildoAnus.next.ram.next,
+                          next: () =>
+                            afterStrip().useDildo.next.dildoAnus.next.ram.next,
                         },
                         gentleRubSlaveGen: {
                           optionText:
@@ -1193,7 +1194,8 @@ window.Interactions["slave"] = {
                             return stats;
                           },
                           showNpcStats: true,
-                          next: () => afterStrip().dildoAnus.next.ram.next,
+                          next: () =>
+                            afterStrip().useDildo.next.dildoAnus.next.ram.next,
                         },
                         out: {
                           optionText: "🔙 Pull out",

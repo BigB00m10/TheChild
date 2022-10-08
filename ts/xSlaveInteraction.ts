@@ -829,7 +829,7 @@ window.Interactions["slave"] = {
                       altOptions: (npc, current) => {
                         if (Temporary().cockEntered) {
                           Variables().npcInteractionRoute =
-                            "slave.pushDown.strip.dildoVag.ram";
+                            "slave.pushDown.strip.useDildo.dildoVag.ram";
                           return current.ram.next as NpcInteractionOptions;
                         }
                         return current;
@@ -1030,11 +1030,11 @@ window.Interactions["slave"] = {
                         return stats;
                       },
                       showNpcStats: true,
-                      next: () => afterStrip().dildoAnus.next,
+                      next: () => afterStrip().useDildo.next.dildoAnus.next,
                       altOptions: (npc, current) => {
                         if (Temporary().cockEntered) {
                           Variables().npcInteractionRoute =
-                            "slave.pushDown.strip.dildoAnus.ram";
+                            "slave.pushDown.strip.useDildo.dildoAnus.ram";
                           return current.ram.next as NpcInteractionOptions;
                         }
                         return current;

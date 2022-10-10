@@ -115,6 +115,7 @@
         >>
         <span id='npcStats' @style='_npcStatsStyle'>
             <<include npcStats>>
+            Traits: <<- Person.getPersonalityDescription($found_kid.uniqueness)>><br>
         </span><br>
         <script>
             $('#checkbox-settingsusingmagicsunglasses').on('change', function() {

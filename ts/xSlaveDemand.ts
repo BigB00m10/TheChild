@@ -254,11 +254,38 @@ window.Interactions["slaveDemandHunger"] = {
       altMinutes: (minutes) => (Temporary().denied ? 0 : minutes),
       npcStats: () =>
         (
-          window.Interactions.slaveDemandHunger.options['cum']
+          window.Interactions.slaveDemandHunger.options["cum"]
             .npcStats as CallableFunction
         )(),
       showNpcStats: true,
     },
     punish: punishment,
   },
+};
+window.Interactions["slaveDemandSleepWithPlayer"] = {
+  contents: `$npc.name would like to sleep together in the bed with you tonight.
+  Would you like to accept?`,
+  options: {
+    yesNaked: {
+      optionText:
+        "😏 Yes, sure but I'm going to sleep without clothes is that okay with you.",
+      npcStats: ["fear-1", "love+5"],
+      contents: "<<",
+    },
+    yesClothes: {
+      optionText: "🍑 Yes, but you'll have to take your clothes off.",
+      contents: ``,
+    },
+    no: {
+      optionText: "🚫 No.",
+      contents: "$npc.name looks sad<<emoji 😢>>",
+      npcStats: ["love-5%"],
+      showNpcStats: true,
+    },
+  },
+};
+window.Interactions["okSleepWithPlayerDemand"] = {
+  contents: `<<if $npc.uniqueness.shy or $npc.love gte 80>>$npc.name blushes
+  <<else>>$npc.name looks nervous...
+  <<if>><<if $npc.love gte 80>><<else>><</if>>`,
 };

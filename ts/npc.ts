@@ -26,7 +26,7 @@ abstract class Npc {
   uid: Uid;
   name: string;
   age: number;
-  sex: Sex
+  sex: Sex;
   gender: Gender;
   hasPussy: boolean;
   hasPenis: boolean;
@@ -143,7 +143,7 @@ abstract class Npc {
     if (!currentDate) currentDate = variables.now.date;
     //const sleepTime = window.Now.isBetween("10:00 PM", "7:00 AM", currentDate);
     let homeSpaces = variables.player.home.spaces.filter(
-      (space: string) => space != "basement" && !space.startsWith('tort')
+      (space: string) => space != "basement" && !space.startsWith("tort")
     );
     const baseSeed = currentDate.getTime() - 1649048400000;
     variables.slaves.forEach((slave: Person) => {
@@ -191,28 +191,66 @@ class Person extends Npc {
     let person = new Person();
     person.sex =
       Math.random() * 100 + 1 < gen.femalePercentage ? "female" : "male";
-    person.sex = Math.random() *100 + 1 < gen.hermPercentage ? "herm" : person.sex
-    person.gender = person.sex == "male" ? "boy" : person.sex == "female" ? "girl" : genderList.random();
-    person.title = person.sex == "male" ? "boy" : person.sex == "female" ? "girl" : "child";
-    person.pronoun = person.gender == "boy" ? "him" : person.gender == "girl" ? "her" : "them";
-    person.GenPronoun = person.gender == "boy" ? "He" : person.gender == "girl" ? "She" : "They";
-    person.genPronoun = person.gender == "boy" ? "he" : person.gender == "girl" ? "she" : "they";
-    person.possessive = person.gender == "boy" ? "his" : person.gender == "girl" ? "her" : "their";
-    person.Possessive = person.gender == "boy" ? "His" : person.gender == "girl" ? "Her" : "Their";
-    person.hasPussy = person.sex == "female" || person.sex =="herm";
-    person.hasPenis = person.sex == "male" || person.sex =="herm";
+    person.sex =
+      Math.random() * 100 + 1 < gen.hermPercentage ? "herm" : person.sex;
+    person.gender =
+      person.sex == "male"
+        ? "boy"
+        : person.sex == "female"
+        ? "girl"
+        : genderList.random();
+    person.title =
+      person.sex == "male" ? "boy" : person.sex == "female" ? "girl" : "child";
+    person.pronoun =
+      person.gender == "boy" ? "him" : person.gender == "girl" ? "her" : "them";
+    person.GenPronoun =
+      person.gender == "boy" ? "He" : person.gender == "girl" ? "She" : "They";
+    person.genPronoun =
+      person.gender == "boy" ? "he" : person.gender == "girl" ? "she" : "they";
+    person.possessive =
+      person.gender == "boy"
+        ? "his"
+        : person.gender == "girl"
+        ? "her"
+        : "their";
+    person.Possessive =
+      person.gender == "boy"
+        ? "His"
+        : person.gender == "girl"
+        ? "Her"
+        : "Their";
+    person.hasPussy = person.sex == "female" || person.sex == "herm";
+    person.hasPenis = person.sex == "male" || person.sex == "herm";
     let genGen: GenderGeneration =
-      person.sex == "male" ? gen.males : person.sex == "female" ? gen.females : gen.herms;
+      person.sex == "male"
+        ? gen.males
+        : person.sex == "female"
+        ? gen.females
+        : gen.herms;
     person.age =
       Math.floor(Math.random() * (genGen.toAge - genGen.fromAge)) +
       genGen.fromAge;
     if (person.age < 6)
       person.freedomWish -= ((6 - person.age) / 6) * person.freedomWish;
     person.genitals = {
-      "male": person.sex == "male" || person.sex == "herm" ? "dick": null,
-      "female": person.sex == "female" || person.sex == "herm" ? (person.age < 15 ? "cunny" : "pussy"): null,
-      "all": person.sex == "male" ? "dick" : person.sex == "female" ? (person.age < 15 ? "cunny" : "pussy") : (person.age < 15 ? "dick and cunny" : "dick and pussy")
-    }
+      male: person.sex == "male" || person.sex == "herm" ? "dick" : null,
+      female:
+        person.sex == "female" || person.sex == "herm"
+          ? person.age < 15
+            ? "cunny"
+            : "pussy"
+          : null,
+      all:
+        person.sex == "male"
+          ? "dick"
+          : person.sex == "female"
+          ? person.age < 15
+            ? "cunny"
+            : "pussy"
+          : person.age < 15
+          ? "dick and cunny"
+          : "dick and pussy",
+    };
     person.name = (person.gender != "boy" ? femaleNames : maleNames).random();
     person.skin = gen.skins.random();
     person.hairColor = gen.hairColors.random();
@@ -313,8 +351,8 @@ class PersonGeneration {
   };
   herms: GenderGeneration = {
     fromAge: 1,
-    toAge: 15
-  }
+    toAge: 15,
+  };
   femalePercentage: number = 50;
   hermPercentage: number = 0;
   hairStyles = [
@@ -901,7 +939,7 @@ const personUniquenessPresets: PersonUniqueness[] = [
         kid.pussyTraining = 60;
       }
     },
-    appearingChance: 9,
+    appearingChance: 13,
   }),
   new PersonUniqueness({
     name: "Carrabina",
@@ -940,7 +978,7 @@ const personUniquenessPresets: PersonUniqueness[] = [
         }
       }
     },
-    appearingChance: 10,
+    appearingChance: 11,
   }),
   new PersonUniqueness({
     name: "experiencedOrphan",
@@ -972,17 +1010,15 @@ const personUniquenessPresets: PersonUniqueness[] = [
       } as Animal,
     ],
     apply(kid) {
-      if (kid.age > 5) {
-        if (kid.hasPussy) kid.vaginaVirgin = false;
-        if(kid.hasPenis) kid.penisVirgin = false;
-        if (kid.hasPussy) kid.pussyTraining = 100;
-        kid.lust = 60;
-        kid.mouthVirgin = false;
-        kid.mouthTraining = 100;
-        kid.anusTraining = 10;
-      }
+      if (kid.hasPussy) kid.vaginaVirgin = false;
+      if (kid.hasPenis) kid.penisVirgin = false;
+      if (kid.hasPussy) kid.pussyTraining = Math.min(100, kid.age * (100 / 5));
+      if (kid.age > 4) kid.lust = 60;
+      kid.mouthVirgin = false;
+      kid.mouthTraining = 100;
+      kid.anusTraining = 10;
     },
-    appearingChance: 9,
+    appearingChance: 12,
   }),
   new PersonUniqueness({
     name: "top",

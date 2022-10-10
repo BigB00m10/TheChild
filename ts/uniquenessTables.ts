@@ -1,6 +1,6 @@
 interface UniquenessCase {
   default: string;
-  condition: string;
+  condition?: string;
   curious?: string;
   naughty?: string;
   energetic?: string;
@@ -32,11 +32,11 @@ class UniquenessTables {
       {
         //lust80 (adding condition:"lust80" field would also do the same)
         default:
-          "$npc.name doesn't answer and stretches out $npc.possessive hands towards your $player.genitals while making toddler sounds.",
+          "$npc.name doesn't answer and stretches out $npc.possessive hands towards your $player.genitals.all while making toddler sounds.",
         shy: `say:...
         ($npc.GenPronoun blushes while $npc.possessive eyes keep looking between your legs.)`,
         energetic: `say:<<npcAddressPlayer>>!!
-        $npc.GenPronoun says smiling while rubbing $npc.possessive $npc.genitals.`,
+        $npc.GenPronoun says smiling while rubbing $npc.possessive $npc.genitals.all.`,
       },
     ],
     [
@@ -63,9 +63,9 @@ class UniquenessTables {
         default: `say:I'm fine <<npcAddressPlayer>><<emoji 🤤>>
         ($npc.GenPronoun's shamelessly masturbating in front of you)`,
         shy: `say:I..um...want to <<if $npc.diligent || $npc.age gte 11>>have...sex...<<else>>do...that...<</if>><<emoji 😳>>
-        $npc.GenPronoun says with a hand over his $npc.genitals. It seems that he can't bear the excitement and slowly rubs it a little bit.`,
+        $npc.GenPronoun says with a hand over his $npc.genitals.all. It seems that he can't bear the excitement and slowly rubs it a little bit.`,
         energetic: `say:<<npcAddressPlayer>>!! Let's do naughty things!!
-        $npc.GenPronoun approaches you and gently touches your $player.genitals<<emoji 😋>>`,
+        $npc.GenPronoun approaches you and gently touches your $player.genitals.all<<emoji 😋>>`,
       },
     ],
     [
@@ -105,10 +105,28 @@ class UniquenessTables {
     [
       1,
       {
+        //default
         default: `You can feel $npc.possessive body warmth but $npc.genPronoun doesn't react much to it.`,
       },
       {
-        default: ``,
+        //fear40
+        default: "", //TODO add different reactions for when the player hugs a slave
+      },
+      {
+        //love60
+        default: "",
+      },
+      {
+        //love80
+        default: "",
+      },
+      {
+        //fear60
+        default: "",
+      },
+      {
+        //fear80
+        default: "",
       },
     ],
   ];
@@ -136,5 +154,14 @@ class UniquenessTables {
         diligent: "Say:I just did what I was told to...<<emoji 🥺>>",
       },
     ],
+  ];
+  static sleepPlayerNaked = [
+    [],
+    [
+      2,
+      {
+        default:"$npc.name nods<<emoji 🥺>>"
+      }
+    ]
   ];
 }

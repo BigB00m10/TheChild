@@ -270,11 +270,15 @@ window.Interactions["slaveDemandSleepWithPlayer"] = {
       optionText:
         "😏 Yes, sure but I'm going to sleep without clothes is that okay with you.",
       npcStats: ["fear-1", "love+5"],
-      contents: "<<",
+      contents:
+        "<<personUniqueness sleepPlayerNaked>><<run Person.setAchievement('okSleepWithPlayer')>>",
     },
     yesClothes: {
+      npcRequirements: ["haveClothes"],
       optionText: "🍑 Yes, but you'll have to take your clothes off.",
-      contents: ``,
+      npcStats: ["obedience+10", "love+5"],
+      contents:
+        "<<personUniqueness sleepPersonNaked>><<run Person.setAchievement('okSleepWithPlayer')>>",
     },
     no: {
       optionText: "🚫 No.",

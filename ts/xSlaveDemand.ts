@@ -270,6 +270,7 @@ window.Interactions["slaveDemandSleepWithPlayer"] = {
       optionText:
         "😏 Yes, sure but I'm going to sleep without clothes is that okay with you.",
       npcStats: ["fear-1", "love+5"],
+      showNpcStats: true,
       contents:
         "<<personUniqueness sleepPlayerNaked>><<run Person.setAchievement('okSleepWithPlayer')>>",
     },
@@ -277,6 +278,7 @@ window.Interactions["slaveDemandSleepWithPlayer"] = {
       npcRequirements: ["haveClothes"],
       optionText: "🍑 Yes, but you'll have to take your clothes off.",
       npcStats: ["obedience+10", "love+5"],
+      showNpcStats: true,
       contents:
         "<<personUniqueness sleepPersonNaked>><<run Person.setAchievement('okSleepWithPlayer')>>",
     },
@@ -289,7 +291,39 @@ window.Interactions["slaveDemandSleepWithPlayer"] = {
   },
 };
 window.Interactions["okSleepWithPlayerDemand"] = {
-  contents: `<<if $npc.uniqueness.shy or $npc.love gte 80>>$npc.name blushes
-  <<else>>$npc.name looks nervous...
-  <<if>><<if $npc.love gte 80>><<else>><</if>>`,
+  contents: `You call $npc.name over to go to sleep and $npc.genPronoun approaches you.
+  <<if $npc.uniqueness.shy or $npc.love gte 80>>$npc.GenPronoun blushes
+  <<else>>$npc.GenPronoun looks nervous...
+  <<if>><<if $npc.love gte 80>>\
+    $npc.GenPronoun happily takes all of $npc.possessive clothes off.<<if $npc.lust gte 60>>You can see $npc.possessive <<- $npc.hasPussy ? "wet " + $npc.genitals.female : "erected " + $npc.genitals.male>><<emoji 👀>><<set $npc.aroused to true>><</if>>
+    $npc.GenPronoun hastily climbs in bed with you.
+    You also climb in bed with her after taking your clothes off.
+  <<else>>\
+    $npc.GenPronoun slowly takes $npc.possessive clothes off and then climbs on the bed.
+    You take your clothes off and climb the bed after $npc.pronoun.
+  <</if>>`,
+  options: {
+    touchGenitals: {
+      optionText: "👆🏽 Touch $npc.possessive $npc.genitals.all",
+      contents: `You touch $npc.possessive $npc.genitals.all to see that she's wet.<<if $npc.lust gte 60>>
+        <<if $npc.hasPussy>>\
+          You touch $npc.possessive $npc.genitals.female and it easily slides in.
+        <<elseif $npc.hasPenis>>\
+          You slowly stroke $npc.possessive erected $npc.age year old $npc.genitals.male.
+        <</if>>\
+      <</if>>`,
+      next: {
+        cum: {
+          optionText: "💦 Make $npc.pronoun cum.",
+          contents: `A slow moan escapes $npc.possessive mouth as you put your hand over $npc.possessive $npc.genitals.all and slowly pleasure $npc.possessive <<- $npc.hasPussy ? 'clitoris' : $npc.genitals.male>>.
+          You continue to rub $npc.pronoun until $npc.genPronoun orgasms and spams around the bed<<if $npc.hasPussy>> and wetting the bed a little<</if>>.
+          $npc.GenPronoun goes to sleep after that.`,
+        },
+        back: {
+          optionText: "🔙 Do something else",
+          contents: "", //TODO
+        },
+      },
+    },
+  },
 };

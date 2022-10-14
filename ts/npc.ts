@@ -56,9 +56,14 @@ abstract class Npc {
   genitals: AllGenitals;
   status: NpcStatus = "citizen";
   need: string;
+  //This property is not used anymore, it was to identify a slave using the index in the slave array.
+  //Changes in the array caused problems easily so it was replaced with the uid property
   index: undefined;
+  //achievements can be used to keep track of what the npc has experienced
   achievements: string[] = [];
+  //for long-lasting punishments
   punishments: string[] = [];
+  //Where this NPC is located in the house or in the world, try to match up with the scenery name.
   location: string = "unknown";
   hasAchievement(achievement: string, npc?: Npc): boolean {
     if (!npc) npc = Variables().npc;
@@ -162,6 +167,23 @@ abstract class Npc {
     return Variables().slaves.firstOrDefault(
       (slave: Person) => slave.uid == uid
     );
+  }
+  getMinRequirementsSentence(
+    requirements: Record<string, number>,
+    npc?: Npc,
+    showCurrent?: boolean
+  ): string {
+    if (!npc) npc = Variables().npc;
+    let entries = [];
+    for (let requirement in requirements)
+      if (npc[requirement] < requirements[requirement])
+        entries.push(
+          requirement.beautifyStat() +
+            " " +
+            (showCurrent ? npc[requirement] + "/" : "") +
+            requirements[requirement]
+        );
+    return entries.join(", ");
   }
 }
 type AnimalSpecies = "dog" | "cat" | "rabbit" | "horse" | "pig" | "cow";

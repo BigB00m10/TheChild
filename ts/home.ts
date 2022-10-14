@@ -2,7 +2,19 @@ let Homes: Record<string, Home> = {
   smallUrban: {
     name: "small urban house",
     rent: 400,
-    spaces: ["basement", "mainRoom", "bed","bathroom","wc","garden","kitchen","tort", "tortone", "tortwo", "torthree"],
+    spaces: [
+      "basement",
+      "mainRoom",
+      "bed",
+      "bathroom",
+      "wc",
+      "garden",
+      "kitchen",
+      "tort",
+      "tortone",
+      "tortwo",
+      "torthree",
+    ],
   },
 };
 interface NpcEvent {
@@ -10,35 +22,48 @@ interface NpcEvent {
   canBeShown?: (npc: Npc) => boolean;
 }
 abstract class HomeSpace {
-  contents?: Inventory;
-  muffleBase: number;
-  securityBase?: number;
-  npcEvents?: NpcEvent[];
-  static getDemandingSlavesFromLocation(location: string): Person[] {
+  contents: Inventory = new Inventory();
+  muffleBase: number = 25;
+  securityBase: number = 25;
+  npcEvents: NpcEvent[] = [];
+  abstract passageName: string;
+  getDemandingSlaves(): Person[] {
     const slaves = Variables().slaves as Person[];
     let candidates: Person[] = [];
     for (let slaveIndex = 0; slaveIndex < slaves.length; slaveIndex++) {
       const slave = slaves[slaveIndex];
-      if (slave.location != location || slave.age < 1) continue;
+      if (slave.location != this.passageName || slave.age < 1) continue;
       if (slave.hunger >= 25) {
         slave.need = "hunger";
         candidates.push(slave);
+        continue;
+      }
+      if (
+        slave.status != "slave" && //The status slave means locked in the basement
+        slave.age > 1 &&
+        slave.love > 49 &&
+        !slaves.firstOrDefault((slave: Person) =>
+          window.Person.hasAchievement("okSleepWithPlayer", slave)
+        )
+      ) {
+        var seed = PseudoRandom.getSeed(slave.name, slave.age, turns());
+        if (PseudoRandom.either(seed, [true, false])) {
+          slave.need = "sleepWithPlayer";
+          candidates.push(slave);
+          continue;
+        }
       }
     }
     return candidates.sort(() => PseudoRandom.getFloat(turns()) - 0.5);
   }
-  getDemandingSlaves(): Person[] {
-    return null;
-  }
 }
-class Basement implements HomeSpace {
-  contents: Inventory = new Inventory();
+class Basement extends HomeSpace {
   muffleBase: number = 90;
-  securityBase: number = 25;
+  passageName: string = "basement";
   constructor() {
+    super();
     window.OnlineStore.get("Mattress").transferTo(this.contents);
   }
-  npcEvents?: NpcEvent[];
   has(itemName: string, count: number = 1): boolean {
     return new Inventory(Variables().basement.contents).has(itemName, count);
   }
@@ -49,9 +74,6 @@ class Basement implements HomeSpace {
     if (oldItem) oldItem.name = "Mattress";
     return contents.get("Mattress").count - variables.slaves.length;
   } //TODO: do not count slaves in player's bed
-  getDemandingSlaves(): Person[] {
-    return HomeSpace.getDemandingSlavesFromLocation("basement");
-  }
   getHungrySlaves(): Person[] {
     return Variables().slaves.filter((slave: Person) => slave.hunger > 25);
   }
@@ -61,102 +83,28 @@ class Basement implements HomeSpace {
     if (index != -1) slaves.splice(index, 1);
   }
 }
-class MainRoom implements HomeSpace {
-  contents: Inventory;
-  npcEvents?: NpcEvent[];
-  muffleBase: number = 25;
-  securityBase: number = 25;
-  getDemandingSlaves(): Person[] {
-    return HomeSpace.getDemandingSlavesFromLocation("mainRoom");
-  }
+class MainRoom extends HomeSpace {
+  passageName: string = "mainRoom";
 }
-class BedRoom implements HomeSpace {
-  contents: Inventory;
-  securityBase?: number;
-  npcEvents?: NpcEvent[];
-  muffleBase: number = 25;
+class BedRoom extends HomeSpace {
   bedAssignedNpc: Uid[] = [];
-  getDemandingSlaves(): Person[] {
-    return HomeSpace.getDemandingSlavesFromLocation("bed");
-  }
+  passageName: string = "bed";
 }
-class Bathroom implements HomeSpace {
-  contents: Inventory;
-  securityBase?: number;
-  npcEvents?: NpcEvent[];
-  muffleBase: number = 25;
-  bedAssignedNpc: Uid[] = [];
-  getDemandingSlaves(): Person[] {
-    return HomeSpace.getDemandingSlavesFromLocation("bathroom");
-  }
+class Bathroom extends HomeSpace {
+  passageName: string = "bathroom";
 }
-class Wc implements HomeSpace {
-  contents: Inventory;
-  securityBase?: number;
-  npcEvents?: NpcEvent[];
-  muffleBase: number = 25;
-  bedAssignedNpc: Uid[] = [];
-  getDemandingSlaves(): Person[] {
-    return HomeSpace.getDemandingSlavesFromLocation("wc");
-  }
+class Wc extends HomeSpace {
+  passageName: string = "wc";
 }
-class Kitchen implements HomeSpace {
-  contents: Inventory;
-  securityBase?: number;
-  npcEvents?: NpcEvent[];
-  muffleBase: number = 25;
-  bedAssignedNpc: Uid[] = [];
-  getDemandingSlaves(): Person[] {
-    return HomeSpace.getDemandingSlavesFromLocation("kitchen");
-  }
+class Kitchen extends HomeSpace {
+  passageName: string = "kitchen";
 }
-class Garden implements HomeSpace {
-  contents: Inventory;
-  securityBase?: number;
-  npcEvents?: NpcEvent[];
-  muffleBase: number = 25;
-  bedAssignedNpc: Uid[] = [];
-  getDemandingSlaves(): Person[] {
-    return HomeSpace.getDemandingSlavesFromLocation("garden");
-  }
+class Garden extends HomeSpace {
+  muffleBase: number = 0;
+  passageName: string = "garden";
 }
-class TortureRoom implements HomeSpace {
-  contents: Inventory;
-  securityBase?: number;
-  npcEvents?: NpcEvent[];
-  muffleBase: number = 25;
-  bedAssignedNpc: Uid[] = [];
-  getDemandingSlaves(): Person[] {
-    return HomeSpace.getDemandingSlavesFromLocation("tort");
-  }
-}
-class Tortureone implements HomeSpace {
-  contents: Inventory;
-  securityBase?: number;
-  npcEvents?: NpcEvent[];
-  muffleBase: number = 25;
-  bedAssignedNpc: Uid[] = [];
-  getDemandingSlaves(): Person[] {
-    return HomeSpace.getDemandingSlavesFromLocation("tortone");
-  }
-}
-class Torturetwo implements HomeSpace {
-  contents: Inventory;
-  securityBase?: number;
-  npcEvents?: NpcEvent[];
-  muffleBase: number = 25;
-  bedAssignedNpc: Uid[] = [];
-  getDemandingSlaves(): Person[] {
-    return HomeSpace.getDemandingSlavesFromLocation("tortwo");
-  }
-}
-class Torturethree implements HomeSpace {
-  contents: Inventory;
-  securityBase?: number;
-  npcEvents?: NpcEvent[];
-  muffleBase: number = 25;
-  bedAssignedNpc: Uid[] = [];
-  getDemandingSlaves(): Person[] {
-    return HomeSpace.getDemandingSlavesFromLocation("torthree");
-  }
+class TortureRoom extends HomeSpace {
+  muffleBase: number = 90;
+  passageName: string = "tort";
+  cages: [];
 }

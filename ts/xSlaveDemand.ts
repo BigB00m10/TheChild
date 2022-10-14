@@ -44,7 +44,7 @@ const punishment: NpcInteraction = {
       <<if $npc.haveClothes>>\
         You reveal $npc.possessive $npc.skin buttocks and start spanking $npc.pronoun.
       <<else>>\
-        Since $npc.genPronoun's naked, you can feel $npc.possessive body warmth on your legs and start spanking $npc.possessive $npc.skin bare ass.
+        Since <<genPronounIs>> naked, you can feel $npc.possessive body warmth on your legs and start spanking $npc.possessive $npc.skin bare ass.
       <</if>>\
 
       ''$npc.name'': "\
@@ -256,7 +256,7 @@ window.Interactions["slaveDemandHunger"] = {
 
           ''$npc.name'': "Haa... much better <<emoji 😫>>."
         <<elseif _willing>>\
-          As you squirt, you can hear and feel $npc.name gulping down your nectar while $npc.possessive lips keep pressing on your pussy's.
+          As you squirt, you can hear and feel $npc.name gulping down your nectar while $npc.possessive lips keep pressing on your pussy.
 
           Afterwards, $npc.genPronoun sucks out the remaining juice while doing a loud kiss down there.
 
@@ -312,20 +312,20 @@ window.Interactions["slaveDemandSleepWithPlayer"] = {
 window.Interactions["okSleepWithPlayerDemand"] = {
   contents: `You call $npc.name over to go to sleep and $npc.genPronoun approaches you.
   <<if $npc.uniqueness.shy or $npc.love gte 80>>$npc.GenPronoun blushes
-  <<else>>$npc.GenPronoun looks nervous...
-  <<if>><<if $npc.love gte 80>>\
-    $npc.GenPronoun happily takes all of $npc.possessive clothes off.<<if $npc.lust gte 60>>You can see $npc.possessive <<- $npc.hasPussy ? "wet " + $npc.genitals.female : "erected " + $npc.genitals.male>><<emoji 👀>><<set $npc.aroused to true>><</if>>
-    $npc.GenPronoun hastily climbs in bed with you.
-    You also climb in bed with her after taking your clothes off.
+  <<else>>$npc.GenPronoun look<<thirdPersonVerb>> nervous...
+  <</if>><<if $npc.love gte 80>>\
+    $npc.GenPronoun happily take<<thirdPersonVerb>> all of $npc.possessive clothes off.<<if $npc.lust gte 60>>You can see $npc.possessive <<- $npc.hasPussy ? "wet " + $npc.genitals.female : "erected " + $npc.genitals.male>><<emoji 👀>><<set $npc.aroused to true>><</if>>
+    $npc.GenPronoun hastily climb<<thirdPersonVerb>> in bed with you.
+    You also climb in bed with $npc.pronoun, after taking your clothes off.
   <<else>>\
-    $npc.GenPronoun slowly takes $npc.possessive clothes off and then climbs on the bed.
+    $npc.GenPronoun slowly take<<thirdPersonVerb>> $npc.possessive clothes off and then climb<<thirdPersonVerb>> on the bed.
     You take your clothes off and climb the bed after $npc.pronoun.
-  <</if>>`,
+  <</if>><<include npcStats>>`,
   defaultStopOption: false, //This interaction cannot be stopped since the player sleeps after it.
   options: {
     touchGenitals: {
       optionText: "👆🏽 Touch $npc.possessive $npc.genitals.all",
-      contents: `You touch $npc.possessive $npc.genitals.all to see that $npc.pronoun's <<- $npc.hasPussy ? 'wet' : 'erected'>>.<<if $npc.lust gte 60>>
+      contents: `You touch $npc.possessive $npc.genitals.all to see that <<genPronounIs>> <<- $npc.hasPussy ? 'wet' : 'erected'>>.<<if $npc.lust gte 60>>
         <<if $npc.hasPussy>>\
           You touch $npc.possessive $npc.genitals.female and it easily slides in.
         <<elseif $npc.hasPenis>>\
@@ -339,8 +339,8 @@ window.Interactions["okSleepWithPlayerDemand"] = {
           optionText: "💦 Make $npc.pronoun cum (end).",
           minutesCost: 10,
           contents: `A slow moan escapes $npc.possessive mouth as you put your hand over $npc.possessive $npc.genitals.all and slowly pleasure $npc.possessive <<- $npc.hasPussy ? 'clitoris' : $npc.genitals.male>>.
-          You continue to rub $npc.pronoun until $npc.genPronoun orgasms and spams around the bed<<if $npc.hasPussy>> and wetting the bed a little<</if>>.
-          $npc.GenPronoun goes to sleep after that.`,
+          You continue to rub $npc.pronoun until $npc.genPronoun orgasm<<thirdPersonVerb>> and spam<<thirdPersonVerb>> around the bed<<if $npc.hasPussy>> and wetting the bed a little<</if>>.
+          $npc.GenPronoun go<<thirdPersonVerbPlural>> to sleep after that.`,
           next: wakeUpMorning,
         },
         back: OkSleepWithPlayerDemand.somethingElse,
@@ -364,10 +364,14 @@ window.Interactions["okSleepWithPlayerDemand"] = {
     },
     penAss: {
       playerRequirements: ["hasPenis"],
+      npcRequirements: ["anusTraining>=40"],
+      showDisabled: "Anus Training 40",
       optionText: "🍑🍆 Penetrate $npc.possessive ass.",
       minutesCost: 10,
+      npcStats: ["anusTraining+5"],
+      showNpcStats: true,
       contents: `You move your body over $npc.pronoun while still inside your bed sheets. $npc.GenPronoun opens $npc.possessive legs letting you invade $npc.possessive private space. You press your erected dick on $npc.possessive ass and $npc.genPronoun looks up at you while you enter inside $npc.possessive body. You can see $npc.possessive expression change as $npc.genPronoun feels <<- $npc.pronoun>>self being penetrated.
-      You slowly continue to penetrate $npc.possessive ass as $npc.genPronoun continues to moan a little.`,
+      You slowly continue to penetrate $npc.possessive ass as $npc.genPronoun continues to moan a little.<<checkNpcVirgin anal>>`,
       next: {
         cumOn: {
           optionText: "💦 Cum on $npc.pronoun (end).",
@@ -387,7 +391,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
           optionText: "🥛 Tell $npc.pronoun to drink your cum (end).",
           minutesCost: 1,
           contents: `You pull your dick out and place your hand on $npc.possessive waist as you rotate $npc.pronoun towards you and you tell $npc.pronoun to put $npc.possessive mouth on your dick and drink your cum.
-          She happily drinks your cum.<<run Player.manageEnergy(3)>>
+          $npc.GenPronoun happily drinks your cum.<<run Player.manageEnergy(3)>>
           You are too tired to do anything and you sleep after that.`,
           npcStats: ["hunger-5"],
           showNpcStats: true,
@@ -402,19 +406,26 @@ window.Interactions["okSleepWithPlayerDemand"] = {
     },
     penPussy: {
       playerRequirements: ["hasPenis"],
-      npcRequirements: ["love>=80", "hasPussy"],
-      optionText: "Penetrate $npc.possessive $npc.genitals.female",
+      npcRequirements: ["love>=80", "hasPussy", "pussyTraining>=40"],
+      showDisabled:
+        "hasPussy=><<-Person.getMinRequirementsSentence({love:80,pussyTraining:40})>>",
+      optionText: "🍆 Penetrate $npc.possessive $npc.genitals.female",
+      minutesCost: 10,
+      npcStats: ["pussyTraining+5"],
+      showNpcStats: true,
       contents: `You move your body over $npc.pronoun while still inside your bed sheets. $npc.GenPronoun opens $npc.possessive legs letting you invade $npc.possessive private space. You press your erected dick on $npc.possessive cunny and $npc.genPronoun looks up at you while you enter inside $npc.possessive body. You can see $npc.possessive expression change as $npc.genPronoun feels <<- $npc.pronoun>>self being penetrated.
-      A small moan escapes $npc.possessive body as you penetrate $npc.pronoun.`,
+      A small moan escapes $npc.possessive body as you penetrate $npc.pronoun.<<checkNpcVirgin vagina>>`,
       next: {
         deep: {
-          optionText: "Penetrate deeper",
+          optionText: "🍆 Penetrate deeper",
           contents: `You put your hand on $npc.possessive ass to penetrate deeper inside $npc.possessive cunny as you reach the deepest part of $npc.possessive cunny.
-          She clenches and tightens as your top of your dick kisses $npc.possessive womb.`,
+          $npc.GenPronoun clench<<thirdPersonVerbPlural>> and tighten<<thirdPersonVerb>> as your top of your dick kisses $npc.possessive womb.`,
+          npcStats: ["pussyTraining+5"],
+          showNpcStats: true,
           next: {
             cumIn: {
               optionText: "💦 Cum inside (end).",
-              contents: `While your dick touches her deepest part you release your semen inside her and cumming i side her undeveloped cervix.
+              contents: `While your dick touches $npc.possessive deepest part you release your semen inside $npc.pronoun and cumming i side $npc.possessive undeveloped cervix.
               You are too tired to do anything and you sleep after that.<<run Player.manageEnergy(3);$npc.pussySpermAmount++>>`,
               next: wakeUpMorning,
             },

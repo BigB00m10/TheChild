@@ -6,10 +6,8 @@ You are currently standing in your torture room.
     <<set _demandIndex to 0>>\
     <<include slaveDemand>>
     <<keyOption [[Leave your torture|basement]] 🚪>>
-    <<keyOption [[go to cage one|tortone]] ⛓️>>
-    <<keyOption [[go to cage two|tortwo]] ⛓️>>
-    <<keyOption [[go to cage three|torthree]] ⛓️>>
-    <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>\
-        <<keyAction 'Go to Sleep' 😴>><<sleep>><</keyAction>>
-    <</if>>\
+    <<keyOption [[Go to cage one|tortone]] ⛓️>>
+    <<keyOption [[Go to cage two|tortwo]] ⛓️>>
+    <<keyOption [[Go to cage three|torthree]] ⛓️>>
+    <<sleepOption>>
 <</unlessEmergency>>\

@@ -54,3 +54,7 @@ sugarcube-2:
       name: wanderingSlaves
     personHunting:
       name: personHunting
+    npcAddressPlayer:
+      name: npcAddressPlayer
+    sleepOption:
+      name: sleepOption

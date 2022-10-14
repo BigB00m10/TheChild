@@ -5,7 +5,7 @@ type complexRequirement = {
   inventoryRequirements?: string[];
   locationRequirements?: string[];
   settingsRequirements?: string[];
-}
+};
 //Describes an option that once selected will display a passage and optionally affect the relationship between the player and an NPC
 interface NpcInteraction {
   //If this function is specified it will be called in order to know if this interaction can be shown in a list of options
@@ -74,6 +74,10 @@ interface NpcInteraction {
   action?: boolean;
   //If specified, overrides timeIncreaseNpcHunger from the parent collection.
   timeIncreaseNpcHunger?: boolean | undefined;
+  //If the option is not available it will still show, unlinked and with the specified string between brackets and parsed as Sugarcube markup.
+  //A condition on the npc for showing the option can be prepended using '=>' as a separator.
+  //Example: "hasPussy=>Love $npc.love/50, Hunger $npc.hunger/30" to show "[Love 10/50, Hunger 20/30]" if NPC has a pussy.
+  showDisabled?: string;
 }
 interface NpcInteractionCollection {
   //The first set of options in the collection (see NpcInteraction.next)
@@ -105,23 +109,23 @@ Macro.add("openNpcInteraction", {
     SugarCube.State.display("npcInteraction");
   },
 });
+const checkCondition = (objectName: string, condition: string): boolean => {
+  let neg = "";
+  if (condition[0] == "!") {
+    neg = "!";
+    condition = condition.slice(1);
+  }
+  return eval(
+    neg +
+      "variables()." +
+      objectName +
+      "." +
+      condition
+        .replace(/(\w[!=]=?=?)((?!true)(?!false)[^\d=].+)/, "$1'$2'")
+        .replace(/([^><!=])=([^=])/, "$1==$2")
+  );
+};
 const checkCanBeShown = (option: NpcInteraction) => {
-  const checkCondition = (objectName: string, condition: string): boolean => {
-    let neg = "";
-    if (condition[0] == "!") {
-      neg = "!";
-      condition = condition.slice(1);
-    }
-    return eval(
-      neg +
-        "variables()." +
-        objectName +
-        "." +
-        condition
-          .replace(/(\w[!=]=?=?)((?!true)(?!false)[^\d=].+)/, "$1'$2'")
-          .replace(/([^><!=])=([^=])/, "$1==$2")
-    );
-  };
   let canBeShown = true;
   if (option.playerRequirements)
     option.playerRequirements.forEach(
@@ -147,32 +151,30 @@ const checkCanBeShown = (option: NpcInteraction) => {
     canBeShown = option.locationRequirements.includes(Variables().scenery);
   //TODO: also check room inventory for locationRequirements
   //ComplexRequirements should be used on a parent choice, to disable it when the conditions for none of its children are met.
-  if(option.complexRequirements) {
+  if (option.complexRequirements) {
     let complexCanBeShown = false;
-    option.complexRequirements.forEach(
-      (combination) => {
-        canBeShown = true;
-        if (combination.playerRequirements)
-          combination.playerRequirements.forEach(
-            (condition) => (canBeShown &&= checkCondition("player", condition))
-          );
-        if (combination.npcRequirements)
-          combination.npcRequirements.forEach(
-            (condition) => (canBeShown &&= checkCondition("npc", condition))
-          );
-        if (combination.settingsRequirements)
-          combination.settingsRequirements.forEach(
-            (condition) => (canBeShown &&= checkCondition("settings", condition))
-          );
-        if (combination.inventoryRequirements)
-          combination.inventoryRequirements.forEach(
-            (itemName) => (canBeShown &&= window.Player.has(itemName))
-          );
-        if (combination.locationRequirements)
-          canBeShown = option.locationRequirements.includes(Variables().scenery);
-        if (canBeShown) complexCanBeShown = true;
-      }
-    )
+    option.complexRequirements.forEach((combination) => {
+      canBeShown = true;
+      if (combination.playerRequirements)
+        combination.playerRequirements.forEach(
+          (condition) => (canBeShown &&= checkCondition("player", condition))
+        );
+      if (combination.npcRequirements)
+        combination.npcRequirements.forEach(
+          (condition) => (canBeShown &&= checkCondition("npc", condition))
+        );
+      if (combination.settingsRequirements)
+        combination.settingsRequirements.forEach(
+          (condition) => (canBeShown &&= checkCondition("settings", condition))
+        );
+      if (combination.inventoryRequirements)
+        combination.inventoryRequirements.forEach(
+          (itemName) => (canBeShown &&= window.Player.has(itemName))
+        );
+      if (combination.locationRequirements)
+        canBeShown = option.locationRequirements.includes(Variables().scenery);
+      if (canBeShown) complexCanBeShown = true;
+    });
     canBeShown = complexCanBeShown;
   }
   if (!canBeShown) return false;
@@ -307,7 +309,26 @@ Macro.add("npcInteraction", {
       for (const name in options) {
         let option = options[name];
         let canBeShown = checkCanBeShown(option);
-        if (!canBeShown) continue;
+        if (!canBeShown) {
+          if (option.showDisabled) {
+            let disabledText = option.showDisabled;
+            if (disabledText.includes("=>")) {
+              let components = disabledText.split("=>");
+              if (!checkCondition("npc", components[0])) continue;
+              disabledText = components[1];
+            }
+            let optionText = option.optionText
+              .replace(/'/g, "\\'")
+              .replace(/"/g, "&quot;");
+            let emoji = "";
+            if (/^\p{Extended_Pictographic}/u.test(optionText)) {
+              emoji = optionText.split(" ")[0];
+              optionText = optionText.slice(emoji.length + 1);
+            }
+            result += `\n<<keyDisabled '${optionText}' ${emoji}>> [${disabledText}]`;
+          }
+          continue;
+        }
         if (
           option.showIfEmpty === false ||
           (collection.hideEmptyOptions && option.next && !option.showIfEmpty)

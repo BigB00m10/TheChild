@@ -11,9 +11,7 @@ You are currently standing in your wc.
     <<if Player.getInventory().items.firstOrDefault(function(item){return item.name.startsWith('Used clothes')}) != null>>\
         <<keyOption [[Masturbate using stolen slave underwear|pantiescum]] 💦>>: 30min
     <</if>>\
-    <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>\
-        <<keyAction 'Go to sleep' 😴>><<sleep>><</keyAction>>
-    <</if>>\
+    <<sleepOption>>
 <</unlessEmergency>>\
 :: pantiescum {"position":"450,950"}
 <<addMinutes 30>>\

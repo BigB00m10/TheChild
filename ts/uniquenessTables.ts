@@ -173,12 +173,12 @@ class UniquenessTables {
     [
       5,
       {
-        default: "npcSay:Yes <<npcAddressPlayer>><<emoji 🙂>>",
+        default: "say:Yes <<npcAddressPlayer>><<emoji 🙂>>",
         curious:
-          '$npc takes a peek between your legs and says: "Yes <<npcAddressPlayer>>!"<<emoji 😃>>',
+          '$npc.name takes a peek between your legs and says: "Yes <<npcAddressPlayer>>!"<<emoji 😃>>',
         naughty: "=curious",
-        shy: "npcSay:Y-Yes <<npcAddressPlayer>><<emoji 😳>>",
-        naughtyAndShy: `npcSay: S-Sure <<npcAddressPlayer>>
+        shy: "say:Y-Yes <<npcAddressPlayer>><<emoji 😳>>",
+        naughtyAndShy: `say: S-Sure <<npcAddressPlayer>>
         $npc.GenPronoun looks pretty excited to the idea.`,
         curiousAndShy: "=naughtyAndShy",
       },
@@ -200,9 +200,9 @@ class UniquenessTables {
     [
       5,
       {
-        default: "npcSay:Oh... Okay... If that's what you want...",
-        naughty: "npcSay:Yay!!Let's be naughty in bed!!<<emoji 😛>>",
-        shy: "npcSay:Na-Naked?!...O-Okay, if that's what you want...<<emoji 😳>>",
+        default: "say:Oh... Okay... If that's what you want...",
+        naughty: "say:Yay!! Let's be naughty in bed!!<<emoji 😛>>",
+        shy: "say:Na-Naked?!...O-Okay, if that's what you want...<<emoji 😳>>",
       }
     ]
   ]

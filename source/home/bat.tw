@@ -8,7 +8,5 @@ You are currently standing in your bathroom.
     <<include slaveDemand>>
     <<keyOption [[Leave your bathroom|main]] 🚪>>
     <<keyAction 'Take a shower' 🛀>><<addHours 1>><<run Engine.show()>><</keyAction>>: 1 hour
-    <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>\
-        <<keyAction 'Go to sleep' 😴>><<sleep>><</keyAction>>
-    <</if>>\
+    <<sleepOption>>
 <</unlessEmergency>>\

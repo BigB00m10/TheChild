@@ -23,9 +23,7 @@ Macro.add("keyOption", {
       this.args.length > 2 && this.args[2] == "btn" ? "button" : "link";
     $wrapper
       .wiki(
-        `<<${widget} "<<emoji ${emoji}>>(${keyOptionNumber}) ${
-          this.args[0].text
-        }" "${this.args[0].link}">><</${widget}>>`
+        `<<${widget} "<<emoji ${emoji}>>(${keyOptionNumber}) ${this.args[0].text}" "${this.args[0].link}">><</${widget}>>`
       )
       .attr("id", keyToId[keyOptionNumber] + "Act")
       .appendTo(this.output);
@@ -42,13 +40,22 @@ Macro.add("keyAction", {
       this.args.length > 2 && this.args[2] == "btn" ? "button" : "link";
     $wrapper
       .wiki(
-        `<<${widget} "<<emoji ${emoji}>>(${keyOptionNumber}) ${
-          this.args[0]
-        }">>${this.payload[0].contents}<</${widget}>>`
+        `<<${widget} "<<emoji ${emoji}>>(${keyOptionNumber}) ${this.args[0]}">>${this.payload[0].contents}<</${widget}>>`
       )
       .attr("id", keyToId[keyOptionNumber] + "Act")
       .appendTo(this.output);
-      keyOptionNumber = (keyOptionNumber + 1) % 10;
+    keyOptionNumber = (keyOptionNumber + 1) % 10;
+  },
+});
+Macro.add("keyDisabled", {
+  handler: function () {
+    let $wrapper = $(document.createElement("span"));
+    let emoji =
+      this.args.length > 1 ? this.args[1] : "'&nbsp;&nbsp;&nbsp;&nbsp;'";
+    $wrapper
+      .wiki(`<<emoji ${emoji}>>(${keyOptionNumber}) ${this.args[0]}`)
+      .appendTo(this.output);
+    keyOptionNumber = (keyOptionNumber + 1) % 10;
   },
 });
 $(document).on("keyup", (evt) => {

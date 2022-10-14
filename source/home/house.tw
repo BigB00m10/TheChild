@@ -18,9 +18,7 @@
         <<keyOption [[Leave your room|main]] 🚪>>
         <<keyOption [[go to your computer|pc]] 💻>>
         <<keyOption [[Your bathroom|bat]] 🛀>>
-        <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>\
-            <<keyAction Sleep 😴>><<sleep>><</keyAction>>
-        <</if>>\
+        <<sleepOption>>
     <</unlessEmergency>>\
 <</if>>
 <<set $player.sleeping to false>>
@@ -58,14 +56,16 @@ You are currently standing in the middle of the main room of your house.
     <span id="slaveDemand">\
         <<set _slave to _slaves[_demandIndex]>>
         _slave.name <<if _slave.fear gte 30>>cautiously<</if>> approaches, looking at you with _slave.possessive _slave.eyeColor eyes, and says:
-        <<switch _slave.need>>\
-            <<case "hunger">>\
-                <<if _slave.hunger gte 75>>\
-                    "<<if _slave.age gte 5>>Please!!! I'm so hungry!!! <<emoji 🙁>><<else>>I'm hungryyyyyy!!! <<emoji 😢>><</if>>"
-                <<else>>\
-                    "I'm hungry... <<emoji 🙁>>"
-                <</if>>\
-        <</switch>>\
+        "<<switch _slave.need>>\
+/*        */<<case "hunger">>\
+/*          */<<if _slave.hunger gte 75>>\
+/*            */<<if _slave.age gte 5>>Please!!! I'm so hungry!!! <<emoji 🙁>><<else>>I'm hungryyyyyy!!! <<emoji 😢>><</if>>\
+/*          */<<else>>\
+/*            */I'm hungry... <<emoji 🙁>>\
+/*          */<</if>>\
+/*        */<<case 'sleepWithPlayer'>>\
+/*          */Hey <<npcAddressPlayer _slave>>, can I sleep in the same bed as you tonight?\
+/*      */<</switch>>"
         <<set _demandInteraction to "slaveDemand" + _slave.need.toUpperFirst()>>
         <span id='hKeyAct'>\
             <<button '✅ (H) Handle'>>

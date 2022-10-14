@@ -6,7 +6,5 @@
     <<set _demandIndex to 0>>\
     <<include slaveDemand>>
     <<keyOption [[Leave your cages two|tort]] 🚪>>
-    <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>\
-        <<keyAction Sleep 😴>><<sleep>><</keyAction>>
-    <</if>>\
+    <<sleepOption>>
 <</unlessEmergency>>\

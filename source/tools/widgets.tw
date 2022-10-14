@@ -13,7 +13,7 @@
     @@color:_cashColor;You _cashAction ¤<<- _args[0].toFixed(2)>>@@
 <</widget>>
 <<widget workOption>>
-    <<set _workEmoji = $player.gender != "male" ? "👷‍♀️" : "👷‍♂️"; _workText = "Go to work" + (Now.isWeekend()?" (Optional)":"")>>
+    <<set _workEmoji = $player.gender != "boy" ? "👷‍♀️" : "👷‍♂️"; _workText = "Go to work" + (Now.isWeekend()?" (Optional)":"")>>
     <<keyOption [[_workText|work]] _workEmoji>>
 <</widget>>
 <<widget sleep>>
@@ -41,9 +41,9 @@
             $npc[_fieldName] = false;
             Person.setAchievement("playerTook" + _args[0].toUpperFirst() + "Virginity");
         >>
-        @@color:red;$npc.name just lost $npc.possessive _args[0] virginity!!!@@<br>
+        <br>@@color:red;$npc.name just lost $npc.possessive _args[0] virginity!!!@@<br>
     <<elseif _args[0] != 'mouth' && !Person.hasAchievement("playerTook" + _args[0].toUpperFirst() + "Virginity") && !Person.hasAchievement("playerRealizedNonVirgin")>>
-        @@color:yellow;You realize that $npc.name was not a virgin!!@@<br>
+        <br>@@color:yellow;You realize that $npc.name was not a virgin!!@@<br>
         <<run Person.setAchievement("playerRealizedNonVirgin")>>
     <</if>>
     <<run Person.setAchievement('had' + _args[0].toUpperFirst() + 'SexWithPlayer')>>
@@ -62,7 +62,7 @@
         </span>
     <</dialog>>
 <</widget>>
-<<widget npcAddressPlayer>><<- Player.getAddressing($npc)>><</widget>>
+<<widget npcAddressPlayer>><<- Player.getAddressing(_args[0] || $npc)>><</widget>>
 <<widget npcGenderSymbol>>
     <<set _genderSymbol = _args[0].sex == 'male' ? '♂' : _args[0].sex == 'female' ? '♀' : '⚤'>>
     <<emoji _genderSymbol>><<unset _genderSymbol>>
@@ -140,6 +140,27 @@
         <</if>>
     <</if>>
 <</widget>>
+<<widget sleepOption>>
+    <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>
+        <<set 
+            _sleepSlave = $slaves.firstOrDefault(function(slave){return Person.hasAchievement('okSleepWithPlayer')});
+            _sleepSentence = $scenery != 'bed' ? "Go sleep" : 'Sleep';
+        >>
+        <<if _sleepSlave>>
+            <<set _sleepSentence+=' with ' + _sleepSlave.name>>
+            <<keyAction _sleepSentence 🥰>>
+                <<set $scenery = 'bed'>>
+                <<openNpcInteraction 'okSleepWithPlayerDemand'>>
+            <</keyAction>>
+        <<else>>
+            <<keyAction _sleepSentence 😴>><<sleep>><</keyAction>>
+        <</if>>
+    <</if>>
+<</widget>>
+<<widget thirdPersonVerb>><<- $npc.gender != 'nb' ? 's' : ''>><</widget>>
+<<widget thirdPersonVerbPlural>><<- $npc.gender != 'nb' ? 'es' : ''>><</widget>>
+<<widget pronounIs>><<set _npc = _args[0] || $npc>>$npc.pronoun<<- $npc.gender != 'nb' ? "'s" : "'re">><</widget>>
+<<widget genPronounIs>><<set _npc = _args[0] || $npc>>$npc.genPronoun<<- $npc.gender != 'nb' ? "'s" : "'re">><</widget>>
 :: workOption {"position":"875,0"}
 <<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>

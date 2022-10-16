@@ -77,6 +77,17 @@ const wakeUpMorningInteraction: NpcInteraction = {
 const wakeUpMorning: NpcInteractionOptions = {
   sleep: wakeUpMorningInteraction,
 };
+const wakeUpMorningBack: NpcInteraction = {
+  optionText: "🔙 Do something else.",
+  contents: `<<if $personWokeUp>>\
+    $npc.GenPronoun <<npcVerbIs>> still on top of you lying naked as $npc.genPronoun look<<thirdPersonVerb>> you in the eye.\
+  <<else>>\
+    $npc.name is still sleeping on top of you.\
+  <</if>>`,
+  next: () =>
+    window.Interactions.wakeUpAfterNightTogether
+      .options as NpcInteractionOptions,
+};
 class OkSleepWithPlayerDemand {
   static baseOptions = () =>
     window.Interactions.okSleepWithPlayerDemand
@@ -210,7 +221,7 @@ window.Interactions["slaveDemandHunger"] = {
       showNpcStats: true,
     },
     pussy: {
-      playerRequirements: ["gender=female"],
+      playerRequirements: ["hasPussy"],
       optionText: "💦 Offer $npc.pronoun your love juice. (-5 hunger)",
       minutesCost: 30,
       contents: `You show $npc.pronoun your pussy and say:
@@ -347,10 +358,10 @@ window.Interactions["okSleepWithPlayerDemand"] = {
       },
     },
     touchAss: {
-      canBeShown: () => false,
       optionText: "🍑🖐 Touch $npc.possessive ass.",
       minutesCost: 3,
-      contents: "", //TODO
+      contents: `You slide your hand down $npc.possessive waist and back to touch the $npc.age year old butt.
+      The sensation on your hand feels amazing as you caress $npc.possessive butt cheeks and crack.`,
       next: OkSleepWithPlayerDemand.baseOptions,
     },
     pat: {
@@ -460,7 +471,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
 };
 window.Interactions["wakeUpAfterNightTogether"] = {
   defaultStopOption: "🔙 Leave $npc.pronoun.",
-  contents: `Morning light hits your face escaping from the window. You open your eyes and see $npc.name laying on top of you.<<switch $npc.hairColor>>
+  contents: `<<run Person.removeAchievement('okSleepWithPlayer');$player.sleeping = false;$personWokeUp = false>>Morning light hits your face escaping from the window. You open your eyes and see $npc.name laying on top of you.<<switch $npc.hairColor>>
     <<case blonde>>
       $npc.Possessive blond hair glows in the sunlight as you admire $npc.possessive $npc.skin body.
     <<case black>>
@@ -472,47 +483,72 @@ window.Interactions["wakeUpAfterNightTogether"] = {
   <</switch>>`,
   options: {
     wakeHer: {
+      canBeShown: () => !Variables().personWokeUp,
       optionText: "⏰ Wake $npc.pronoun up.",
       contents: `You try to wake $npc.pronoun up.
-      $npc.GenPronoun groans and wakes up.
-      $npc.GenPronoun is still on top of you lying naked as $npc.pronoun looks you in the eye.`,
-      next: {
-        kiss: {
-          optionText: "💋 Kiss $npc.pronoun.",
-          contents:
-            "You kiss $npc.pronoun slowly waking $npc.pronoun up even further.",
-        },
-      },
+      $npc.GenPronoun groan<<thirdPersonVerb>> and wake<<thirdPersonVerb>> up.<<set $personWokeUp = true>>
+      $npc.GenPronoun <<npcVerbIs>> still on top of you lying naked as $npc.genPronoun look<<thirdPersonVerb>> you in the eye.`,
+      npcStats: ["fear-20", "love+5%", "freedomWish-5"],
+      showNpcStats: true,
+      next: () =>
+        ({
+          kiss: {
+            optionText: "💋 Kiss $npc.pronoun.",
+            contents:
+              "You kiss $npc.pronoun slowly waking $npc.pronoun up even further.",
+            npcStats: ["love+5%"],
+            showNpcStats: true,
+            next: () => window.Interactions.wakeUpAfterNightTogether.options,
+          },
+          ...window.Interactions.wakeUpAfterNightTogether.options,
+        } as NpcInteractionOptions),
     },
     touchGenitals: {
       optionText: "🖐 Touch $npc.possessive $npc.genitals.all.",
-      contents: `You gently move your hand below $npc.possessive waist and touch $npc.possessive $npc.genitals.all. 
+      minutesCost: 2,
+      contents: `You gently move your hand below $npc.possessive waist and touch $npc.possessive $npc.genitals.all.
       It takes $npc.pronoun a couple of seconds for $npc.pronoun to get wet.<<if $npc.hasPussy>>
       After that your finger slides smoothly inside $npc.pronoun tight $npc.genitals.all.<</if>>`,
+      npcStats: (npc) =>
+        npc.hasPussy ? ["pussyTraining%+20", "lust+1%"] : ["lust+1%"],
+      showNpcStats: true,
       next: {
         cum: {
-          optionText: "💦 Make $npc.pronoun cum.",
-          contents: `<<npcSay "Ah...   .  . This feels soo good">>
-          $npc.GenPronoun screams and orgasms.`,
+          optionText: "💦 Make $npc.pronoun cum (end).",
+          minutesCost: 10,
+          contents: `<<if $npc.age gt 4>><<npcSay "Ah...   .  . This feels soo good">>
+          <</if>>$npc.GenPronoun scream<<thirdPersonVerb>> and orgasm<<thirdPersonVerb>>.`,
+          npcStats: ["love+10", "freedomWish-10"],
+          showNpcStats: true,
         },
+        back: wakeUpMorningBack,
       },
     },
     touchAss: {
       optionText: "🍑 Touch $npc.possessive ass.",
+      minutesCost: 2,
       contents: `You gently move your hand below $npc.possessive waist and touch $npc.possessive asshole.
-      <<npcSay "Mnn- hmnn">> $npc.GenPronoun moans a little.
+      <<npcSay "Mnn- hmnn">> $npc.GenPronoun moan<<thirdPersonVerb>> a little.
       Your finger moves around the edge of $npc.possessive asshole for a couple of seconds and then it moves inside.`,
+      npcStats: ["anusTraining%+20", "lust+1%"],
+      showNpcStats: true,
+      next: () =>
+        window.Interactions.wakeUpAfterNightTogether
+          .options as NpcInteractionOptions,
     },
     lickGenitals: {
-      optionText: "👅 Lick $npc.possessive $npc.genitals.all.",
+      optionText: "👅 Lick $npc.possessive $npc.genitals.all. (end)",
+      minutesCost: 20,
       contents: `You pick $npc.pronoun up by the waist and put $npc.pronoun beside $npc.pronoun.
       You slowly take your hand down $npc.possessive body<<if $npc.hasPussy>> and put your fingers on $npc.possessive $npc.genitals.female as you spread it apart<</if>>.<<if $npc.hasPussy>>
       You put your lips on $npc.possessive clitoris and start moving your tongue slowly.<</if>>
-      $npc.GenPronoun moans a little and <<if $npc.hasPussy>>gets wetter<<else>>$npc.possessive penis gets harder<</if>>.
+      $npc.GenPronoun moan<<thirdPersonVerb>> a little and <<if $npc.hasPussy>>gets wetter<<else>>$npc.possessive penis gets harder<</if>>.
       You increase your speed and start moving your tongue as fast as you can.
-      $npc.GenPronoun moans loudly and gripping the bedsheets tightly.
-      As $npc.pronoun clenches $npc.possessive butt cheeks in pleasure<<if $npc.hasPussy>> wetting the bed a little<</if>>. 
+      $npc.GenPronoun moan<<thirdPersonVerb>> loudly and grip<<thirdPersonVerb>> the bedsheets tightly.
+      As $npc.pronoun clench<<thirdPersonVerbPlural>> $npc.possessive butt cheeks in pleasure<<if $npc.hasPussy>> wetting the bed a little<</if>>. 
       $npc.Possessive face is bright red.`,
+      npcStats: ["love+10", "freedomWish-10"],
+      showNpcStats: true,
     },
   },
 };

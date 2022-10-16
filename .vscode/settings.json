@@ -1,8 +1,9 @@
 {
   "name": "theChildTrainer",
-  "version": "0.1.9.2",
+  "version": "0.1.10.0",
   "twee3LanguageTools.storyformat.current": "sugarcube-2",
   "cSpell.ignoreRegExpList": [
-    "/Names:.+\\][^\\]]+/g"
+    "/Names:.+\\][^\\]]+/g",
+    "/No+/g"
   ]
 }

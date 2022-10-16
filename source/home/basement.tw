@@ -4,6 +4,7 @@
     <<set $achievements.push("capturedSlave")>>\
     You actually did it!! Now you have a personal $found_kid.age year old slave locked on your basement and no one knows about it!!
     You could do anything you wanted to $found_kid.pronoun and no one would stop you<<emoji 🤤>>.
+    <<unset $found_kid>>
 <<else>>\
     You are currently in your basement.
 <</if>>\

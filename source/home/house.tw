@@ -1,6 +1,8 @@
 :: bed {"position":"700,825"}
 <<scenery bed>>
 <<if $player.sleeping>>\
+    <<set _sleepSlave = $slaves.firstOrDefault(function(slave){return Person.hasAchievement('okSleepWithPlayer')})>>\
+    <<if _sleepSlave>><<openNpcInteraction wakeUpAfterNightTogether>><</if>>\
 	As the sun reveals the world to a nice <<- Now.getWeekDay()>> morning, you climb out of bed, ready to start a new day. <<- either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
 <<else>>\
 	You currently stand in the middle of your cozy small bedroom.
@@ -21,7 +23,12 @@
         <<sleepOption>>
     <</unlessEmergency>>\
 <</if>>
-<<set $player.sleeping to false>>
+<<set 
+    $player.sleeping = false;
+    if($npc)
+        $npc.aroused = false;
+>>
+<<unset $personWokeUp>>
 :: main {"position":"700,650"}
 <<scenery mainRoom>>
 You are currently standing in the middle of the main room of your house.
@@ -49,7 +56,7 @@ You are currently standing in the middle of the main room of your house.
 <<include main>>\
 :: watchPorn {"position":"600,1000"}
 <<addMinutes 30>>\
-@@color:yellow;You spend the next half hour skimming through porn and <<if $player.gender!='male'>>buffing the muffin<<else>>jerking off<</if>>.@@
+@@color:yellow;You spend the next half hour skimming through porn and <<if $player.gender == 'girl'>>buffing the muffin<<else>>jerking off<</if>>.@@
 <<include bed>>\
 :: slaveDemand {"position":"375,0"}
 <<if _slaves[_demandIndex]>>\

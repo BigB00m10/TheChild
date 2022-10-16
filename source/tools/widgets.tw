@@ -161,6 +161,7 @@
 <<widget thirdPersonVerbPlural>><<- $npc.gender != 'nb' ? 'es' : ''>><</widget>>
 <<widget pronounIs>><<set _npc = _args[0] || $npc>>$npc.pronoun<<- $npc.gender != 'nb' ? "'s" : "'re">><</widget>>
 <<widget genPronounIs>><<set _npc = _args[0] || $npc>>$npc.genPronoun<<- $npc.gender != 'nb' ? "'s" : "'re">><</widget>>
+<<widget npcVerbIs>><<- $npc.gender != 'nb' ? 'is' : 'are'>><</widget>>
 :: workOption {"position":"875,0"}
 <<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>

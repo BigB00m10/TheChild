@@ -93,6 +93,8 @@ interface NpcInteractionCollection {
   //Hide all options in the entire collection that do not have any options to show other than a "back" option or the stop option.
   //Can be overridden by the showIfEmpty field in a specific interaction.
   hideEmptyOptions?: boolean;
+  //Sugarcube markup action to do right before stopping the interaction.
+  beforeStop?: string;
 }
 //Redirects to the npcInteraction passage showing an interaction with a NPC.
 //Usage: <<openNpcInteraction <interactionRoute>[ npcUid]>>
@@ -376,7 +378,10 @@ Macro.add("npcInteraction", {
           emoji = stopOptionText.split(" ")[0];
           stopOptionText = stopOptionText.slice(emoji.length + 1);
         }
-        result += `\n<<keyOption [[${stopOptionText}|$returnPassage]] ${emoji}>>`;
+        if (collection.beforeStop)
+          result += `\n<<keyAction '${stopOptionText}' ${emoji}>>${collection.beforeStop}<<goto $returnPassage>><</keyAction>>`;
+        else
+          result += `\n<<keyOption [[${stopOptionText}|$returnPassage]] ${emoji}>>`;
       }
     }
     $(document.createElement("span")).wiki(result).appendTo(this.output);
@@ -431,6 +436,7 @@ Macro.add("personUniqueness", {
                 );
             else okOutput = person.uniqueness[fieldName];
             if (okOutput) output = uniquenessCase[fieldName];
+            else continue;
             break;
         }
         break;
@@ -446,8 +452,8 @@ Macro.add("personUniqueness", {
             .slice(1)
         );
         return;
-      }
-      output = output.replace(/^say:(.+)/, `''${person.name}'': "$1"`);
+      } else if (output[0] == "=") output = uniquenessCase[output.substring(1)];
+      output = output.replace(/^say:(.+)/i, `''${person.name}'': "$1"`);
       $(document.createElement("span")).wiki(output).appendTo(this.output);
     };
     for (let ageIndex = table.length - 1; ageIndex > 0; ageIndex--) {

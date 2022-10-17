@@ -471,7 +471,9 @@ window.Interactions["okSleepWithPlayerDemand"] = {
 };
 window.Interactions["wakeUpAfterNightTogether"] = {
   defaultStopOption: "🔙 Leave $npc.pronoun.",
-  contents: `<<run Person.removeAchievement('okSleepWithPlayer');$player.sleeping = false;$personWokeUp = false>>Morning light hits your face escaping from the window. You open your eyes and see $npc.name laying on top of you.<<switch $npc.hairColor>>
+  beforeStop: "<<run $player.sleeping=true>>",
+  contents: `<<run Person.removeAchievement('okSleepWithPlayer');$personWokeUp = false>>\
+  Morning light hits your face escaping from the window. You open your eyes and see $npc.name laying on top of you.<<switch $npc.hairColor>>
     <<case blonde>>
       $npc.Possessive blond hair glows in the sunlight as you admire $npc.possessive $npc.skin body.
     <<case black>>

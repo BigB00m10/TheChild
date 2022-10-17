@@ -110,7 +110,7 @@ class UniquenessTables {
       },
       {
         //fear40
-        default: "", //TODO add different reactions for when the player hugs a slave
+        default: "When you hug $npc.name you can feel $npc.pronoun jumping a little bit.", //TODO add different reactions for when the player hugs a slave
       },
       {
         //love60
@@ -141,6 +141,8 @@ class UniquenessTables {
         naughtyAndShy: "$npc.name blushes and nods.",
         naughty: "$npc.name smiles and nods.<<emoji 🙂>>",
       },
+    ],
+    [
       5, //From 5 years old onwards do this:
       {
         default: "Say:I don't know...<<emoji 🙁>>",
@@ -148,6 +150,8 @@ class UniquenessTables {
         naughtyAndShy: "=age2",
         naughty: "Say:Yeah! I like naughty stuff!!<<emoji 😃>>",
       },
+    ],
+    [
       8, //From 8 years old onwards do this:
       {
         default: "=age5",
@@ -161,26 +165,26 @@ class UniquenessTables {
       2,
       {
         default: "$npc.name nods<<emoji 🥺>>",
-        curious:
-          "$npc.name looks at you between your legs and then nods<<emoji 🥺>>",
-        naughty: "=curious",
-        shy: "$npc.name blushes and nods<<emoji 😳>>",
         naughtyAndShy:
           "$npc.name looks a you between your legs, blushes and then nods<<emoji 😳>>",
         curiousAndShy: "=naughtyAndShy",
+        shy: "$npc.name blushes and nods<<emoji 😳>>",
+        curious:
+          "$npc.name looks at you between your legs and then nods<<emoji 🥺>>",
+        naughty: "=curious",
       },
     ],
     [
       5,
       {
         default: "say:Yes <<npcAddressPlayer>><<emoji 🙂>>",
-        curious:
-          '$npc.name takes a peek between your legs and says: "Yes <<npcAddressPlayer>>!"<<emoji 😃>>',
-        naughty: "=curious",
-        shy: "say:Y-Yes <<npcAddressPlayer>><<emoji 😳>>",
         naughtyAndShy: `say: S-Sure <<npcAddressPlayer>>
         $npc.GenPronoun looks pretty excited to the idea.`,
         curiousAndShy: "=naughtyAndShy",
+        shy: "say:Y-Yes <<npcAddressPlayer>><<emoji 😳>>",
+        curious:
+          '$npc.name takes a peek between your legs and says: "Yes <<npcAddressPlayer>>!"<<emoji 😃>>',
+        naughty: "=curious",
       },
     ],
   ];
@@ -189,21 +193,22 @@ class UniquenessTables {
     [
       2,
       {
-        default: "$npc.name looks a little surprised but nods in agreement<<emoji 🥺>>",
-        naughty: `$npc.name nods while gently stroking between $npc.possessive legs in front of you<<emoji 🥺>>
-        It seems that this got $npc.pronoun excited.`,
-        shy: "$npc.name blushes like crazy and then nods<<emoji 😳>>",
+        default:
+          "$npc.name looks a little surprised but nods in agreement<<emoji 🥺>>",
         naughtyAndShy:
           "$npc.name blushes like crazy sneakily putting a hand between $npc.possessive legs and then nods<<emoji 😳>>",
+        shy: "$npc.name blushes like crazy and then nods<<emoji 😳>>",
+        naughty: `$npc.name nods while gently stroking between $npc.possessive legs in front of you<<emoji 🥺>>
+        It seems that this got $npc.pronoun excited.`,
       },
     ],
     [
       5,
       {
         default: "say:Oh... Okay... If that's what you want...",
-        naughty: "say:Yay!! Let's be naughty in bed!!<<emoji 😛>>",
         shy: "say:Na-Naked?!...O-Okay, if that's what you want...<<emoji 😳>>",
-      }
-    ]
-  ]
+        naughty: "say:Yay!! Let's be naughty in bed!!<<emoji 😛>>",
+      },
+    ],
+  ];
 }

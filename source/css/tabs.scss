@@ -1,7 +1,7 @@
 .tabs {
   display: flex;
   flex-wrap: wrap;
-  label {
+  > label {
     order: 1;
     display: block;
     padding: 1rem 2rem;
@@ -9,6 +9,8 @@
     cursor: pointer;
     font-weight: bold;
     transition: background ease 0.2s;
+    background-color: #222;
+    color: gray;
   }
   .tab {
     order: 99;
@@ -16,8 +18,30 @@
     width: 100%;
     display: none;
     padding: 1rem;
+    background: #2e2f36;
   }
-  input[type="radio"] {
+  > input[type="radio"] {
     display: none;
+    &:checked + label {
+      background: #2e2f36;
+      color: gainsboro;
+      + .tab {
+        display: block;
+      }
+    }
+  }
+}
+
+@media (max-width: 45em) {
+  .tabs {
+    .tab,
+    > label {
+      order: initial;
+    }
+    > label {
+      width: 100%;
+      margin-right: 0;
+      margin-top: 0.2rem;
+    }
   }
 }

@@ -1,12 +1,14 @@
 interface Array<T> {
   firstOrDefault<T>(predicate: Function): T;
 }
+//Array extension to return the first item that makes the predicate return true or null
 Array.prototype.firstOrDefault = function <T>(predicate: Function) {
   return this.reduce((accumulator: T, currentValue: T) => {
     if (!accumulator && predicate(currentValue)) accumulator = currentValue;
     return accumulator;
   }, null);
 };
+//A product does not represent a physical item but something that can be bought and transfer a corresponding item to an inventory.
 class Product {
   name: string; //Product name displayed. If itemName is not specified it will also be the item's name.
   itemName?: string; //The item's name (once purchased)
@@ -28,6 +30,7 @@ class Product {
     });
   }
 }
+//Represents a physical item.
 class Item {
   name: string;
   description: string;
@@ -85,6 +88,7 @@ class Inventory {
     Object.assign(this, init);
   }
 }
+//The only store available right now, if more are created maybe a parent abstract class should be created.
 class OnlineStore {
   //Updating this class does not automatically updates the $onlineStore story variable unless a new product is added, the version number is used to know if the story variable object should be updated when loading an old save.
   version: number = 3;

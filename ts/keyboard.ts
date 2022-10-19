@@ -11,9 +11,15 @@ const keyToId: Record<string, string> = {
   "0": "zero",
   " ": "space",
   Escape: "esc",
-};
+}; //These are the keys that do not have the same text as the names of the key trigger classes.
 let keyOptionNumber: number;
 $(document).on(":passagestart", () => (keyOptionNumber = 1));
+//Adds an option that leads to a passage that can be selected by pressing a number. The number is assigned automatically.
+//Parameters:
+//1. SugarCube link. Example: [[text|passageName]]
+//2. (optional) emoji or emojis that will appear at the start if emojis are enabled in the settings.
+//3. (optional) widget used. By default <<link>> is used but "btn" can be specified to show a button instead.
+//Example: <<keyOption [[My text|myPassage]] 🎃 btn>>
 Macro.add("keyOption", {
   handler: function () {
     let $wrapper = $(document.createElement("span"));
@@ -30,6 +36,13 @@ Macro.add("keyOption", {
     keyOptionNumber = (keyOptionNumber + 1) % 10;
   },
 });
+//Adds an option that executes a sugarcube markup when selected and can be selected by pressing a number. The number is assigned automatically.
+//Parameters:
+//1. Text to show in the option
+//2. (optional) emoji or emojis that will appear at the start if emojis are enabled in the settings.
+//3. (optional) widget used. By default <<link>> is used but "btn" can be specified to show a button instead.
+//Body: The sugarcube markup to be executed when the option is selected.
+//Example <<keyAction 'myText' 🎃 btn>><<run alert('action executed')>><</keyAction>>
 Macro.add("keyAction", {
   tags: null,
   handler: function () {
@@ -47,6 +60,11 @@ Macro.add("keyAction", {
     keyOptionNumber = (keyOptionNumber + 1) % 10;
   },
 });
+//Adds a text similar imitating a keyOption that cannot be selected. A non working key number is assigned automatically.
+//Parameters:
+//1. Text to show
+//2. (optional) emoji or emojis that will appear at the start if emojis are enabled in the settings.
+//Example: <<keyDisabled 'My text' 🎃>>
 Macro.add("keyDisabled", {
   handler: function () {
     let $wrapper = $(document.createElement("span"));
@@ -65,6 +83,7 @@ $(document).on("keyup", (evt) => {
     evt.key != " " &&
     SugarCube.Dialog.isOpen()
   )
+    //To avoid executing options while writing into a dialog, only enter, esc and space are triggered when a dialog is opened.
     return;
   let className = keyToId[evt.key] || evt.key.toLowerCase();
   if (className.length == 1) className = className + "Key";

@@ -1,7 +1,7 @@
 let Homes: Record<string, Home> = {
   smallUrban: {
     name: "small urban house",
-    rent: 400,
+    rent: 400,//Unused right now, will be the amount to pay each month
     spaces: [
       "basement",
       "mainRoom",
@@ -14,18 +14,24 @@ let Homes: Record<string, Home> = {
       "tortone",
       "tortwo",
       "torthree",
-    ],
+    ],//The spaces are where the wandering slaves will move into excluding the basement and everything starting with "tort"
   },
 };
+//Planned to be events involving NPC that can happen when the player enters the same scenery (found slave sleeping, playing with the computer, taking a piss, etc...)
+//In the eyes of the player it should appear in the same way as the demands.
 interface NpcEvent {
   description: string;
   canBeShown?: (npc: Npc) => boolean;
 }
 abstract class HomeSpace {
   contents: Inventory = new Inventory();
+  //The higher the muffle the lower the chance of neighbors/passerby hearing loud noises from this room (planned)
+  //This indicates the base value, items could be bought to increase this value.
   muffleBase: number = 25;
+  //How secure is this space (The higher is, the harder is for slaves to escape this space, or the house if it has an exit)
   securityBase: number = 25;
   npcEvents: NpcEvent[] = [];
+  //The main passage associated with this room
   abstract passageName: string;
   getDemandingSlaves(): Person[] {
     const slaves = Variables().slaves as Person[];

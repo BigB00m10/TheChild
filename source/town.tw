@@ -37,4 +37,118 @@ You are currently in front of your home.
     <<include workOption>>\
     <<keyOption [[Go to the park|playground]] ⚽>>
     <<keyOption [[Go to the school|shool]] 🏫>>
+    <<keyOption [[Head Into Town|centralPlaza]] ⛲>>
 <</unlessEmergency>>\
+:: centralPlaza
+
+You head down the road a little ways, and think you can see the Towns Plaza dead ahead. <<addMinutes 7>> 
+It takes you about 7 minutes to reach the Plaza and once you arrive you are rather surprised to see that the Plaza
+isn't bustling as much as you thought it would be... Everyone must be in the other parts of town. You
+look around for a map of some sort. But the closest thing you can find is a Signpost that says
+Welcome to Honeycross, please enjoy your stay! It is clearly meant for tourists not the locals.
+Underneath the welcome sign there are four arrows one pointing towards each District Of Honeycross.
+
+
+Where would you like to go?
+
+<<keyOption [[North|businessDistrict]] 🏬>>
+<<keyOption [[Northwest|waterfrontDistrict]] 🚉>>
+<<keyOption [[West|entertainmentDistrict]] 🧑‍🎤>>
+<<keyOption [[East|residentialDistrict]] 🏠>>
+<<keyOption [[South, Head Back Home|home]] 🏠>>
+
+
+:: businessDistrict
+
+You decide to head north into the Business District, It takes you about 5 minutes but you get there
+<<addMinutes 5>> as you enter, the first thing you notice right off the bat is that the entire area 
+lives up to it's name as it appears to be nothing but a Giant Labyrinth of Brick, Stone, and Concrete 
+buildings ominously looming over you. You swear you can hear the screams of human torment and boredom
+emanating all around you. This is as close to hell as you think you can get. You look around and notice
+a building that looks so out of place here. It's called the Hard N' Ready lumber store. You are
+both curious and intrigued... Maybe it's the name of the Building itself or how different it is from the 
+rest of these terror inducing corporate buildings or perhaps both. You start to wonder why someone would 
+build such a random store like this. You look around trying to find a reason, after a minute you spot it... 
+Just to the East a little ways is what appears to be a Ranger Station, a Forest Safety Volunteer Center, 
+and a massive Sign with a Fantasy Vibe that Says Lolishote forest.
+
+<<keyOption [[Check Out Hard N' Ready|HNRLJS]]>>
+<<keyOption [[Check out The Ranger Station|RSA]]>>
+<<keyOption [[Check Out The Forest Safety Volunteer Center|FSVC]]>>
+<<keyOption [[Enter Lolishote Forest|LSF]]>>
+<<keyOption [[Go Back|centralPlaza]]>>
+
+:: HNRLJS
+
+
+
+:: RSA
+
+
+
+:: FSVC
+
+
+
+:: LSF
+
+
+
+
+:: waterfrontDistrict
+
+After a minute <<addMinutes 1>>of thought you decide it might be worthwhile checking out the town's "Beautiful 
+and Enchanting" Waterfront you've heard so much about. You decide to head east into the Waterfront District, it 
+takes 5 minutes <<addMinutes 5>> once you arrive it definitely lives up to it's name as you are greeted by a lush 
+green waterfront, with beautiful bright blue water, and relaxing music playing over loudspeakers in various spots 
+around the Waterfront District, it also has various benches and snack carts. You look around and notice a community 
+school down the road to the east a little ways. Who knows maybe you could get a Job as a School Teacher Eventually. 
+As you continue to scan the area you also see a building that could be a good way to find out if there are any Other 
+Jobs in this area. CURRENTLY THERE ARE NO JOBS UNTIL CARRABINA IS READY TO IMPLEMENT MORE THANK YOU FOR YOUR PATIENCE.
+
+<<keyOption [[Go Back|centralPlaza]]🔙>>
+
+:: entertainmentDistrict
+
+You are intrigued by the name Entertainment District. So you decide to head West. <<addMinutes 1>>
+Once you reach The Entertainment District you are Greeted by 3 MASSIVE Gates made of Redwood and Silver.
+The Gate On the left reads in huge Goofy Letters "KIDS ONLY." The Middle Gate reads in Beautiful Cursive Letters 
+"Neutral Zone." And the gate on the right in Bright Neon Letters reads "Adults Only." You examine each gate
+from a Distance and notice a barely visible Hole through the Bushes next to the KIDS ONLY Gate. Which proves that 
+other Adults have probably snuck in before to "PLAY" with the kids or just get an eyeful of their cute little bodies.
+You look around and notice just how many people are in the Entertainment District. Your Unsure if you'd be able to 
+sneak a kid out of here without getting caught. But maybe you can find places within the District to "PLAY" with them
+who knows... What to do what too do.
+
+<<keyOption [[Sneak Into the Kids ONLY Sector|KOSEC]]>>
+<<keyOption [[Enter The Neutral Zone|NEZ]]>>
+<<keyOption [[Check Out The ADULTS ONLY SECTOR|AOSEC]]>>
+<<keyOption [[Go Back|centralPlaza]]>>
+
+:: KOSEC
+
+
+
+:: NEZ
+
+
+
+:: AOSEC
+
+
+
+:: residentialDistrict
+
+You head east into the residential District and are Immediately Bombarded with Half Naked Children running
+around everywhere, Adults who are very closely watching their children, Restaurants, The Smell of Baked Goods 
+Wafting through the air, and a CARE Job Office where you could probably apply for various Caregiver Jobs Such as
+a Babysitter, a Nanny, or maybe even a Petsitter if you want. You look around and notice just how closely these
+kids are being watched there's no way in hell you'll be able to sneak kids out of here.If you want some playtime 
+with these gorgeous sunkissed Angels you may have to become a Babysitter, or Nanny.
+
+<<keyOption [[Head into the CARE Building|CB]]>>
+<<keyOption [[Go Back|centralPlaza]]>>
+
+:: CB
+
+

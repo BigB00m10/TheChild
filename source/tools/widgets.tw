@@ -1,4 +1,4 @@
-:: widgets [widget nobr]
+:: widgets [widget nobr] {"position":"850,250"}
 <<widget emoji>><<if $settings.emoji === false>><<set _style to "display:none">><</if>><span class='emoji' @style="_style">_args[0]</span><</widget>>
 <<widget addMinutes>>
     <<run Now.addMinutes(_args[0])>>
@@ -13,8 +13,8 @@
     @@color:_cashColor;You _cashAction ¤<<- _args[0].toFixed(2)>>@@
 <</widget>>
 <<widget workOption>>
-    <<set _workEmoji = $player.gender != "male" ? "👷‍♀️" : "👷‍♂️"; _workText = "Go to work" + (Now.isWeekend()?" (Optional)":"")>>
-    <<keyOption _workText work _workEmoji>>
+    <<set _workEmoji = $player.gender != "boy" ? "👷‍♀️" : "👷‍♂️"; _workText = "Go to work" + (Now.isWeekend()?" (Optional)":"")>>
+    <<keyOption [[_workText|work]] _workEmoji>>
 <</widget>>
 <<widget sleep>>
     <<set $player.sleeping = true;
@@ -26,7 +26,7 @@
         @@color:red;You REALLY need to sleep@@<br>
         <<keyAction 'Go to sleep' 😴>><<sleep>><</keyAction>>
     <<else>>
-        <<if !Now.isWeekend() && !$player.workedToday && Now.isEqualOrLaterThan($player.job.enterTime)>>
+        <<if $player.job && !Now.isWeekend() && !$player.workedToday && Now.isEqualOrLaterThan($player.job.enterTime)>>
             @@color:red;You need to go to work@@<br>
             <<workOption>>
         <<else>>
@@ -35,17 +35,134 @@
     <</if>>
 <</widget>>
 <<widget checkNpcVirgin>>
-    <<set _fieldName to _args[0]+'Virgin'>>
+    <<set _fieldName to _args[0] + 'Virgin'>>
     <<if $npc[_fieldName]>>
-        <<set $npc[_fieldName] to false>>
-        <<if $npc.index != undefined>>
-            <<set $slaves[$npc.index][_fieldName] to false>>
+        <<set
+            $npc[_fieldName] = false;
+            Person.setAchievement("playerTook" + _args[0].toUpperFirst() + "Virginity");
+        >>
+        <br>@@color:red;$npc.name just lost $npc.possessive _args[0] virginity!!!@@<br>
+    <<elseif _args[0] != 'mouth' && !Person.hasAchievement("playerTook" + _args[0].toUpperFirst() + "Virginity") && !Person.hasAchievement("playerRealizedNonVirgin")>>
+        <br>@@color:yellow;You realize that $npc.name was not a virgin!!@@<br>
+        <<run Person.setAchievement("playerRealizedNonVirgin")>>
+    <</if>>
+    <<run Person.setAchievement('had' + _args[0].toUpperFirst() + 'SexWithPlayer')>>
+<</widget>>
+<<widget userEditListVar>>
+    <<set _list = eval(_args[0]).join('\n')>>
+    <<dialog _args[1]>>
+        <<textarea "_newList" _list>><br>
+        <<button "✅ Save">>
+            <<run eval(_args[0] + '=' + JSON.stringify(_newList.split(/\r?\n/)));Dialog.close()>>
+        <</button>>
+        <span id="escAct">
+            <<button "❌ (Esc) Cancel">>
+                <<run Dialog.close()>>
+            <</button>>
+        </span>
+    <</dialog>>
+<</widget>>
+<<widget npcAddressPlayer>><<- Player.getAddressing(_args[0] || $npc)>><</widget>>
+<<widget npcGenderSymbol>>
+    <<set _genderSymbol = _args[0].sex == 'male' ? '♂' : _args[0].sex == 'female' ? '♀' : '⚤'>>
+    <<emoji _genderSymbol>><<unset _genderSymbol>>
+<</widget>>
+<<widget wanderingSlaves>>
+    <<set _wandering = Person.getWandering()>>
+    <<if _wandering.length>>
+        <<if _wandering.length == 1>>
+            <<set _linkText = "(A) " + _wandering[0].name>>
+            <span id="aKeyAct"><<link _linkText>><<openNpcInteraction houseSlave _wandering[0].uid>><</link>></span> is here.<br>
+        <<else>>
+            <<set 
+                _last = _wandering.pop();
+                _charcode = 97;
+            >>
+            <<for _slave range _wandering>>
+                <<set
+                    if(_charcode == 104) _charcode += 2; 
+                    _char = String.fromCharCode(_charcode++);
+                    _linkText = '(' + _char.toUpperCase() + ') ' + _slave.name;
+                    _keyId = _char + 'KeyAct';
+                >><span @id='_keyId'><<print '<<link _linkText>><<openNpcInteraction houseSlave ' + _slave.uid + '>><</link>>'>></span>,
+            <</for>>
+            <<set 
+                _char = String.fromCharCode(_charcode);
+                _linkText = '(' + _char.toUpperCase() + ') ' + _last.name;
+                _keyId = _char + 'KeyAct';
+            >>
+            and <span @id='_keyId'>
+                <<link _linkText>><<openNpcInteraction houseSlave _last.uid>><</link>>
+            </span> are here.<br>
         <</if>>
-        @@color:red;$npc.name just lost $npc.possessive _args[0] virginity!!!@@<br>
     <</if>>
 <</widget>>
-<<widget npcAddressPlayer>><<- Player.getAddressing($npc)>><</widget>>
-:: workOption
-<<if !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
+<<widget playerSay>>''$player.name'': "_args[0]"<</widget>>
+<<widget npcSay>>
+    <<set _npc = _args[1] ? _args[1] : $npc>>
+    ''_npc.name'': "_args[0]"
+    <<unset _npc>>
+<</widget>>
+<<widget personHunting>>
+    <<set $found_kid = Person.generate($settings.childGeneration)>>
+    You found a $found_kid.age year old $found_kid.skin $found_kid.title with $found_kid.hairLength $found_kid.hairStyle $found_kid.hairColor hair 
+    and $found_kid.eyeColor eyes named $found_kid.name<br><br>
+    <<if Player.has('magic sunglasses')>>
+        <label style="cursor:pointer"><<checkbox '$settings.usingMagicSunglasses' false true autocheck>> Put on magic sunglasses.<<emoji 😎>></label><br>
+        <<set 
+            _npcStatsStyle = $settings.usingMagicSunglasses ? '' : 'display:none';
+            $npc = $found_kid;
+        >>
+        <span id='npcStats' @style='_npcStatsStyle'>
+            <<include npcStats>>
+            Traits: <<- Person.getPersonalityDescription($found_kid.uniqueness)>><br>
+        </span><br>
+        <script>
+            $('#checkbox-settingsusingmagicsunglasses').on('change', function() {
+                $('#npcStats').toggle(this.checked)
+            })
+        </script>
+    <</if>>
+    <<set
+        _hasChloroform = Player.has('chloroform');
+        _hasCandy = Player.has('Candy');
+    >>
+    <<if !_hasChloroform and !_hasCandy>>
+        (You don't have anything at your disposal to obtain kids)<br>
+    <<elseif Basement.availableBeds() lte 0>>
+        (Not enough space for a new kid back at home)<br>
+    <<else>>
+        <<if _hasCandy>>
+            <<keyOption [[Offer $found_kid.name some Candy.|CandyLure]] 🍬>>: 9min<br>
+        <</if>>
+        <<if _hasChloroform>>
+            <<keyOption [[Kidnap $found_kid.pronoun|kidnap]] 🖐>>: 30min<br>
+        <</if>>
+    <</if>>
+<</widget>>
+<<widget sleepOption>>
+    <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>
+        <<set 
+            _sleepSlave = $slaves.firstOrDefault(function(slave){return Person.hasAchievement('okSleepWithPlayer')});
+            _sleepSentence = $scenery != 'bed' ? "Go sleep" : 'Sleep';
+        >>
+        <<if _sleepSlave>>
+            <<set _sleepSentence+=' with ' + _sleepSlave.name>>
+            <<keyAction _sleepSentence 🥰>>
+                <<set $scenery = 'bed'>>
+                <<openNpcInteraction 'okSleepWithPlayerDemand'>>
+            <</keyAction>>
+        <<else>>
+            <<keyAction _sleepSentence 😴>><<sleep>><</keyAction>>
+        <</if>>
+    <</if>>
+<</widget>>
+<<widget thirdPersonVerb>><<- $npc.gender != 'nb' ? 's' : ''>><</widget>>
+<<widget thirdPersonVerbPlural>><<- $npc.gender != 'nb' ? 'es' : ''>><</widget>>
+<<widget pronounIs>><<set _npc = _args[0] || $npc>>$npc.pronoun<<- $npc.gender != 'nb' ? "'s" : "'re">><</widget>>
+<<widget genPronounIs>><<set _npc = _args[0] || $npc>>$npc.genPronoun<<- $npc.gender != 'nb' ? "'s" : "'re">><</widget>>
+<<widget npcVerbIs>><<- $npc.gender != 'nb' ? 'is' : 'are'>><</widget>>
+:: workOption {"position":"875,0"}
+<<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>
 <</if>>\

@@ -1,7 +1,7 @@
-:: buyProduct
+:: buyProduct {"position":"0,125"}
 $buyProduct.description
 
-<<set 
+<<set
     _own to OnlineStore.destination($buyProduct).get($buyProduct.name);
     _max to (!$buyProduct.available || ($buyProduct.available * $buyProduct.price gt $player.cash)) ?
         Math.floor($player.cash / $buyProduct.price) :
@@ -38,14 +38,14 @@ $buyProduct.description
         <<run Dialog.close()>>\
     <</button>>\
 </span>\
-:: onlineStore [nobr]
+:: onlineStore [nobr] {"position":"800,1000"}
 <div class='container' style="text-align: center;">
     <div class='row'><!--https://fictionalcompanies.fandom.com/wiki/Amazoon-->
         <h2>Anazom</h2><h3>Next day delivery</h3>
     </div>
     <div class='row'>
         <<for _productIndex to 0; _productIndex lt $onlineStore.products.length; _productIndex++>>
-            <<set 
+            <<set
                 _product = $onlineStore.products[_productIndex];
                 _priceStyle = "color:" + (_product.price > $player.cash ? "red" : "#8af");
             >>
@@ -65,7 +65,7 @@ $buyProduct.description
             <<if State.peek(1).title != State.passage>>
                 <<set $returnPassage to State.peek(1).title>>
             <</if>>
-            <<keyOption Return $returnPassage 🔙>>
+            <<keyOption [[Return|$returnPassage]] 🔙>>
         </div>
         <div class="nine columns" style="text-align:right">
             You currently own ¤<<- $player.cash.toFixed(2)>>
@@ -86,7 +86,7 @@ $buyProduct.description
             });
     });
 </script>
-:: receivePacket
+:: receivePacket {"position":"425,825"}
 <<scenery home>>
 ''Delivery man'': "I have a delivery for you"
 
@@ -94,13 +94,12 @@ You received: <<- $onlineStore.bought.items.map(function(item){return item.count
 
 <<if !Player.hasAchievement("boughtMattress") && OnlineStore.isBought("mattress")>>\
     <<set $achievements.push("boughtMattress")>>\
-    ''Delivery man'': "Do you need help you carring the Matress?<<emoji 🙂>>"
+    ''Delivery man'': "Do you need help you carrying the Mattress?<<emoji 🙂>>"
     ''$player.name'': "NO!!.. No thanks, I can do it myself.<<emoji 😅>>"
 
 <</if>>\
 <<unlessEmergency>>\
-    <<keyOption "Go back inside" main 🔙>>
+    <<keyOption [[Go back inside|main]] 🔙>>
     <<include workOption>>\
-    <<keyOption "Look for kids in the playground" playground ⚽>>
-<</unlessEmergency>>\
+<</unlessEmergency>>
 <<run OnlineStore.receiveBought()>>\

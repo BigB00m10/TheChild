@@ -1,11 +1,191 @@
+//Returns the options after stripping the slave
 let afterStrip = () =>
-  window.Interactions.slave.options.pushDown.next["strip"].next;
+  window.Interactions.slave.options["pushDown"].next.strip.next;
+//Returns the options that are after putting penis in the mouth
 let afterPenToMouth = () =>
-  (window.Interactions["slave"].options.penToMouth.next as CallableFunction)();
+  (window.Interactions.slave.options["penToMouth"].next as CallableFunction)();
+//returns the different options when cumming outside
+let cumOutsideOptions: NpcInteractionOptions = {
+  cumBody: {
+    optionText: "💦 Cum on $npc.possessive body.",
+    contents: `Right when you're about to cum you pull out your dick from $npc.pronoun and shoot all your hot sperm all over $npc.possessive body.
+    <<set 
+      Player.manageEnergy(1);
+      $npc.bodySpermAmount++;
+      $player.lust = 0;
+    >>\
+    Your sperm drips around $npc.name's body, impregnating $npc.possessive skin.`,
+    next: () => afterStrip(),
+  },
+  cumFace: {
+    optionText: "🌚 Cum on $npc.possessive face.",
+    contents: `You take out your penis and quickly point it towards $npc.possessive face.
+    <<set
+      Player.manageEnergy(1);
+      $npc.faceSpermAmount++;
+      $player.lust = 0;
+    >>
+    $npc.name closes $npc.possessive eyes when the first cumshot lands on $npc.possessive face.
+    You splatter a full load on $npc.pronoun while you hold $npc.name's chin.`,
+    next: () => afterStrip(),
+  },
+};
+//Returns the first member in the interaction route that points to the interaction collection.
+let baseInteractionRoute = () => Variables().npcInteractionRoute.split(".")[0];
+//Returns the different talk options
+let talkOptions = () =>
+  window.Interactions[baseInteractionRoute()].options["talk"]
+    .next as NpcInteractionOptions;
 window.Interactions["slave"] = {
   defaultStopOption: "✋ Leave $npc.pronoun alone",
   contents: "<<include slaveApproach>>",
   options: {
+    talk: {
+      npcRequirements: ["age>1"],
+      optionText: "👄 Talk to $npc.pronoun",
+      contents: `<<if $npc.fear gte 40>>\
+        <<emoji 😨>>$npc.name is trembling at your presence and is too scared to talk!\
+      <<else>>\
+        ''What do you want to ask $npc.name?''\
+      <</if>>`,
+      altOptions(npc, current) {
+        if (npc.fear >= 40) {
+          Variables().npcInteractionRoute = baseInteractionRoute();
+          return window.Interactions[Variables().npcInteractionRoute]
+            .options as NpcInteractionOptions;
+        }
+        return current;
+      },
+      showIfEmpty: false,
+      next: {
+        howAreYou: {
+          canBeShown: () => !window.Person.hasAchievement("howAreYou"),
+          optionText: '👄 "How are you today, $npc.name?"',
+          minutesCost: 2,
+          contents:
+            '<<run Person.setAchievement("howAreYou")>><<personUniqueness howAreYou>>',
+          npcStats: ["love+5%", "fear-5"],
+          showNpcStats: true,
+          next: talkOptions,
+        },
+        sexExp: {
+          canBeShown: () =>
+            window.Person.hasAnyAchievement([
+              "playerRealizedNonVirgin",
+              "playerNoticedPreviousOralTraining",
+            ]) &&
+            !window.Person.hasAllAchievements([
+              "playerAskedPreviousExperienceDone",
+              "playerAskedPreviousExperienceLiked",
+            ]),
+          optionText: "👀 Ask about previous sex experience.",
+          contents: `<<set
+            _obs = [];
+            if(Person.hasAchievement('playerRealizedNonVirgin'))
+              _obs.push("you were not a virgin");
+            if(Person.hasAchievement('playerNoticedPreviousOralTraining'))
+              _obs.push($player.hasPussy ? "you were so good licking my pussy" : "you sucked my dick so well");
+            _playerSay = 'I noticed that ' + _obs.join(' and ') + '. Did you do these things before?';
+          >><<playerSay _playerSay>>
+          <<if $npc.age lt 5 || $npc.uniqueness.shy>>$npc.name <<if $npc.uniqueness.shy>>blushes and <</if>>nods.<<elseif $npc.uniqueness.naughty>><<npcSay 'Yeah!'>><<emoji 😁>>
+          $npc.GenPronoun smiles and looks proud about it.
+
+          <<else>><<npcSay '...yes'>><</if>>
+          <<playerSay 'So, who was the one that you did it with?'>>
+          <<set
+            _hp = $npc.uniqueness.homePersons.filter(p => p.naughty);
+            _hpSentence = _hp.map(p => Person.getHomePersonName(p.name)).getSentence();
+            _hpSentence = $npc.age gt 10 && !$npc.uniqueness.shy ? "I did it with " + _hpSentence : _hpSentence.toUpperFirst();
+          >>\
+          <<npcSay _hpSentence>>`,
+          minutesCost: 5,
+          npcStats: ["lust%+40"],
+          showNpcStats: true,
+          next: {
+            askThingsDone: {
+              canBeShown: () =>
+                !window.Person.hasAchievement(
+                  "playerAskedPreviousExperienceDone"
+                ),
+              optionText: '❓ "What kinds of things did you do?"',
+              minutesCost: 5,
+              contents: `<<set
+                Person.setAchievement('playerAskedPreviousExperienceDone');
+                let hps = $npc.uniqueness.homePersons.filter(p => p.naughty);
+                let suckedDick = [];
+                let lickedPussy = [];
+                let getFuckedAss = [];
+                let getFuckedPussy = [];
+                let fuckedPussy = [];
+                let fuckedAss = [];
+                for(var hp of hps){
+                  if(Person.getHomePersonSex(hp.name) != 'male'){
+                    if(!$npc.mouthVirgin)
+                      lickedPussy.push(Person.getHomePersonName(hp.name));
+                    if($npc.hasPenis && !$npc.penisVirgin && !Person.hasAchievement('playerTookPenisVirginity'))
+                      fuckedPussy.push(Person.getHomePersonName(hp.name));
+                  } else {
+                    if(!$npc.mouthVirgin)
+                      suckedDick.push(Person.getHomePersonName(hp.name));
+                    if(!$npc.analVirgin && !Person.hasAchievement('playerTookAnalVirginity'))
+                      getFuckedAss.push(Person.getHomePersonName(hp.name));
+                    if($npc.hasPussy && !$npc.vaginaVirgin && !Person.hasAchievement('playerTookVaginalVirginity'))
+                      getFuckedPussy.push(Person.getHomePersonName(hp.name));
+                    if($npc.hasPenis && !$npc.penisVirgin && !Person.hasAchievement('playerTookPenisVirginity'))
+                      fuckedAss.push(Person.getHomePersonName(hp.name));
+                  }
+                }
+                let thingsDone = [];
+                if(suckedDick.length)
+                  thingsDone.push('sucked ' + suckedDick.getSentence() + ' pepee');
+                if(lickedPussy.length)
+                  thingsDone.push('licked ' + lickedPussy.getSentence() + ' pussy');
+                if(getFuckedAss.length)
+                  thingsDone.push(getFuckedAss.getSentence() + ' put ' + (getFuckedAss.length > 1 ? 'their' : 'his') + ' pepee in my butt');
+                if(getFuckedPussy.length)
+                  thingsDone.push(getFuckedPussy.getSentence() + ' put ' + (getFuckedPussy.length > 1 ? 'their' : 'his') + ' pepee in my pussy');
+                if(fuckedPussy.length)
+                  thingsDone.push('put my pepee in ' + fuckedPussy.getSentence() + ' pussy');
+                if(fuckedAss.length)
+                  thingsDone.push('put my pepee in ' + fuckedAss.getSentence() + ' butt');
+                _say = 'I ' + thingsDone.getSentence();
+                _emoji = $npc.uniqueness.shy ? '😳' : ($npc.uniqueness.naughty ? '😃' : '')
+              >><<npcSay _say>><<emoji _emoji>>`,
+              next: () => talkOptions().sexExp.next as NpcInteractionOptions,
+            },
+            askLiked: {
+              canBeShown: () =>
+                !window.Person.hasAchievement(
+                  "playerAskedPreviousExperienceLiked"
+                ),
+              optionText: '❓ "Did you like it?"',
+              minutesCost: 5,
+              contents:
+                "<<set Person.setAchievement('playerAskedPreviousExperienceLiked')>><<personUniqueness likedPreviousNaughty>>",
+              next: () => talkOptions().sexExp.next as NpcInteractionOptions,
+            },
+            back: {
+              optionText: "🔙 Go back",
+              action: true,
+              contents:
+                '<<openNpcInteraction $npcInteractionRoute.split(".")[0]>>',
+            },
+          },
+        },
+        back: {
+          optionText: "🔙 Go back",
+          action: true,
+          contents: '<<openNpcInteraction $npcInteractionRoute.split(".")[0]>>',
+        },
+      },
+    },
+    hug: {
+      canBeShown: () => false, //TODO: Disabled until fully implemented
+      optionText: "🤗 give a hug to $npc.name.",
+      contents: `<<if $npc.age gt 0>>\
+        You grab $npc.name $npc.age year old <<if $npc.age lt 6>>little<</if>> body and press it into you.
+      <</if>><<personUniqueness hug>>`,
+    },
     pushDown: {
       optionText: "👇 Push $npc.pronoun down",
       contents: `You push $npc.name down, placing your body over $npc.pronoun.
@@ -14,7 +194,7 @@ window.Interactions["slave"] = {
         <<elseif $npc.love gt 50>>\
           $npc.GenPronoun leaves <<- $npc.pronoun>>self completely open as $npc.genPronoun smiles at you<<emoji ♥>>.
         <</if>>`,
-      altOptions(npc: Npc, current: Record<string, NpcInteraction>) {
+      altOptions(npc: Npc, current: NpcInteractionOptions) {
         if ((npc as Person).haveClothes) return current;
         return afterStrip(); //If slave has no clothes we can skip stripping.
       },
@@ -26,16 +206,17 @@ window.Interactions["slave"] = {
           contents: `You take all off $npc.possessive clothes leaving $npc.name completely naked in front of you.
               <<if $npc.aroused>>\
                 You notice that \
-                <<if $npc.gender != 'male'>>\
-                  @@color:deeppink;her $npc.genitals is wet@@\
-                <<else>>\
-                  @@color:deeppink;he has an erection@@\
-                <</if>>\
-                !! <<emoji 👀>>
+/*            */<<if $npc.hasPussy && $npc.hasPenis>>\
+/*              */@@color:deeppink;$npc.possessive $npc.genitals.male is hard and $npc.possessive $npc.genitals.female is wet@@\
+/*            */<<elseif $npc.hasPussy>>\
+/*              */@@color:deeppink;$npc.possessive $npc.genitals.female is wet@@\
+/*            */<<elseif $npc.hasPenis>>\
+/*              */@@color:deeppink;$npc.genPronoun is hard@@\
+/*            */<</if>> !!<<emoji 👀>>
               <<else>>\
                 You admire $npc.possessive nice body. <<emoji 👀>>
               <</if>>\
-              <<if $npc.love gt 50>>$npc.GenPronoun offers no resistance<<emoji ♥>> and lets you have your way.<</if>>`,
+              <<if $npc.love gt 50>>$npc.GenPronoun offer<<thirdPersonVerb>> no resistance<<emoji ♥>> and lets you have your way.<</if>>`,
           next: {
             fingerAss: {
               settingsRequirements: ["anal"],
@@ -57,28 +238,94 @@ window.Interactions["slave"] = {
             },
             fingerPussy: {
               npcRequirements: ["hasPussy", "aroused"],
-              optionText: "👉 Finger-train $npc.possessive $npc.genitals.",
+              optionText:
+                "👉 Finger-train $npc.possessive $npc.genitals.female.",
               minutesCost: 10,
               contents: `<<if $npc.pussyTraining lt 20>>\
-                You gently rub your finger in $npc.name's $npc.genitals hole.
-                You can feel your finger getting wet <<emoji 💧>>.
+                  You gently rub your finger in $npc.name's $npc.genitals.female hole.
+                  You can feel your finger getting wet <<emoji 💧>>.
                 <<elseif $npc.pussyTraining lt 40>>\
-                You manage to push your finger inside $npc.name.
-                You can feel $npc.possessive $npc.genitals tightening around your finger. <<emoji 😛>>
+                  You manage to push your finger inside $npc.name.
+                  You can feel $npc.possessive $npc.genitals.female tightening around your finger. <<emoji 😛>>
                 <<else>>\
-                After just a little bit of meddling, your finger slides right in!
-                You rub $npc.name's insides making $npc.pronoun body react to it. <<emoji 😇>>\
+                  After just a little bit of meddling, your finger slides right in!
+                  You rub $npc.name's insides making $npc.pronoun body react to it. <<emoji 😇>>
+                  <<if $npc.lust gte 60>>\
+
+                    $npc.GenPronoun is breathing hard. Looks like $npc.name is really enjoying this.\
+                  <</if>>\
                 <</if>>`,
               npcStats: ["pussyTraining%+40", "lust+10%", "+aroused"],
               showNpcStats: true,
-              next: afterStrip,
+              next: {
+                cum: {
+                  optionText: "💦 Make $npc.pronoun cum",
+                  contents: `You vigorously rub inside $npc.name's vagina while you rub $npc.possessive clitoris at the same time making $npc.pronoun arc her body with the pleasure.
+                  It doesn't take long until $npc.pronoun cums making your hand wet all over.`,
+                  npcStats: [
+                    "lust+5%",
+                    "love+5",
+                    "freedomWish-10",
+                    "hunger+10",
+                  ],
+                  showNpcStats: true,
+                  next: afterStrip,
+                },
+                else: {
+                  optionText: "↩ Do something else",
+                  contents: "What do you want to do next?",
+                  next: afterStrip,
+                },
+              },
+              altOptions(npc, current) {
+                if (npc.pussyTraining >= 40 && npc.lust >= 60) return current;
+                Variables().npcInteractionRoute = "slave.pushDown.strip";
+                return afterStrip();
+              },
+            },
+            pushDick: {
+              npcRequirements: ["hasPussy"],
+              playerRequirements: ["hasPenis"],
+              settingsRequirements: ["anal"],
+              contents: "Which hole should you fuck?",
+              optionText: "🤙 Fuck one of $npc.name's holes.",
+              next: {
+                penPussy: {
+                  optionText: "🤙 $npc.Possessive Pussy.",
+                  minutesCost: 20,
+                  contents: `You push your dick against $npc.possessive $npc.genitals.female
+                  <<if $npc.age gt 3 && ($npc.lust lt 30 || $npc.fear gte 40)>>\
+                    $npc.GenPronoun panics <<emoji 😨>> as $npc.genPronoun sees your dick pressing against $npc.pronoun private place.
+                  <</if>>\
+                  <<if $npc.aroused>>\
+                    You can feel the moist on the tip of your dick.
+                  <</if>>\
+  
+                  How do you want to proceed?`,
+                  npcStats: ["fear-5", "lust+30%"],
+                  showNpcStats: true,
+                  next: () => afterStrip().pushDickVag.next,
+                  stopOption: "🛑 Stop right there.",
+                },
+                penAss: {
+                  settingsRequirements: ["anal"],
+                  optionText: "🍆 $npc.Possessive ass.",
+                  minutesCost: 20,
+                  contents: `You press your dick against $npc.possessive asshole.`,
+                  npcStats: ["fear-5", "lust+30%"],
+                  showNpcStats: true,
+                  next: () => afterStrip().pushDickAnus.next,
+                  stopOption: "🛑 Stop right there.",
+                },
+              },
             },
             pushDickVag: {
-              playerRequirements: ["gender=male"],
+              playerRequirements: ["hasPenis"],
+              settingsRequirements: ["!anal"],
               npcRequirements: ["hasPussy"],
               optionText:
-                "🍆 Push your dick into $npc.possessive $npc.genitals",
-              contents: `You push your dick against $npc.possessive $npc.genitals
+                "🍆 Push your dick into $npc.possessive $npc.genitals.female",
+              contents: `You push your dick against $npc.possessive $npc.genitals.female
                 <<if $npc.age gt 3 && ($npc.lust lt 30 || $npc.fear gte 40)>>\
                   $npc.GenPronoun panics <<emoji 😨>> as $npc.genPronoun sees your dick pressing against $npc.pronoun private place.
                 <</if>>\
@@ -92,17 +339,17 @@ window.Interactions["slave"] = {
                   optionText: "🍬 Carefully press it in.",
                   minutesCost: 2,
                   contents: `<<if $npc.pussyTraining lt 20>>\
-                      You press your dick in $npc.name's $npc.genitals squishing $npc.pronoun puffy labia on the sides. But it doesn't seem that is gonna go any further than this.
+                      You press your dick in $npc.name's $npc.genitals.female squishing $npc.pronoun puffy labia on the sides. But it doesn't seem that is gonna go any further than this.
                     <<elseif $npc.pussyTraining lt 40>>\
                       <<if $npc.aroused || $npc.lubricatedPussy>>\
                         <<set _cockEntered to true>>\
-                        You barely manage to enter your cock's head inside $npc.name's $npc.genitals and it feels really tight! <<emoji 😣>>
+                        You barely manage to enter your cock's head inside $npc.name's $npc.genitals.female and it feels really tight! <<emoji 😣>>
                       <<else>>\
-                        You try to enter $npc.pronoun but $npc.possessive $npc.genitals is too dry and it hurts $npc.pronoun a little. <<emoji 😫>>
+                        You try to enter $npc.pronoun but $npc.possessive $npc.genitals.female is too dry and it hurts $npc.pronoun a little. <<emoji 😫>>
                       <</if>>\
                     <<elseif $npc.pussyTraining lt 60>>\
                       <<set _cockEntered to true>>\
-                      You slowly enter $npc.possessive $npc.genitals as it gets stretched.
+                      You slowly enter $npc.possessive $npc.genitals.female as it gets stretched.
                       <<if $npc.aroused || $npc.lubricatedPussy>>\
                         $npc.GenPronoun looks a little troubled<<emoji 😣>>, but it looks like $npc.genPronoun can take it.
                       <<else>>\
@@ -121,7 +368,7 @@ window.Interactions["slave"] = {
                       Your cock slides right in as $npc.genPronoun lets out a quiet ~~"Ah!"~~.
                     <</if>>\
                     <<if _cockEntered>>\
-                      <<checkNpcVirgin genital>>\
+                      <<checkNpcVirgin vagina>>\
                     <</if>>`,
                   npcStats: (npc) => {
                     let stats = [];
@@ -154,7 +401,7 @@ window.Interactions["slave"] = {
                     if (Temporary().cockEntered) {
                       Variables().npcInteractionRoute =
                         "slave.pushDown.strip.pushDickVag.ram";
-                      return current.ram.next as Record<string, NpcInteraction>;
+                      return current.ram.next as NpcInteractionOptions;
                     }
                     return current;
                   },
@@ -167,7 +414,7 @@ window.Interactions["slave"] = {
                     <<else>>\
                       You slam the whole thing inside filling up $npc.possessive vagina.
                       $npc.GenPronoun looks surprised<<emoji 😲>> with $npc.possessive $npc.eyeColor eyes wide open.
-                    <</if>><<checkNpcVirgin genital>>`,
+                    <</if>><<checkNpcVirgin vagina>>`,
                   npcStats: (npc) => {
                     let stats =
                       npc.pussyTraining < 80
@@ -186,14 +433,14 @@ window.Interactions["slave"] = {
                   next: {
                     slow: {
                       optionText: "🦥 Fuck $npc.pronoun slowly.",
-                      contents: `You try your best in slowly going in and out of $npc.name's $npc.age year old $npc.genitals.
+                      contents: `You try your best in slowly going in and out of $npc.name's $npc.age year old $npc.genitals.female.
                         <<if $npc.pussyTraining lt 20>>\
                           $npc.GenPronoun keeps crying<<if $npc.age gt 0>> and pushing you while saying "Stop! It hurts!!"<</if>>. <<emoji 😢>>
                         <<elseif $npc.pussyTraining lt 40>>\
                           $npc.name seems to have a hard time taking your dick while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
                         <<elseif $npc.lust lt 30>>\
                           $npc.GenPronoun seems to be able to take you in and, after a while, even starts to feel good for $npc.pronoun.\
-                          <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you make love to her. <<emoji ♥>><</if>>
+                          <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you make love to $npc.pronoun. <<emoji ♥>><</if>>
                         <<else>>\
                           $npc.name is visibly enjoying your cock. You can hear $npc.pronoun loudly moaning:
                           "Ah!...Ah!...<<if $npc.age gt 4>> Yes... Please don't stop!!<</if>>\
@@ -227,7 +474,7 @@ window.Interactions["slave"] = {
                     },
                     fast: {
                       optionText: "⏩ Fast piston.",
-                      contents: `You trust your dick into $npc.name's $npc.genitals. Making $npc.genPronoun bounce with a fast pelvic piston movement.
+                      contents: `You thrust your dick into $npc.name's $npc.genitals.female. Making $npc.genPronoun bounce with a fast pelvic piston movement.
                       <<run Player.manageEnergy(3)>>\
                       <<if $npc.pussyTraining lt 40>>\
                         $npc.GenPronoun <<if $npc.age gt 0>>pushes you while crying<<else>>cries<</if>> desperately. <<emoji 😭>>
@@ -237,7 +484,7 @@ window.Interactions["slave"] = {
                         $npc.GenPronoun seems to be able to withstand your piston and, after a while, even starts to feel good for $npc.pronoun.\
                         <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you screw $npc.pronoun.<<emoji ♥>><</if>>
                       <<else>>\
-                        $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure $npc.genPronoun's experiencing.
+                        $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure <<genPronounIs>> experiencing.
                         "Ah!, Ah!, Ah!<<if $npc.age gt 3 && $npc.love gte 50>>, <<npcAddressPlayer>>!...<<emoji 💕>><</if>>"<<emoji 😫>>\
                       <</if>>`,
                       minutesCost: 10,
@@ -250,7 +497,7 @@ window.Interactions["slave"] = {
                             "hunger+5",
                           ];
                         if (npc.pussyTraining < 60)
-                          return ["fear+5", "pussyTraining%+80"];
+                          return ["fear+5", "pussyTraining%+80", "hunger+5"];
                         let stats = [
                           "pussyTraining+10",
                           "lust+10%",
@@ -268,6 +515,18 @@ window.Interactions["slave"] = {
                       showNpcStats: true,
                       next: () => afterStrip().pushDickVag.next.ram.next,
                     },
+                    cumInside: {
+                      optionText: "⛽ Cum inside $npc.pronoun.",
+                      contents: `You release your seed inside $npc.name's body, filling up $npc.possessive womb.
+                      <<set 
+                        Player.manageEnergy(1);
+                        $npc.pussySpermAmount++;
+                        $player.lust = 0;
+                      >>\
+                      After shooting all your load you pull out your dick leaving $npc.pronoun with your present inside.`,
+                      next: () => afterStrip(),
+                    },
+                    ...cumOutsideOptions,
                     out: {
                       optionText: "🔙 Pull out",
                       contents: `You pull out your dick on $npc.name`,
@@ -283,8 +542,9 @@ window.Interactions["slave"] = {
               },
             },
             pushDickAnus: {
-              playerRequirements: ["gender=male"],
+              playerRequirements: ["hasPenis"],
               settingsRequirements: ["anal"],
+              npcRequirements: ["!hasPussy"],
               optionText: "🍆 Push your dick into $npc.possessive ass.",
               contents: `You press your dick against $npc.possessive asshole.`,
               next: {
@@ -351,7 +611,7 @@ window.Interactions["slave"] = {
                     if (Temporary().cockEntered) {
                       Variables().npcInteractionRoute =
                         "slave.pushDown.strip.pushDickAnus.ram";
-                      return current.ram.next as Record<string, NpcInteraction>;
+                      return current.ram.next as NpcInteractionOptions;
                     }
                     return current;
                   },
@@ -414,7 +674,7 @@ window.Interactions["slave"] = {
                     },
                     fast: {
                       optionText: "⏩ Fast piston.",
-                      contents: `You trust your dick into $npc.name's anus. Making $npc.genPronoun bounce with a fast pelvic piston movement.
+                      contents: `You thrust your dick into $npc.name's anus. Making $npc.pronoun bounce with a fast pelvic piston movement.
                       <<run Player.manageEnergy(3)>>\
                       <<if $npc.anusTraining lt 40>>\
                         $npc.GenPronoun <<if $npc.age gt 0>>pushes you while crying<<else>>cries<</if>> desperately. <<emoji 😭>>
@@ -424,7 +684,7 @@ window.Interactions["slave"] = {
                         $npc.GenPronoun seems to be able to withstand your piston and, after a while, even starts to feel good for $npc.pronoun.\
                         <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you screw $npc.pronoun.<<emoji ♥>><</if>>
                       <<else>>\
-                        $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure $npc.genPronoun's experiencing.
+                        $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure <<genPronounIs>> experiencing.
                         "Ah!, Ah!, Ah!<<if $npc.age gt 3 && $npc.love gte 50>>, <<npcAddressPlayer>>!...<<emoji 💕>><</if>>"<<emoji 😫>>\
                       <</if>>`,
                       minutesCost: 10,
@@ -437,7 +697,7 @@ window.Interactions["slave"] = {
                             "hunger+5",
                           ];
                         if (npc.anusTraining < 60)
-                          return ["fear+5", "anusTraining%+80"];
+                          return ["fear+5", "anusTraining%+80", "hunger+5"];
                         let stats = [
                           "anusTraining+10",
                           "lust+10%",
@@ -455,6 +715,18 @@ window.Interactions["slave"] = {
                       showNpcStats: true,
                       next: () => afterStrip().pushDickAnus.next.ram.next,
                     },
+                    cumInside: {
+                      optionText: "⛽ Cum inside $npc.pronoun.",
+                      contents: `You release your seed inside $npc.name's body. Filling up $npc.possessive bowels.
+                      <<set 
+                        Player.manageEnergy(1);
+                        $npc.assSpermAmount++;
+                        $player.lust = 0;
+                      >>\
+                      After shooting all your load you pull out your dick leaving $npc.pronoun with your present inside.`,
+                      next: () => afterStrip(),
+                    },
+                    ...cumOutsideOptions,
                     out: {
                       optionText: "🔙 Pull out",
                       contents: `You pull out your dick on $npc.name`,
@@ -469,12 +741,488 @@ window.Interactions["slave"] = {
                 },
               },
             },
+            useDildo: {
+              inventoryRequirements: ["dildo"],
+              optionText: "🥒 Use the dildo on $npc.name.",
+              contents: "Which hole should you use?",
+              next: {
+                dildoVag: {
+                  inventoryRequirements: ["dildo"],
+                  npcRequirements: ["hasPussy"],
+                  optionText:
+                    "🥒 Push the dildo into $npc.possessive $npc.genitals.female.",
+                  contents: `You push the dildo against $npc.possessive $npc.genitals.female.
+                    <<if $npc.age gt 3 && ($npc.lust lt 30 || $npc.fear gte 40)>>\
+                      $npc.GenPronoun panics <<emoji 😨>> as $npc.genPronoun sees the dildo pressing against $npc.possessive private place.
+                    <</if>>\
+                    <<if $npc.aroused>>\
+                      The dildo is already getting wet from $npc.name's $npc.genitals.female juices.
+                    <</if>>\
+    
+                    How do you want to proceed?`,
+                  next: {
+                    carefully: {
+                      optionText: "🍬 Carefully press it in.",
+                      minutesCost: 2,
+                      contents: `<<if $npc.pussyTraining lt 20>>\
+                          You press the dildo in $npc.name's $npc.genitals.female squishing $npc.pronoun puffy labia on the sides. But it doesn't seem that is gonna go any further than this.
+                        <<elseif $npc.pussyTraining lt 40>>\
+                          <<if $npc.aroused || $npc.lubricatedPussy>>\
+                            <<set _cockEntered to true>>\
+                            You barely manage to enter the dildo's tip inside $npc.name's $npc.genitals.female but it's still pretty hard to enter!<<emoji 😣>>
+                          <<else>>\
+                            You try to enter $npc.pronoun but $npc.possessive $npc.genitals.female is too dry and it hurts $npc.pronoun a little.<<emoji 😫>>
+                          <</if>>\
+                        <<elseif $npc.pussyTraining lt 60>>\
+                          <<set _cockEntered to true>>\
+                          You slowly enter $npc.possessive $npc.genitals.female as it gets stretched.
+                          <<if $npc.aroused || $npc.lubricatedPussy>>\
+                            $npc.GenPronoun looks a little troubled<<emoji 😣>>, but it looks like $npc.genPronoun can take it.
+                          <<else>>\
+                            The dildo hurts $npc.possessive dry vagina. A tear runs down $npc.possessive face.<<emoji 😢>>
+                          <</if>>\
+                        <<elseif $npc.pussyTraining lt 80>>\
+                          <<set _cockEntered to true>>\
+                          <<if $npc.aroused || $npc.lubricatedPussy>>\
+                            The dildo easily slides inside $npc.pronoun. $npc.GenPronoun doesn't seem to hate it.
+                          <<else>>\
+                            $npc.GenPronoun squints $npc.possessive eyes as you penetrate $npc.pronoun.<<emoji 😣>>
+                            $npc.Possessive dry pussy hurts a little.
+                          <</if>>\
+                        <<else>>\
+                          <<set _cockEntered to true>>\
+                          The dildo slides right in as $npc.genPronoun lets out a quiet ~~"Ah!"~~.
+                        <</if>>\
+                        <<if _cockEntered>>\
+                          <<checkNpcVirgin vagina>>\
+                        <</if>>`,
+                      npcStats: (npc) => {
+                        let stats = [];
+                        if (npc.pussyTraining < 20) {
+                          stats.push("fear-5");
+                          return stats;
+                        }
+                        let wet = npc.aroused || npc.lubricatedPussy;
+                        if (!wet && npc.pussyTraining < 80) {
+                          if (npc.pussyTraining < 40) stats.push("fear+5");
+                          else if (npc.pussyTraining < 60)
+                            stats.push("fear+10");
+                          else stats.push("fear+5");
+                        }
+                        if (
+                          (wet || npc.pussyTraining >= 40) &&
+                          npc.pussyTraining < 75
+                        )
+                          stats.push("pussyTraining+5");
+                        if (wet && npc.pussyTraining >= 60)
+                          stats.push("fear-5");
+                        if (npc.pussyTraining >= 80) {
+                          stats.push("+aroused");
+                          stats.push("freedomWish-10");
+                          stats.push("lust+5%");
+                        }
+                        return stats;
+                      },
+                      showNpcStats: true,
+                      next: () => afterStrip().useDildo.next.dildoVag.next,
+                      altOptions: (npc, current) => {
+                        if (Temporary().cockEntered) {
+                          Variables().npcInteractionRoute =
+                            "slave.pushDown.strip.useDildo.dildoVag.ram";
+                          return current.ram.next as NpcInteractionOptions;
+                        }
+                        return current;
+                      },
+                    },
+                    ram: {
+                      optionText: "🥒 Just ram it in.",
+                      contents: `<<if $npc.pussyTraining lt 80>>\
+                          The dildo pierces $npc.name's insides as you forcefully penetrate $npc.pronoun.
+                          $npc.GenPronoun starts crying and whimpering.
+                        <<else>>\
+                          You slam the whole thing inside filling up $npc.possessive vagina.
+                          $npc.GenPronoun looks surprised<<emoji 😲>> with $npc.possessive $npc.eyeColor eyes wide open.
+                        <</if>><<checkNpcVirgin vagina>>`,
+                      npcStats: (npc) => {
+                        let stats =
+                          npc.pussyTraining < 80
+                            ? ["fear+50", "freedomWish+25"]
+                            : ["fear+5", "lust+2%"];
+                        if (npc.pussyTraining < 50)
+                          stats.push("pussyTraining%+60");
+                        else if (npc.pussyTraining < 60)
+                          stats.push("pussyTraining%+70");
+                        else if (npc.pussyTraining < 70)
+                          stats.push("pussyTraining%+80");
+                        else if (npc.pussyTraining < 80)
+                          stats.push("pussyTraining%+90");
+                        return stats;
+                      },
+                      showNpcStats: true,
+                      next: {
+                        slow: {
+                          optionText:
+                            "🦥 Fuck $npc.pronoun slowly with the dildo.",
+                          contents: `You try your best in slowly going in and out of $npc.name's $npc.age year old $npc.genitals.female.
+                            <<if $npc.pussyTraining lt 20>>\
+                              $npc.GenPronoun keeps crying<<if $npc.age gt 0>> and pushing your hand while saying "Stop! It hurts!!"<</if>>. <<emoji 😢>>
+                            <<elseif $npc.pussyTraining lt 40>>\
+                              $npc.name seems to have a hard time taking the dildo while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
+                            <<elseif $npc.lust lt 30>>\
+                              $npc.GenPronoun seems to be able to take the dildo in and, after a while, even starts to feel good for $npc.pronoun.\
+                              <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you fuck $npc.pronoun with your dildo. <<emoji ♥>><</if>>
+                            <<else>>\
+                              $npc.name is visibly enjoying your dildo in $npc.possessive $npc.genitals.female. You can hear $npc.pronoun loudly moaning:
+                              "Ah!...Ah!...<<if $npc.age gt 4>> Yes... Please don't stop!!<</if>>\
+                              <<if $npc.age gt 3 && $npc.love gte 50>>I love you <<npcAddressPlayer>><<emoji ♥>><</if>>".\
+                            <</if>>`,
+                          minutesCost: 30,
+                          npcStats: (npc) => {
+                            if (npc.pussyTraining < 20)
+                              return [
+                                "fear+20",
+                                "freedomWish+5",
+                                "pussyTraining%+40",
+                              ];
+                            if (npc.pussyTraining < 40)
+                              return ["fear+5", "pussyTraining%+50"];
+                            let stats = [
+                              "pussyTraining%+60",
+                              "lust+10%",
+                              "+aroused",
+                              "fear-5",
+                            ];
+                            if (
+                              (npc.lust < 30 && npc.love >= 75) ||
+                              (npc.lust >= 30 && npc.love >= 50)
+                            )
+                              stats.push("love+5");
+                            return stats;
+                          },
+                          showNpcStats: true,
+                          next: () =>
+                            afterStrip().useDildo.next.dildoVag.next.ram.next,
+                        },
+                        fast: {
+                          optionText: "⏩ Fast piston.",
+                          contents: `You thrust the dildo into $npc.name's $npc.genitals.female, making $npc.genPronoun bounce with a fast piston movement.
+                          <<run Player.manageEnergy(1)>>\
+                          <<if $npc.pussyTraining lt 40>>\
+                            $npc.GenPronoun <<if $npc.age gt 0>>pushes you while crying<<else>>cries<</if>> desperately.<<emoji 😭>>
+                          <<elseif $npc.pussyTraining lt 60>>\
+                            $npc.name seems to have a hard time taking your thrusts while squinting $npc.possessive eyes<<emoji 😣>> while you dildo fuck $npc.pronoun.
+                          <<elseif $npc.lust lt 60>>\
+                            $npc.GenPronoun seems to be able to withstand your piston and, after a while, even starts to feel good for $npc.pronoun.\
+                            <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you play with $npc.pronoun.<<emoji ♥>><</if>>
+                          <<else>>\
+                            $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure <<genPronounIs>> experiencing.
+                            "Ah!, Ah!, Ah!<<if $npc.age gt 3 && $npc.love gte 50>>, <<npcAddressPlayer>>!...<<emoji 💕>><</if>>"<<emoji 😫>>\
+                          <</if>>`,
+                          minutesCost: 10,
+                          npcStats: (npc) => {
+                            if (npc.pussyTraining < 40)
+                              return [
+                                "fear+40",
+                                "freedomWish+10",
+                                "pussyTraining%+60",
+                                "hunger+5",
+                              ];
+                            if (npc.pussyTraining < 60)
+                              return [
+                                "fear+5",
+                                "pussyTraining%+80",
+                                "hunger+5",
+                              ];
+                            let stats = [
+                              "pussyTraining+10",
+                              "lust+10%",
+                              "+aroused",
+                              "fear-5",
+                              "hunger+5",
+                            ];
+                            if (
+                              (npc.lust < 30 && npc.love >= 75) ||
+                              (npc.lust >= 30 && npc.love >= 50)
+                            )
+                              stats.push("love+5");
+                            return stats;
+                          },
+                          showNpcStats: true,
+                          next: () =>
+                            afterStrip().useDildo.next.dildoVag.next.ram.next,
+                        },
+                        out: {
+                          optionText: "🔙 Pull out",
+                          contents: `You pull the dildo out of $npc.name's $npc.genitals.female.`,
+                          next: afterStrip,
+                        },
+                      },
+                    },
+                    back: {
+                      optionText: "🔙 Pull back",
+                      contents: `You pull back leaving $npc.pronoun naked on the ground.`,
+                      next: afterStrip,
+                    },
+                  },
+                },
+                dildoAnus: {
+                  inventoryRequirements: ["dildo"],
+                  settingsRequirements: ["anal"],
+                  optionText: "🥒 Push dildo into $npc.possessive ass.",
+                  contents: `You press the dildo against $npc.possessive asshole.`,
+                  next: {
+                    carefully: {
+                      optionText: "🍬 Carefully press it in.",
+                      minutesCost: 2,
+                      contents: `<<if $npc.anusTraining lt 20>>\
+                          You sink the dildo in $npc.name's ass. But $npc.possessive tight asshole doesn't seem to let you go any further.
+                        <<elseif $npc.anusTraining lt 40>>\
+                          <<if $npc.lubricatedAss>>\
+                            <<set _cockEntered to true>>\
+                            You barely manage to enter the dildo's tip inside $npc.name's ass but it's still pretty hard to enter! <<emoji 😣>>
+                          <<else>>\
+                            You try to enter $npc.pronoun but $npc.possessive asshole is not properly lubricated and it hurts $npc.pronoun a little. <<emoji 😫>>
+                          <</if>>\
+                        <<elseif $npc.anusTraining lt 60>>\
+                          <<set _cockEntered to true>>\
+                          You slowly enter $npc.possessive asshole as it gets stretched.
+                          <<if $npc.lubricatedAss>>\
+                            $npc.GenPronoun looks a little troubled<<emoji 😣>>, but it looks like $npc.genPronoun can take it.
+                          <<else>>\
+                            The dildo hurts $npc.possessive unlubricated anus. A tear runs down $npc.possessive face. <<emoji 😢>>
+                          <</if>>\
+                        <<elseif $npc.anusTraining lt 80>>\
+                          <<set _cockEntered to true>>\
+                          <<if $npc.lubricatedAss>>\
+                            The dildo easily slides inside $npc.pronoun. $npc.GenPronoun doesn't seem to hate it.
+                          <<else>>\
+                            $npc.GenPronoun squints $npc.possessive eyes as you penetrate $npc.pronoun. <<emoji 😣>>
+                            $npc.Possessive unlubricated anus hurts a little.
+                          <</if>>\
+                        <<else>>\
+                          <<set _cockEntered to true>>\
+                          The dildo slides right in as $npc.genPronoun lets out a quiet ~~"Ah!"~~.
+                        <</if>>\
+                        <<if _cockEntered>>\
+                          <<checkNpcVirgin anal>>\
+                        <</if>>`,
+                      npcStats: (npc) => {
+                        let stats = [];
+                        if (npc.anusTraining < 20) {
+                          stats.push("fear-5");
+                          return stats;
+                        }
+                        if (!npc.lubricatedAss && npc.anusTraining < 80) {
+                          if (npc.anusTraining < 40) stats.push("fear+5");
+                          else if (npc.anusTraining < 60) stats.push("fear+10");
+                          else stats.push("fear+5");
+                        }
+                        if (npc.lubricatedAss || npc.anusTraining >= 40)
+                          stats.push("anusTraining+10");
+                        if (npc.lubricatedAss && npc.anusTraining >= 60)
+                          stats.push("fear-5");
+                        if (npc.anusTraining >= 80) {
+                          stats.push("+aroused");
+                          stats.push("freedomWish-10");
+                          stats.push("lust+5%");
+                        }
+                        return stats;
+                      },
+                      showNpcStats: true,
+                      next: () => afterStrip().useDildo.next.dildoAnus.next,
+                      altOptions: (npc, current) => {
+                        if (Temporary().cockEntered) {
+                          Variables().npcInteractionRoute =
+                            "slave.pushDown.strip.useDildo.dildoAnus.ram";
+                          return current.ram.next as NpcInteractionOptions;
+                        }
+                        return current;
+                      },
+                    },
+                    ram: {
+                      optionText: "🥒 Just ram it in.",
+                      contents: `<<if $npc.anusTraining lt 80>>\
+                          The dildo pierces $npc.name's insides as you forcefully penetrate $npc.pronoun.
+                          $npc.GenPronoun starts crying and whimpering.
+                        <<else>>\
+                          You slam the whole thing inside filling up $npc.possessive rectum.
+                          $npc.GenPronoun looks surprised<<emoji 😲>> with $npc.possessive $npc.eyeColor eyes wide open.
+                        <</if>><<checkNpcVirgin anal>>`,
+                      npcStats: (npc) =>
+                        npc.anusTraining < 80
+                          ? ["fear+50", "freedomWish+25", "anusTraining%+60"]
+                          : ["fear+5", "lust+2%", "anusTraining%+90"],
+                      showNpcStats: true,
+                      next: {
+                        slow: {
+                          optionText:
+                            "🦥 Fuck $npc.pronoun bottom slowly with the dildo.",
+                          contents: `You try your best in slowly going in and out of $npc.name's $npc.age year old rectum.
+                            <<if $npc.anusTraining lt 20>>\
+                              $npc.GenPronoun keeps crying<<if $npc.age gt 0>> and pushing your hand while saying "Stop! It hurts!!"<</if>>.<<emoji 😢>>
+                            <<elseif $npc.anusTraining lt 40>>\
+                              $npc.name seems to have a hard time taking the dildo while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
+                            <<elseif $npc.lust lt 30>>\
+                              $npc.GenPronoun seems to be able to take it in and, after a while, even starts to feel good for $npc.pronoun.\
+                              <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you move the dildo in and out of $npc.possessive ass.<<emoji ♥>><</if>>
+                            <<else>>\
+                              $npc.name is visibly enjoying the dildo. You can hear $npc.pronoun loudly moaning:
+                              "Ah!...Ah!...<<if $npc.age gt 4>> Yes... Please don't stop!!<</if>>\
+                              <<if $npc.love gte 50>>I love you <<npcAddressPlayer>><<emoji ♥>>.<</if>>"\
+                            <</if>>`,
+                          minutesCost: 30,
+                          npcStats: (npc) => {
+                            if (npc.anusTraining < 20)
+                              return [
+                                "fear+20",
+                                "freedomWish+5",
+                                "anusTraining%+40",
+                              ];
+                            if (npc.anusTraining < 40)
+                              return ["fear+5", "anusTraining%+50"];
+                            let stats = [
+                              "anusTraining%+60",
+                              "lust+10%",
+                              "+aroused",
+                              "fear-5",
+                            ];
+                            if (
+                              (npc.lust < 30 && npc.love >= 75) ||
+                              (npc.lust >= 30 && npc.love >= 50)
+                            )
+                              stats.push("love+5");
+                            return stats;
+                          },
+                          showNpcStats: true,
+                          next: () => afterStrip().useDildo.next.dildoAnus.next.ram.next,
+                        },
+                        fast: {
+                          optionText: "⏩ Fuck $npc.pronoun fast.",
+                          contents: `You thrust the dildo into $npc.name's anus. Making $npc.genPronoun bounce with a fast piston movement.
+                          <<run Player.manageEnergy(1)>>\
+                          <<if $npc.anusTraining lt 40>>\
+                            $npc.GenPronoun <<if $npc.age gt 0>>pushes your hand while crying<<else>>cries<</if>> desperately. <<emoji 😭>>
+                          <<elseif $npc.anusTraining lt 60>>\
+                            $npc.name seems to have a hard time taking your thrusts while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun with the dildo.
+                          <<elseif $npc.lust lt 60>>\
+                            $npc.GenPronoun seems to be able to withstand your piston and, after a while, even starts to feel good for $npc.pronoun.\
+                            <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you screw $npc.pronoun.<<emoji ♥>><</if>>
+                          <<else>>\
+                            $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure <<genPronounIs>> experiencing.
+                            "Ah!, Ah!, Ah!<<if $npc.age gt 3 && $npc.love gte 50>>, <<npcAddressPlayer>>!...<<emoji 💕>><</if>>"<<emoji 😫>>\
+                          <</if>>`,
+                          minutesCost: 10,
+                          npcStats: (npc) => {
+                            if (npc.anusTraining < 40)
+                              return [
+                                "fear+40",
+                                "freedomWish+10",
+                                "anusTraining%+60",
+                                "hunger+5",
+                              ];
+                            if (npc.anusTraining < 60)
+                              return ["fear+5", "anusTraining%+80", "hunger+5"];
+                            let stats = [
+                              "anusTraining+10",
+                              "lust+10%",
+                              "+aroused",
+                              "fear-5",
+                              "hunger+5",
+                            ];
+                            if (
+                              (npc.lust < 30 && npc.love >= 75) ||
+                              (npc.lust >= 30 && npc.love >= 50)
+                            )
+                              stats.push("love+5");
+                            return stats;
+                          },
+                          showNpcStats: true,
+                          next: () =>
+                            afterStrip().useDildo.next.dildoAnus.next.ram.next,
+                        },
+                        gentleRubSlaveGen: {
+                          optionText:
+                            "👋 Gently rub $npc.name's $npc.genitals.all.",
+                          minutesCost: 5,
+                          contents: `You slowly rub $npc.name's $npc.genitals.all while keeping the dildo in $npc.possessive bottom, moving only slowly.
+                            <<if $npc.hasPussy>>\
+                              @@color:deeppink;$npc.Possessive cunny gets wetter@@\
+                            <</if>>\
+                            <<if $npc.hasPenis>>\
+                              @@color:deeppink;$npc.GenPronoun gets harder@@\
+                            <</if>>\
+                            <<if $npc.anusTraining lt 20>>\
+                              despite the pain in $npc.pronoun bottom.  $npc.GenPronoun keeps crying the pleasure and pain is tormenting $npc.pronoun.<<emoji 😢>>
+                            <<elseif $npc.anusTraining lt 40>>\
+                              even though $npc.name seems to have a hard time taking the dildo.
+                            <<elseif $npc.lust lt 30>>\
+                              and $npc.pronoun body even starts to enjoy the feel of the dildo in $npc.pronoun bottom.  $npc.GenPronoun is very confused and conflicted by the mix of feelings. \
+                              <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you move the dildo in and out of $npc.possessive ass.<<emoji ♥>><</if>>
+                            <<else>>\
+                              and $npc.name is visibly enjoying the anal dildo as you rub $npc.pronoun. You can hear $npc.pronoun loudly moaning:
+                              "Ah!...Ah!...<<if $npc.age gt 4>> Yes... Please don't stop!!<</if>>\
+                              <<if $npc.love gte 50>>I love you <<npcAddressPlayer>><<emoji ♥>>.<</if>>"\
+                            <</if>>`,
+                          npcStats: (npc) => {
+                            if (npc.anusTraining < 20)
+                              return [
+                                "fear+5",
+                                "lust+10%",
+                                "+aroused",
+                                "freedomWish+5",
+                                "anusTraining%+10",
+                              ];
+                            if (npc.anusTraining < 40)
+                              return [
+                                "fear+5",
+                                "lust+10%",
+                                "+aroused",
+                                "anusTraining%+10",
+                              ];
+                            let stats = [
+                              "anusTraining%+40",
+                              "lust+10%",
+                              "+aroused",
+                              "fear-5",
+                            ];
+                            if (
+                              (npc.lust < 30 && npc.love >= 75) ||
+                              (npc.lust >= 30 && npc.love >= 50)
+                            )
+                              stats.push("love+5");
+                            return stats;
+                          },
+                          showNpcStats: true,
+                          next: () =>
+                            afterStrip().useDildo.next.dildoAnus.next.ram.next,
+                        },
+                        out: {
+                          optionText: "🔙 Pull out",
+                          contents: `You pull out the dildo from $npc.name's ass`,
+                          next: afterStrip,
+                        },
+                      },
+                    },
+                    back: {
+                      optionText: "🔙 Pull back",
+                      contents: `You pull back leaving $npc.pronoun naked on the ground.`,
+                      next: afterStrip,
+                    },
+                  },
+                },
+                back: {
+                  optionText: "🔙 Pull back",
+                  contents: `You pull back leaving $npc.pronoun naked on the ground.`,
+                  next: afterStrip,
+                },
+              },
+            },
             rubPussies: {
-              playerRequirements: ["gender=female"],
+              playerRequirements: ["hasPussy"],
               npcRequirements: ["hasPussy"],
               optionText: "🌮 Trib pussies together.",
               minutesCost: 20,
-              contents: `You open $npc.pronoun legs and you start rubbing your pussy against <<if $npc.gender != 'male'>>hers<<else>>his<</if>>.
+              contents: `You open $npc.pronoun legs and you start rubbing your pussy against <<if $npc.gender != 'boy'>>hers<<else>>his<</if>>.
                 <<if $npc.lust lt 35>>\
                   $npc.name doesn't seem to dislike it.
                 <<elseif $npc.lust lt 65>>\
@@ -494,53 +1242,73 @@ window.Interactions["slave"] = {
               showNpcStats: true,
               next: afterStrip,
             },
-            rubToSlaveFace: {
-              optionText: "Rub your $player.genitals on $npc.name's face.",
-              minutesCost: 10,
-              contents: `You grab $npc.name's head and press it between your legs and start rubbing.
-                $npc.Possessive nose and lips feel really good on your $player.genitals.
-                $npc.GenPronoun looks at you with <<- $player.gender!='male'?$npc.possessive+' now wet':'some precum on '+$npc.possessive>> face. <<emoji 🥺>>
-                <<if $npc.hunger gt 50>>$npc.GenPronoun is so hungry that the smell of your precum makes her even more hungry.<</if>>`,
-              npcStats: (npc) => {
-                let stats = ["fear-1"];
-                if (npc.lust >= 50) stats.push("lust+5%");
-                if (npc.hunger > 50) stats.push("hunger+2");
-                return stats;
-              },
-              showNpcStats: true,
-              next: afterStrip,
-            },
             gentleRubSlaveGen: {
-              optionText: "👋 Gently rub $npc.name's $npc.genitals.",
+              optionText: "👋 Gently rub $npc.name's $npc.genitals.all.",
               minutesCost: 5,
-              contents: `You slowly rub $npc.name's $npc.genitals.
+              contents: `You slowly rub $npc.name's $npc.genitals.all.
                 After a while, \
-                <<if $npc.hasPussy>>\
+                <<if $npc.hasPussy && $npc.hasPenis>>\
+                  @@color:deeppink;$npc.possessive cunny gets wet and $npc.genPronoun gets hard@@.
+                <<elseif $npc.hasPussy>>\
                   @@color:deeppink;$npc.possessive cunny gets wet@@.
-                <</if>>\
-                <<if $npc.hasPenis>>\
-                  @@color:deeppink;$npc.genPronoun gets hard@@.\
+                <<elseif $npc.hasPenis>>\
+                  @@color:deeppink;$npc.genPronoun gets hard@@.
                 <</if>>`,
               npcStats: ["fear-5", "lust+20%", "+aroused"],
               showNpcStats: true,
               next: afterStrip,
             },
-            getPenPussy: {
-              playerRequirements: ["gender=female"],
+            getPenetrated: {
               npcRequirements: ["hasPenis", "aroused"],
+              playerRequirements: ["hasPussy"],
+              settingsRequirements: ["anal"],
+              contents: "Which hole should $npc.name fuck?",
+              optionText: "🤙 Let $npc.name fuck you.",
+              next: {
+                getPenPussy: {
+                  optionText: "🤙 Your Pussy.",
+                  minutesCost: 20,
+                  contents: `You grab $npc.name erected penis and enter it in your pussy and start bouncing and enjoying $npc.possessive dick.
+                    After a while you start going faster and the $npc.title starts panting.
+    
+                    It looks like <<genPronounIs>> about to cum. What do you do?<<checkNpcVirgin penis>>`,
+                  npcStats: ["fear-5", "lust+30%"],
+                  showNpcStats: true,
+                  next: () => afterStrip().getPenPussy.next,
+                  stopOption: "🛑 Stop right there.",
+                },
+                getPenAss: {
+                  settingsRequirements: ["anal"],
+                  optionText: "🍆 Your ass.",
+                  minutesCost: 20,
+                  contents: `You grab $npc.name erected penis and enter it in your asshole and start bouncing and enjoying $npc.possessive dick.
+                    After a while you start going faster and the $npc.title starts panting.
+    
+                    It looks like <<genPronounIs>> about to cum. What do you do?<<checkNpcVirgin penis>>`,
+                  npcStats: ["fear-5", "lust+30%"],
+                  showNpcStats: true,
+                  next: () => afterStrip().getPenAss.next,
+                  stopOption: "🛑 Stop right there.",
+                },
+              },
+            },
+            getPenPussy: {
+              playerRequirements: ["hasPussy"],
+              npcRequirements: ["hasPenis", "aroused"],
+              settingsRequirements: ["!anal"],
               optionText: "🤙 Have sex with $npc.name.",
               minutesCost: 20,
               contents: `You grab $npc.name erected penis and enter it in your pussy and start bouncing and enjoying $npc.possessive dick.
                 After a while you start going faster and the $npc.title starts panting.
 
-                It looks like $npc.genPronoun's about to cum. What do you do?<<checkNpcVirgin genital>>`,
+                It looks like <<genPronounIs>> about to cum. What do you do?<<checkNpcVirgin penis>>`,
               npcStats: ["fear-5", "lust+30%"],
               showNpcStats: true,
               next: {
                 endure: {
-                  optionText: "💪 Tell him to endure it.",
+                  optionText: "💪 Tell $npc.pronoun to endure it.",
                   minutesCost: 10,
-                  contents: `''$player.name'': "Don't you dare cum in me"
+                  contents: `<<playerSay "Don't you dare cum in me">>
 
                     $npc.name looks troubled but obeys.`,
                   npcStats: ["fear+1", "obedience+2"],
@@ -573,20 +1341,21 @@ window.Interactions["slave"] = {
             getPenAss: {
               npcRequirements: ["hasPenis", "aroused"],
               settingsRequirements: ["anal"],
+              playerRequirements: ["!hasPussy"],
               optionText:
                 "🍆 Insert $npc.possessive erected penis in your ass.",
               minutesCost: 20,
               contents: `You grab $npc.name erected penis and enter it in your asshole and start bouncing and enjoying $npc.possessive dick.
                 After a while you start going faster and the $npc.title starts panting.
 
-                It looks like $npc.genPronoun's about to cum. What do you do?<<checkNpcVirgin genital>>`,
+                It looks like <<genPronounIs>> about to cum. What do you do?<<checkNpcVirgin penis>>`,
               npcStats: ["fear-5", "lust+30%"],
               showNpcStats: true,
               next: {
                 endure: {
                   optionText: "💪 Tell $npc.pronoun to endure it.",
                   minutesCost: 10,
-                  contents: `''$player.name'': "Don't you dare cum in me"
+                  contents: `<<playerSay "Don't you dare cum in me">>
 
                     $npc.name looks troubled but obeys.`,
                   npcStats: ["fear+1", "obedience+2"],
@@ -596,11 +1365,11 @@ window.Interactions["slave"] = {
                   stopOption: "🛑 Stop right there.",
                 },
                 cum: {
-                  optionText: "👍 Let him cum.",
+                  optionText: "👍 Let $npc.pronoun cum.",
                   contents: `<<if $npc.age lt 14>>\
-                      You feel $npc.name shaking while he has a nice dry cum.
+                      You feel $npc.name shaking while $npc.genPronoun has a nice dry cum.
                     <<else>>\
-                      You feel his dick shooting his seed in your bowels.
+                      You feel $npc.possessive dick shooting his seed in your bowels.
                     <</if>>`,
                   npcStats: [
                     "lust+30%",
@@ -616,41 +1385,54 @@ window.Interactions["slave"] = {
               },
               stopOption: "🛑 Stop right there.",
             },
-            applyLubeAss: {
-              settingsRequirements: ["anal"],
+            applyLube: {
               inventoryRequirements: ["lube"],
-              npcRequirements: ["!lubricatedAss"],
-              optionText: "💧 Apply lube to $npc.name's ass.",
-              minutesCost: 2,
-              contents:
-                "You squeeze some lube from the tube and thoroughly apply it to $npc.name's asshole making it nice and slippery.",
-              npcStats: ["+lubricatedAss"],
-              next: afterStrip,
-            },
-            applyLubePussy: {
-              inventoryRequirements: ["lube"],
-              npcRequirements: ["hasPussy", "!lubricatedPussy"],
-              optionText: "💧 Apply lube to $npc.name's pussy.",
-              minutesCost: 2,
-              contents: `You squeeze some lube from the tube and thoroughly apply it to $npc.name's pussy making it nice and slippery.
-                  It seems that your rubbing has caused a faint reaction in $npc.pronoun`,
-              npcStats: ["+lubricatedPussy", "lust+1%"],
-              showNpcStats: true,
-              next: afterStrip,
+              showIfEmpty: false,
+              optionText: "💧 Apply lube to $npc.name.",
+              contents: "What do you want to lube up?",
+              next: {
+                applyLubeAss: {
+                  settingsRequirements: ["anal"],
+                  inventoryRequirements: ["lube"],
+                  npcRequirements: ["!lubricatedAss"],
+                  optionText: "💧 Apply lube to $npc.name's ass.",
+                  minutesCost: 2,
+                  contents:
+                    "You squeeze some lube from the tube and thoroughly apply it to $npc.name's asshole making it nice and slippery.",
+                  npcStats: ["+lubricatedAss"],
+                  next: afterStrip,
+                },
+                applyLubePussy: {
+                  inventoryRequirements: ["lube"],
+                  npcRequirements: ["hasPussy", "!lubricatedPussy"],
+                  optionText: "💧 Apply lube to $npc.name's pussy.",
+                  minutesCost: 2,
+                  contents: `You squeeze some lube from the tube and thoroughly apply it to $npc.name's pussy making it nice and slippery.
+                      It seems that your rubbing has caused a faint reaction in $npc.pronoun`,
+                  npcStats: ["+lubricatedPussy", "lust+1%"],
+                  showNpcStats: true,
+                  next: afterStrip,
+                },
+                back: {
+                  optionText: "🔙 Pull back",
+                  contents: `You decide not to add any lube for now.`,
+                  next: afterStrip,
+                },
+              },
             },
           },
         },
         stealClothes: {
           optionText: "🖐 Strip $npc.pronoun and keep $npc.possessive clothes.",
-          contents: null,
+          contents: null, //These contents are assigned right after this interaction tree definition.
           npcStats: ["-haveClothes"],
           next: () =>
-            window.Interactions["slave"].options.pushDown.next["strip"].next,
+            window.Interactions.slave.options["pushDown"].next["strip"].next,
         },
       },
     },
     askLickPus: {
-      playerRequirements: ["gender=female"],
+      playerRequirements: ["hasPussy"],
       npcRequirements: ["age>0"],
       optionText: "👅 Ask $npc.pronoun to lick your pussy.",
       minutesCost: 30,
@@ -658,21 +1440,21 @@ window.Interactions["slave"] = {
       "Lick here!"
 
       <<if $npc.love gte 80>>\
-        ''$npc.name'': "Sure thing, <<npcAddressPlayer>>!!"<<emoji ❤>>
+        <<npcSay "Sure thing, <<npcAddressPlayer>>!!">><<emoji ❤>>
         Right after finishing $npc.possessive sentence, $npc.name places $npc.possessive<<if $npc.age lt 7>> little<</if>> hands on your legs as $npc.pronoun approaches his face to your pussy.
         You can see $npc.pronoun $npc.eyeColor loving eyes looking at you while $npc.pronoun mouth is being covered by your crotch as you feel the first contact of $npc.possessive<<if $npc.age lt 7>> little<</if>> tongue on your labia.
         <<if $npc.mouthTraining gte 30>>\
           $npc.name already knows how to pleasure you and focuses on your clit, giving you lots of pleasure. You instinctively press $npc.possessive head towards you while $npc.genPronoun insist on the licking and sucking.
         <<else>>\
-          $npc.name randomly licks you between your legs. $npc.GenPronoun's a little clumsy with it but $npc.genPronoun's trying $npc.pronoun best and it feels pretty good.
+          $npc.name randomly licks you between your legs. <<genPronounIs>> a little clumsy with it but <<genPronounIs>> trying $npc.pronoun best and it feels pretty good.
         <</if>>\
       <<elseif $npc.lust gte 60>>\
-        Hearing that makes $npc.pronoun aroused and blushes at the thought.
+        Hearing that makes $npc.pronoun aroused and $npc.genPronoun blushes at the thought.
         $npc.name nods and quickly throws <<- $npc.pronoun>>self between your legs and starts licking with vigor.
         <<if $npc.mouthTraining gte 30>>\
-          $npc.name already knows how to pleasure you and focuses on your clit, giving you lots of pleasure. You instinctively press $npc.possessive head towards you while $npc.genPronoun insist on the licking and sucking.
+          $npc.name already knows how to pleasure you and focuses on your clit, giving you lots of pleasure. You instinctively press $npc.possessive head towards you while $npc.genPronoun insists on the licking and sucking.
         <<else>>\
-          $npc.name randomly licks you between your legs. $npc.GenPronoun's a little clumsy with it but $npc.genPronoun's trying $npc.pronoun best and it feels pretty good.
+          $npc.name randomly licks you between your legs. <<genPronounIs>> a little clumsy with it but <<genPronounIs>> trying $npc.pronoun best and it feels pretty good.
         <</if>>\
       <<else>>\
         <<set _unwilling to true>>\
@@ -681,17 +1463,20 @@ window.Interactions["slave"] = {
           <<if $npc.age lt 5>>\
             $npc.name shakes $npc.possessive head, refusing your request.<<emoji 😟>>
           <<else>>\
-            ''$npc.name'': "Eww! No!".<<emoji 😟>>
+            <<npcSay "Eww! No!">><<emoji 😟>>
           <</if>>\
         <<elseif $npc.mouthTraining lt 60>>\
-          <<if $npc.mouthTraining gte 30>> $npc.name has no problem approaching and licking your pussy. $npc.GenPronoun's pretty used to it by now.
+          <<if $npc.mouthTraining gte 30>> $npc.name has no problem approaching and licking your pussy. <<genPronounIs>> pretty used to it by now.
           $npc.GenPronoun<<else>>$npc.name<</if>> gives you random licks to your labia, some of them ends up rubbing your clit giving you some little peaks of pleasure.
-          $npc.GenPronoun's not too shabby, although $npc.genPronoun doesn't put too much passion into it and seems like $npc.genPronoun's doing some chore. But feels pretty good for you anyway.
+          <<genPronounIs>> not too shabby, although $npc.genPronoun doesn't put too much passion into it and seems like <<genPronounIs>> doing some chore. But feels pretty good for you anyway.
         <<else>>\
           $npc.name's no amateur about this, $npc.genPronoun already knows how to please you.
           $npc.GenPronoun starts by sinking $npc.possessive tongue under your labia and lick inside. You feel $npc.possessive<<if $npc.age lt 7>> little<</if>> warm lips over your labia while $npc.pronoun does it.
           $npc.GenPronoun can surely taste your flavor and $npc.genPronoun has to gulp down the excess of saliva and love juice more than once during the process.
         <</if>>\
+      <</if>><<if !_refused && !$npc.mouthVirgin && !Person.hasAchievement("playerNoticedPreviousOralTraining")>>\
+        <<set Person.setAchievement("playerNoticedPreviousOralTraining")>>\
+        @@color:yellow;You notice that $npc.name's cunnilingus skill is unusually high!!@@
       <</if>>`,
       npcStats(npc) {
         let temp = Temporary();
@@ -708,15 +1493,16 @@ window.Interactions["slave"] = {
           contents: "",
         };
         Object.assign(thisPunish, punishment);
+        Variables().punishReason = "refusing your request";
         thisPunish.canBeShown = () => Temporary().refused;
         return {
-          pushDown: window.Interactions["slave"].options.pushDown,
+          pushDown: window.Interactions.slave.options["pushDown"],
           more: {
             canBeShown: () => !Temporary().refused,
             optionText: "👅 keep going.",
             minutesCost: 30,
-            contents: `''$player.name'': "Don't stop. Keep licking me down there."
-            $npc.name obeys and keeps licking you making lots of lewd noises. $npc.GenPronoun's face gets covered by your juices more and more as it keeps liking.`,
+            contents: `<<playerSay "Don't stop. Keep licking me down there.">>
+            $npc.name obeys and keeps licking you making lots of lewd noises. <<genPronounIs>> face gets covered by your juices more and more as it keeps liking.`,
             npcStats(npc) {
               let stats = ["mouthTraining+10", "fear-5", "hunger-1"];
               if (npc.love > 80 || npc.lust > 60) stats.push("lust+10%");
@@ -725,7 +1511,7 @@ window.Interactions["slave"] = {
             showNpcStats: true,
             next: () =>
               (
-                window.Interactions["slave"].options.askLickPus
+                window.Interactions.slave.options["askLickPus"]
                   .next as CallableFunction
               )(),
           },
@@ -734,7 +1520,7 @@ window.Interactions["slave"] = {
       },
     },
     penToMouth: {
-      playerRequirements: ["gender=male"],
+      playerRequirements: ["hasPenis"],
       npcRequirements: ["age>0"],
       optionText: "👄🍆 Put your dick in $npc.possessive mouth.",
       contents: `You place a hand on the back of $npc.possessive $npc.hairColor head and with the other hand you guide your erected penis to $npc.possessive mouth.
@@ -744,7 +1530,7 @@ window.Interactions["slave"] = {
         <<if $npc.age lt 5>>\
           $npc.name turns $npc.possessive face away, refusing your request.<<emoji 😟>>\
         <<else>>\
-          ''$npc.name'': "Eww! No!".<<emoji 😟>>\
+          <<npcSay "Eww! No!">><<emoji 😟>>\
         <</if>>\
       <<else>>\
         <<if $npc.mouthTraining lt 60 && $npc.hunger lt 80>>\
@@ -756,11 +1542,15 @@ window.Interactions["slave"] = {
           $npc.GenPronoun starts suckling on your member and rubbing with $npc.possessive tongue while inside $npc.possessive mouth, <<if $npc.hunger gt 80>>desperate to get whatever sustenance $npc.genPronoun can get, <</if>>making a lot of noise.\
           <<set _sucking = true>>\
         <</if>>\
+        <<if !$npc.mouthVirgin && !Person.hasAchievement("playerNoticedPreviousOralTraining")>>\
+          <<set Person.setAchievement("playerNoticedPreviousOralTraining")>>
+          @@color:yellow;You notice that $npc.name's blowjob skill is unusually high!!@@
+        <</if>>\
       <</if>>`,
       npcStats(npc) {
         let temp = Temporary();
         if (!temp.okBj) return null;
-        let stats = ["fear-5"];
+        let stats = ["fear-5", "hunger+1"];
         if (npc.mouthTraining < 30) stats.push("mouthTraining%+40");
         else stats.push("mouthTraining%+70");
         if (temp.willing) stats.push("lust+10%");
@@ -773,6 +1563,7 @@ window.Interactions["slave"] = {
           contents: "",
         };
         Object.assign(thisPunish, punishment);
+        Variables().punishReason = "refusing your request";
         thisPunish.canBeShown = () => !Temporary().okBj || Temporary().refused;
         return {
           balls: {
@@ -820,12 +1611,12 @@ window.Interactions["slave"] = {
             <<if _refused>>\
               $npc.name immediately pushes you and takes your dick out of $npc.possessive mouth while coughing.
               <<if $npc.age gte 4>>\
-                ''$npc.name'': "Don't do that!!"
+                <<npcSay "Don't do that!!">>
               <</if>>\
               <<if !_okBj>>\
                 $npc.name steps back surprised by the sudden thrust.
                 <<if $npc.age gte 4>>\
-                  ''$npc.name'': "I don't want to do this anymore..."
+                  <<npcSay "I don't want to do this anymore...">>
                 <<else>>\
                   It seems that $npc.genPronoun doesn't want to continue sucking you.\
                 <</if>>\
@@ -845,12 +1636,12 @@ window.Interactions["slave"] = {
                 It doesn't take long until $npc.genPronoun has to retreat for air but $npc.possessive high lust <<if $npc.hunger gt 80>>and hunger <</if>>makes $npc.pronoun gobble your dick up again and again.\
                 <<set _sucking = true>>\
               <<elseif $npc.fear gte 80>>\
-                She is terrified of you, but it doesn't take long until $npc.genPronoun has to retreat for air.  Fear that you will hurt her makes $npc.pronoun gobble your dick up again and again.\
+                $npc.GenPronoun is terrified of you, but it doesn't take long until $npc.genPronoun has to retreat for air.  Fear that you will hurt $npc.pronoun makes $npc.pronoun gobble your dick up again and again.\
                 <<set _sucking = true>>\
               <<else>>\
                 $npc.GenPronoun tries to give you as much pleasure as possible but in the end $npc.genPronoun has to take it out making a big breath of air afterwards.\
               <</if>>\
-              <<if $npc.hunger gt 80 && $npc.age gt 3>>$npc.GenPronoun is so hungry that her big $npc.eyeColor eyes look up at you, begging you to cum and give her at least some sustenance.<</if>>\
+              <<if $npc.hunger gt 80 && $npc.age gt 3>>$npc.GenPronoun is so hungry that $npc.possessive big $npc.eyeColor eyes look up at you, begging you to cum and give $npc.pronoun at least some sustenance.<</if>>\
             <</if>>`,
             altMinutes: (current) => (Temporary().refused ? 1 : current),
             npcStats(npc) {
@@ -867,7 +1658,10 @@ window.Interactions["slave"] = {
             optionText: '👄🍆 "Suck it"',
             minutesCost: 10,
             contents: `$npc.name places $npc.pronoun lips back to the tip of your dick and you help $npc.pronoun inserting it into $npc.possessive mouth.
-            <<set _okBj = true>>\
+            <<set
+              _okBj = true
+              _sucking = true
+            >>\
             <<if $npc.mouthTraining gte 50>>\
               $npc.GenPronoun then starts sucking and jerking while your dick goes in and out of $npc.possessive mouth.
               You can see $npc.pronoun head bobbing down on you at the rhythm of your pleasure peaks.\
@@ -875,17 +1669,103 @@ window.Interactions["slave"] = {
               $npc.name sucks and licks your tip. Feels good, but you think it could be better. So you grab $npc.possessive head with both hands and penetrate $npc.possessive lips a little more than $npc.genPronoun was doing.\
             <</if>>\
             <<if $npc.hunger gte 80>>\
-              $npc.GenPronoun looks up at you, so hungry that she sucks desperately on your cock.\
+              $npc.GenPronoun looks up at you, so hungry that $npc.genPronoun sucks desperately on your cock.\
             <</if>>\
             `,
             npcStats: (npc) => afterPenToMouth().shaft.npcStats(npc),
             showNpcStats: true,
             next: afterPenToMouth,
           },
-        } as Record<string, NpcInteraction>;
+          cumInside: {
+            canBeShown: () => Temporary().okBj && Temporary().sucking,
+            optionText: "⛽ Cum inside $npc.possessive mouth.",
+            contents: `You reach your climax and release your seed inside $npc.name's mouth.
+            <<set 
+              Player.manageEnergy(1);
+              $player.lust = 0;
+            >>\
+            <<if $npc.hunger gte 50 || $npc.lust gte 80>>\
+              $npc.GenPronoun gulps all of your load directly after each spurt.
+            <<else>>\
+              $npc.GenPronoun does not seem to appreciate your sperm very much and quickly retreats while coughing and spitting.
+            <</if>>`,
+            npcStats: (npc) =>
+              npc.hunger >= 50 || npc.lust >= 80 ? ["hunger-5"] : null,
+            showNpcStats: true,
+            next: () => afterStrip(),
+          },
+          ...cumOutsideOptions,
+        } as NpcInteractionOptions;
       },
     },
+    rubPenToSlaveFace: {
+      playerRequirements: ["hasPenis"],
+      optionText: "😐🍆 Rub your $player.genitals.male on $npc.name's face.",
+      minutesCost: 10,
+      contents: `You grab $npc.name's head and press it between your legs and start rubbing.
+        $npc.Possessive nose and lips feel really good on your $player.genitals.male.
+        $npc.GenPronoun looks at you with some precum on $npc.possessive face. <<emoji 🥺>>
+        <<if $npc.hunger gt 50>>$npc.GenPronoun is so hungry that the smell of your precum makes $npc.pronoun even more hungry.<</if>>`,
+      npcStats: (npc) => {
+        let stats = ["fear-1"];
+        if (npc.lust >= 50) stats.push("lust+5%");
+        if (npc.hunger > 50) stats.push("hunger+2");
+        return stats;
+      },
+      showNpcStats: true,
+      next: () =>
+        window.Interactions[baseInteractionRoute()]
+          .options as NpcInteractionOptions,
+    },
+    rubVagToSlaveFace: {
+      playerRequirements: ["hasPussy"],
+      optionText: "😐🍆 Rub your $player.genitals.female on $npc.name's face.",
+      minutesCost: 10,
+      contents: `You grab $npc.name's head and press it between your legs and start rubbing.
+        $npc.Possessive nose and lips feel really good on your $player.genitals.female.
+        $npc.GenPronoun looks at you with $npc.possessive now wet face. <<emoji 🥺>>
+        <<if $npc.hunger gt 50>>$npc.GenPronoun is so hungry that the smell of your juices makes $npc.pronoun even more hungry.<</if>>`,
+      npcStats: (npc) => {
+        let stats = ["fear-1"];
+        if (npc.lust >= 50) stats.push("lust+5%");
+        if (npc.hunger > 50) stats.push("hunger+2");
+        return stats;
+      },
+      showNpcStats: true,
+      next: () =>
+        window.Interactions[baseInteractionRoute()]
+          .options as NpcInteractionOptions,
+    },
+    bringUpstairs: {
+      locationRequirements: ["basement"],
+      npcRequirements: ["freedomWish<=25"],
+      optionText: "🚪 Let $npc.name roam the house.",
+      altMinutes: () => 2,
+      contents: `You carefully open the door letting only $npc.name out of the basement.
+      <<if !Person.hasAchievement('beenOnHomeMain')>>\
+        $npc.GenPronoun start<<thirdPersonVerb>> exploring each room of your home that $npc.genPronoun has never fully seen.
+        <<set $npc.achievements.push('beenOnHomeMain')>>\
+      <</if>>\
+      <<run Person.setStatus("home slave")>>\
+      <<if $npc.love lt 60 && $npc.age gte 1>>\
+        The taste of a little more freedom makes $npc.name wanting it even more.
+      <</if>>`,
+      npcStats: (npc) =>
+        npc.love < 60 && npc.age >= 1
+          ? ["freedomWish+" + Math.floor(Math.min((npc.age * 25) / 6, 25))]
+          : null,
+      showNpcStats: true,
+      next: {
+        up: {
+          optionText: "🔼 Go upstairs",
+          contents: "<<goto main>>",
+          action: true,
+        },
+      },
+      stopOption: "🔽 Return to the basement",
+    },
     value: {
+      locationRequirements: ["basement"],
       optionText: "💵 See $npc.name's selling value.",
       settingsRequirements: ["slaveSelling"],
       action: true,
@@ -913,7 +1793,7 @@ window.Interactions["slave"] = {
 
                 <<button "✅ Yes, sell $npc.pronoun">>
                   <<cash _value.total>>
-                  <<run $slaves.deleteAt($npc.index);Dialog.close()>>
+                  <<run Basement.deleteSlave($npc);Dialog.close()>>
                   <<goto basement>>
                 <</button>>\
                 <span id="escAct">\
@@ -934,12 +1814,12 @@ window.Interactions["slave"] = {
   },
   timeIncreaseNpcHunger: true,
 };
-window.Interactions["slave"].options.pushDown.next["stealClothes"].contents =
-  window.Interactions["slave"].options.pushDown.next["strip"].contents +
+//Instead of duplicating same text on the two interactions I just copy the contents and add the code that steals the clothes.
+window.Interactions.slave.options["pushDown"].next.stealClothes.contents =
+  window.Interactions.slave.options["pushDown"].next.strip.contents +
   `<<set _item = {
 name:'Used clothes(' + $npc.age + ' y.o.)',
 description:'Used clothes from a ' + $npc.age + ' year old',
-quantity: 1,
 tags:["person","clothes","used"]
 };
 Player.getInventory().add(_item);>>

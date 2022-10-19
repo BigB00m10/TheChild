@@ -1,60 +1,205 @@
-:: StoryCaption
+:: StoryCaption {"position":"250,0"}
 ----
 !<<- Now.getWeekDay()>>
 !!!<<- Now.getTime()>>
 ----
 $player.name
+<<if $cheat>>\
+    <<link "+10k">>\
+        <<set $player.cash += 10000;Engine.show()>>
+    <</link>> \
+    <<link "+100k">>\
+        <<set $player.cash += 100000;Engine.show()>>
+    <</link>> \
+<</if>>\
 Cash: ¤<<- $player.cash.toFixed(2)>>
-Energy:
+<<if $cheat>>\
+    <<link "+">>\
+        <<set $player.energy = 100;Engine.show()>>
+    <</link>> \
+<</if>>\
+Energy:<<if $cheat>>\
+<<set _infiniteEnergyText = "Make " + ($settings.infiniteEnergy ? "Finite" : "Infinite")>>\
+ <span id="infiniteEnergy"><<link _infiniteEnergyText>><<set
+    $settings.infiniteEnergy = ~$settings.infiniteEnergy;
+    $('#infiniteEnergy a').html("Make " + ($settings.infiniteEnergy ? "Finite" : "Infinite"));
+>><</link>></span><</if>>
 <<showmeter playerEnergy `$player.energy / 100`>>
-:: StoryMenu
+
+:: personProperties {"position":"1150,125","size":"200,100"}
+<<include npcStats>>
+location: $npc.location
+<<if $cheat>>\
+    Personality preset: $npc.uniqueness.name <<button change>><<set _dialogTitle = "Personality for " + $npc.name>><<dialog _dialogTitle>>\
+        <<for _presetIndex = 0; _presetIndex lt PersonUniquenessPresets.length; _presetIndex++>>\
+            <<set _preset = PersonUniquenessPresets[_presetIndex]>>\
+            <<print '<<button "_preset.name (' + Person.getPersonalityDescription(_preset) + ')">><<set $npc.uniqueness = PersonUniquenessPresets[' + _presetIndex + '];Dialog.close()>><</button>>'>>
+        <</for>>\
+    <</dialog>><</button>>
+    Characteristics: <<- Person.getPersonalityDescription($npc.uniqueness)>>
+<</if>>\
+:: StoryMenu {"position":"1025,125"}
 <<link "👨‍👩‍👧‍👦 Character stats">>
     <<dialog "Character stats">>
         <<set _dialogWidth = 'width:' + Math.min(1022, window.innerWidth - 84) + 'px'>>\
         <div class="row" @style="_dialogWidth">\
             <div class="eight columns" id="stats"><br></div>\
             <div class="four columns">\
-                <<for _slaveIndex = 0; _slaveIndex lt $slaves.length; _slaveIndex++>>\
-                    <<set _slave = $slaves[_slaveIndex]; _genderSymbol = _slave.gender != 'male'?'♀':'♂'>>\
-                    <<emoji _genderSymbol>>\
-                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $npc to " + JSON.stringify(_slave) + ", $npc.index to " + _slaveIndex + ">><<replace '#stats'>><<include npcStats>><</replace>><</link>>">>
+                <<for _slave range $slaves>>\
+                    <<npcGenderSymbol _slave>>\
+                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $npc to " + _slave.uid + ">><<replace '#stats'>><<include personProperties>><</replace>><</link>>">>
                 <</for>>\
             </div>\
         </div>\
     <</dialog>>
 <</link>>
 <<link "⚙ Settings">>
-    <<dialog Settings>>
-        <label class="toggle-button">\
-            <input id="toggleEmoji" type="checkbox" class="macro-checkbox"><span>Show emojis</span>\
-        </label>\
-        <label class="toggle-button">\
-            <input id="toggleAnal" type="checkbox" class="macro-checkbox"><span>Show anal content</span>\
-        </label>\
-        <label class="toggle-button">\
-            <input id="toggleSlaveSell" type="checkbox" class="macro-checkbox"><span>Slave selling</span>\
-        </label>\
-        <h3 style="color:yellow">Child generator</h3>\
-        Female percentage:\
-        <div class="slidecontainer">\
-            <div style="display:inline-block"><input type="range" min="0" max="100" value="50" class="slider" id="femalePercentSlider"></div>\
-            <div style="display:inline-block;position: relative;top: -11px;">\
-            <input id="femalePercentDisplay" @value="$settings.childGeneration.femalePercentage" style="width: 1.7em;border: 0;pointer-events: none;" readonly> %</div>\
+    <<dialog Settings>>\
+        <style>.addressing{width: 6em;min-width: 0 !important}</style>
+        <div class="tabs">\
+            <input type="radio" name="configTabs" id="tab-childGen" checked>\
+            <label for="tab-childGen">Child generator</label>\
+            <div class="tab">\
+                <div class="row">\
+                    <div class="four columns">\
+                        Female percentage:\
+                        <div class="slidecontainer">\
+                            <div style="display:inline-block"><input type="range" min="0" max="100" value="50" class="slider" id="femalePercentSlider"></div>\
+                            <div style="display:inline-block;position: relative;top: -11px;">\
+                            <input id="femalePercentDisplay" @value="$settings.childGeneration.femalePercentage" style="width: 1.7em;border: 0;pointer-events: none;" readonly> %</div>\
+                        </div>\
+                    </div>\
+                    <div class="eight columns">\
+                        Herm percentage (100 is all characters replaced with herms):\
+                        <div class="slidecontainer">\
+                            <div style="display:inline-block"><input type="range" min="0" max="100" value="50" class="slider" id="hermPercentSlider"></div>\
+                            <div style="display:inline-block;position: relative;top: -11px;">\
+                            <input id="hermPercentDisplay" @value="$settings.childGeneration.hermPercentage" style="width: 1.7em;border: 0;pointer-events: none;" readonly> %</div>\
+                        </div>\
+                    </div>\
+                </div>\
+                <div class="row">\
+                    <div class="one-third column">\
+                        Females:
+                        <label>From<input type="number" min="0" id="femaleAgeFrom" style="width:3em">years old</label>
+                        <label>To &nbsp;<input type="number" id="femaleAgeTo" style="width:3em">years old</label>
+                    </div>\
+                    <div class="one-third column">\
+                        Males:
+                        <label>From<input type="number" min="0" id="maleAgeFrom" style="width:3em">years old</label>
+                        <label>To &nbsp;<input type="number" id="maleAgeTo" style="width:3em">years old</label>
+                    </div>\
+                    <div class="one-third column">\
+                        Herms:
+                        <label>From<input type="number" min="0" id="hermAgeFrom" style="width:3em">years old</label>
+                        <label>To &nbsp;<input type="number" id="hermAgeTo" style="width:3em">years old</label>
+                    </div>\
+                </div>\
+                <<button "Hair colors">>\
+                    <<userEditListVar "$settings.childGeneration.hairColors" "Edit hair colors">>
+                <</button>>\
+                <<button "Hair styles">>\
+                    <<userEditListVar "$settings.childGeneration.hairStyles" "Edit hair styles">>
+                <</button>>\
+                <<button "Eye colors">>\
+                    <<userEditListVar "$settings.childGeneration.eyeColors" "Edit eye colors">>
+                <</button>>\
+                <<button "Skins">>\
+                    <<userEditListVar "$settings.childGeneration.skins" "Edit skins">>
+                <</button>>\
+            </div>\
+            <input type="radio" name="configTabs" id="tab-tweaks">\
+            <label for="tab-tweaks">Tweaks</label>\
+            <div class="tab">\
+                <h3 style="color:yellow">Change job</h3>\
+                Current job: <<- $player.job ? $player.job.name.toUpperFirst() : "Unemployed">>
+                <<for _jobKey, _job range Jobs>>\
+                    <<set _jobDesc = _job.name.toUpperFirst() + ": Pay:¤" + _job.pay.toFixed(2) + "/day, Go time:" + _job.enterTime>>\
+                    <<print '<<button _jobDesc>><<run $player.job = ' + JSON.stringify(_job) + ';Engine.show()>><<dialog "Job changed">>Your job is now: ' + _job.name.toUpperFirst() + '.<</dialog>><</button>>'>>
+                <</for>>\
+                <<button '<<emoji 🚫>>None'>><<run $player.job = null;Engine.show()>><<dialog "Job changed">>You're now unemployed.<</dialog>><</button>>\
+                <h3 style="color:yellow">Addressing</h3>\
+                How should your kids call you? (leaving them blank reverts them to default value)
+                Slaves: <input type="text" class="addressing" data-target="slave">
+                Servants: <input type="text" class="addressing" data-target="servant">
+                Lovers: <input type="text" class="addressing" data-target="lover">
+                Your Sons/Daughters: <input type="text" class="addressing" data-target="offspring">
+            </div>\
+            <input type="radio" name="configTabs" id="tab-switches">\
+            <label for="tab-switches">Switches</label>\
+            <div class="tab">\
+                <label class="toggle-button">\
+                    <input id="toggleEmoji" type="checkbox" class="macro-checkbox"><span>Show emojis</span>\
+                </label>\
+                <label class="toggle-button">\
+                    <input id="toggleAnal" type="checkbox" class="macro-checkbox"><span>Show anal content</span>\
+                </label>\
+                <label class="toggle-button">\
+                    <input id="toggleSlaveSell" type="checkbox" class="macro-checkbox"><span>Slave selling</span>\
+                </label>\
+                <<set _cheatButtonText = ($cheat ? "Disable" : "Enable") + " Cheats">>\
+                <span id='cheatsButton'><<button _cheatButtonText>>\
+                    <<run
+                        $cheat = ~$cheat;/*Inverse $cheat value. Anything but true becomes true and true becomes false*/
+                        Engine.show();
+                        $('#cheatsButton button').text(($cheat ? "Disable" : "Enable") + " Cheats");
+                    >>
+                <</button>></span>\
+            </div>\
         </div>\
-        Females:
-        <label>From<input type="number" min="0" id="femaleAgeFrom" style="width:3em">years old</label>
-        <label>To &nbsp;<input type="number" id="femaleAgeTo" style="width:3em">years old</label>
-        Males:
-        <label>From<input type="number" min="0" id="maleAgeFrom" style="width:3em">years old</label>
-        <label>To &nbsp;<input type="number" id="maleAgeTo" style="width:3em">years old</label>
         <script>
-            var $settings = SugarCube.State.variables.settings
+            var $variables = SugarCube.State.variables
+            var $settings = $variables.settings
+            var defaultOffspringAddr = $variables.player.gender != 'male' ? 'mommy' : 'daddy'
+            var addrUpdateValue = function(element){
+                var addrDefault = $settings.addressing.slave ? $settings.addressing.slave : $variables.player.name
+                switch (element.dataset.target) {
+                    case 'slave':
+                        element.value = addrDefault
+                        break
+                    case 'servant':
+                        element.value = $settings.addressing.servant ? $settings.addressing.servant : addrDefault
+                        break
+                    case 'lover':
+                        element.value = $settings.addressing.lover ? $settings.addressing.lover : addrDefault
+                        break
+                    case 'offspring':
+                        element.value = $settings.addressing.offspring ? $settings.addressing.offspring : defaultOffspringAddr
+                        break
+                }
+            }
+            if($settings.addressing)
+                $('.addressing').each(function() {addrUpdateValue(this)})
+            else {
+                $('.addressing:not([data-target="offspring"])').val($variables.player.name)
+                $('.addressing[data-target="offspring"]').val(defaultOffspringAddr)
+            }
+            $('.addressing').on('input blur', function() {
+                var value = this.value.trim()
+                if(!$settings.addressing)
+                    $settings.addressing = {}
+                switch (this.dataset.target) {
+                    case 'slave':
+                        $settings.addressing.slave = value
+                        $('.addressing:not([data-target="offspring"]):not([data-target="slave"])').each(function() {addrUpdateValue(this)})
+                        break
+                    case 'servant':
+                        $settings.addressing.servant = value
+                        break
+                    case 'lover':
+                        $settings.addressing.lover = value
+                        break
+                    case 'offspring':
+                        $settings.addressing.offspring = value
+                        break
+                }
+            })
             $('#toggleEmoji').change(function() {
-                var emoji = $('.emoji')
+                var $emoji = $('.emoji')
                 if(this.checked)
-                    emoji.show()
+                    $emoji.show()
                 else
-                    emoji.hide()
+                    $emoji.hide()
                 $settings.emoji = this.checked
             }).prop('checked', $settings.emoji)
             $('#toggleAnal').change(function() {
@@ -67,18 +212,58 @@ Energy:
                 $settings.childGeneration.femalePercentage = parseInt($(this).val())
                 $("#femalePercentDisplay").val($settings.childGeneration.femalePercentage)
             }).val($settings.childGeneration.femalePercentage)
-            $('#femaleAgeFrom').change(function(){
-                $settings.childGeneration.females.fromAge = parseInt($(this).val())
+            $("#hermPercentSlider").on("input", function () {
+                $settings.childGeneration.hermPercentage = parseInt($(this).val())
+                $("#hermPercentDisplay").val($settings.childGeneration.hermPercentage)
+            }).val($settings.childGeneration.hermPercentage)
+            var $femaleAgeFrom = $('#femaleAgeFrom')
+            var $femaleAgeTo = $('#femaleAgeTo')
+            var $maleAgeFrom = $('#maleAgeFrom')
+            var $maleAgeTo = $('#maleAgeTo')
+            var $hermAgeFrom = $('#hermAgeFrom')
+            var $hermAgeTo = $('#hermAgeTo')
+            $femaleAgeFrom.change(function(){
+                var toValue = parseInt($femaleAgeTo.val())
+                var $this = $(this)
+                var value = Math.min(toValue, parseInt($this.val()))
+                $this.val(value)
+                $settings.childGeneration.females.fromAge = value
             }).val($settings.childGeneration.females.fromAge)
-            $('#femaleAgeTo').change(function(){
-                $settings.childGeneration.females.toAge = parseInt($(this).val())
+            $femaleAgeTo.change(function(){
+                var fromValue = parseInt($femaleAgeFrom.val())
+                var $this = $(this)
+                var value = Math.max(fromValue, parseInt($this.val()))
+                $this.val(value)
+                $settings.childGeneration.females.toAge = value
             }).val($settings.childGeneration.females.toAge)
-            $('#maleAgeFrom').change(function(){
-                $settings.childGeneration.males.fromAge = parseInt($(this).val())
+            $maleAgeFrom.change(function(){
+                var toValue = parseInt($maleAgeTo.val())
+                var $this = $(this)
+                var value = Math.min(toValue, parseInt($this.val()))
+                $this.val(value)
+                $settings.childGeneration.males.fromAge = value
             }).val($settings.childGeneration.males.fromAge)
-            $('#maleAgeTo').change(function(){
-                $settings.childGeneration.males.toAge = parseInt($(this).val())
+            $maleAgeTo.change(function(){
+                var fromValue = parseInt($maleAgeFrom.val())
+                var $this = $(this)
+                var value = Math.max(fromValue, parseInt($this.val()))
+                $this.val(value)
+                $settings.childGeneration.males.toAge = value
             }).val($settings.childGeneration.males.toAge)
-        </script>
-    <</dialog>>
+            $hermAgeFrom.change(function(){
+                var toValue = parseInt($hermAgeTo.val())
+                var $this = $(this)
+                var value = Math.min(toValue, parseInt($this.val()))
+                $this.val(value)
+                $settings.childGeneration.herms.fromAge = value
+            }).val($settings.childGeneration.herms.fromAge)
+            $hermAgeTo.change(function(){
+                var fromValue = parseInt($hermAgeFrom.val())
+                var $this = $(this)
+                var value = Math.max(fromValue, parseInt($this.val()))
+                $this.val(value)
+                $settings.childGeneration.herms.toAge = value
+            }).val($settings.childGeneration.herms.toAge)
+        </script>\
+    <</dialog>>\
 <</link>>

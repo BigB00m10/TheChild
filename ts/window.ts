@@ -6,8 +6,16 @@ interface Window {
   Person: Person;
   PersonGeneration: PersonGeneration;
   Basement: Basement;
+  MainRoom: MainRoom;
+  BedRoom: BedRoom;
+  BathRoom: Bathroom;
+  Wc: Wc;
+  Kitchen: Kitchen;
+  Garden: Garden;
+  TortureRoom: TortureRoom;
   OnlineStore: OnlineStore;
   Interactions: Record<string, NpcInteractionCollection>;
+  PersonUniquenessPresets: PersonUniqueness[];
 }
 window.Now = new Now();
 window.Homes = Homes;
@@ -16,7 +24,15 @@ window.Player = new Player();
 window.Person = new Person();
 window.OnlineStore = new OnlineStore();
 window.Basement = new Basement();
+window.MainRoom = new MainRoom();
+window.BedRoom = new BedRoom();
+window.BathRoom = new Bathroom();
+window.Wc = new Wc();
+window.Kitchen = new Kitchen();
+window.Garden = new Garden();
+window.TortureRoom = new TortureRoom();
 window.PersonGeneration = new PersonGeneration();
+window.PersonUniquenessPresets = personUniquenessPresets;
 if (!window.Interactions) window.Interactions = {};
 let keyBuffer = [];
 let lastKeyTime = Date.now();
@@ -41,6 +57,12 @@ document.addEventListener("keypress", (evt) => {
   } else if (typed.endsWith("coconuts")) {
     Variables().player.energy = 100;
     Engine.show();
+  } else if (typed.endsWith("goblind")) {
+    Variables().settings.hideScenery = true;
+    Engine.show();
+  } else if (typed.endsWith("letsee")) {
+    Variables().settings.hideScenery = false;
+    Engine.show();
   }
 });
 $(document).on(":passageinit", () => {
@@ -48,56 +70,150 @@ $(document).on(":passageinit", () => {
     Save.onLoad.add((save) => {
       let stateIndex = save.state.history.length - 1;
       let variables = save.state.history[stateIndex].variables;
+      if (!variables.player.genitals.all) {
+        //Change to new gender/sex format from a 0.1.8.2 save or older
+        window.Player.setSex(variables.player.gender, variables.player);
+        variables.player.gender =
+          variables.player.gender != "male" ? "girl" : "boy";
+      }
       let slaves = variables.slaves as Person[];
       if (slaves && slaves.length) {
-        if (!slaves[0].GenPronoun)
-          slaves.forEach((slave: Person) => {
-            slave.GenPronoun = slave.gender != "male" ? "She" : "He";
-            slave.genPronoun = slave.gender != "male" ? "she" : "he";
-            slave.Possessive = slave.gender != "male" ? "Her" : "His";
-          });
-        if (slaves[0].anusTraining == undefined)
-          slaves.forEach((slave: Person) => {
+        let reassignUid = false;
+        if (slaves[0].version == 1) {
+          variables.lastUid = 0;
+          reassignUid = true;
+        }
+        let addSlaveUniqueness = !slaves[0].uniqueness;
+        slaves.forEach((slave: Person) => {
+          if (!slave.GenPronoun) {
+            slave.GenPronoun = slave.gender != "boy" ? "She" : "He";
+            slave.genPronoun = slave.gender != "boy" ? "she" : "he";
+            slave.Possessive = slave.gender != "boy" ? "Her" : "His";
+          }
+          if (slave.anusTraining == undefined) {
             slave.anusTraining = 0;
             slave.pussyTraining = 0;
             slave.mouthTraining = 0;
-          });
-        if (slaves[0].hasPenis == undefined)
-          slaves.forEach((slave: Person) => {
-            slave.hasPenis = slave.gender == "male";
-            slave.hasPussy = slave.gender == "female";
-          });
-        if (slaves[0].analVirgin == undefined)
-          slaves.forEach((slave: Person) => {
+          }
+          if (slave.hasPenis == undefined) {
+            slave.hasPenis = slave.sex == "male";
+            slave.hasPussy = slave.sex == "female";
+          }
+          if (slave.analVirgin == undefined) {
             slave.analVirgin = true;
-            slave.genitalVirgin = true;
+            slave.vaginaVirgin = true;
+            slave.penisVirgin = true;
             slave.mouthVirgin = true;
-          });
-        if (slaves[0].status == undefined)
-          slaves.forEach((slave: Person) => {
-            slave.status = "slave";
-          });
-        if (slaves[0].punishments == undefined)
-          slaves.forEach((slave: Person) => {
-            slave.punishments = [];
-          });
+          }
+          if (slave.status == undefined) slave.status = "slave";
+          if (slave.punishments == undefined) slave.punishments = [];
+          if (slave.location == undefined) slave.location = "basement";
+          if (slave.achievements == undefined) slave.achievements = [];
+          if (slave.uid == undefined || reassignUid) {
+            slave.uid = getUid(variables);
+            delete slave.index;
+          }
+          if (slave.status == "slave" && slave.location != "basement")
+            slave.status = "home slave";
+          if (!slave.version) {
+            if (!slave.analVirgin)
+              window.Person.setAchievement("playerTookAnalVirginity", slave);
+            if (!slave.vaginaVirgin)
+              window.Person.setAchievement("playerTookVaginaVirginity", slave);
+            if (!slave.penisVirgin)
+              window.Person.setAchievement("playerTookPenisVirginity", slave);
+            if (!slave.mouthVirgin)
+              window.Person.setAchievement("playerTookMouthVirginity", slave);
+            if (slave.mouthTraining)
+              window.Person.setAchievement("hadMouthSexWithPlayer", slave);
+            slave.assSpermAmount = 0;
+            slave.pussySpermAmount = 0;
+            slave.faceSpermAmount = 0;
+            slave.bodySpermAmount = 0;
+          }
+          slave.version = window.Person.version;
+          if (!slave.uniqueness) PersonUniqueness.applyRandom(slave, false);
+          if (!slave.genitals.all) {
+            //Change to new gender/sex format from a 0.1.8.2 save or older
+            slave.sex = slave.gender as Sex;
+            slave.gender = slave.sex == "male" ? "boy" : "girl";
+            slave.genitals = {
+              male: slave.sex == "male" ? "dick" : null,
+              female:
+                slave.sex == "female"
+                  ? slave.age < 15
+                    ? "cunny"
+                    : "pussy"
+                  : null,
+              all:
+                slave.sex == "male"
+                  ? "dick"
+                  : slave.age < 15
+                  ? "cunny"
+                  : "pussy",
+            };
+          }
+        });
+        if (addSlaveUniqueness) {
+          Dialog.setup("Slave personalities");
+          Dialog.wiki(
+            "Old save file loaded.\nRandom personalities have been assigned to the already captured slaves."
+          );
+          Dialog.open();
+        }
       }
       if (variables.settings.anal == undefined) variables.settings.anal = true;
-      if (variables.settings.slaveSelling == undefined) variables.settings.slaveSelling = true;
+      if (variables.settings.slaveSelling == undefined)
+        variables.settings.slaveSelling = true;
       if (variables.achievements == undefined) variables.achievements = [];
       let onlineStore = variables.onlineStore as OnlineStore;
-      if (!onlineStore.version || onlineStore.version < 2) {
+      if (onlineStore.products.length < window.OnlineStore.products.length)
         for (
           let productIndex = onlineStore.products.length;
           productIndex < window.OnlineStore.products.length;
           productIndex++
         )
           onlineStore.products.push(window.OnlineStore.products[productIndex]);
+      if (!onlineStore.version || onlineStore.version < 2) {
         onlineStore.products[2].description =
           window.OnlineStore.products[2].description;
         if (onlineStore.products[1].name == "Matress")
           onlineStore.products[1] = window.OnlineStore.products[1];
       }
+      if (onlineStore.version < 3) {
+        onlineStore.products[2] = window.OnlineStore.products[2];
+        onlineStore.version = 3;
+      }
+      let childGen: PersonGeneration = variables.settings.childGeneration;
+      if (!childGen.hairStyles)
+        childGen.hairStyles = window.PersonGeneration.hairStyles;
+      if (!childGen.eyeColors)
+        childGen.eyeColors = window.PersonGeneration.eyeColors;
+      if (!childGen.hairColors)
+        childGen.hairColors = window.PersonGeneration.hairColors;
+      if (!childGen.skins) childGen.skins = window.PersonGeneration.skins;
+      if (!childGen.herms) {
+        //New settings added not present in a 0.1.8.2 save or older
+        childGen.hermPercentage = 0;
+        childGen.herms = {
+          fromAge: 1,
+          toAge: 15,
+        };
+      }
+      if (variables.player.house) {
+        variables.player.home = variables.player.house;
+        delete variables.player.house;
+      }
+      if (variables.player.home.spaces == undefined)
+        variables.player.home.spaces = window.Homes.smallUrban.spaces;
+      else
+        for (let houseKey in window.Homes)
+          if (
+            window.Homes[houseKey].name == variables.player.home.name &&
+            variables.player.home.spaces.length <
+              window.Homes[houseKey].spaces.length
+          )
+            variables.player.home.spaces = window.Homes[houseKey].spaces;
     });
   }
 });

@@ -9,21 +9,36 @@
 		"twee3LanguageTools.passage.list": true,
 		"twee3LanguageTools.passage.group": "Folder",
 		"cSpell.words": [
+			"Carrabina",
 			"coprime",
+			"cumshot",
 			"cumshots",
 			"cunny",
 			"deeppink",
 			"Fairmath",
+			"fauxhawkian",
+			"herms",
 			"ldquo",
 			"newmeter",
+			"nobr",
 			"passageinit",
 			"passagestart",
+			"pepee",
 			"precum",
 			"rdquo",
 			"showmeter",
 			"sugarcube",
+			"textbox",
 			"Trib"
 		],
 		"twee3LanguageTools.passageCounter.openStoryMapWithoutConfirmation": true
+	},
+	"extensions": {
+		"recommendations": [
+			"file-icons.file-icons",
+			"cyrusfirheir.twee3-language-tools",
+			"techer.open-in-browser",
+			"esbenp.prettier-vscode"
+		]
 	}
 }

@@ -1,54 +1,33 @@
-:: slaveDemand
-<<if _slaves[_demandIndex]>>\
-    <span id="slaveDemand">\
-        <<set _slave to _slaves[_demandIndex]>>
-        _slave.name <<if _slave.fear gte 30>>cautiously<</if>> approaches, looking at you with _slave.possessive _slave.eyeColor eyes, and says:
-        <<switch _slave.need>>\
-            <<case "hunger">>\
-                <<if _slave.hunger gte 75>>\
-                    "<<if _slave.age gte 5>>Please!!! I'm so hungry!!! <<emoji 🙁>><<else>>I'm hungryyyyyy!!! <<emoji 😢>><</if>>"
-                <<else>>\
-                    "I'm hungry... <<emoji 🙁>>"
-                <</if>>\
-        <</switch>>\
-        <<set _demandInteraction to "slaveDemand" + _slave.need.toUpperFirst()>>
-        <span id='hKeyAct'>\
-            <<button '✅ (H) Handle'>>
-                <<set $npc to _slaves[_demandIndex]>>
-                <<openNpcInteraction _demandInteraction>>
-            <</button>>\
-        </span><span id='iKeyAct'>\
-            <<button '❌ (I) Ignore'>>\
-                <<set _demandIndex++>>
-                <<replace #slaveDemand>><<include slaveDemand>><</replace>>
-            <</button>>
-        </span>
-    </span>\
-<</if>>\
-:: basement
+:: basement {"position":"250,625"}
 <<scenery basement>>
 <<if !Player.hasAchievement("capturedSlave") && $slaves.length>>\
     <<set $achievements.push("capturedSlave")>>\
     You actually did it!! Now you have a personal $found_kid.age year old slave locked on your basement and no one knows about it!!
-    You could do anything you wanted to $found_kid.genPronoun and no one would stop you <<emoji 🤤>>.
+    You could do anything you wanted to $found_kid.pronoun and no one would stop you<<emoji 🤤>>.
+    <<unset $found_kid>>
 <<else>>\
     You are currently in your basement.
 <</if>>\
 <<unlessEmergency>>\
     <<set _slaves = Basement.getDemandingSlaves()>>\
     <<set _demandIndex to 0>>\
-    <<include slaveDemand>>\
+    <<include slaveDemand>>
     <div class="row">\
         <div class="one-half column">\
             <<if $slaves.length > 0>>\
                 Approach slave:
-                <<set _slaveIndex to 0>>\
-                <<for _slave range $slaves>>\
-                    <<set _genderSymbol = _slave.gender != 'male'?'♀':'♂'>>\
-                    <<emoji _genderSymbol>>\
-                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $npc to " + JSON.stringify(_slave) + ", $npc.index to " + _slaveIndex + ">><<openNpcInteraction slave>><</link>>">>
-                    <<set _slaveIndex++>>\
-                <</for>>\
+                <<set _charcode = 97>>\
+                <<for _slave range $slaves>><<if _slave.location == 'basement'>>\
+                    <<set 
+                        if(_charcode == 104) _charcode += 2; 
+                        _char = String.fromCharCode(_charcode++);
+                        _keyId = _char + "KeyAct";
+                    >>\
+                    <span @id="_keyId">\
+                        <<npcGenderSymbol _slave>>\
+                        <<print "<<link '(" + _char.toUpperCase() + ") _slave.name (_slave.age y.o. _slave.hairColor hair)'>><<openNpcInteraction slave " + _slave.uid + ">><</link>>">>
+                    </span>\
+                <</if>><</for>>\
             <</if>>\
         </div>\
         <div class="one-half column">\
@@ -56,11 +35,12 @@
             <<if _availableBeds <= 0>>\
                 There's no more room for more slaves. You need to buy Mattresses if you want more.
             <<else>>\
-                There's room for <<- _availableBeds>> more slave<<if _availableBeds gt 1>>s<</if>>.
+                There's room for _availableBeds more slave<<if _availableBeds gt 1>>s<</if>>.
             <</if>>\
         </div>\
     </div>
-    /*<<keyOption "Go back upstairs" main 🚪>>*/\
+    /*<<keyOption [[Go back upstairs|main]] 🚪>>*/\
+    <<keyOption [[The torture room|tort]] ⛓️>>
     <<keyAction "Go back upstairs" 🚪>>
         <<run
             $slaves.forEach(slave => {
@@ -70,11 +50,11 @@
         <<goto main>>
     <</keyAction>>
     <<if Player.has("pizza")>>\
-        <<keyOption "Give pizza to all hungry slaves" giveSlavesPizza 🍕>>
+        <<keyOption [[Give pizza to all hungry slaves|giveSlavesPizza]] 🍕>>
     <</if>>\
     <<include workOption>>\
 <</unlessEmergency>>\
-:: giveSlavesPizza
+:: giveSlavesPizza {"position":"250,775"}
 <<scenery basement>>
 You lay down the pizza<<if Player.has("pizza", 2)>>s<</if>> and all the slaves get around it to eat.
 <<set
@@ -87,5 +67,5 @@ You lay down the pizza<<if Player.has("pizza", 2)>>s<</if>> and all the slaves g
     });
     inventory.removeByName("pizza", pizzaCount);
 >>\
-
-<<keyOption Return basement 🔙>>
+<<keyOption [[The torture room|tort]] ⛓️>>
+<<keyOption [[Return|basement]] 🔙>>

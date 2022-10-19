@@ -1,0 +1,9 @@
+:: garden {"position":"700,825"}
+<<scenery garden>>
+You are currently standing in your garden.
+<<unlessEmergency>>\
+    <<wanderingSlaves>>\
+    <<keyOption [[Leave your garden|main]] 🚪>>
+    <<keyAction 'gardening' 🌺>><<addMinutes 30>><<run Engine.show()>><</keyAction>>: 30min
+    <<sleepOption>>
+<</unlessEmergency>>\

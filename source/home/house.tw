@@ -1,6 +1,11 @@
-:: bed
+:: bed {"position":"700,825"}
 <<scenery bed>>
 <<if $player.sleeping>>\
+    <<set _sleepSlave = $slaves.firstOrDefault(function(slave){return Person.hasAchievement('okSleepWithPlayer')})>>\
+    <<if _sleepSlave>><<done>>/*Without using the done macro the bed passage was executed twice for some reason*/
+        <<run State.history.splice(State.history.length - 1, 1)>>/*Let's forget that we entered the bed scene so that the player can still go back in time. Otherwise they would be redirected back to the interaction.*/
+        <<openNpcInteraction wakeUpAfterNightTogether _sleepSlave.uid>>
+    <</done>><</if>>
 	As the sun reveals the world to a nice <<- Now.getWeekDay()>> morning, you climb out of bed, ready to start a new day. <<- either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
 <<else>>\
 	You currently stand in the middle of your cozy small bedroom.
@@ -8,35 +13,80 @@
 <<if $player.sleeping && OnlineStore.pendingOrder()>>
     Someone is knocking at the front door!!
     Who might that be?
-    <<keyOption "Go check" receivePacket 🚪>>
+    <<keyOption [[Go check|receivePacket]] 🚪>>
 <<else>>
     <<unlessEmergency>>\
-        <<keyOption "Leave your room" main 🚪>>
-        <<keyOption "Watch porn" watchPorn 💗>>: 30min
-        <<keyOption "Shop online using your laptop" onlineStore 🛒>>
-        <<if $player.workedToday or Now.isWeekend()>>\
-            <<keyAction Sleep 😴>><<sleep>><</keyAction>>
-        <</if>>\
+        <<wanderingSlaves>>\
+        <<set _slaves = BedRoom.getDemandingSlaves()>>\
+        <<set _demandIndex to 0>>\
+        <<include slaveDemand>>
+        <<keyOption [[Leave your room|main]] 🚪>>
+        <<keyOption [[go to your computer|pc]] 💻>>
+        <<keyOption [[Your bathroom|bat]] 🛀>>
+        <<sleepOption>>
     <</unlessEmergency>>\
 <</if>>
-<<set $player.sleeping to false>>
-:: main
+<<set 
+    $player.sleeping = false;
+    if($npc)
+        $npc.aroused = false;
+>>
+<<unset $personWokeUp>>
+:: main {"position":"700,650"}
 <<scenery mainRoom>>
 You are currently standing in the middle of the main room of your house.
-	
+
 ''Is there something you want to do in here?''
+
 <<unlessEmergency>>\
-    <<keyOption "Watch TV" watchTv 📺>>: 30min
+    <<wanderingSlaves>>\
+    <<set _slaves = MainRoom.getDemandingSlaves()>>\
+    <<set _demandIndex to 0>>\
+    <<include slaveDemand>>
+    <<keyOption [[Watch TV|watchTv]] 📺>>: 30min
     <<include workOption>>\
-    <<keyOption "Go outside" home 🚪>>
-    <<keyOption "The Basement" basement 🔒>>
-    <<keyOption "Your Bedroom" bed 🛌>>
+    <<keyOption [[Go outside|home]] 🚪>>
+    <<keyOption [[The Basement|basement]] 🔒>>
+    <<keyOption [[Your Bedroom|bed]] 🛌>>
+    <<keyOption [[Your garden|garden]] 🌺>>
+    <<keyOption [[Your kitchen|kitchen]] ☕>>
+    <<keyOption [[Your toilet|wc]] 🚽>>
+    <<keyOption [[Your bathroom|bat]] 🛀>>
 <</unlessEmergency>>\
-:: watchTv
+:: watchTv {"position":"875,825"}
 <<addMinutes 30>>\
 @@color:yellow;You spend the next half hour skimming through channels and shows.@@
 <<include main>>\
-:: watchPorn
+:: watchPorn {"position":"600,1000"}
 <<addMinutes 30>>\
-@@color:yellow;You spend the next half hour skimming through porn and jerking off.@@
+@@color:yellow;You spend the next half hour skimming through porn and <<if $player.gender == 'girl'>>buffing the muffin<<else>>jerking off<</if>>.@@
 <<include bed>>\
+:: slaveDemand {"position":"375,0"}
+<<if _slaves[_demandIndex]>>\
+    <span id="slaveDemand">\
+        <<set _slave to _slaves[_demandIndex]>>
+        _slave.name <<if _slave.fear gte 30>>cautiously<</if>> approaches, looking at you with _slave.possessive _slave.eyeColor eyes, and says:
+        "<<switch _slave.need>>\
+/*        */<<case "hunger">>\
+/*          */<<if _slave.hunger gte 75>>\
+/*            */<<if _slave.age gte 5>>Please!!! I'm so hungry!!! <<emoji 🙁>><<else>>I'm hungryyyyyy!!! <<emoji 😢>><</if>>\
+/*          */<<else>>\
+/*            */I'm hungry... <<emoji 🙁>>\
+/*          */<</if>>\
+/*        */<<case 'sleepWithPlayer'>>\
+/*          */Hey <<npcAddressPlayer _slave>>, can I sleep in the same bed as you tonight?\
+/*      */<</switch>>"
+        <<set _demandInteraction to "slaveDemand" + _slave.need.toUpperFirst()>>
+        <span id='hKeyAct'>\
+            <<button '✅ (H) Handle'>>
+                <<set $npc to _slaves[_demandIndex]>>
+                <<openNpcInteraction _demandInteraction>>
+            <</button>>\
+        </span><span id='iKeyAct'>\
+            <<button '❌ (I) Ignore'>>\
+                <<set _demandIndex++>>
+                <<replace #slaveDemand>><<include slaveDemand>><</replace>>
+            <</button>>\
+        </span>\
+    </span>
+<</if>>\

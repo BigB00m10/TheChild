@@ -1,0 +1,10 @@
+:: torthree {"position":"575,500"}
+<<scenery tortone>>
+You are currently standing in your cages three.
+<<unlessEmergency>>\
+    <<set _slaves = Basement.getDemandingSlaves()>>\
+    <<set _demandIndex to 0>>\
+    <<include slaveDemand>>
+    <<keyOption [[Leave your cages three|tort]] 🚪>>
+    <<sleepOption>>
+<</unlessEmergency>>\

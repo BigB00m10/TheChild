@@ -1,0 +1,5 @@
+:: shool {"position":"175,200"}
+<<scenery shool>>
+<<personHunting>>
+<<keyOption [[Keep searching|shool]] 🔍>>
+<<keyOption [[Return home|home]] 🏠>>

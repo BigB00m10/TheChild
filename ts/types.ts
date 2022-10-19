@@ -1,11 +1,16 @@
-type Gender = "male" | "female";
+type Sex = "male" | "female" | "herm";
+type Gender = "boy" | "girl" | "nb";
+type Genitals = "cunny" | "pussy" | "penis" | "dick";
+type AllGenitals = {
+  "male": Genitals
+  "female": Genitals
+  "all": string
+}
 interface Home {
   name: string;
   rent: number;
+  spaces: string[];
 }
-let Homes: Record<string, Home> = {
-  smallUrban: { name: "small urban house", rent: 400 },
-};
 function Variables(): any {
   return variables() as any;
 }
@@ -13,15 +18,22 @@ function Temporary(): any {
   return temporary() as any;
 }
 class Player {
+  //Zero UID identifies the player.
+  uid: Uid = 0;
   name: string;
+  sex: Sex;
   gender: Gender;
-  genitals: string;
+  genitals: AllGenitals;
+  hasPussy: boolean;
+  hasPenis: boolean;
+  //The name of the hole where the player can be fucked by default (not sure if this will be used)
   sexHole: string;
   home: Home = Homes.smallUrban;
   job: Job = Jobs.garbageCollector;
   cash: number = 100;
   energy: number = 100;
   lust: number;
+  //Set to true when the player goes to sleep so the bed passage knows that the player just woke up and to know if energy should be reduced or restored
   sleeping: boolean;
   workedToday: boolean = false;
   inventory: Inventory = new Inventory();
@@ -36,7 +48,8 @@ class Player {
   }
   manageEnergy(hoursPassed: number) {
     let player = Variables().player as Player;
-    let multiplier = player.sleeping ? 1 : -0.46;
+    let multiplier =
+      player.sleeping || Variables().settings.infiniteEnergy ? 1 : -0.46;
     let increment = Math.round((hoursPassed / 8) * 100 * multiplier);
     if (increment == 0) increment = multiplier < 0 ? -1 : 1;
     player.energy = (player.energy + increment).clamp(0, 100);
@@ -44,55 +57,65 @@ class Player {
   setGender(gender: Gender) {
     let player = Variables().player as Player;
     player.gender = gender;
-    player.genitals = gender != "male" ? "pussy" : "dick";
-    player.sexHole = gender != "male" ? "pussy" : "ass";
   }
+  setSex(sex: Sex, player?: Player) {
+    if(!player)
+      player = Variables().player as Player;
+    player.sex = sex;
+    if (sex == "male") {
+      player.genitals = {
+        "male": "dick",
+        "female": null,
+        "all": "dick"
+      };
+      player.hasPenis = true;
+      player.hasPussy = false;
+      player.sexHole = "ass";
+    }
+    if (sex == "female") {
+      player.genitals = {
+        "male": null,
+        "female": "pussy",
+        "all": "pussy"
+      };
+      player.hasPenis = false;
+      player.hasPussy = true;
+      player.sexHole = "pussy";
+    }
+    if (sex == "herm") {
+      player.genitals = {
+        "male": "dick",
+        "female": "pussy",
+        "all": "dick and pussy"
+      };
+      player.hasPenis = true;
+      player.hasPussy = true;
+      player.sexHole = "pussy";
+    }
+  }
+  //Achievements are used to keep track of what things are already done before.
   hasAchievement(achievement: string) {
     return (Variables().achievements as string[]).includes(achievement);
   }
+  //Get how the specified NPC calls the player (how is the player addressed)
   getAddressing(npc: Npc) {
-    return Variables().player.name;
-  }
-}
-interface HomeSpace {
-  contents: Inventory;
-  muffleBase: number;
-  securityBase: number;
-}
-class Basement implements HomeSpace {
-  contents: Inventory = new Inventory();
-  muffleBase: number = 90;
-  securityBase: number = 25;
-  constructor() {
-    window.OnlineStore.get("Mattress").transferTo(this.contents);
-  }
-  has(itemName: string, count: number = 1): boolean {
-    return new Inventory(Variables().basement.contents).has(itemName, count);
-  }
-  availableBeds(): number {
     let variables = Variables();
-    var contents = new Inventory(variables.basement.contents);
-    var oldItem = contents.get("Matress");
-    if (oldItem)
-      //TODO: fix old misspelling, remove later
-      oldItem.name = "Mattress";
-    return contents.get("Mattress").count - variables.slaves.length;
-  }
-  getDemandingSlaves(): Person[] {
-    let slaves = Variables().slaves as Person[];
-    let candidates: Person[] = [];
-    for (let slaveIndex = 0; slaveIndex < slaves.length; slaveIndex++) {
-      const slave = slaves[slaveIndex];
-      if (slave.age >= 1 && slave.hunger >= 25) {
-        slave.index = slaveIndex;
-        slave.need = "hunger";
-        candidates.push(slave);
-      }
-    }
-    return candidates.sort(() => PseudoRandom.getFloat(turns()) - 0.5);
-  }
-  getHungrySlaves(): Person[] {
-    return Variables().slaves.filter((slave: Person) => slave.hunger > 25);
+    let $player: Player = variables.player;
+    if (npc.status == "citizen")
+      return $player.gender != "boy" ? "lady" : "mister";
+    let $addressing = variables.settings.addressing;
+    if (npc.mom == this.uid || npc.dad == this.uid)
+      return $addressing && $addressing.offspring
+        ? $addressing.offspring
+        : $player.gender != "boy"
+        ? "mommy"
+        : "daddy";
+    let result = $player.name;
+    if (!$addressing) return result;
+    if ($addressing.slave) result = $addressing.slave;
+    if (npc.status == "slave") return result;
+    var specific = $addressing[npc.status];
+    return specific ? specific : result;
   }
 }
 interface ILiteEvent<T> {
@@ -123,7 +146,34 @@ interface String {
 String.prototype.beautifyStat = function () {
   return this.toUpperFirst().replace(/(\B[A-Z])/g, " $1");
 };
+interface Array<T> {
+  getSentence(): string;
+}
+Array.prototype.getSentence = function () {
+  if (!this.length) return "";
+  if (this.length == 1) return this[0];
+  let clone = this.slice();
+  let last = clone.pop();
+  return clone.join(", ") + " and " + last;
+};
 class PseudoRandom {
+  static getSeed(...components: any[]): number {
+    let seed = 0;
+    for (const index in components) {
+      const component = components[index];
+      switch (typeof component) {
+        case "boolean":
+        case "number":
+          seed += component as number;
+          break;
+        case "string":
+          for (let charIndex = 0; charIndex < component.length; charIndex++)
+            seed = (seed << 5) - seed + component.charCodeAt(charIndex);
+          break;
+      }
+    }
+    return Math.abs(seed);
+  }
   static getInt(seed: number): number {
     //27 is a coprime of 100 and 10-1 is divisible by 27's factors (3)
     return (27 * seed + 10) % 100;
@@ -137,4 +187,10 @@ class PseudoRandom {
   static either<T>(seed: number, options: Array<T>): T {
     return options[this.getFromRange(seed, 0, options.length)];
   }
+}
+type Uid = number;
+function getUid(variables?: any): Uid {
+  if (!variables) variables = Variables();
+  variables.lastUid = variables.lastUid ? variables.lastUid + 1 : 1;
+  return variables.lastUid;
 }

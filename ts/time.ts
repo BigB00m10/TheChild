@@ -1,6 +1,6 @@
 class Now {
   date: Date = new Date(2022, 3, 4, 7);
-  private getCurrentDate(): Date {
+  getCurrentDate(): Date {
     return Variables().now.date;
   }
   private dateFromTimeString(timeString: string, ref?: Date): Date {
@@ -29,8 +29,12 @@ class Now {
       this.dateFromTimeString(timeString, currentDate).getTime()
     );
   }
-  isBetween(fromTimeString: string, toTimeString: string): boolean {
-    var currentDate = this.getCurrentDate();
+  isBetween(
+    fromTimeString: string,
+    toTimeString: string,
+    currentDate?: Date
+  ): boolean {
+    if (!currentDate) currentDate = this.getCurrentDate();
     var currentTimeStamp = currentDate.getTime();
     var fromTimeStamp = this.dateFromTimeString(
       fromTimeString,
@@ -69,6 +73,7 @@ class Now {
         slave.fear = Math.max(0, slave.fear - 10);
         slave.hunger = Math.min(100, slave.hunger + 10);
         slave.freedomWish = Math.max(0, slave.freedomWish - 5);
+        slave.lust = Math.max(0, slave.lust - 1);
         if (slave.hunger >= 90)
           slave.love = Math.max(0, slave.love - (slave.hunger - 80));
         if (slave.punishments.includes("naked")) {
@@ -76,6 +81,7 @@ class Now {
             slave.obedience += Math.round((61 - slave.obedience) * 0.25);
           else slave.punishments.delete("naked");
         } else slave.obedience = Math.max(0, slave.obedience - 1);
+        window.Person.removeAchievement("howAreYou", slave);
       });
       player.lust = Math.min(100, player.lust + 10);
     }
@@ -85,6 +91,7 @@ class Now {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
     currentDate.setHours(currentDate.getHours() + amount);
+    Npc.updateLocations(currentDate);
     window.Player.manageEnergy(amount);
     this.daysPassed(currentDate.getDay() - originalDay);
   }
@@ -99,11 +106,13 @@ class Now {
       Math.abs(target.getTime() - currentDate.getTime()) / 36e5
     );
     currentDate.setTime(target.getTime());
+    Npc.updateLocations(currentDate);
   }
   addMinutes(amount: number) {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
     currentDate.setMinutes(currentDate.getMinutes() + amount);
+    Npc.updateLocations(currentDate);
     window.Player.manageEnergy(amount / 60);
     this.daysPassed(currentDate.getDay() - originalDay);
   }

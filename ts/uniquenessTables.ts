@@ -106,27 +106,38 @@ class UniquenessTables {
       1,
       {
         //default
-        default: `You can feel $npc.possessive body warmth but $npc.genPronoun doesn't react much to it.`,
+        default: `You open your arms to embrace $npc.name in a hug, $npc.GenPronoun doesn't seem to care either way, simply allowing you to hug $npc.pronoun. $npc.GenPronoun is almost limp in your embrace, offering little reaction.`,
       },
       {
         //fear40
-        default: "When you hug $npc.name you can feel $npc.pronoun jumping a little bit.", //TODO add different reactions for when the player hugs a slave
+        default:
+          "You open your arms to embrace $npc.name in a hug, $npc.genPronoun takes a fearful step back but doesn't attempt to move away from you. You embrace $npc.pronoun in a hug. You can tell <<genPronounIs>> is a bit uneasy.",
+      },
+      {
+        //love40
+        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun doesn't give you time to fully open your arms before $npc.genPronoun has squirmed $npc.possessive way into your embrace, squeezing you as hard as $npc.genPronoun can. $npc.GenPronoun hums happily as $npc.genPronoun squeezes you.
+
+        "I love you, <<npcAddressPlayer>>!" $npc.GenPronoun says as $npc.genPronoun nuzzles your chest.`,
       },
       {
         //love60
-        default: "",
+        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun doesn't seem to mind. You can feel $npc.possessive warmth, and you even feel $npc.possessive arms gently returning the hug.`,
+        naughty: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun smiles at you and throws $npc.possessive arms around you and squeezes you tightly. You feel $npc.possessive hand slide down your chest, and grope you before quickly returning to the hug. $npc.name's naughtiness makes you {hard/wet}. 'Such a naughty little thing' you think as you smirk at $npc.pronoun.`,
       },
       {
         //love80
-        default: "",
+        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun smiles at you and throws $npc.possessive arms around you and squeezes you tightly. You gently rock back and forth holding $npc.pronoun contentedly.`,
+        naughty: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun doesn't give you time to fully open your arms before $npc.genPronoun has squirmed $npc.possessive way into your embrace, squeezing you as hard as $npc.genPronoun can. $npc.GenPronoun hums happily as $npc.genPronoun squeezes you. $npc.GenPronoun takes hold of your arm and gently pulls it down, guiding your hand down between $npc.possessive legs, the look on $npc.possessive face is lewd and excited. $npc.GenPronoun is oh so naughty.`,
       },
       {
         //fear60
-        default: "",
+        default:
+          "You open your arms to embrace $npc.name in a hug, but $npc.genPronoun pushes against you trying to stop the embrace. You can feel them trembling with fear within your arms.",
       },
       {
         //fear80
-        default: "",
+        default:
+          "You open your arms to embrace $npc.name in a hug, but $npc.GenPronoun is so terrified of you $npc.genPronoun immediately starts crying and backing away, looking for an escape. You enclose $npc.pronoun in your embrace anyway, trying to make $npc.pronoun feel loved. $npc.GenPronoun squirms and yells in a desperate attempt to escape your hold, pushing and pressing every which way trying to escape; tears run down $npc.possessive face as $npc.genPronoun cries.",
       },
     ],
   ];

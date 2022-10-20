@@ -1,8 +1,13 @@
 class Now {
+  //The game has a full date/time and this is the date/time where the game starts.
+  //It's also the Monday of the week when this was implemented.
+  //This property will always have this value, the current game date/time is stored in $now.date
   date: Date = new Date(2022, 3, 4, 7);
   getCurrentDate(): Date {
     return Variables().now.date;
   }
+  //Converts a time string to a Javascript Date object assuming the time is within the current day or the one passed as a reference (ref optional parameter)
+  //The string should be something like "7:30 PM"
   private dateFromTimeString(timeString: string, ref?: Date): Date {
     if (!ref) ref = this.getCurrentDate();
     return new Date(
@@ -15,6 +20,9 @@ class Now {
         timeString
     );
   }
+  //Checks if the current date/time is equal or later than the provided time string that will be considered on the same day as currentDate.
+  //If currentDate is not provided Now.getCurrentDate() will be used instead.
+  //Example: if currentDate is on 11:59 PM Now.isEqualOrLaterThan('7:30 PM') will return true, but false if currentDate is on 12:00 AM (first hour of day)
   isEqualOrLaterThan(timeString: string, currentDate?: Date): boolean {
     if (!currentDate) currentDate = this.getCurrentDate();
     return (
@@ -22,6 +30,8 @@ class Now {
       this.dateFromTimeString(timeString, currentDate).getTime()
     );
   }
+  //Same as isEqualOrLaterThan but it will check if it's earlier instead.
+  //12:00 AM will always return true since it's the start of the day.
   isEqualOrEarlierThan(timeString: string, currentDate?: Date): boolean {
     if (!currentDate) currentDate = this.getCurrentDate();
     return (
@@ -29,6 +39,9 @@ class Now {
       this.dateFromTimeString(timeString, currentDate).getTime()
     );
   }
+  //Checks if currentDate time it's between the two provided time strings.
+  //It works even if from is in the evening and to is in the morning to check a period in the night time.
+  //If currentDate is not provided Now.getCurrentDate() will be used instead.
   isBetween(
     fromTimeString: string,
     toTimeString: string,

@@ -64,6 +64,7 @@ class Now {
     if (currentDate.getHours() < 12) return currentTimeStamp <= toTimeStamp;
     return currentTimeStamp >= fromTimeStamp;
   }
+  //Checks if now it's exactly the time specified
   is(timeString: string): boolean {
     var currentDate = this.getCurrentDate();
     return (
@@ -72,6 +73,7 @@ class Now {
     );
   }
   //readonly onDaysPassed = new LiteEvent<number>();
+  //This action is used like an event. Every time a day or more passes this action should be called.
   daysPassed(amount: number) {
     if (amount < 1) return;
     let variables = Variables();
@@ -100,6 +102,7 @@ class Now {
     }
     //this.onDaysPassed.trigger(amount);
   }
+  //Makes the specified number of hours pass in the game.
   addHours(amount: number) {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
@@ -108,6 +111,7 @@ class Now {
     window.Player.manageEnergy(amount);
     this.daysPassed(currentDate.getDay() - originalDay);
   }
+  //Skip time until the specified time of the day is reached (Even if it's on the next day).
   skipTo(timeString: string) {
     let currentDate = this.getCurrentDate();
     let target = this.dateFromTimeString(timeString, currentDate);
@@ -121,6 +125,7 @@ class Now {
     currentDate.setTime(target.getTime());
     Npc.updateLocations(currentDate);
   }
+  //Makes the specified number of minutes pass in the game.
   addMinutes(amount: number) {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
@@ -129,9 +134,11 @@ class Now {
     window.Player.manageEnergy(amount / 60);
     this.daysPassed(currentDate.getDay() - originalDay);
   }
+  //Returns the name of the current weekday in English
   getWeekDay(): string {
     return this.getCurrentDate().toLocaleString("en-us", { weekday: "long" });
   }
+  //Returns the current time string in English format. Something like 7:30 PM
   getTime(): string {
     return this.getCurrentDate().toLocaleString("en-us", {
       hour: "numeric",
@@ -139,6 +146,7 @@ class Now {
       hour12: true,
     });
   }
+  //Checks if the game date is currently on a weekend.
   isWeekend(): boolean {
     var weekDay = this.getCurrentDate().getDay();
     return weekDay == 0 || weekDay == 6;

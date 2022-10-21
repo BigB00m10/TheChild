@@ -1,4 +1,6 @@
+//Biological characteristics
 type Sex = "male" | "female" | "herm";
+//Social characteristics
 type Gender = "boy" | "girl" | "nb";
 type Genitals = "cunny" | "pussy" | "penis" | "dick";
 type AllGenitals = {
@@ -9,11 +11,14 @@ type AllGenitals = {
 interface Home {
   name: string;
   rent: number;
+  //Spaces that this house have using the names of the main passages on that space
   spaces: string[];
 }
+//Returns the SugarCube variables object in Typescript format (variables saved in history).
 function Variables(): any {
   return variables() as any;
 }
+//Returns the SugarCube temporary object in Typescript format (variables saved in memory that will vanish on the next passage).
 function Temporary(): any {
   return temporary() as any;
 }
@@ -32,14 +37,19 @@ class Player {
   job: Job = Jobs.garbageCollector;
   cash: number = 100;
   energy: number = 100;
+  //Unused, not sure if it will ever be used.
   lust: number;
   //Set to true when the player goes to sleep so the bed passage knows that the player just woke up and to know if energy should be reduced or restored
   sleeping: boolean;
+  //Just a flag to check if the player has worked already to avoid evading responsibilities.
   workedToday: boolean = false;
+  //Holds the items that the player has available to use.
   inventory: Inventory = new Inventory();
+  //Gets the player inventory object from the Sugarcube variables.
   getInventory() {
     return new Inventory(Variables().player.inventory);
   }
+  //Checks if the player has an item in their inventory.
   has(itemName: string, count: number = 1) {
     return this.getInventory().has(itemName, count);
   }
@@ -58,6 +68,7 @@ class Player {
     let player = Variables().player as Player;
     player.gender = gender;
   }
+  //Use this to change the player's sex.
   setSex(sex: Sex, player?: Player) {
     if(!player)
       player = Variables().player as Player;
@@ -118,6 +129,7 @@ class Player {
     return specific ? specific : result;
   }
 }
+/* Snippet to hook an event to an object. Might be useful someday.
 interface ILiteEvent<T> {
   on(handler: { (data?: T): void }): void;
   off(handler: { (data?: T): void }): void;
@@ -136,19 +148,21 @@ class LiteEvent<T> implements ILiteEvent<T> {
   public trigger(data?: T) {
     this.handlers.slice(0).forEach((h) => h(data));
   }
-}
+}*/
 interface String {
   /**
    * Split camelcase words and upper the first letter.
    */
   beautifyStat(): string;
 }
+//Split camelcase words and upper the first letter.
 String.prototype.beautifyStat = function () {
   return this.toUpperFirst().replace(/(\B[A-Z])/g, " $1");
 };
 interface Array<T> {
   getSentence(): string;
 }
+//Constructs a sentence from an array of strings ["1","2","3"] becomes "1, 2 and 3"
 Array.prototype.getSentence = function () {
   if (!this.length) return "";
   if (this.length == 1) return this[0];
@@ -156,7 +170,10 @@ Array.prototype.getSentence = function () {
   let last = clone.pop();
   return clone.join(", ") + " and " + last;
 };
+//Useful class to make a less random generator than the one in Math or in Sugarcube.
+//Two identical results appearing together is way les likely with this class if a correlative seed is provided.
 class PseudoRandom {
+  //Generates a seed from other objects. Player/npc stats, traits and name can be used, recommended to include something incremental like turns() or the current time.
   static getSeed(...components: any[]): number {
     let seed = 0;
     for (const index in components) {
@@ -174,21 +191,28 @@ class PseudoRandom {
     }
     return Math.abs(seed);
   }
+  //Get a pseudorandom integer using the provided seed
   static getInt(seed: number): number {
     //27 is a coprime of 100 and 10-1 is divisible by 27's factors (3)
     return (27 * seed + 10) % 100;
   }
+  //Get a pseudorandom floating comma number using the provided seed
   static getFloat(seed: number): number {
     return this.getInt(seed) / 100;
   }
+  //Get a random integer number from a range of integer numbers using the provided seed
   static getFromRange(seed: number, start: number, end: number): number {
     return start + Math.floor(this.getFloat(seed) * (end - start));
   }
+  //Get a random item from the provided array using the provided seed.
   static either<T>(seed: number, options: Array<T>): T {
     return options[this.getFromRange(seed, 0, options.length)];
   }
 }
 type Uid = number;
+//Gets a unique identification number to identify objects, items, individuals or even places that can be generated.
+//Since all other properties of an object has the possibility to be changed (even name) this can be used to save in an npc the Uid of their mother for instance.
+//The zero Uid is reserved to identify the player.
 function getUid(variables?: any): Uid {
   if (!variables) variables = Variables();
   variables.lastUid = variables.lastUid ? variables.lastUid + 1 : 1;

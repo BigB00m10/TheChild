@@ -1,3 +1,7 @@
+//This interface uses the window DOM object to share objects between back end and front end.
+//Every object hooked to the window object will also be directly available in the browser console.
+//You'll typically want to use only the functions on the class instances that are hooked to the window.
+//Class instance properties are reset every time the game is loaded, so in practice you only can use them if they are constant or temporary.
 interface Window {
   Now: Now;
   Homes: Record<string, Home>;
@@ -33,7 +37,9 @@ window.Garden = new Garden();
 window.TortureRoom = new TortureRoom();
 window.PersonGeneration = new PersonGeneration();
 window.PersonUniquenessPresets = personUniquenessPresets;
-if (!window.Interactions) window.Interactions = {};
+//Interactions will be populated in the next files.
+//Typescript files are processed in alphabetical order, that's why letters are prepended to the file names.
+window.Interactions = {};
 let keyBuffer = [];
 let lastKeyTime = Date.now();
 document.addEventListener("keypress", (evt) => {

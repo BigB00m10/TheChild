@@ -1,18 +1,28 @@
 interface UniquenessCase {
+  //default option, when it doesn't match any other characteristic
   default: string;
+  //When specified, this case will follow this condition instead of the global ones.
   condition?: string;
+  //The other properties are tied to the npc traits. They can be combined with "And" in camelcase. Example: curiousAndNaughty
+  //The traits will be checked in the same order that they are coded.
+  //That is, if shy is specified first and then energetic. Npc shyness will be checked first and then the npc energetic trait (the first one that is true)
   curious?: string;
   naughty?: string;
   energetic?: string;
   shy?: string;
   diligent?: string;
 }
+//This static class stores all data needed to get the right Sugarcube markup according to the NPC stats and traits.
+//This is to make it easier to write and maintain reaction mechanics that need multiple checks.
+//Otherwise that would need lots of nested <<if>> macros that would make it easy to fuck up, specially when changing things.
+//To call one of the tables (array properties in this class) use the <<personUniqueness>> macro.
+//Example: <<personUniqueness hug>> (See npcInteraction.ts)
 class UniquenessTables {
   static howAreYou = [
     ["fear<20", "love60", "lust80"], //global conditions for each line without specified condition
-    [
-      0,
-      {
+    [//Start of the fist age array
+      0,//The fist element in the array is the minimum age to take this array into account
+      {//The next elements are uniqueness cases in objects (See UniquenessCase interface)
         //first object without specified condition is default output
         default: "$npc.name looks at you without saying anything.", //default option, when it doesn't match any other characteristic
         shy: "$npc.name does not say anything and tries to avoid eye contact.", //output on shy characteristic
@@ -63,7 +73,7 @@ class UniquenessTables {
         default: `say:I'm fine <<npcAddressPlayer>><<emoji 🤤>>
         ($npc.GenPronoun's shamelessly masturbating in front of you)`,
         shy: `say:I..um...want to <<if $npc.diligent || $npc.age gte 11>>have...sex...<<else>>do...that...<</if>><<emoji 😳>>
-        $npc.GenPronoun says with a hand over his $npc.genitals.all. It seems that he can't bear the excitement and slowly rubs it a little bit.`,
+        $npc.GenPronoun says with a hand over $npc.possessive $npc.genitals.all. It seems that $npc.genPronoun can't bear the excitement and slowly rubs it a little bit.`,
         energetic: `say:<<npcAddressPlayer>>!! Let's do naughty things!!
         $npc.GenPronoun approaches you and gently touches your $player.genitals.all<<emoji 😋>>`,
       },

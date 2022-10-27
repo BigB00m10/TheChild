@@ -96,6 +96,7 @@ interface NpcInteractionCollection {
   //Sugarcube markup action to do right before stopping the interaction.
   beforeStop?: string;
 }
+let callOrGetItself = (any: any) => (typeof any != "function" ? any : any());
 //Redirects to the npcInteraction passage showing an interaction with a NPC.
 //Usage: <<openNpcInteraction <interactionRoute>[ npcUid]>>
 //interactionRoute is the name of the interaction collection (that must be added to window.Interactions array) followed by the name of the selected options
@@ -192,15 +193,8 @@ Macro.add("npcInteraction", {
     const npc = vars.npc;
     const steps = vars.npcInteractionRoute.split(".");
     const collection = window.Interactions[steps[0]];
-    let options =
-      typeof collection.options != "function"
-        ? collection.options
-        : collection.options();
+    let options = callOrGetItself(collection.options);
     let interaction: NpcInteraction;
-    const getNext = (interaction: NpcInteraction) =>
-      typeof interaction.next != "function"
-        ? interaction.next
-        : interaction.next();
     for (let stepIndex = 1; stepIndex < steps.length; stepIndex++) {
       interaction = options[steps[stepIndex]];
       if (interaction == undefined) {
@@ -208,7 +202,7 @@ Macro.add("npcInteraction", {
         console.error(options);
         console.error(steps[stepIndex]);
       }
-      options = getNext(interaction);
+      options = callOrGetItself(interaction.next);
     }
     $(document.createElement("span"))
       .wiki((interaction ? interaction.contents : collection.contents) + "\n")
@@ -230,12 +224,14 @@ Macro.add("npcInteraction", {
       )
         npcHungerIncrease = Math.max(1, Math.round((minutes / 8) * 0.46));
     }
-    if (interaction && interaction.npcStats) {
-      let npcStats =
-        typeof interaction.npcStats != "function"
-          ? interaction.npcStats
-          : interaction.npcStats(npc);
-      if (npcStats) {
+    let extraNpcStats = Temporary().npcStatModifiers;
+    if ((interaction && interaction.npcStats) || extraNpcStats) {
+      let npcStats = [];
+      if (interaction && interaction.npcStats)
+        npcStats.concat(callOrGetItself(interaction.npcStats));
+      if (extraNpcStats)
+        npcStats.concat(callOrGetItself(extraNpcStats));
+      if (npcStats.length) {
         if (
           npcHungerIncrease &&
           !npcStats.firstOrDefault((s: string) => s.startsWith("hunger"))
@@ -335,7 +331,7 @@ Macro.add("npcInteraction", {
           option.showIfEmpty === false ||
           (collection.hideEmptyOptions && option.next && !option.showIfEmpty)
         ) {
-          let next = getNext(option);
+          let next = callOrGetItself(option.next);
           if (option.altOptions) next = option.altOptions(npc, next);
           let empty = true;
           for (const nextName in next)
@@ -425,6 +421,7 @@ Macro.add("personUniqueness", {
         switch (fieldName) {
           case "condition":
           case "default":
+          case "stats":
             continue;
           default:
             let okOutput = true;
@@ -453,6 +450,8 @@ Macro.add("personUniqueness", {
         );
         return;
       } else if (output[0] == "=") output = uniquenessCase[output.substring(1)];
+      if (uniquenessCase.stats)
+        Temporary().npcStatModifiers = uniquenessCase.stats;
       output = output.replace(/^say:(.+)/i, `''${person.name}'': "$1"`);
       $(document.createElement("span")).wiki(output).appendTo(this.output);
     };

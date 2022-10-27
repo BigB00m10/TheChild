@@ -1,4 +1,5 @@
 interface UniquenessCase {
+  stats: any;
   //default option, when it doesn't match any other characteristic
   default: string;
   //When specified, this case will follow this condition instead of the global ones.
@@ -109,34 +110,34 @@ class UniquenessTables {
       0,
       {
         default: `You grab $npc.name on your arms and give $npc.pronoun a tight loving hug<<emoji 🥰>>
-          The baby feels pretty warm on your body.`,
+          The baby feels pretty warm on your body.<<set _addLove=5>>`,
       },
     ],
     [
       1,
       {
         //default
-        default: `You open your arms to embrace $npc.name in a hug, $npc.GenPronoun doesn't seem to care either way, simply allowing you to hug $npc.pronoun. $npc.GenPronoun is almost limp in your embrace, offering little reaction.`,
+        default: `You open your arms to embrace $npc.name in a hug, $npc.GenPronoun doesn't seem to care either way, simply allowing you to hug $npc.pronoun. $npc.GenPronoun is almost limp in your embrace, offering little reaction.<<set _addLove=1>>`,
       },
       {
         //fear40
         default:
-          "You open your arms to embrace $npc.name in a hug, $npc.genPronoun takes a fearful step back but doesn't attempt to move away from you. You embrace $npc.pronoun in a hug. You can tell <<genPronounIs>> is a bit uneasy.",
+          "You open your arms to embrace $npc.name in a hug, $npc.genPronoun takes a fearful step back but doesn't attempt to move away from you. You embrace $npc.pronoun in a hug. You can tell <<genPronounIs>> is a bit uneasy.<<set _removeFear=5>>",
       },
       {
         //love40
-        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun doesn't give you time to fully open your arms before $npc.genPronoun has squirmed $npc.possessive way into your embrace, squeezing you as hard as $npc.genPronoun can. $npc.GenPronoun hums happily as $npc.genPronoun squeezes you.
-
-        "I love you, <<npcAddressPlayer>>!" $npc.GenPronoun says as $npc.genPronoun nuzzles your chest.`,
+        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun doesn't seem to mind. You can feel $npc.possessive warmth, and you even feel $npc.possessive arms gently returning the hug.<<set `,
       },
       {
         //love60
-        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun doesn't seem to mind. You can feel $npc.possessive warmth, and you even feel $npc.possessive arms gently returning the hug.`,
+        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun smiles at you and throws $npc.possessive arms around you and squeezes you tightly. You gently rock back and forth holding $npc.pronoun contentedly.`,
         naughty: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun smiles at you and throws $npc.possessive arms around you and squeezes you tightly. You feel $npc.possessive hand slide down your chest, and grope you before quickly returning to the hug. $npc.name's naughtiness makes you {hard/wet}. 'Such a naughty little thing' you think as you smirk at $npc.pronoun.`,
       },
       {
         //love80
-        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun smiles at you and throws $npc.possessive arms around you and squeezes you tightly. You gently rock back and forth holding $npc.pronoun contentedly.`,
+        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun doesn't give you time to fully open your arms before $npc.genPronoun has squirmed $npc.possessive way into your embrace, squeezing you as hard as $npc.genPronoun can. $npc.GenPronoun hums happily as $npc.genPronoun squeezes you.
+
+        "I love you, <<npcAddressPlayer>>!" $npc.GenPronoun says as $npc.genPronoun nuzzles your chest.`,
         naughty: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun doesn't give you time to fully open your arms before $npc.genPronoun has squirmed $npc.possessive way into your embrace, squeezing you as hard as $npc.genPronoun can. $npc.GenPronoun hums happily as $npc.genPronoun squeezes you. $npc.GenPronoun takes hold of your arm and gently pulls it down, guiding your hand down between $npc.possessive legs, the look on $npc.possessive face is lewd and excited. $npc.GenPronoun is oh so naughty.`,
       },
       {

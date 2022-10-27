@@ -32,6 +32,8 @@ let cumOutsideOptions: NpcInteractionOptions = {
 };
 //Returns the first member in the interaction route that points to the interaction collection.
 let baseInteractionRoute = () => Variables().npcInteractionRoute.split(".")[0];
+let baseInteractionOptions = () =>
+  <NpcInteractionOptions>window.Interactions[baseInteractionRoute()].options;
 //Returns the different talk options
 let talkOptions = () =>
   window.Interactions[baseInteractionRoute()].options["talk"]
@@ -180,11 +182,10 @@ window.Interactions["slave"] = {
       },
     },
     hug: {
-      canBeShown: () => false, //TODO: Disabled until fully implemented
       optionText: "🤗 give a hug to $npc.name.",
-      contents: `<<if $npc.age gt 0>>\
-        You grab $npc.name $npc.age year old <<if $npc.age lt 6>>little<</if>> body and press it into you.
-      <</if>><<personUniqueness hug>>`,
+      minutesCost: 2,
+      contents: `<<personUniqueness hug>>`,
+      next: baseInteractionOptions,
     },
     pushDown: {
       optionText: "👇 Push $npc.pronoun down",
@@ -1094,7 +1095,8 @@ window.Interactions["slave"] = {
                             return stats;
                           },
                           showNpcStats: true,
-                          next: () => afterStrip().useDildo.next.dildoAnus.next.ram.next,
+                          next: () =>
+                            afterStrip().useDildo.next.dildoAnus.next.ram.next,
                         },
                         fast: {
                           optionText: "⏩ Fuck $npc.pronoun fast.",
@@ -1713,9 +1715,7 @@ window.Interactions["slave"] = {
         return stats;
       },
       showNpcStats: true,
-      next: () =>
-        window.Interactions[baseInteractionRoute()]
-          .options as NpcInteractionOptions,
+      next: baseInteractionOptions,
     },
     rubVagToSlaveFace: {
       playerRequirements: ["hasPussy"],
@@ -1732,9 +1732,7 @@ window.Interactions["slave"] = {
         return stats;
       },
       showNpcStats: true,
-      next: () =>
-        window.Interactions[baseInteractionRoute()]
-          .options as NpcInteractionOptions,
+      next: baseInteractionOptions
     },
     bringUpstairs: {
       locationRequirements: ["basement"],

@@ -185,6 +185,7 @@ window.Interactions["slave"] = {
       optionText: "🤗 give a hug to $npc.name.",
       minutesCost: 2,
       contents: `<<personUniqueness hug>>`,
+      showNpcStats: true,
       next: baseInteractionOptions,
     },
     pushDown: {
@@ -1732,7 +1733,7 @@ window.Interactions["slave"] = {
         return stats;
       },
       showNpcStats: true,
-      next: baseInteractionOptions
+      next: baseInteractionOptions,
     },
     bringUpstairs: {
       locationRequirements: ["basement"],

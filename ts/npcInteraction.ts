@@ -96,7 +96,8 @@ interface NpcInteractionCollection {
   //Sugarcube markup action to do right before stopping the interaction.
   beforeStop?: string;
 }
-let callOrGetItself = (valueOrFunction: any, ...arguments:any[]) => (typeof valueOrFunction != "function" ? valueOrFunction : valueOrFunction(...arguments));
+//Utility for properties that can be both a value and a function. If it's a function it calls the function with the provided arguments (if any) and returns the result.
+let callOrGetItself = (valueOrFunction: any, ...args:any[]) => (typeof valueOrFunction != "function" ? valueOrFunction : valueOrFunction(...args));
 //Redirects to the npcInteraction passage showing an interaction with a NPC.
 //Usage: <<openNpcInteraction <interactionRoute>[ npcUid]>>
 //interactionRoute is the name of the interaction collection (that must be added to window.Interactions array) followed by the name of the selected options
@@ -228,9 +229,9 @@ Macro.add("npcInteraction", {
     if ((interaction && interaction.npcStats) || extraNpcStats) {
       let npcStats = [];
       if (interaction && interaction.npcStats)
-        npcStats.concat(callOrGetItself(interaction.npcStats, npc));
+        npcStats.push(...callOrGetItself(interaction.npcStats, npc));
       if (extraNpcStats)
-        npcStats.concat(callOrGetItself(extraNpcStats, npc));
+        npcStats.push(...callOrGetItself(extraNpcStats, npc));
       if (npcStats.length) {
         if (
           npcHungerIncrease &&

@@ -97,7 +97,10 @@ interface NpcInteractionCollection {
   beforeStop?: string;
 }
 //Utility for properties that can be both a value and a function. If it's a function it calls the function with the provided arguments (if any) and returns the result.
-let callOrGetItself = (valueOrFunction: any, ...args:any[]) => (typeof valueOrFunction != "function" ? valueOrFunction : valueOrFunction(...args));
+let callOrGetItself = (valueOrFunction: any, ...args: any[]) =>
+  typeof valueOrFunction != "function"
+    ? valueOrFunction
+    : valueOrFunction(...args);
 //Redirects to the npcInteraction passage showing an interaction with a NPC.
 //Usage: <<openNpcInteraction <interactionRoute>[ npcUid]>>
 //interactionRoute is the name of the interaction collection (that must be added to window.Interactions array) followed by the name of the selected options
@@ -110,7 +113,7 @@ Macro.add("openNpcInteraction", {
       variables.returnPassage = SugarCube.State.passage;
     variables.npcInteractionRoute = this.args[0];
     if (this.args[1]) variables.npc = window.Person.get(this.args[1]);
-    SugarCube.State.display("npcInteraction");
+    (<any>SugarCube.State).display("npcInteraction");
   },
 });
 const checkCondition = (objectName: string, condition: string): boolean => {
@@ -230,8 +233,7 @@ Macro.add("npcInteraction", {
       let npcStats = [];
       if (interaction && interaction.npcStats)
         npcStats.push(...callOrGetItself(interaction.npcStats, npc));
-      if (extraNpcStats)
-        npcStats.push(...callOrGetItself(extraNpcStats, npc));
+      if (extraNpcStats) npcStats.push(...callOrGetItself(extraNpcStats, npc));
       if (npcStats.length) {
         if (
           npcHungerIncrease &&
@@ -460,6 +462,15 @@ Macro.add("personUniqueness", {
       if (table[ageIndex][0] > person.age) continue;
       processAgeRow(table[ageIndex].slice(1));
       return;
+    }
+  },
+});
+Macro.add("npcCum", {
+  handler: function () {
+    let $lustDecCum = Variables().settings.lustDecCum;
+    if ($lustDecCum) {
+      if (!Temporary().npcStatModifiers) Temporary().npcStatModifiers = [];
+      Temporary().npcStatModifiers.push("lust-" + $lustDecCum);
     }
   },
 });

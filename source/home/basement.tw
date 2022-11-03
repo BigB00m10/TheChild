@@ -67,5 +67,5 @@ You lay down the pizza<<if Player.has("pizza", 2)>>s<</if>> and all the slaves g
     });
     inventory.removeByName("pizza", pizzaCount);
 >>\
-<<keyOption [[The torture room|tort]] ⛓️>>
+/*<<keyOption [[The torture room|tort]] ⛓️>>*/
 <<keyOption [[Return|basement]] 🔙>>

@@ -465,6 +465,7 @@ Macro.add("personUniqueness", {
     }
   },
 });
+//To use in an interaction to indicate NPC ejaculating and 
 Macro.add("npcCum", {
   handler: function () {
     let $lustDecCum = Variables().settings.lustDecCum;

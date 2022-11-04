@@ -13,13 +13,17 @@
   background-color: #222;
   color: gray;
 }
-.tabs .tab {
+.tabs > div {
   order: 99;
   flex-grow: 1;
   width: 100%;
   display: none;
-  padding: 1rem;
+  padding: 0.3rem 1rem;
   background: #2e2f36;
+}
+.tabs > div h3 {
+  color: yellow;
+  margin: 0.3rem 0;
 }
 .tabs > input[type=radio] {
   display: none;
@@ -28,12 +32,12 @@
   background: #2e2f36;
   color: gainsboro;
 }
-.tabs > input[type=radio]:checked + label + .tab {
+.tabs > input[type=radio]:checked + label + div {
   display: block;
 }
 
 @media (max-width: 45em) {
-  .tabs .tab,
+  .tabs > div,
 .tabs > label {
     order: initial;
   }
@@ -42,4 +46,4 @@
     margin-right: 0;
     margin-top: 0.2rem;
   }
-}
+}/*# sourceMappingURL=tabs.css.map */

@@ -263,7 +263,7 @@ window.Interactions["slave"] = {
                 cum: {
                   optionText: "💦 Make $npc.pronoun cum",
                   contents: `You vigorously rub inside $npc.name's vagina while you rub $npc.possessive clitoris at the same time making $npc.pronoun arc her body with the pleasure.
-                  It doesn't take long until $npc.pronoun cums making your hand wet all over.`,
+                  It doesn't take long until $npc.pronoun cums making your hand wet all over.<<npcCum>>`,
                   npcStats: [
                     "lust+5%",
                     "love+5",

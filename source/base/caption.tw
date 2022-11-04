@@ -59,7 +59,7 @@ location: $npc.location
         <div class="tabs">\
             <input type="radio" name="configTabs" id="tab-childGen" checked>\
             <label for="tab-childGen">Child generator</label>\
-            <div class="tab">\
+            <div>\
                 <div class="row">\
                     <div class="four columns">\
                         Female percentage:\
@@ -110,14 +110,21 @@ location: $npc.location
             </div>\
             <input type="radio" name="configTabs" id="tab-tweaks">\
             <label for="tab-tweaks">Tweaks</label>\
-            <div class="tab">\
-                <h3 style="color:yellow">Change job</h3>\
-                Current job: <<- $player.job ? $player.job.name.toUpperFirst() : "Unemployed">>
-                <<for _jobKey, _job range Jobs>>\
-                    <<set _jobDesc = _job.name.toUpperFirst() + ": Pay:¤" + _job.pay.toFixed(2) + "/day, Go time:" + _job.enterTime>>\
-                    <<print '<<button _jobDesc>><<run $player.job = ' + JSON.stringify(_job) + ';Engine.show()>><<dialog "Job changed">>Your job is now: ' + _job.name.toUpperFirst() + '.<</dialog>><</button>>'>>
-                <</for>>\
-                <<button '<<emoji 🚫>>None'>><<run $player.job = null;Engine.show()>><<dialog "Job changed">>You're now unemployed.<</dialog>><</button>>\
+            <div>\
+                <div class="row">\
+                    <div class="one-half column">\
+                        <h3 style="color:yellow">Change job</h3>\
+                        Current job: <<- $player.job ? $player.job.name.toUpperFirst() : "Unemployed">>
+                        <<for _jobKey, _job range Jobs>>\
+                            <<set _jobDesc = _job.name.toUpperFirst() + ": Pay:¤" + _job.pay.toFixed(2) + "/day, Go time:" + _job.enterTime>>\
+                            <<print '<<button _jobDesc>><<run $player.job = ' + JSON.stringify(_job) + ';Engine.show()>><<dialog "Job changed">>Your job is now: ' + _job.name.toUpperFirst() + '.<</dialog>><</button>>'>>
+                        <</for>>\
+                        <<button '<<emoji 🚫>>None'>><<run $player.job = null;Engine.show()>><<dialog "Job changed">>You're now unemployed.<</dialog>><</button>>\
+                    </div><div class="one-half column">\
+                        <h3 style="color:yellow">Lust drop</h3>\
+                        <label>Amount of lust drop after NPC ejaculating: <input type="number" id="lustDecCum" style="width:3em"></label>
+                    </div>\
+                </div>\
                 <h3 style="color:yellow">Addressing</h3>\
                 How should your kids call you? (leaving them blank reverts them to default value)
                 Slaves: <input type="text" class="addressing" data-target="slave">
@@ -127,7 +134,7 @@ location: $npc.location
             </div>\
             <input type="radio" name="configTabs" id="tab-switches">\
             <label for="tab-switches">Switches</label>\
-            <div class="tab">\
+            <div>\
                 <label class="toggle-button">\
                     <input id="toggleEmoji" type="checkbox" class="macro-checkbox"><span>Show emojis</span>\
                 </label>\
@@ -264,6 +271,10 @@ location: $npc.location
                 $this.val(value)
                 $settings.childGeneration.herms.toAge = value
             }).val($settings.childGeneration.herms.toAge)
+            var $lustDecCum = $('#lustDecCum')
+            $lustDecCum.change(function(){
+                $settings.lustDecCum = $(this).val();
+            }).val($settings.lustDecCum || 0)
         </script>\
     <</dialog>>\
 <</link>>

@@ -12,20 +12,24 @@
     background-color: #222;
     color: gray;
   }
-  .tab {
+  > div {
     order: 99;
     flex-grow: 1;
     width: 100%;
     display: none;
-    padding: 1rem;
+    padding: 0.3rem 1rem;
     background: #2e2f36;
+    h3 {
+      color: yellow;
+      margin: 0.3rem 0;
+    }
   }
   > input[type="radio"] {
     display: none;
     &:checked + label {
       background: #2e2f36;
       color: gainsboro;
-      + .tab {
+      + div {
         display: block;
       }
     }
@@ -34,7 +38,7 @@
 
 @media (max-width: 45em) {
   .tabs {
-    .tab,
+    > div,
     > label {
       order: initial;
     }

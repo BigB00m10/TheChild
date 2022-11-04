@@ -168,9 +168,10 @@ $(document).on(":passageinit", () => {
           Dialog.open();
         }
       }
-      if (variables.settings.anal == undefined) variables.settings.anal = true;
-      if (variables.settings.slaveSelling == undefined)
-        variables.settings.slaveSelling = true;
+      let settings: any = variables.settings;
+      if (settings.anal == undefined) settings.anal = true;
+      if (settings.slaveSelling == undefined) settings.slaveSelling = true;
+      if (settings.lustDecCum == undefined) settings.lustDecCum = 20;
       if (variables.achievements == undefined) variables.achievements = [];
       let onlineStore = variables.onlineStore as OnlineStore;
       if (onlineStore.products.length < window.OnlineStore.products.length)
@@ -190,7 +191,7 @@ $(document).on(":passageinit", () => {
         onlineStore.products[2] = window.OnlineStore.products[2];
         onlineStore.version = 3;
       }
-      let childGen: PersonGeneration = variables.settings.childGeneration;
+      let childGen: PersonGeneration = settings.childGeneration;
       if (!childGen.hairStyles)
         childGen.hairStyles = window.PersonGeneration.hairStyles;
       if (!childGen.eyeColors)

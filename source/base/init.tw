@@ -14,7 +14,8 @@ The Child Trainer
         emoji: true,
         anal: true,
         childGeneration: PersonGeneration,
-        slaveSelling: true
+        slaveSelling: true,
+        lustDecCum: 20
     };
     $onlineStore = OnlineStore;
     $basement = Basement;

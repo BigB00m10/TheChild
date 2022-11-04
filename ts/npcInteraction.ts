@@ -53,8 +53,9 @@ interface NpcInteraction {
   //If not specified the defaultStopOption in the parent interaction collection will be used.
   //If it's set to false the stop option will not be shown.
   stopOption?: string | false;
-  //If set to true the npc's stats will be added to the passage. Useful when npc stats changed.
-  showNpcStats?: boolean;
+  //If set to true the npc's stats will be added to the passage.
+  //If not specified it will show stats only when there's stats changes in the interaction.
+  showNpcStats?: boolean | undefined;
   //The amount of minutes that will pass after selecting this option. It's also shown after the option text.
   minutesCost?: number;
   //A function to alter the options specified in the next field above in case you need a special set of options when this specific interaction is shown.
@@ -228,6 +229,7 @@ Macro.add("npcInteraction", {
       )
         npcHungerIncrease = Math.max(1, Math.round((minutes / 8) * 0.46));
     }
+    let showNpcStats = interaction ? interaction.showNpcStats : undefined;
     let extraNpcStats = Temporary().npcStatModifiers;
     if ((interaction && interaction.npcStats) || extraNpcStats) {
       let npcStats = [];
@@ -235,6 +237,7 @@ Macro.add("npcInteraction", {
         npcStats.push(...callOrGetItself(interaction.npcStats, npc));
       if (extraNpcStats) npcStats.push(...callOrGetItself(extraNpcStats, npc));
       if (npcStats.length) {
+        if (showNpcStats === undefined) showNpcStats = true;
         if (
           npcHungerIncrease &&
           !npcStats.firstOrDefault((s: string) => s.startsWith("hunger"))
@@ -296,9 +299,7 @@ Macro.add("npcInteraction", {
         result += "@@\n";
       }
     }
-    //TODO: player stat change
-    if (interaction && interaction.showNpcStats)
-      result += "<<include npcStats>>\n";
+    if (interaction && showNpcStats) result += "<<include npcStats>>\n";
     let baseRoute =
       interaction && interaction.baseRoute
         ? interaction.baseRoute(npc)
@@ -465,7 +466,7 @@ Macro.add("personUniqueness", {
     }
   },
 });
-//To use in an interaction to indicate NPC ejaculating and 
+//To use in an interaction to indicate NPC ejaculating and decrease as much lust as said in the settings.
 Macro.add("npcCum", {
   handler: function () {
     let $lustDecCum = Variables().settings.lustDecCum;

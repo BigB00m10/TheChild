@@ -1,7 +1,7 @@
 let Homes: Record<string, Home> = {
   smallUrban: {
     name: "small urban house",
-    rent: 400,//Unused right now, will be the amount to pay each month
+    rent: 400, //Unused right now, will be the amount to pay each month
     spaces: [
       "basement",
       "mainRoom",
@@ -14,7 +14,7 @@ let Homes: Record<string, Home> = {
       "tortone",
       "tortwo",
       "torthree",
-    ],//The spaces are where the wandering slaves will move into excluding the basement and everything starting with "tort"
+    ], //The spaces are where the wandering slaves will move into excluding the basement and everything starting with "tort"
   },
 };
 //Planned to be events involving NPC that can happen when the player enters the same scenery (found slave sleeping, playing with the computer, taking a piss, etc...)
@@ -82,6 +82,11 @@ class Basement extends HomeSpace {
   } //TODO: do not count slaves in player's bed
   getHungrySlaves(): Person[] {
     return Variables().slaves.filter((slave: Person) => slave.hunger > 25);
+  }
+  getSlaves(): Person[] {
+    return Variables().slaves.filter(
+      (slave: Person) => slave.location == "basement"
+    );
   }
   deleteSlave(slave: Person) {
     let slaves: Person[] = Variables().slaves;

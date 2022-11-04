@@ -1,48 +1,15 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"twee3LanguageTools.storyformat.current": "sugarcube-2",
-		"twee3LanguageTools.passage.list": true,
-		"twee3LanguageTools.passage.group": "Folder",
-		"cSpell.words": [
-			"Carrabina",
-			"coprime",
-			"cumshot",
-			"cumshots",
-			"cunny",
-			"deeppink",
-			"Fairmath",
-			"fauxhawkian",
-			"herms",
-			"ldquo",
-			"newmeter",
-			"nobr",
-			"passageinit",
-			"passagestart",
-			"pepee",
-			"precum",
-			"rdquo",
-			"showmeter",
-			"sugarcube",
-			"textbox",
-			"Trib"
-		],
-		"twee3LanguageTools.passageCounter.openStoryMapWithoutConfirmation": true,
-		"explicitFolding.wildcardExclusions": [
-			"twee3-sc2"
-		],
-		"explicitFolding.rules": null
-	},
-	"extensions": {
-		"recommendations": [
-			"file-icons.file-icons",
-			"cyrusfirheir.twee3-language-tools",
-			"techer.open-in-browser",
-			"esbenp.prettier-vscode"
-		]
-	}
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "twee3LanguageTools.storyformat.current": "sugarcube-2",
+    "twee3LanguageTools.passage.list": true,
+    "twee3LanguageTools.passage.group": "Folder",
+    "twee3LanguageTools.passageCounter.openStoryMapWithoutConfirmation": true,
+    "explicitFolding.wildcardExclusions": ["twee3-sc2"],
+    "explicitFolding.rules": null
+  }
 }

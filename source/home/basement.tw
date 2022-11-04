@@ -14,10 +14,11 @@
     <<include slaveDemand>>
     <div class="row">\
         <div class="one-half column">\
-            <<if $slaves.length > 0>>\
+            <<set _slaves = Basement.getSlaves()>>\
+            <<if _slaves.length > 0>>\
                 Approach slave:
                 <<set _charcode = 97>>\
-                <<for _slave range $slaves>><<if _slave.location == 'basement'>>\
+                <<for _slave range _slaves>><<if _slave.location == 'basement'>>\
                     <<set 
                         if(_charcode == 104) _charcode += 2; 
                         _char = String.fromCharCode(_charcode++);
@@ -40,7 +41,7 @@
         </div>\
     </div>
     /*<<keyOption [[Go back upstairs|main]] 🚪>>*/\
-    <<keyOption [[The torture room|tort]] ⛓️>>
+    /*<<keyOption [[The torture room|tort]] ⛓️>>*/\
     <<keyAction "Go back upstairs" 🚪>>
         <<run
             $slaves.forEach(slave => {
@@ -49,7 +50,7 @@
         >>
         <<goto main>>
     <</keyAction>>
-    <<if Player.has("pizza")>>\
+    <<if Player.has("pizza") && Basement.getHungrySlaves().length>>\
         <<keyOption [[Give pizza to all hungry slaves|giveSlavesPizza]] 🍕>>
     <</if>>\
     <<include workOption>>\
@@ -63,7 +64,7 @@ You lay down the pizza<<if Player.has("pizza", 2)>>s<</if>> and all the slaves g
     var pizzaCount = inventory.get("pizza").count
     var hungerDepletedPerSlave = (pizzaCount * (8/3) * 90) / hungrySlaves.length;
     hungrySlaves.forEach(function(slave) {
-        slave.hunger = Math.max(0, slave.hunger - _hungerDepletedPerSlave);
+        slave.hunger = Math.max(0, slave.hunger - hungerDepletedPerSlave);
     });
     inventory.removeByName("pizza", pizzaCount);
 >>\

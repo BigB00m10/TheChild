@@ -28,14 +28,12 @@ const punishment: NpcInteraction = {
         else stats.push("freedomWish-20");
         return stats;
       },
-      showNpcStats: true,
     },
     scold: {
       optionText: "🗯 Scold $npc.pronoun.",
       contents: "You scold $npc.name for $punishReason.",
       minutesCost: 2,
       npcStats: ["obedience+5"],
-      showNpcStats: true,
     },
     spank: {
       optionText: "🖐 Give $npc.pronoun a spanking.",
@@ -64,7 +62,6 @@ const punishment: NpcInteraction = {
         else if (npc.love < 50) stats.push("freedomWish+5", "fear+20");
         return stats;
       },
-      showNpcStats: true,
     },
   },
   stopOption: "🚫 Don't do anything",
@@ -133,7 +130,6 @@ window.Interactions["slaveDemandHunger"] = {
         Thank you <<npcAddressPlayer>><<emoji ❤>>\
       <</if>>."`,
       npcStats: ["hunger-10", "love+1", "freedomWish-1"],
-      showNpcStats: true,
     },
     fullMeal: {
       optionText: "🍝 Make $npc.pronoun a full meal. (-80 hunger)",
@@ -146,7 +142,6 @@ window.Interactions["slaveDemandHunger"] = {
         Thanks <<npcAddressPlayer>>!! I love you <<emoji ♥>>\
       <</if>>"`,
       npcStats: ["hunger-80", "love+10", "freedomWish-20"],
-      showNpcStats: true,
     },
     cum: {
       playerRequirements: ["hasPenis"],
@@ -218,7 +213,6 @@ window.Interactions["slaveDemandHunger"] = {
         if (temp.willing) stats.push("love+5");
         return stats;
       },
-      showNpcStats: true,
     },
     pussy: {
       playerRequirements: ["hasPussy"],
@@ -287,7 +281,6 @@ window.Interactions["slaveDemandHunger"] = {
           window.Interactions.slaveDemandHunger.options["cum"]
             .npcStats as CallableFunction
         )(),
-      showNpcStats: true,
     },
     punish: punishment,
   },
@@ -300,7 +293,6 @@ window.Interactions["slaveDemandSleepWithPlayer"] = {
       optionText:
         "😏 Yes, sure but I'm going to sleep without clothes is that okay with you.",
       npcStats: ["fear-1", "love+5"],
-      showNpcStats: true,
       contents:
         "<<personUniqueness sleepPlayerNaked>><<run Person.setAchievement('okSleepWithPlayer')>>",
     },
@@ -308,7 +300,6 @@ window.Interactions["slaveDemandSleepWithPlayer"] = {
       npcRequirements: ["haveClothes"],
       optionText: "🍑 Yes, but you'll have to take your clothes off.",
       npcStats: ["obedience+10", "love+5"],
-      showNpcStats: true,
       contents:
         "<<personUniqueness sleepPersonNaked>><<run Person.setAchievement('okSleepWithPlayer')>>",
     },
@@ -316,7 +307,6 @@ window.Interactions["slaveDemandSleepWithPlayer"] = {
       optionText: "🚫 No.",
       contents: "$npc.name looks sad<<emoji 😢>>",
       npcStats: ["love-5%"],
-      showNpcStats: true,
     },
   },
 };
@@ -351,7 +341,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
           minutesCost: 10,
           contents: `A slow moan escapes $npc.possessive mouth as you put your hand over $npc.possessive $npc.genitals.all and slowly pleasure $npc.possessive <<- $npc.hasPussy ? 'clitoris' : $npc.genitals.male>>.
           You continue to rub $npc.pronoun until $npc.genPronoun orgasm<<thirdPersonVerb>> and spam<<thirdPersonVerb>> around the bed<<if $npc.hasPussy>> and wetting the bed a little<</if>>.
-          $npc.GenPronoun go<<thirdPersonVerbPlural>> to sleep after that.`,
+          $npc.GenPronoun go<<thirdPersonVerbPlural>> to sleep after that.<<npcCum>>`,
           next: wakeUpMorning,
         },
         back: OkSleepWithPlayerDemand.somethingElse,
@@ -370,7 +360,6 @@ window.Interactions["okSleepWithPlayerDemand"] = {
       contents:
         "You gently take you hand around $npc.possessive face and move it towards $npc.pronoun head through $npc.possessive $npc.hairColor hair and then you slowly rub $npc.possessive head as $npc.genPronoun looks you in the eyes directly and trusts you.",
       npcStats: ["love+1"],
-      showNpcStats: true,
       next: OkSleepWithPlayerDemand.baseOptions,
     },
     penAss: {
@@ -380,7 +369,6 @@ window.Interactions["okSleepWithPlayerDemand"] = {
       optionText: "🍑🍆 Penetrate $npc.possessive ass.",
       minutesCost: 10,
       npcStats: ["anusTraining+5"],
-      showNpcStats: true,
       contents: `You move your body over $npc.pronoun while still inside your bed sheets. $npc.GenPronoun opens $npc.possessive legs letting you invade $npc.possessive private space. You press your erected dick on $npc.possessive ass and $npc.genPronoun looks up at you while you enter inside $npc.possessive body. You can see $npc.possessive expression change as $npc.genPronoun feels <<- $npc.pronoun>>self being penetrated.
       You slowly continue to penetrate $npc.possessive ass as $npc.genPronoun continues to moan a little.<<checkNpcVirgin anal>>`,
       next: {
@@ -405,7 +393,6 @@ window.Interactions["okSleepWithPlayerDemand"] = {
           $npc.GenPronoun happily drinks your cum.<<run Player.manageEnergy(3)>>
           You are too tired to do anything and you sleep after that.`,
           npcStats: ["hunger-5"],
-          showNpcStats: true,
           next: wakeUpMorning,
         },
         back: {
@@ -423,7 +410,6 @@ window.Interactions["okSleepWithPlayerDemand"] = {
       optionText: "🍆 Penetrate $npc.possessive $npc.genitals.female",
       minutesCost: 10,
       npcStats: ["pussyTraining+5"],
-      showNpcStats: true,
       contents: `You move your body over $npc.pronoun while still inside your bed sheets. $npc.GenPronoun opens $npc.possessive legs letting you invade $npc.possessive private space. You press your erected dick on $npc.possessive cunny and $npc.genPronoun looks up at you while you enter inside $npc.possessive body. You can see $npc.possessive expression change as $npc.genPronoun feels <<- $npc.pronoun>>self being penetrated.
       A small moan escapes $npc.possessive body as you penetrate $npc.pronoun.<<checkNpcVirgin vagina>>`,
       next: {
@@ -432,7 +418,6 @@ window.Interactions["okSleepWithPlayerDemand"] = {
           contents: `You put your hand on $npc.possessive ass to penetrate deeper inside $npc.possessive cunny as you reach the deepest part of $npc.possessive cunny.
           $npc.GenPronoun clench<<thirdPersonVerbPlural>> and tighten<<thirdPersonVerb>> as your top of your dick kisses $npc.possessive womb.`,
           npcStats: ["pussyTraining+5"],
-          showNpcStats: true,
           next: {
             cumIn: {
               optionText: "💦 Cum inside (end).",
@@ -459,7 +444,6 @@ window.Interactions["okSleepWithPlayerDemand"] = {
       contents:
         "You get close to $npc.name under the sheets and tenderly hold $npc.name close in your arms until you two fall sleep.",
       npcStats: ["love+10", "fear-20"],
-      showNpcStats: true,
       next: wakeUpMorning,
     },
     sleep: {
@@ -491,7 +475,6 @@ window.Interactions["wakeUpAfterNightTogether"] = {
       $npc.GenPronoun groan<<thirdPersonVerb>> and wake<<thirdPersonVerb>> up.<<set $personWokeUp = true>>
       $npc.GenPronoun <<npcVerbIs>> still on top of you lying naked as $npc.genPronoun look<<thirdPersonVerb>> you in the eye.`,
       npcStats: ["fear-20", "love+5%", "freedomWish-5"],
-      showNpcStats: true,
       next: () =>
         ({
           kiss: {
@@ -499,7 +482,6 @@ window.Interactions["wakeUpAfterNightTogether"] = {
             contents:
               "You kiss $npc.pronoun slowly waking $npc.pronoun up even further.",
             npcStats: ["love+5%"],
-            showNpcStats: true,
             next: () => window.Interactions.wakeUpAfterNightTogether.options,
           },
           ...window.Interactions.wakeUpAfterNightTogether.options,
@@ -513,15 +495,13 @@ window.Interactions["wakeUpAfterNightTogether"] = {
       After that your finger slides smoothly inside $npc.pronoun tight $npc.genitals.all.<</if>>`,
       npcStats: (npc) =>
         npc.hasPussy ? ["pussyTraining%+20", "lust+1%"] : ["lust+1%"],
-      showNpcStats: true,
       next: {
         cum: {
           optionText: "💦 Make $npc.pronoun cum (end).",
           minutesCost: 10,
           contents: `<<if $npc.age gt 4>><<npcSay "Ah...   .  . This feels soo good">>
-          <</if>>$npc.GenPronoun scream<<thirdPersonVerb>> and orgasm<<thirdPersonVerb>>.`,
+          <</if>>$npc.GenPronoun scream<<thirdPersonVerb>> and orgasm<<thirdPersonVerb>>.<<npcCum>>`,
           npcStats: ["love+10", "freedomWish-10"],
-          showNpcStats: true,
         },
         back: wakeUpMorningBack,
       },
@@ -533,7 +513,6 @@ window.Interactions["wakeUpAfterNightTogether"] = {
       <<npcSay "Mnn- hmnn">> $npc.GenPronoun moan<<thirdPersonVerb>> a little.
       Your finger moves around the edge of $npc.possessive asshole for a couple of seconds and then it moves inside.`,
       npcStats: ["anusTraining%+20", "lust+1%"],
-      showNpcStats: true,
       next: () =>
         window.Interactions.wakeUpAfterNightTogether
           .options as NpcInteractionOptions,
@@ -550,7 +529,6 @@ window.Interactions["wakeUpAfterNightTogether"] = {
       As $npc.pronoun clench<<thirdPersonVerbPlural>> $npc.possessive butt cheeks in pleasure<<if $npc.hasPussy>> wetting the bed a little<</if>>. 
       $npc.Possessive face is bright red.`,
       npcStats: ["love+10", "freedomWish-10"],
-      showNpcStats: true,
     },
   },
 };

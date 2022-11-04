@@ -67,7 +67,6 @@ window.Interactions["slave"] = {
           contents:
             '<<run Person.setAchievement("howAreYou")>><<personUniqueness howAreYou>>',
           npcStats: ["love+5%", "fear-5"],
-          showNpcStats: true,
           next: talkOptions,
         },
         sexExp: {
@@ -102,7 +101,6 @@ window.Interactions["slave"] = {
           <<npcSay _hpSentence>>`,
           minutesCost: 5,
           npcStats: ["lust%+40"],
-          showNpcStats: true,
           next: {
             askThingsDone: {
               canBeShown: () =>
@@ -185,7 +183,6 @@ window.Interactions["slave"] = {
       optionText: "🤗 give a hug to $npc.name.",
       minutesCost: 2,
       contents: `<<personUniqueness hug>>`,
-      showNpcStats: true,
       next: baseInteractionOptions,
     },
     pushDown: {
@@ -235,7 +232,6 @@ window.Interactions["slave"] = {
                 You can easily fuck $npc.possessive asshole with your finger. <<emoji 😛>>\
                 <</if>>`,
               npcStats: ["anusTraining%+40", "lust+1%"],
-              showNpcStats: true,
               next: afterStrip,
             },
             fingerPussy: {
@@ -258,7 +254,6 @@ window.Interactions["slave"] = {
                   <</if>>\
                 <</if>>`,
               npcStats: ["pussyTraining%+40", "lust+10%", "+aroused"],
-              showNpcStats: true,
               next: {
                 cum: {
                   optionText: "💦 Make $npc.pronoun cum",
@@ -270,7 +265,6 @@ window.Interactions["slave"] = {
                     "freedomWish-10",
                     "hunger+10",
                   ],
-                  showNpcStats: true,
                   next: afterStrip,
                 },
                 else: {
@@ -305,7 +299,6 @@ window.Interactions["slave"] = {
   
                   How do you want to proceed?`,
                   npcStats: ["fear-5", "lust+30%"],
-                  showNpcStats: true,
                   next: () => afterStrip().pushDickVag.next,
                   stopOption: "🛑 Stop right there.",
                 },
@@ -315,7 +308,6 @@ window.Interactions["slave"] = {
                   minutesCost: 20,
                   contents: `You press your dick against $npc.possessive asshole.`,
                   npcStats: ["fear-5", "lust+30%"],
-                  showNpcStats: true,
                   next: () => afterStrip().pushDickAnus.next,
                   stopOption: "🛑 Stop right there.",
                 },
@@ -397,7 +389,6 @@ window.Interactions["slave"] = {
                     }
                     return stats;
                   },
-                  showNpcStats: true,
                   next: () => afterStrip().pushDickVag.next,
                   altOptions: (npc, current) => {
                     if (Temporary().cockEntered) {
@@ -431,7 +422,6 @@ window.Interactions["slave"] = {
                       stats.push("pussyTraining%+90");
                     return stats;
                   },
-                  showNpcStats: true,
                   next: {
                     slow: {
                       optionText: "🦥 Fuck $npc.pronoun slowly.",
@@ -471,7 +461,6 @@ window.Interactions["slave"] = {
                           stats.push("love+5");
                         return stats;
                       },
-                      showNpcStats: true,
                       next: () => afterStrip().pushDickVag.next.ram.next,
                     },
                     fast: {
@@ -514,7 +503,6 @@ window.Interactions["slave"] = {
                           stats.push("love+5");
                         return stats;
                       },
-                      showNpcStats: true,
                       next: () => afterStrip().pushDickVag.next.ram.next,
                     },
                     cumInside: {
@@ -607,7 +595,6 @@ window.Interactions["slave"] = {
                     }
                     return stats;
                   },
-                  showNpcStats: true,
                   next: () => afterStrip().pushDickAnus.next,
                   altOptions: (npc, current) => {
                     if (Temporary().cockEntered) {
@@ -631,7 +618,6 @@ window.Interactions["slave"] = {
                     npc.anusTraining < 80
                       ? ["fear+50", "freedomWish+25", "anusTraining%+60"]
                       : ["fear+5", "lust+2%", "anusTraining%+90"],
-                  showNpcStats: true,
                   next: {
                     slow: {
                       optionText: "🦥 Fuck $npc.pronoun slowly.",
@@ -671,7 +657,6 @@ window.Interactions["slave"] = {
                           stats.push("love+5");
                         return stats;
                       },
-                      showNpcStats: true,
                       next: () => afterStrip().pushDickAnus.next.ram.next,
                     },
                     fast: {
@@ -714,7 +699,6 @@ window.Interactions["slave"] = {
                           stats.push("love+5");
                         return stats;
                       },
-                      showNpcStats: true,
                       next: () => afterStrip().pushDickAnus.next.ram.next,
                     },
                     cumInside: {
@@ -825,7 +809,6 @@ window.Interactions["slave"] = {
                         }
                         return stats;
                       },
-                      showNpcStats: true,
                       next: () => afterStrip().useDildo.next.dildoVag.next,
                       altOptions: (npc, current) => {
                         if (Temporary().cockEntered) {
@@ -860,7 +843,6 @@ window.Interactions["slave"] = {
                           stats.push("pussyTraining%+90");
                         return stats;
                       },
-                      showNpcStats: true,
                       next: {
                         slow: {
                           optionText:
@@ -901,7 +883,6 @@ window.Interactions["slave"] = {
                               stats.push("love+5");
                             return stats;
                           },
-                          showNpcStats: true,
                           next: () =>
                             afterStrip().useDildo.next.dildoVag.next.ram.next,
                         },
@@ -949,7 +930,6 @@ window.Interactions["slave"] = {
                               stats.push("love+5");
                             return stats;
                           },
-                          showNpcStats: true,
                           next: () =>
                             afterStrip().useDildo.next.dildoVag.next.ram.next,
                         },
@@ -1030,7 +1010,6 @@ window.Interactions["slave"] = {
                         }
                         return stats;
                       },
-                      showNpcStats: true,
                       next: () => afterStrip().useDildo.next.dildoAnus.next,
                       altOptions: (npc, current) => {
                         if (Temporary().cockEntered) {
@@ -1054,7 +1033,6 @@ window.Interactions["slave"] = {
                         npc.anusTraining < 80
                           ? ["fear+50", "freedomWish+25", "anusTraining%+60"]
                           : ["fear+5", "lust+2%", "anusTraining%+90"],
-                      showNpcStats: true,
                       next: {
                         slow: {
                           optionText:
@@ -1095,7 +1073,6 @@ window.Interactions["slave"] = {
                               stats.push("love+5");
                             return stats;
                           },
-                          showNpcStats: true,
                           next: () =>
                             afterStrip().useDildo.next.dildoAnus.next.ram.next,
                         },
@@ -1139,7 +1116,6 @@ window.Interactions["slave"] = {
                               stats.push("love+5");
                             return stats;
                           },
-                          showNpcStats: true,
                           next: () =>
                             afterStrip().useDildo.next.dildoAnus.next.ram.next,
                         },
@@ -1195,7 +1171,6 @@ window.Interactions["slave"] = {
                               stats.push("love+5");
                             return stats;
                           },
-                          showNpcStats: true,
                           next: () =>
                             afterStrip().useDildo.next.dildoAnus.next.ram.next,
                         },
@@ -1242,7 +1217,6 @@ window.Interactions["slave"] = {
                 if (npc.lust >= 65 && npc.love > 50) stats = ["love+5"];
                 return stats;
               },
-              showNpcStats: true,
               next: afterStrip,
             },
             gentleRubSlaveGen: {
@@ -1258,7 +1232,6 @@ window.Interactions["slave"] = {
                   @@color:deeppink;$npc.genPronoun gets hard@@.
                 <</if>>`,
               npcStats: ["fear-5", "lust+20%", "+aroused"],
-              showNpcStats: true,
               next: afterStrip,
             },
             getPenetrated: {
@@ -1276,7 +1249,6 @@ window.Interactions["slave"] = {
     
                     It looks like <<genPronounIs>> about to cum. What do you do?<<checkNpcVirgin penis>>`,
                   npcStats: ["fear-5", "lust+30%"],
-                  showNpcStats: true,
                   next: () => afterStrip().getPenPussy.next,
                   stopOption: "🛑 Stop right there.",
                 },
@@ -1289,7 +1261,6 @@ window.Interactions["slave"] = {
     
                     It looks like <<genPronounIs>> about to cum. What do you do?<<checkNpcVirgin penis>>`,
                   npcStats: ["fear-5", "lust+30%"],
-                  showNpcStats: true,
                   next: () => afterStrip().getPenAss.next,
                   stopOption: "🛑 Stop right there.",
                 },
@@ -1306,7 +1277,6 @@ window.Interactions["slave"] = {
 
                 It looks like <<genPronounIs>> about to cum. What do you do?<<checkNpcVirgin penis>>`,
               npcStats: ["fear-5", "lust+30%"],
-              showNpcStats: true,
               next: {
                 endure: {
                   optionText: "💪 Tell $npc.pronoun to endure it.",
@@ -1315,7 +1285,6 @@ window.Interactions["slave"] = {
 
                     $npc.name looks troubled but obeys.`,
                   npcStats: ["fear+1", "obedience+2"],
-                  showNpcStats: true,
                   playerStats: ["lust-10"],
                   next: () => afterStrip().getPenPussy.next,
                   stopOption: "🛑 Stop right there.",
@@ -1326,7 +1295,7 @@ window.Interactions["slave"] = {
                       You feel $npc.name shaking while $npc.genPronoun has a nice dry cum.
                     <<else>>\
                       You feel $npc.possessive dick shooting $npc.possessive seed inside you.
-                    <</if>>`,
+                    <</if>><<npcCum>>`,
                   npcStats: [
                     "lust+30%",
                     "love+10",
@@ -1335,7 +1304,6 @@ window.Interactions["slave"] = {
                     "-aroused",
                   ],
                   playerStats: ["lust-10"],
-                  showNpcStats: true,
                   stopOption: "💤 Let $npc.pronoun rest.",
                 },
               },
@@ -1353,7 +1321,6 @@ window.Interactions["slave"] = {
 
                 It looks like <<genPronounIs>> about to cum. What do you do?<<checkNpcVirgin penis>>`,
               npcStats: ["fear-5", "lust+30%"],
-              showNpcStats: true,
               next: {
                 endure: {
                   optionText: "💪 Tell $npc.pronoun to endure it.",
@@ -1362,7 +1329,6 @@ window.Interactions["slave"] = {
 
                     $npc.name looks troubled but obeys.`,
                   npcStats: ["fear+1", "obedience+2"],
-                  showNpcStats: true,
                   playerStats: ["lust-10"],
                   next: () => afterStrip().getPenAss.next,
                   stopOption: "🛑 Stop right there.",
@@ -1373,7 +1339,7 @@ window.Interactions["slave"] = {
                       You feel $npc.name shaking while $npc.genPronoun has a nice dry cum.
                     <<else>>\
                       You feel $npc.possessive dick shooting his seed in your bowels.
-                    <</if>>`,
+                    <</if>><<npcCum>>`,
                   npcStats: [
                     "lust+30%",
                     "love+10",
@@ -1382,7 +1348,6 @@ window.Interactions["slave"] = {
                     "-aroused",
                   ],
                   playerStats: ["lust-10"],
-                  showNpcStats: true,
                   stopOption: "💤 Let $npc.pronoun rest.",
                 },
               },
@@ -1413,7 +1378,6 @@ window.Interactions["slave"] = {
                   contents: `You squeeze some lube from the tube and thoroughly apply it to $npc.name's pussy making it nice and slippery.
                       It seems that your rubbing has caused a faint reaction in $npc.pronoun`,
                   npcStats: ["+lubricatedPussy", "lust+1%"],
-                  showNpcStats: true,
                   next: afterStrip,
                 },
                 back: {
@@ -1489,7 +1453,6 @@ window.Interactions["slave"] = {
         if (npc.mouthTraining >= 60) stats.push("hunger-2");
         return stats;
       },
-      showNpcStats: true,
       next() {
         let thisPunish: NpcInteraction = {
           optionText: "",
@@ -1511,7 +1474,6 @@ window.Interactions["slave"] = {
               if (npc.love > 80 || npc.lust > 60) stats.push("lust+10%");
               return stats;
             },
-            showNpcStats: true,
             next: () =>
               (
                 window.Interactions.slave.options["askLickPus"]
@@ -1559,7 +1521,6 @@ window.Interactions["slave"] = {
         if (temp.willing) stats.push("lust+10%");
         return stats;
       },
-      showNpcStats: true,
       next() {
         let thisPunish: NpcInteraction = {
           optionText: "",
@@ -1581,7 +1542,6 @@ window.Interactions["slave"] = {
               $npc.GenPronoun then licks all around them while giving you gentle sucks on each ball.\
             <</if>>`,
             npcStats: ["fear-5", "mouthTraining%+40"],
-            showNpcStats: true,
             next: afterPenToMouth,
           },
           shaft: {
@@ -1601,7 +1561,6 @@ window.Interactions["slave"] = {
               else stats.push("mouthTraining%+70");
               return stats;
             },
-            showNpcStats: true,
             next: afterPenToMouth,
           },
           deep: {
@@ -1652,7 +1611,6 @@ window.Interactions["slave"] = {
               if (temp.refused) return temp.okBj ? ["fear+5"] : ["fear+10"];
               return [npc.lust >= 80 ? "mouthTraining+20" : "mouthTraining+10"];
             },
-            showNpcStats: true,
             next: afterPenToMouth,
           },
           punish: thisPunish,
@@ -1676,7 +1634,6 @@ window.Interactions["slave"] = {
             <</if>>\
             `,
             npcStats: (npc) => afterPenToMouth().shaft.npcStats(npc),
-            showNpcStats: true,
             next: afterPenToMouth,
           },
           cumInside: {
@@ -1694,7 +1651,6 @@ window.Interactions["slave"] = {
             <</if>>`,
             npcStats: (npc) =>
               npc.hunger >= 50 || npc.lust >= 80 ? ["hunger-5"] : null,
-            showNpcStats: true,
             next: () => afterStrip(),
           },
           ...cumOutsideOptions,
@@ -1715,7 +1671,6 @@ window.Interactions["slave"] = {
         if (npc.hunger > 50) stats.push("hunger+2");
         return stats;
       },
-      showNpcStats: true,
       next: baseInteractionOptions,
     },
     rubVagToSlaveFace: {
@@ -1732,7 +1687,6 @@ window.Interactions["slave"] = {
         if (npc.hunger > 50) stats.push("hunger+2");
         return stats;
       },
-      showNpcStats: true,
       next: baseInteractionOptions,
     },
     bringUpstairs: {
@@ -1753,7 +1707,6 @@ window.Interactions["slave"] = {
         npc.love < 60 && npc.age >= 1
           ? ["freedomWish+" + Math.floor(Math.min((npc.age * 25) / 6, 25))]
           : null,
-      showNpcStats: true,
       next: {
         up: {
           optionText: "🔼 Go upstairs",

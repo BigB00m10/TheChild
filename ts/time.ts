@@ -1,3 +1,16 @@
+class TimedEvent {
+  //The minimum number of hours to pass in order to trigger this event.
+  timeoutHours: number;
+  //The action to execute when this event is triggered, stored in a string so it can be stored in SugarCube history and save.
+  action: string;
+  //Optional reference to identify this event and modify or delete it
+  ref?: any;
+  constructor(timeoutHours: number, action: () => void, ref?: any) {
+    this.timeoutHours = timeoutHours;
+    this.action = action.toString();
+    if (ref) this.ref = ref;
+  }
+}
 class Now {
   //The game has a full date/time and this is the date/time where the game starts.
   //It's also the Monday of the week when this was implemented.
@@ -72,9 +85,8 @@ class Now {
       this.dateFromTimeString(timeString, currentDate).getTime()
     );
   }
-  //readonly onDaysPassed = new LiteEvent<number>();
   //This action is used like an event. Every time a day or more passes this action should be called.
-  daysPassed(amount: number) {
+  daysPassed(amount: number): void {
     if (amount < 1) return;
     let variables = Variables();
     let player = variables.player as Player;
@@ -100,38 +112,70 @@ class Now {
       });
       player.lust = Math.min(100, player.lust + 10);
     }
-    //this.onDaysPassed.trigger(amount);
+  }
+  //Same as above but with hours, also to be used with minutes by giving hour fractions.
+  //This event it's independent of daysPassed if hours pass and day changes both events must be called.
+  hoursPassed(amount: number): void {
+    window.Player.manageEnergy(amount);
+    let timedEvents = Variables().timedEvents as TimedEvent[];
+    if (timedEvents) {
+      for (
+        let index = timedEvents.length - 1;
+        index < timedEvents.length;
+        index++
+      ) {
+        const element = timedEvents[index];
+        element.timeoutHours -= amount;
+        if (element.timeoutHours <= 0) {
+          eval(element.action);
+          timedEvents.splice(index);
+        }
+      }
+      if (!timedEvents.length) Variables().timedEvents = undefined;
+    }
+  }
+  //Adds a timed event that triggers after the specified number of hours (or fraction of hours) has passed. See TimedEvent class for details.
+  addTimedEvent(timeoutHours: number, action: () => void, ref?: any): void {
+    if (!Variables().timedEvents) Variables().timedEvents = [];
+    Variables().timedEvents.push(new TimedEvent(timeoutHours, action));
+  }
+  extendTimedEvent(ref: any, addHours: number) {
+    let timedEvents = Variables().timedEvents;
+    if (!timedEvents) return;
+    let event = <TimedEvent>(
+      timedEvents.firstOrDefault((e: TimedEvent) => e.ref === ref)
+    );
+    if (!event) return;
+    event.timeoutHours += addHours;
   }
   //Makes the specified number of hours pass in the game.
-  addHours(amount: number) {
+  addHours(amount: number): void {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
     currentDate.setHours(currentDate.getHours() + amount);
     Npc.updateLocations(currentDate);
-    window.Player.manageEnergy(amount);
+    this.hoursPassed(amount);
     this.daysPassed(currentDate.getDay() - originalDay);
   }
   //Skip time until the specified time of the day is reached (Even if it's on the next day).
-  skipTo(timeString: string) {
+  skipTo(timeString: string): void {
     let currentDate = this.getCurrentDate();
     let target = this.dateFromTimeString(timeString, currentDate);
     if (target.getTime() <= currentDate.getTime()) {
       target.setDate(target.getDate() + 1);
       this.daysPassed(1);
     }
-    window.Player.manageEnergy(
-      Math.abs(target.getTime() - currentDate.getTime()) / 36e5
-    );
+    this.hoursPassed(Math.abs(target.getTime() - currentDate.getTime()) / 36e5);
     currentDate.setTime(target.getTime());
     Npc.updateLocations(currentDate);
   }
   //Makes the specified number of minutes pass in the game.
-  addMinutes(amount: number) {
+  addMinutes(amount: number): void {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
     currentDate.setMinutes(currentDate.getMinutes() + amount);
     Npc.updateLocations(currentDate);
-    window.Player.manageEnergy(amount / 60);
+    this.hoursPassed(amount / 60);
     this.daysPassed(currentDate.getDay() - originalDay);
   }
   //Returns the name of the current weekday in English

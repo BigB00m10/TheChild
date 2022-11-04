@@ -2,8 +2,46 @@
   "name": "theChildTrainer",
   "version": "0.1.10.3",
   "twee3LanguageTools.storyformat.current": "sugarcube-2",
-  "cSpell.ignoreRegExpList": [
-    "/Names:.+\\][^\\]]+/g",
-    "/No+/g"
-  ]
+  "cSpell.ignoreRegExpList": ["/Names:.+\\][^\\]]+/g", "/No+/g"],
+  "cSpell.words": [
+    "baaack",
+    "Carrabina",
+    "coprime",
+    "cumshot",
+    "cumshots",
+    "cunny",
+    "cyrusfirheir",
+    "deeppink",
+    "esbenp",
+    "Fairmath",
+    "fauxhawkian",
+    "herms",
+    "hmnn",
+    "Hungryyy",
+    "iiit",
+    "ldquo",
+    "newmeter",
+    "nobr",
+    "passageinit",
+    "passagestart",
+    "pepee",
+    "precum",
+    "rdquo",
+    "showmeter",
+    "sowwyyy",
+    "storyformat",
+    "sugarcube",
+    "techer",
+    "textbox",
+    "Trib",
+    "Waaaah",
+    "Yesh"
+  ],
+  "twee3LanguageTools.passage.list": true,
+  "twee3LanguageTools.passage.group": "Folder",
+  "twee3LanguageTools.passageCounter.openStoryMapWithoutConfirmation": true,
+  "explicitFolding.wildcardExclusions": [
+    "twee3-sc2"
+  ],
+  "explicitFolding.rules": null
 }

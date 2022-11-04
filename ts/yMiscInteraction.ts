@@ -35,7 +35,6 @@ window.Interactions["houseSlave"] = {
           contents: `You change your mind and let $npc.name go.
           ''$npc.name'': Thank you!!<<emoji 😊>>`,
           npcStats: ["obedience+30", "love+5"],
-          showNpcStats: true,
           timeIncreaseNpcHunger: false,
         },
         persist: {

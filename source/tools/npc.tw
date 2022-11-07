@@ -83,13 +83,11 @@ You approach $npc.pronoun.
 <<if $npc.fear gt 90>>\
     $npc.GenPronoun walks back scared and wodering what you will do to $npc.pronoun.
 <<elseif $npc.hasPenis && $npc.lust gte 30 && $npc.fear lt 25>>\
-    <<set $npc.aroused = true>>\
     $npc.GenPronoun looks at you with expectancy. <<if $npc.haveClothes>>@@color:deeppink;You can see a bump in $npc.possessive pants@@.<<else>>@@color:deeppink;$npc.GenPronoun's already erected@@. <<emoji ❤>><</if>>
-    (High lust made $npc.pronoun "happy" to see you)
+    (High lust made $npc.pronoun "happy" to see you)<<npcStimulated>>
 <<elseif $npc.lust gte 50 && $npc.fear lt 25>>
-    <<set $npc.aroused = true>>\
     $npc.GenPronoun looks at you with expectancy. <<if !$npc.haveClothes>>@@color:deeppink;$npc.Possessive pussy is wet and leaking@@. <<emoji ❤>><</if>>
-    (High lust made $npc.pronoun "happy" to see you)
+    (High lust made $npc.pronoun "happy" to see you)<<npcStimulated>>\
 <<else>>\
     $npc.GenPronoun nervously looks at you with $npc.possessive $npc.eyeColor eyes.
 <</if>>

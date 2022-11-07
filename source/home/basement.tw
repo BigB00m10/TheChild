@@ -40,16 +40,8 @@
             <</if>>\
         </div>\
     </div>
-    /*<<keyOption [[Go back upstairs|main]] 🚪>>*/\
+    <<keyOption [[Go back upstairs|main]] 🚪>>\
     /*<<keyOption [[The torture room|tort]] ⛓️>>*/\
-    <<keyAction "Go back upstairs" 🚪>>
-        <<run
-            $slaves.forEach(slave => {
-                slave.aroused = false;
-            });
-        >>
-        <<goto main>>
-    <</keyAction>>
     <<if Player.has("pizza") && Basement.getHungrySlaves().length>>\
         <<keyOption [[Give pizza to all hungry slaves|giveSlavesPizza]] 🍕>>
     <</if>>\

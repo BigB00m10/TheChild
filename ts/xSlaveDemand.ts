@@ -315,7 +315,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
   <<if $npc.uniqueness.shy or $npc.love gte 80>>$npc.GenPronoun blushes
   <<else>>$npc.GenPronoun look<<thirdPersonVerb>> nervous...
   <</if>><<if $npc.love gte 80>>\
-    $npc.GenPronoun happily take<<thirdPersonVerb>> all of $npc.possessive clothes off.<<if $npc.lust gte 60>>You can see $npc.possessive <<- $npc.hasPussy ? "wet " + $npc.genitals.female : "erected " + $npc.genitals.male>><<emoji 👀>><<set $npc.aroused to true>><</if>>
+    $npc.GenPronoun happily take<<thirdPersonVerb>> all of $npc.possessive clothes off.<<if $npc.lust gte 60>>You can see $npc.possessive <<- $npc.hasPussy ? "wet " + $npc.genitals.female : "erected " + $npc.genitals.male>><<emoji 👀>><<npcStimulated>><</if>>
     $npc.GenPronoun hastily climb<<thirdPersonVerb>> in bed with you.
     You also climb in bed with $npc.pronoun, after taking your clothes off.
   <<else>>\
@@ -332,9 +332,8 @@ window.Interactions["okSleepWithPlayerDemand"] = {
         <<elseif $npc.hasPenis>>\
           You slowly stroke $npc.possessive erected $npc.age year old $npc.genitals.male.
         <</if>>\
-      <</if>>`,
+      <</if>><<npcStimulated>>`,
       minutesCost: 3,
-      npcStats: ["+aroused"],
       next: {
         cum: {
           optionText: "💦 Make $npc.pronoun cum (end).",
@@ -351,7 +350,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
       optionText: "🍑🖐 Touch $npc.possessive ass.",
       minutesCost: 3,
       contents: `You slide your hand down $npc.possessive waist and back to touch the $npc.age year old butt.
-      The sensation on your hand feels amazing as you caress $npc.possessive butt cheeks and crack.`,
+      The sensation on your hand feels amazing as you caress $npc.possessive butt cheeks and crack.<<npcStimulated>>`,
       next: OkSleepWithPlayerDemand.baseOptions,
     },
     pat: {
@@ -411,7 +410,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
       minutesCost: 10,
       npcStats: ["pussyTraining+5"],
       contents: `You move your body over $npc.pronoun while still inside your bed sheets. $npc.GenPronoun opens $npc.possessive legs letting you invade $npc.possessive private space. You press your erected dick on $npc.possessive cunny and $npc.genPronoun looks up at you while you enter inside $npc.possessive body. You can see $npc.possessive expression change as $npc.genPronoun feels <<- $npc.pronoun>>self being penetrated.
-      A small moan escapes $npc.possessive body as you penetrate $npc.pronoun.<<checkNpcVirgin vagina>>`,
+      A small moan escapes $npc.possessive body as you penetrate $npc.pronoun.<<checkNpcVirgin vagina>><<npcStimulated>>`,
       next: {
         deep: {
           optionText: "🍆 Penetrate deeper",

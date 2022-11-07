@@ -3,12 +3,20 @@ class TimedEvent {
   timeoutHours: number;
   //The action to execute when this event is triggered, stored in a string so it can be stored in SugarCube history and save.
   action: string;
-  //Optional reference to identify this event and modify or delete it
-  ref?: any;
-  constructor(timeoutHours: number, action: () => void, ref?: any) {
+  //Reference to identify this event and modify or delete it.
+  ref: any;
+  //If a reference is not provided the contents of the action will be used as reference instead.
+  constructor(timeoutHours: number, javascript: string, ref?: any);
+  constructor(timeoutHours: number, action: () => void, ref?: any);
+  constructor(
+    timeoutHours: number,
+    actionOrJavascript: (() => void) | string,
+    ref?: any
+  ) {
     this.timeoutHours = timeoutHours;
-    this.action = action.toString();
+    this.action = actionOrJavascript.toString();
     if (ref) this.ref = ref;
+    else this.ref = this.action;
   }
 }
 class Now {
@@ -117,7 +125,7 @@ class Now {
   //This event it's independent of daysPassed if hours pass and day changes both events must be called.
   hoursPassed(amount: number): void {
     window.Player.manageEnergy(amount);
-    let timedEvents = Variables().timedEvents as TimedEvent[];
+    const timedEvents = Variables().timedEvents as TimedEvent[];
     if (timedEvents) {
       for (
         let index = timedEvents.length - 1;
@@ -135,18 +143,54 @@ class Now {
     }
   }
   //Adds a timed event that triggers after the specified number of hours (or fraction of hours) has passed. See TimedEvent class for details.
-  addTimedEvent(timeoutHours: number, action: () => void, ref?: any): void {
+  //Providing a reference object or value to the event it's optional. But necessary if you need to modify or check the event afterwards.
+  //If a reference is not provided the contents of the action will be used as reference instead.
+  //If a timed event with the same reference exist, that event timeout will be extended instead of creating a new one.
+  addTimedEvent(timeoutHours: number, action: () => void, ref?: any): void;
+  addTimedEvent(timeoutHours: number, javascript: string, ref?: any): void;
+  addTimedEvent(
+    timeoutHours: number,
+    actionOrJavascript: (() => void) | string,
+    ref?: any
+  ): void {
     if (!Variables().timedEvents) Variables().timedEvents = [];
-    Variables().timedEvents.push(new TimedEvent(timeoutHours, action));
+    const javascript = actionOrJavascript.toString();
+    if (!ref) ref = javascript;
+    const existing = this.getTimedEventByRef(ref);
+    if (existing) {
+      existing.timeoutHours = timeoutHours;
+      return;
+    }
+    Variables().timedEvents.push(new TimedEvent(timeoutHours, javascript, ref));
   }
-  extendTimedEvent(ref: any, addHours: number) {
-    let timedEvents = Variables().timedEvents;
-    if (!timedEvents) return;
-    let event = <TimedEvent>(
-      timedEvents.firstOrDefault((e: TimedEvent) => e.ref === ref)
-    );
+  //Gets a timed event by its reference.
+  getTimedEventByRef(ref: any): TimedEvent {
+    const timedEvents = Variables().timedEvents;
+    if (!timedEvents) return null;
+    return timedEvents.firstOrDefault((e: TimedEvent) => e.ref === ref);
+  }
+  //Extend a specific timed event (with the provided reference) by the specified hours (adds hours to the timeout)
+  extendTimedEvent(ref: any, addHours: number): void {
+    const event = this.getTimedEventByRef(ref);
     if (!event) return;
     event.timeoutHours += addHours;
+  }
+  //Erases the first timed event with the specified reference
+  removeTimedEvent(ref: any): void {
+    const timedEvents: TimedEvent[] = Variables().timedEvents;
+    if (!timedEvents) return;
+    for (let index = 0; index < timedEvents.length; index++)
+      if (timedEvents[index].ref === ref) {
+        timedEvents.splice(index);
+        break;
+      }
+    if (!timedEvents.length) Variables().timedEvents = undefined;
+  }
+  //Makes sure that a specific timed event (with the provided reference) has at least the hours specified.
+  assertTimedEvent(ref: any, hours: number): void {
+    const event = this.getTimedEventByRef(ref);
+    if (!event) return;
+    event.timeoutHours = Math.max(event.timeoutHours, hours);
   }
   //Makes the specified number of hours pass in the game.
   addHours(amount: number): void {

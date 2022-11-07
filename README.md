@@ -16,7 +16,7 @@ Once all that is installed and the project is cloned or downloaded you can proce
 
 1. Open the file **theChildTrainer.code-workspace** with VSCode.
 2. Open a terminal (Menu: Terminal -> New Terminal).
-3. While connected to the internet, enter the command `npm install` into the terminal to download and install project dependencies (specially [Babel js](https://babeljs.io/) transcompiler for the TypeScript).
+3. While connected to the internet, enter the command `npm ci` into the terminal to download and install project dependencies (specially [Babel js](https://babeljs.io/) transcompiler for the TypeScript).
 4. Build the project (by default Ctrl+Shift+B or Cmd+Shift+B).
 
 Once done compiling the terminal will show the phrase "done compiling" and the compiled html will be in the **releases** folder.

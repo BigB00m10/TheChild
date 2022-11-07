@@ -195,8 +195,8 @@ Macro.add("npcInteraction", {
   handler: function () {
     let vars = variables() as any;
     vars.npc = window.Person.get(vars.npc.uid);
-    const npc = vars.npc;
-    const steps = vars.npcInteractionRoute.split(".");
+    const npc: Npc = vars.npc;
+    const steps: string[] = vars.npcInteractionRoute.split(".");
     const collection = window.Interactions[steps[0]];
     let options = callOrGetItself(collection.options);
     let interaction: NpcInteraction;
@@ -230,12 +230,17 @@ Macro.add("npcInteraction", {
         npcHungerIncrease = Math.max(1, Math.round((minutes / 8) * 0.46));
     }
     let showNpcStats = interaction ? interaction.showNpcStats : undefined;
-    let extraNpcStats = Temporary().npcStatModifiers;
+    const extraNpcStats = Temporary().npcStatModifiers;
     if ((interaction && interaction.npcStats) || extraNpcStats) {
-      let npcStats = [];
-      if (interaction && interaction.npcStats)
-        npcStats.push(...callOrGetItself(interaction.npcStats, npc));
-      if (extraNpcStats) npcStats.push(...callOrGetItself(extraNpcStats, npc));
+      const npcStats = [];
+      if (interaction && interaction.npcStats) {
+        const stats = callOrGetItself(interaction.npcStats, npc);
+        if (stats) npcStats.push(...stats);
+      }
+      if (extraNpcStats) {
+        const stats = callOrGetItself(extraNpcStats, npc);
+        if (stats) npcStats.push(...stats);
+      }
       if (npcStats.length) {
         if (showNpcStats === undefined) showNpcStats = true;
         if (
@@ -246,6 +251,18 @@ Macro.add("npcInteraction", {
         result += "@@color:yellow;";
         let first = true;
         npcStats.forEach((change) => {
+          switch (change) {
+            case "+aroused":
+              window.Now.addTimedEvent(
+                0.5, //Schedule this NPC to lose its arousal in half an hour from now.
+                `window.Person.get(${npc.uid}).aroused = false`,
+                npc.uid + "arousalEnd"
+              );
+              break;
+            case "-aroused":
+              window.Now.removeTimedEvent(npc.uid + "arousalEnd");
+              break;
+          }
           if (first) first = false;
           else result += ", ";
           let varName: string;
@@ -466,13 +483,25 @@ Macro.add("personUniqueness", {
     }
   },
 });
-//To use in an interaction to indicate NPC ejaculating and decrease as much lust as said in the settings.
+//To use in an interaction to indicate NPC ejaculating
 Macro.add("npcCum", {
   handler: function () {
-    let $lustDecCum = Variables().settings.lustDecCum;
-    if ($lustDecCum) {
+    const $npc: Npc = Variables().npc;
+    const lustDecCum = Variables().settings.lustDecCum;
+    if (!lustDecCum && $npc.hasPussy) return;
+    if (!Temporary().npcStatModifiers) Temporary().npcStatModifiers = [];
+    const _npcStatModifiers = Temporary().npcStatModifiers;
+    if (lustDecCum) _npcStatModifiers.push("lust-" + lustDecCum); //decrease as much lust as said in the settings
+    if (!$npc.hasPussy) _npcStatModifiers.push("-aroused");
+  },
+});
+//To use in an interaction to indicate NPC is stimulated.
+Macro.add("npcStimulated", {
+  handler: () => {
+    const $npc: Npc = Variables().npc;
+    if (!$npc.aroused) {
       if (!Temporary().npcStatModifiers) Temporary().npcStatModifiers = [];
-      Temporary().npcStatModifiers.push("lust-" + $lustDecCum);
-    }
+      Temporary().npcStatModifiers.push("+aroused");
+    } else window.Now.assertTimedEvent($npc.uid + "arousalEnd", 0.5);
   },
 });

@@ -252,15 +252,14 @@ window.Interactions["slave"] = {
 
                     $npc.GenPronoun is breathing hard. Looks like $npc.name is really enjoying this.\
                   <</if>>\
-                <</if>>`,
-              npcStats: ["pussyTraining%+40", "lust+10%", "+aroused"],
+                <</if>><<npcStimulated>>`,
+              npcStats: ["pussyTraining%+40", "lust+10%"],
               next: {
                 cum: {
                   optionText: "💦 Make $npc.pronoun cum",
                   contents: `You vigorously rub inside $npc.name's vagina while you rub $npc.possessive clitoris at the same time making $npc.pronoun arc her body with the pleasure.
                   It doesn't take long until $npc.pronoun cums making your hand wet all over.<<npcCum>>`,
                   npcStats: [
-                    "lust+5%",
                     "love+5",
                     "freedomWish-10",
                     "hunger+10",
@@ -359,7 +358,7 @@ window.Interactions["slave"] = {
                       <</if>>\
                     <<else>>\
                       <<set _cockEntered to true>>\
-                      Your cock slides right in as $npc.genPronoun lets out a quiet ~~"Ah!"~~.
+                      Your cock slides right in as $npc.genPronoun lets out a quiet ~~"Ah!"~~.<<npcStimulated>>
                     <</if>>\
                     <<if _cockEntered>>\
                       <<checkNpcVirgin vagina>>\
@@ -383,7 +382,6 @@ window.Interactions["slave"] = {
                       stats.push("pussyTraining+5");
                     if (wet && npc.pussyTraining >= 60) stats.push("fear-5");
                     if (npc.pussyTraining >= 80) {
-                      stats.push("+aroused");
                       stats.push("freedomWish-10");
                       stats.push("lust+5%");
                     }
@@ -432,9 +430,9 @@ window.Interactions["slave"] = {
                           $npc.name seems to have a hard time taking your dick while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
                         <<elseif $npc.lust lt 30>>\
                           $npc.GenPronoun seems to be able to take you in and, after a while, even starts to feel good for $npc.pronoun.\
-                          <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you make love to $npc.pronoun. <<emoji ♥>><</if>>
+                          <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you make love to $npc.pronoun. <<emoji ♥>><</if>><<npcStimulated>>
                         <<else>>\
-                          $npc.name is visibly enjoying your cock. You can hear $npc.pronoun loudly moaning:
+                          $npc.name is visibly enjoying your cock. You can hear $npc.pronoun loudly moaning:<<npcStimulated>>
                           "Ah!...Ah!...<<if $npc.age gt 4>> Yes... Please don't stop!!<</if>>\
                           <<if $npc.age gt 3 && $npc.love gte 50>>I love you <<npcAddressPlayer>><<emoji ♥>><</if>>".\
                         <</if>>`,
@@ -451,7 +449,6 @@ window.Interactions["slave"] = {
                         let stats = [
                           "pussyTraining%+60",
                           "lust+10%",
-                          "+aroused",
                           "fear-5",
                         ];
                         if (
@@ -475,7 +472,7 @@ window.Interactions["slave"] = {
                         $npc.GenPronoun seems to be able to withstand your piston and, after a while, even starts to feel good for $npc.pronoun.\
                         <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you screw $npc.pronoun.<<emoji ♥>><</if>>
                       <<else>>\
-                        $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure <<genPronounIs>> experiencing.
+                        $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure <<genPronounIs>> experiencing.<<npcStimulated>>
                         "Ah!, Ah!, Ah!<<if $npc.age gt 3 && $npc.love gte 50>>, <<npcAddressPlayer>>!...<<emoji 💕>><</if>>"<<emoji 😫>>\
                       <</if>>`,
                       minutesCost: 10,
@@ -492,7 +489,6 @@ window.Interactions["slave"] = {
                         let stats = [
                           "pussyTraining+10",
                           "lust+10%",
-                          "+aroused",
                           "fear-5",
                           "hunger+5",
                         ];
@@ -568,7 +564,7 @@ window.Interactions["slave"] = {
                       <</if>>\
                     <<else>>\
                       <<set _cockEntered to true>>\
-                      Your cock slides right in as $npc.genPronoun lets out a quiet ~~"Ah!"~~.
+                      Your cock slides right in as $npc.genPronoun lets out a quiet ~~"Ah!"~~.<<npcStimulated>>
                     <</if>>\
                     <<if _cockEntered>>\
                       <<checkNpcVirgin anal>>\
@@ -589,7 +585,6 @@ window.Interactions["slave"] = {
                     if (npc.lubricatedAss && npc.anusTraining >= 60)
                       stats.push("fear-5");
                     if (npc.anusTraining >= 80) {
-                      stats.push("+aroused");
                       stats.push("freedomWish-10");
                       stats.push("lust+5%");
                     }
@@ -628,9 +623,9 @@ window.Interactions["slave"] = {
                           $npc.name seems to have a hard time taking your dick while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
                         <<elseif $npc.lust lt 30>>\
                           $npc.GenPronoun seems to be able to take you in and, after a while, even starts to feel good for $npc.pronoun.\
-                          <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you make love to $npc.pronoun. <<emoji ♥>><</if>>
+                          <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you make love to $npc.pronoun. <<emoji ♥>><</if>><<npcStimulated>>
                         <<else>>\
-                          $npc.name is visibly enjoying your cock. You can hear $npc.pronoun loudly moaning:
+                          $npc.name is visibly enjoying your cock. You can hear $npc.pronoun loudly moaning:<<npcStimulated>>
                           "Ah!...Ah!...<<if $npc.age gt 4>> Yes... Please don't stop!!<</if>>\
                           <<if $npc.love gte 50>>I love you <<npcAddressPlayer>><<emoji ♥>>.<</if>>"\
                         <</if>>`,
@@ -647,7 +642,6 @@ window.Interactions["slave"] = {
                         let stats = [
                           "anusTraining%+60",
                           "lust+10%",
-                          "+aroused",
                           "fear-5",
                         ];
                         if (
@@ -669,9 +663,9 @@ window.Interactions["slave"] = {
                         $npc.name seems to have a hard time taking your thrusts while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
                       <<elseif $npc.lust lt 60>>\
                         $npc.GenPronoun seems to be able to withstand your piston and, after a while, even starts to feel good for $npc.pronoun.\
-                        <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you screw $npc.pronoun.<<emoji ♥>><</if>>
+                        <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you screw $npc.pronoun.<<emoji ♥>><</if>><<npcStimulated>>
                       <<else>>\
-                        $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure <<genPronounIs>> experiencing.
+                        $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure <<genPronounIs>> experiencing.<<npcStimulated>>
                         "Ah!, Ah!, Ah!<<if $npc.age gt 3 && $npc.love gte 50>>, <<npcAddressPlayer>>!...<<emoji 💕>><</if>>"<<emoji 😫>>\
                       <</if>>`,
                       minutesCost: 10,
@@ -688,7 +682,6 @@ window.Interactions["slave"] = {
                         let stats = [
                           "anusTraining+10",
                           "lust+10%",
-                          "+aroused",
                           "fear-5",
                           "hunger+5",
                         ];
@@ -777,7 +770,7 @@ window.Interactions["slave"] = {
                           <</if>>\
                         <<else>>\
                           <<set _cockEntered to true>>\
-                          The dildo slides right in as $npc.genPronoun lets out a quiet ~~"Ah!"~~.
+                          The dildo slides right in as $npc.genPronoun lets out a quiet ~~"Ah!"~~.<<npcStimulated>>
                         <</if>>\
                         <<if _cockEntered>>\
                           <<checkNpcVirgin vagina>>\
@@ -803,7 +796,6 @@ window.Interactions["slave"] = {
                         if (wet && npc.pussyTraining >= 60)
                           stats.push("fear-5");
                         if (npc.pussyTraining >= 80) {
-                          stats.push("+aroused");
                           stats.push("freedomWish-10");
                           stats.push("lust+5%");
                         }
@@ -856,7 +848,7 @@ window.Interactions["slave"] = {
                               $npc.GenPronoun seems to be able to take the dildo in and, after a while, even starts to feel good for $npc.pronoun.\
                               <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you fuck $npc.pronoun with your dildo. <<emoji ♥>><</if>>
                             <<else>>\
-                              $npc.name is visibly enjoying your dildo in $npc.possessive $npc.genitals.female. You can hear $npc.pronoun loudly moaning:
+                              $npc.name is visibly enjoying your dildo in $npc.possessive $npc.genitals.female. You can hear $npc.pronoun loudly moaning:<<npcStimulated>>
                               "Ah!...Ah!...<<if $npc.age gt 4>> Yes... Please don't stop!!<</if>>\
                               <<if $npc.age gt 3 && $npc.love gte 50>>I love you <<npcAddressPlayer>><<emoji ♥>><</if>>".\
                             <</if>>`,
@@ -873,7 +865,6 @@ window.Interactions["slave"] = {
                             let stats = [
                               "pussyTraining%+60",
                               "lust+10%",
-                              "+aroused",
                               "fear-5",
                             ];
                             if (
@@ -898,7 +889,7 @@ window.Interactions["slave"] = {
                             $npc.GenPronoun seems to be able to withstand your piston and, after a while, even starts to feel good for $npc.pronoun.\
                             <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you play with $npc.pronoun.<<emoji ♥>><</if>>
                           <<else>>\
-                            $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure <<genPronounIs>> experiencing.
+                            $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure <<genPronounIs>> experiencing.<<npcStimulated>>
                             "Ah!, Ah!, Ah!<<if $npc.age gt 3 && $npc.love gte 50>>, <<npcAddressPlayer>>!...<<emoji 💕>><</if>>"<<emoji 😫>>\
                           <</if>>`,
                           minutesCost: 10,
@@ -919,7 +910,6 @@ window.Interactions["slave"] = {
                             let stats = [
                               "pussyTraining+10",
                               "lust+10%",
-                              "+aroused",
                               "fear-5",
                               "hunger+5",
                             ];
@@ -983,7 +973,7 @@ window.Interactions["slave"] = {
                           <</if>>\
                         <<else>>\
                           <<set _cockEntered to true>>\
-                          The dildo slides right in as $npc.genPronoun lets out a quiet ~~"Ah!"~~.
+                          The dildo slides right in as $npc.genPronoun lets out a quiet ~~"Ah!"~~.<<npcStimulated>>
                         <</if>>\
                         <<if _cockEntered>>\
                           <<checkNpcVirgin anal>>\
@@ -1004,7 +994,6 @@ window.Interactions["slave"] = {
                         if (npc.lubricatedAss && npc.anusTraining >= 60)
                           stats.push("fear-5");
                         if (npc.anusTraining >= 80) {
-                          stats.push("+aroused");
                           stats.push("freedomWish-10");
                           stats.push("lust+5%");
                         }
@@ -1044,9 +1033,9 @@ window.Interactions["slave"] = {
                               $npc.name seems to have a hard time taking the dildo while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
                             <<elseif $npc.lust lt 30>>\
                               $npc.GenPronoun seems to be able to take it in and, after a while, even starts to feel good for $npc.pronoun.\
-                              <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you move the dildo in and out of $npc.possessive ass.<<emoji ♥>><</if>>
+                              <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you move the dildo in and out of $npc.possessive ass.<<emoji ♥>><</if>><<npcStimulated>>
                             <<else>>\
-                              $npc.name is visibly enjoying the dildo. You can hear $npc.pronoun loudly moaning:
+                              $npc.name is visibly enjoying the dildo. You can hear $npc.pronoun loudly moaning:<<npcStimulated>>
                               "Ah!...Ah!...<<if $npc.age gt 4>> Yes... Please don't stop!!<</if>>\
                               <<if $npc.love gte 50>>I love you <<npcAddressPlayer>><<emoji ♥>>.<</if>>"\
                             <</if>>`,
@@ -1063,7 +1052,6 @@ window.Interactions["slave"] = {
                             let stats = [
                               "anusTraining%+60",
                               "lust+10%",
-                              "+aroused",
                               "fear-5",
                             ];
                             if (
@@ -1086,9 +1074,9 @@ window.Interactions["slave"] = {
                             $npc.name seems to have a hard time taking your thrusts while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun with the dildo.
                           <<elseif $npc.lust lt 60>>\
                             $npc.GenPronoun seems to be able to withstand your piston and, after a while, even starts to feel good for $npc.pronoun.\
-                            <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you screw $npc.pronoun.<<emoji ♥>><</if>>
+                            <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you screw $npc.pronoun.<<emoji ♥>><</if>><<npcStimulated>>
                           <<else>>\
-                            $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure <<genPronounIs>> experiencing.
+                            $npc.name keeps turning $npc.possessive head from side to side due to the immense pleasure <<genPronounIs>> experiencing.<<npcStimulated>>
                             "Ah!, Ah!, Ah!<<if $npc.age gt 3 && $npc.love gte 50>>, <<npcAddressPlayer>>!...<<emoji 💕>><</if>>"<<emoji 😫>>\
                           <</if>>`,
                           minutesCost: 10,
@@ -1105,7 +1093,6 @@ window.Interactions["slave"] = {
                             let stats = [
                               "anusTraining+10",
                               "lust+10%",
-                              "+aroused",
                               "fear-5",
                               "hunger+5",
                             ];
@@ -1136,9 +1123,9 @@ window.Interactions["slave"] = {
                               even though $npc.name seems to have a hard time taking the dildo.
                             <<elseif $npc.lust lt 30>>\
                               and $npc.pronoun body even starts to enjoy the feel of the dildo in $npc.pronoun bottom.  $npc.GenPronoun is very confused and conflicted by the mix of feelings. \
-                              <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you move the dildo in and out of $npc.possessive ass.<<emoji ♥>><</if>>
+                              <<if $npc.love gte 75>>$npc.GenPronoun smiles at you as you move the dildo in and out of $npc.possessive ass.<<emoji ♥>><</if>><<npcStimulated>>
                             <<else>>\
-                              and $npc.name is visibly enjoying the anal dildo as you rub $npc.pronoun. You can hear $npc.pronoun loudly moaning:
+                              and $npc.name is visibly enjoying the anal dildo as you rub $npc.pronoun. You can hear $npc.pronoun loudly moaning:<<npcStimulated>>
                               "Ah!...Ah!...<<if $npc.age gt 4>> Yes... Please don't stop!!<</if>>\
                               <<if $npc.love gte 50>>I love you <<npcAddressPlayer>><<emoji ♥>>.<</if>>"\
                             <</if>>`,
@@ -1147,7 +1134,6 @@ window.Interactions["slave"] = {
                               return [
                                 "fear+5",
                                 "lust+10%",
-                                "+aroused",
                                 "freedomWish+5",
                                 "anusTraining%+10",
                               ];
@@ -1155,13 +1141,11 @@ window.Interactions["slave"] = {
                               return [
                                 "fear+5",
                                 "lust+10%",
-                                "+aroused",
                                 "anusTraining%+10",
                               ];
                             let stats = [
                               "anusTraining%+40",
                               "lust+10%",
-                              "+aroused",
                               "fear-5",
                             ];
                             if (
@@ -1211,9 +1195,9 @@ window.Interactions["slave"] = {
                   <<if $npc.love gt 50>>
                     $npc.genPronoun smiles at you and says: "I love you <<npcAddressPlayer>>!!<<emoji ♥>>"
                   <</if>>
-                <</if>>`,
+                <</if>><<npcStimulated>>`,
               npcStats: (npc) => {
-                let stats = ["fear-5", "lust+10%", "+aroused", "freedomWish-2"];
+                let stats = ["fear-5", "lust+10%", "freedomWish-2"];
                 if (npc.lust >= 65 && npc.love > 50) stats = ["love+5"];
                 return stats;
               },
@@ -1230,8 +1214,8 @@ window.Interactions["slave"] = {
                   @@color:deeppink;$npc.possessive cunny gets wet@@.
                 <<elseif $npc.hasPenis>>\
                   @@color:deeppink;$npc.genPronoun gets hard@@.
-                <</if>>`,
-              npcStats: ["fear-5", "lust+20%", "+aroused"],
+                <</if>><<npcStimulated>>`,
+              npcStats: ["fear-5", "lust+20%"],
               next: afterStrip,
             },
             getPenetrated: {
@@ -1246,7 +1230,7 @@ window.Interactions["slave"] = {
                   minutesCost: 20,
                   contents: `You grab $npc.name erected penis and enter it in your pussy and start bouncing and enjoying $npc.possessive dick.
                     After a while you start going faster and the $npc.title starts panting.
-    
+                    <<npcStimulated>>
                     It looks like <<genPronounIs>> about to cum. What do you do?<<checkNpcVirgin penis>>`,
                   npcStats: ["fear-5", "lust+30%"],
                   next: () => afterStrip().getPenPussy.next,
@@ -1258,7 +1242,7 @@ window.Interactions["slave"] = {
                   minutesCost: 20,
                   contents: `You grab $npc.name erected penis and enter it in your asshole and start bouncing and enjoying $npc.possessive dick.
                     After a while you start going faster and the $npc.title starts panting.
-    
+                    <<npcStimulated>>
                     It looks like <<genPronounIs>> about to cum. What do you do?<<checkNpcVirgin penis>>`,
                   npcStats: ["fear-5", "lust+30%"],
                   next: () => afterStrip().getPenAss.next,
@@ -1274,7 +1258,7 @@ window.Interactions["slave"] = {
               minutesCost: 20,
               contents: `You grab $npc.name erected penis and enter it in your pussy and start bouncing and enjoying $npc.possessive dick.
                 After a while you start going faster and the $npc.title starts panting.
-
+                <<npcStimulated>>
                 It looks like <<genPronounIs>> about to cum. What do you do?<<checkNpcVirgin penis>>`,
               npcStats: ["fear-5", "lust+30%"],
               next: {
@@ -1282,7 +1266,7 @@ window.Interactions["slave"] = {
                   optionText: "💪 Tell $npc.pronoun to endure it.",
                   minutesCost: 10,
                   contents: `<<playerSay "Don't you dare cum in me">>
-
+                    <<npcStimulated>>
                     $npc.name looks troubled but obeys.`,
                   npcStats: ["fear+1", "obedience+2"],
                   playerStats: ["lust-10"],
@@ -1297,13 +1281,10 @@ window.Interactions["slave"] = {
                       You feel $npc.possessive dick shooting $npc.possessive seed inside you.
                     <</if>><<npcCum>>`,
                   npcStats: [
-                    "lust+30%",
                     "love+10",
                     "freedomWish-10",
                     "hunger+10",
-                    "-aroused",
                   ],
-                  playerStats: ["lust-10"],
                   stopOption: "💤 Let $npc.pronoun rest.",
                 },
               },
@@ -1318,7 +1299,7 @@ window.Interactions["slave"] = {
               minutesCost: 20,
               contents: `You grab $npc.name erected penis and enter it in your asshole and start bouncing and enjoying $npc.possessive dick.
                 After a while you start going faster and the $npc.title starts panting.
-
+                <<npcStimulated>>
                 It looks like <<genPronounIs>> about to cum. What do you do?<<checkNpcVirgin penis>>`,
               npcStats: ["fear-5", "lust+30%"],
               next: {
@@ -1326,7 +1307,7 @@ window.Interactions["slave"] = {
                   optionText: "💪 Tell $npc.pronoun to endure it.",
                   minutesCost: 10,
                   contents: `<<playerSay "Don't you dare cum in me">>
-
+                    <<npcStimulated>>
                     $npc.name looks troubled but obeys.`,
                   npcStats: ["fear+1", "obedience+2"],
                   playerStats: ["lust-10"],
@@ -1341,11 +1322,9 @@ window.Interactions["slave"] = {
                       You feel $npc.possessive dick shooting his seed in your bowels.
                     <</if>><<npcCum>>`,
                   npcStats: [
-                    "lust+30%",
                     "love+10",
                     "freedomWish-10",
                     "hunger+10",
-                    "-aroused",
                   ],
                   playerStats: ["lust-10"],
                   stopOption: "💤 Let $npc.pronoun rest.",
@@ -1416,7 +1395,7 @@ window.Interactions["slave"] = {
           $npc.name randomly licks you between your legs. <<genPronounIs>> a little clumsy with it but <<genPronounIs>> trying $npc.pronoun best and it feels pretty good.
         <</if>>\
       <<elseif $npc.lust gte 60>>\
-        Hearing that makes $npc.pronoun aroused and $npc.genPronoun blushes at the thought.
+        Hearing that makes $npc.pronoun aroused and $npc.genPronoun blushes at the thought.<<npcStimulated>>
         $npc.name nods and quickly throws <<- $npc.pronoun>>self between your legs and starts licking with vigor.
         <<if $npc.mouthTraining gte 30>>\
           $npc.name already knows how to pleasure you and focuses on your clit, giving you lots of pleasure. You instinctively press $npc.possessive head towards you while $npc.genPronoun insists on the licking and sucking.

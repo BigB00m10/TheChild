@@ -1113,9 +1113,10 @@ window.Interactions["slave"] = {
                           contents: `You slowly rub $npc.name's $npc.genitals.all while keeping the dildo in $npc.possessive bottom, moving only slowly.
                             <<if $npc.hasPussy>>\
                               @@color:deeppink;$npc.Possessive cunny gets wetter@@\
-                            <</if>>\
-                            <<if $npc.hasPenis>>\
-                              @@color:deeppink;$npc.GenPronoun gets harder@@\
+/*                        */<</if>>\
+/*                        */<<if $npc.hasPussy && $npc.hasPenis>>, <</if>>\
+/*                        */<<if $npc.hasPenis>>\
+/*                            */@@color:deeppink;$npc.GenPronoun get<<thirdPersonVerb>> harder@@\
                             <</if>>\
                             <<if $npc.anusTraining lt 20>>\
                               despite the pain in $npc.pronoun bottom.  $npc.GenPronoun keeps crying the pleasure and pain is tormenting $npc.pronoun.<<emoji 😢>>
@@ -1135,16 +1136,16 @@ window.Interactions["slave"] = {
                                 "fear+5",
                                 "lust+10%",
                                 "freedomWish+5",
-                                "anusTraining%+10",
+                                "anusTraining%+20",
                               ];
                             if (npc.anusTraining < 40)
                               return [
                                 "fear+5",
                                 "lust+10%",
-                                "anusTraining%+10",
+                                "anusTraining%+40",
                               ];
                             let stats = [
-                              "anusTraining%+40",
+                              "anusTraining%+50",
                               "lust+10%",
                               "fear-5",
                             ];

@@ -40,7 +40,7 @@
             <</if>>\
         </div>\
     </div>
-    <<keyOption [[Go back upstairs|main]] 🚪>>\
+    <<keyOption [[Go back upstairs|main]] 🚪>>
     /*<<keyOption [[The torture room|tort]] ⛓️>>*/\
     <<if Player.has("pizza") && Basement.getHungrySlaves().length>>\
         <<keyOption [[Give pizza to all hungry slaves|giveSlavesPizza]] 🍕>>
@@ -57,6 +57,7 @@ You lay down the pizza<<if Player.has("pizza", 2)>>s<</if>> and all the slaves g
     var hungerDepletedPerSlave = (pizzaCount * (8/3) * 90) / hungrySlaves.length;
     hungrySlaves.forEach(function(slave) {
         slave.hunger = Math.max(0, slave.hunger - hungerDepletedPerSlave);
+        slave.freedomWish = Math.max(0, slave.freedomWish - 5);
     });
     inventory.removeByName("pizza", pizzaCount);
 >>\

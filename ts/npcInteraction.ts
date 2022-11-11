@@ -255,7 +255,7 @@ Macro.add("npcInteraction", {
             case "+aroused":
               window.Now.addTimedEvent(
                 0.5, //Schedule this NPC to lose its arousal in half an hour from now.
-                `window.Person.get(${npc.uid}).aroused = false`,
+                `var p=window.Person.get(${npc.uid});if(p)p.aroused = false`,
                 npc.uid + "arousalEnd"
               );
               break;

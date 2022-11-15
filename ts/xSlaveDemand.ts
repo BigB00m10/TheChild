@@ -312,7 +312,7 @@ window.Interactions["slaveDemandSleepWithPlayer"] = {
 };
 window.Interactions["okSleepWithPlayerDemand"] = {
   contents: `You call $npc.name over to go to sleep and $npc.genPronoun approaches you.
-  <<if $npc.uniqueness.shy or $npc.love gte 80>>$npc.GenPronoun blushes
+  <<if $npc.uniqueness.shy or $npc.love gte 80>>$npc.GenPronoun blush<<thirdPersonVerbPlural>>
   <<else>>$npc.GenPronoun look<<thirdPersonVerb>> nervous...
   <</if>><<if $npc.love gte 80>>\
     $npc.GenPronoun happily take<<thirdPersonVerb>> all of $npc.possessive clothes off.<<if $npc.lust gte 60>>You can see $npc.possessive <<- $npc.hasPussy ? "wet " + $npc.genitals.female : "erected " + $npc.genitals.male>><<emoji 👀>><<npcStimulated>><</if>>

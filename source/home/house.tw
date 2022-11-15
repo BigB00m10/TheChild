@@ -1,7 +1,7 @@
 :: bed {"position":"700,825"}
 <<scenery bed>>
 <<if $player.sleeping>>\
-    <<set _sleepSlave = $slaves.firstOrDefault(function(slave){return Person.hasAchievement('okSleepWithPlayer')})>>\
+    <<set _sleepSlave = $slaves.firstOrDefault(function(slave){return Person.hasAchievement('okSleepWithPlayer', slave)})>>\
     <<if _sleepSlave>><<done>>/*Without using the done macro the bed passage was executed twice for some reason*/
         <<run State.history.splice(State.history.length - 1, 1)>>/*Let's forget that we entered the bed scene so that the player can still go back in time. Otherwise they would be redirected back to the interaction.*/
         <<openNpcInteraction wakeUpAfterNightTogether _sleepSlave.uid>>

@@ -143,7 +143,7 @@
 <<widget sleepOption>>
     <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>
         <<set 
-            _sleepSlave = $slaves.firstOrDefault(function(slave){return Person.hasAchievement('okSleepWithPlayer')});
+            _sleepSlave = $slaves.firstOrDefault(function(slave){return Person.hasAchievement('okSleepWithPlayer', slave)});
             _sleepSentence = $scenery != 'bed' ? "Go sleep" : 'Sleep';
         >>
         <<if _sleepSlave>>

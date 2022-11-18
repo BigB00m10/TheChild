@@ -16,10 +16,7 @@
     <<keyOption [[Go check|receivePacket]] 🚪>>
 <<else>>
     <<unlessEmergency>>\
-        <<wanderingSlaves>>\
-        <<set _slaves = BedRoom.getDemandingSlaves()>>\
-        <<set _demandIndex to 0>>\
-        <<include slaveDemand>>
+        <<slaveDemands BedRoom>>
         <<keyOption [[Leave your room|main]] 🚪>>
         <<keyOption [[go to your computer|pc]] 💻>>
         <<keyOption [[Your bathroom|bat]] 🛀>>
@@ -40,9 +37,7 @@ You are currently standing in the middle of the main room of your house.
 
 <<unlessEmergency>>\
     <<wanderingSlaves>>\
-    <<set _slaves = MainRoom.getDemandingSlaves()>>\
-    <<set _demandIndex to 0>>\
-    <<include slaveDemand>>
+    <<slaveDemands MainRoom>>
     <<keyOption [[Watch TV|watchTv]] 📺>>: 30min
     <<include workOption>>\
     <<keyOption [[Go outside|home]] 🚪>>
@@ -62,9 +57,9 @@ You are currently standing in the middle of the main room of your house.
 @@color:yellow;You spend the next half hour skimming through porn and <<if $player.gender == 'girl'>>buffing the muffin<<else>>jerking off<</if>>.@@
 <<include bed>>\
 :: slaveDemand {"position":"375,0"}
-<<if _slaves[_demandIndex]>>\
+<<if _demandingSlaves[_demandIndex]>>\
     <span id="slaveDemand">\
-        <<set _slave to _slaves[_demandIndex]>>
+        <<set _slave to _demandingSlaves[_demandIndex]>>
         _slave.name <<if _slave.fear gte 30>>cautiously<</if>> approaches, looking at you with _slave.possessive _slave.eyeColor eyes, and says:
         "<<switch _slave.need>>\
 /*        */<<case "hunger">>\
@@ -79,7 +74,7 @@ You are currently standing in the middle of the main room of your house.
         <<set _demandInteraction to "slaveDemand" + _slave.need.toUpperFirst()>>
         <span id='hKeyAct'>\
             <<button '✅ (H) Handle'>>
-                <<set $npc to _slaves[_demandIndex]>>
+                <<set $npc to _demandingSlaves[_demandIndex]>>
                 <<openNpcInteraction _demandInteraction>>
             <</button>>\
         </span><span id='iKeyAct'>\
@@ -88,5 +83,5 @@ You are currently standing in the middle of the main room of your house.
                 <<replace #slaveDemand>><<include slaveDemand>><</replace>>
             <</button>>\
         </span>\
-    </span>
+    </span>\
 <</if>>\

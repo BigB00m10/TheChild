@@ -3,9 +3,7 @@
 You are currently standing in your kitchen.
 <<unlessEmergency>>\
     <<wanderingSlaves>>\
-    <<set _slaves = Kitchen.getDemandingSlaves()>>\
-    <<set _demandIndex to 0>>\
-    <<include slaveDemand>>
+    <<slaveDemands Kitchen>>
     <<keyOption [[Leave your kitchen|main]] 🚪>>
     <<keyAction 'Have a meal' ☕>>
         <<set $player.energy = ($player.energy + 18).clamp(0, 100)>>

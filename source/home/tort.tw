@@ -2,9 +2,7 @@
 <<scenery tort>>
 You are currently standing in your torture room.
 <<unlessEmergency>>\
-    <<set _slaves = Basement.getDemandingSlaves()>>\
-    <<set _demandIndex to 0>>\
-    <<include slaveDemand>>
+    <<slaveDemands Basement>>
     <<keyOption [[Leave your torture|basement]] 🚪>>
     <<keyOption [[Go to cage one|tortone]] ⛓️>>
     <<keyOption [[Go to cage two|tortwo]] ⛓️>>

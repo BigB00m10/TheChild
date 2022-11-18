@@ -9,9 +9,7 @@
     You are currently in your basement.
 <</if>>\
 <<unlessEmergency>>\
-    <<set _slaves = Basement.getDemandingSlaves()>>\
-    <<set _demandIndex to 0>>\
-    <<include slaveDemand>>
+    <<slaveDemands Basement>>
     <div class="row">\
         <div class="one-half column">\
             <<set _slaves = Basement.getSlaves()>>\

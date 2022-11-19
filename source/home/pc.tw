@@ -2,9 +2,7 @@
 <<scenery pc>>
 welcome to your computer.
 <<unlessEmergency>>\
-    <<set _slaves = BedRoom.getDemandingSlaves()>>\
-    <<set _demandIndex to 0>>\
-    <<include slaveDemand>>
+    <<slaveDemands BedRoom>>
     <<keyOption [[Leave your your computer|bed]] 💻>>
     <<keyOption [[Watch porn|watchPorn]] 💗>>: 30min
     <<keyOption [[Shop online |onlineStore]] 🛒>>

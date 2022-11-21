@@ -6,10 +6,4 @@ You are currently standing in your garden.
     <<keyOption [[Leave your garden|main]] 🚪>>
     <<keyAction 'gardening' 🌺>><<addMinutes 30>><<run Engine.show()>><</keyAction>>: 30min
     <<sleepOption>>
-    <<set _wandering = Person.getWandering()>>
-    <<if _wandering.length == 1>>
-        <<keyAction "Perhaps the slave could help with the garden?"  >>
-            <<openNpcInteraction gardenHelper _wandering[0].uid>>
-        <</keyAction>>
-    <</if>>
 <</unlessEmergency>>\

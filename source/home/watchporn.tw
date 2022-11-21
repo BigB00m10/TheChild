@@ -1,0 +1,10 @@
+:: watchp {"position":"700,825"}
+<<scenery porn>>
+    <<unlessEmergency>>\
+        <<slaveDemands BedRoom>>
+        <<keyOption [[go to your computer|pc]] 💻>>
+        <<keyOption [[next video|next]] 🔞>>
+        <<keyOption [[mastubate|watchp]] 💦>>
+        <<addMinutes 30>>\
+        <<sleepOption>>
+    <</unlessEmergency>>\

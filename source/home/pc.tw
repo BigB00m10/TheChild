@@ -4,7 +4,7 @@ welcome to your computer.
 <<unlessEmergency>>\
     <<slaveDemands BedRoom>>
     <<keyOption [[Leave your your computer|bed]] 💻>>
-    <<keyOption [[Watch porn|watchPorn]] 💗>>: 30min
+    <<keyOption [[Watch porn|watchp]] 💗>>: 30min
     <<keyOption [[Shop online |onlineStore]] 🛒>>
     <<keyOption [[change your name |changenames]]  💬>>
 <</unlessEmergency>>\
@@ -32,4 +32,4 @@ welcome to your computer.
         </span>\
         <<run $(document).ready(function(){$('#textbox--newname').focus()})>>\
 <</dialog>>
-<<include pc>>\
+<<include pc>>

@@ -1,4 +1,4 @@
-:: kitchen {"position":"700,825"}
+:: kitchen {"position":"900,625"}
 <<scenery kitchen>>
 You are currently standing in your kitchen.
 <<unlessEmergency>>\

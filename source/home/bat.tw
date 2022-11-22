@@ -1,5 +1,5 @@
-:: bat {"position":"700,825"}
-<<scenery bat>>
+:: bathroom {"position":"775,700"}
+<<scenery bathroom>>
 You are currently standing in your bathroom.
 <<unlessEmergency>>\
     <<wanderingSlaves>>\

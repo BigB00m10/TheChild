@@ -150,7 +150,7 @@
             <<set _sleepSentence+=' with ' + _sleepSlave.name>>
             <<keyAction _sleepSentence 🥰>>
                 <<set $scenery = 'bed'>>
-                <<openNpcInteraction 'okSleepWithPlayerDemand'>>
+                <<openNpcInteraction 'okSleepWithPlayerDemand' _sleepSlave.uid>>
             <</keyAction>>
         <<else>>
             <<keyAction _sleepSentence 😴>><<sleep>><</keyAction>>

@@ -38,7 +38,7 @@ $buyProduct.description
         <<run Dialog.close()>>\
     <</button>>\
 </span>\
-:: onlineStore [nobr] {"position":"800,1000"}
+:: onlineStore [nobr] {"position":"825,1075"}
 <div class='container' style="text-align: center;">
     <div class='row'><!--https://fictionalcompanies.fandom.com/wiki/Amazoon-->
         <h2>Anazom</h2><h3>Next day delivery</h3>

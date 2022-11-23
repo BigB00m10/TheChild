@@ -490,7 +490,7 @@ window.Interactions["wakeUpAfterNightTogether"] = {
       optionText: "🖐 Touch $npc.possessive $npc.genitals.all.",
       minutesCost: 2,
       contents: `You gently move your hand below $npc.possessive waist and touch $npc.possessive $npc.genitals.all.
-      It takes $npc.pronoun a couple of seconds for $npc.pronoun to get wet.<<if $npc.hasPussy>>
+      It takes $npc.pronoun a couple of seconds for $npc.pronoun to get <<- $npc.hasPenis ? "hard" : "wet">>.<<npcStimulated>><<if $npc.hasPussy>>
       After that your finger slides smoothly inside $npc.pronoun tight $npc.genitals.all.<</if>>`,
       npcStats: (npc) =>
         npc.hasPussy ? ["pussyTraining%+20", "lust+1%"] : ["lust+1%"],

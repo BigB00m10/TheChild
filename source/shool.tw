@@ -1,4 +1,4 @@
-:: shool {"position":"175,200"}
+:: shool {"position":"525,250"}
 <<scenery shool>>
 <<personHunting>>
 <<keyOption [[Keep searching|shool]] 🔍>>

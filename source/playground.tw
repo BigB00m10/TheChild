@@ -1,4 +1,4 @@
-:: playground {"position":"450,375"}
+:: playground {"position":"525,375"}
 <<scenery playground>>
 <<personHunting>>
 <<keyOption [[Keep searching|playground]] 🔍>>

@@ -1,4 +1,4 @@
-:: bed {"position":"700,825"}
+:: bed {"position":"675,825"}
 <<scenery bed>>
 <<if $player.sleeping>>\
     <<set _sleepSlave = $slaves.firstOrDefault(function(slave){return Person.hasAchievement('okSleepWithPlayer', slave)})>>\
@@ -19,17 +19,13 @@
         <<slaveDemands BedRoom>>
         <<keyOption [[Leave your room|main]] 🚪>>
         <<keyOption [[go to your computer|pc]] 💻>>
-        <<keyOption [[Your bathroom|bat]] 🛀>>
+        <<keyOption [[Your bathroom|bathroom]] 🛀>>
         <<sleepOption>>
     <</unlessEmergency>>\
 <</if>>
-<<set 
-    $player.sleeping = false;
-    if($npc)
-        $npc.aroused = false;
->>
+<<set $player.sleeping = false>>
 <<unset $personWokeUp>>
-:: main {"position":"700,650"}
+:: main {"position":"600,625"}
 <<scenery mainRoom>>
 You are currently standing in the middle of the main room of your house.
 
@@ -46,13 +42,13 @@ You are currently standing in the middle of the main room of your house.
     <<keyOption [[Your garden|garden]] 🌺>>
     <<keyOption [[Your kitchen|kitchen]] ☕>>
     <<keyOption [[Your toilet|wc]] 🚽>>
-    <<keyOption [[Your bathroom|bat]] 🛀>>
+    <<keyOption [[Your bathroom|bathroom]] 🛀>>
 <</unlessEmergency>>\
 :: watchTv {"position":"875,825"}
 <<addMinutes 30>>\
 @@color:yellow;You spend the next half hour skimming through channels and shows.@@
 <<include main>>\
-:: watchPorn {"position":"600,1000"}
+:: watchPorn {"position":"700,950"}
 <<addMinutes 30>>\
 @@color:yellow;You spend the next half hour skimming through porn and <<if $player.gender == 'girl'>>buffing the muffin<<else>>jerking off<</if>>.@@
 <<include bed>>\

@@ -96,7 +96,7 @@ location: $npc.location
                     </div>\
                 </div>\
                 <<button "Hair colors">>\
-                    <<userEditListVar "$settings.childGeneration.hairColors" "Edit hair colors">>
+                    <<userEditListVar "$settings.childGeneration.hairColors" "Edit hair colors" PersonGeneration.hairColors>>
                 <</button>>\
                 <<button "Hair styles">>\
                     <<userEditListVar "$settings.childGeneration.hairStyles" "Edit hair styles">>

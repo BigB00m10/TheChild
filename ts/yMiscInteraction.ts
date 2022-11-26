@@ -75,6 +75,28 @@ window.Interactions["houseSlave"] = {
       action: true,
     },
     ...window.Interactions.slave.options,
+    setCook: {
+      canBeShown: () => !Variables().settings.cook?.npc,
+      npcRequirements: ["obedience>=60", "freedomWish=0"],
+      optionText:
+        "🍳 Set $npc.name in charge of cooking and teach $npc.pronoun how to do it",
+      minutesCost: 60,
+      contents: `<<set 
+        $settings.cook={npc:$npc.uid,feedAtHunger:20,feedTimes:['7:00 AM','1:00 PM','7:00 PM'],exceptions:[]};
+        Person.setStatus('servant');
+        $npc.location='kitchen';
+      >><<playerSay "Okay $npc.name, you're now in charge of cooking!">>
+      <<npcSay "Okay <<npcAddressPlayer>><<if $npc.fear lt 20>><<emoji 🙂>><<else>><<emoji 🥺>><</if>>">>
+      <<playerSay "You'll have a key so you can feed the ones in the basement. Let me teach you how to do it.">>`,
+      next: {
+        rules: {
+          optionText: "⚙ Set feeding rules",
+          action: true,
+          contents: `<<dialog "Feeding rules">>
+          <</dialog>>`,
+        },
+      },
+    },
   },
   defaultStopOption: "✋ Leave $npc.pronoun alone",
   timeIncreaseNpcHunger: true,

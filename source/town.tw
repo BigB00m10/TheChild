@@ -1,8 +1,9 @@
 :: work {"position":"700,250"}
 <<scenery dump>>
-<<addHours 8>>\
+<<set if(!$player.job.hours)$player.job.hours=8>>\
+<<addHours $player.job.hours>>\
 <<set $player.workedToday = true>>\
-You spend 8 hours working on your job as $player.job.name
+You spend $player.job.hours hours working on your job as $player.job.name
 <<cash $player.job.pay>>
 You currently own ¤<<- $player.cash.toFixed(2)>>
 

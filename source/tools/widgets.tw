@@ -55,6 +55,12 @@
         <<button "✅ Save">>
             <<run eval(_args[0] + '=' + JSON.stringify(_newList.split(/\r?\n/)));Dialog.close()>>
         <</button>>
+        <<if _args[2]>>
+            <<set _defaultListVarName=_args[2]>>
+            <<button "♻ Reset to default">>
+                <<run $('#textarea--newlist').val(eval(_defaultListVarName).join('\n'))>>
+            <</button>>
+        <</if>>
         <span id="escAct">
             <<button "❌ (Esc) Cancel">>
                 <<run Dialog.close()>>

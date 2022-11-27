@@ -58,7 +58,10 @@
         <<if _args[2]>>
             <<set _defaultListVarName=_args[2]>>
             <<button "♻ Reset to default">>
-                <<run $('#textarea--newlist').val(eval(_defaultListVarName).join('\n'))>>
+                <<set
+                    _newList = eval(_defaultListVarName).join('\n');
+                    $('#textarea--newlist').val(_newList);
+                >>
             <</button>>
         <</if>>
         <span id="escAct">

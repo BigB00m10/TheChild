@@ -99,13 +99,13 @@ location: $npc.location
                     <<userEditListVar "$settings.childGeneration.hairColors" "Edit hair colors" PersonGeneration.hairColors>>
                 <</button>>\
                 <<button "Hair styles">>\
-                    <<userEditListVar "$settings.childGeneration.hairStyles" "Edit hair styles">>
+                    <<userEditListVar "$settings.childGeneration.hairStyles" "Edit hair styles" PersonGeneration.hairStyles>>
                 <</button>>\
                 <<button "Eye colors">>\
-                    <<userEditListVar "$settings.childGeneration.eyeColors" "Edit eye colors">>
+                    <<userEditListVar "$settings.childGeneration.eyeColors" "Edit eye colors" PersonGeneration.eyeColors>>
                 <</button>>\
                 <<button "Skins">>\
-                    <<userEditListVar "$settings.childGeneration.skins" "Edit skins">>
+                    <<userEditListVar "$settings.childGeneration.skins" "Edit skins" PersonGeneration.skins>>
                 <</button>>\
             </div>\
             <input type="radio" name="configTabs" id="tab-tweaks">\

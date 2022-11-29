@@ -76,6 +76,8 @@ window.Interactions["houseSlave"] = {
     },
     ...window.Interactions.slave.options,
     setCook: {
+      showDisabled:
+        "Obedience $npc.obedience/60, Freedom Wish $npc.freedomWish/0",
       canBeShown: () => !Variables().settings.cook?.npc,
       npcRequirements: ["obedience>=60", "freedomWish=0"],
       optionText:
@@ -87,12 +89,15 @@ window.Interactions["houseSlave"] = {
         $npc.location='kitchen';
       >><<playerSay "Okay $npc.name, you're now in charge of cooking!">>
       <<npcSay "Okay <<npcAddressPlayer>><<if $npc.fear lt 20>><<emoji 🙂>><<else>><<emoji 🥺>><</if>>">>
-      <<playerSay "You'll have a key so you can feed the ones in the basement. Let me teach you how to do it.">>`,
+      <<playerSay "You'll have a key so you can feed the ones in the basement by yourself. Let me teach you how to do it.">>`,
       next: {
         rules: {
           optionText: "⚙ Set feeding rules",
           action: true,
           contents: `<<dialog "Feeding rules">>
+            Feed the slaves that have at least <input type='number' id='feedAtHunger'> hunger.
+            Special cases:
+            
           <</dialog>>`,
         },
       },

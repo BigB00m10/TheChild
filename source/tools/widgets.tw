@@ -10,7 +10,7 @@
     <<run $player.cash = Math.round(($player.cash + _args[0]) * 100) / 100
         ;_cashAction = _args[0] < 1 ? 'lost' : 'received'
         ;_cashColor = _args[0] < 1 ? 'red' : 'green'>>
-    @@color:_cashColor;You _cashAction ¤<<- _args[0].toFixed(2)>>@@
+    @@color:_cashColor;You _cashAction ¤<<- Math.abs(_args[0]).toFixed(2)>>@@
 <</widget>>
 <<widget workOption>>
     <<set _workEmoji = $player.gender != "boy" ? "👷‍♀️" : "👷‍♂️"; _workText = "Go to work" + (Now.isWeekend()?" (Optional)":"")>>
@@ -56,19 +56,14 @@
             <<run eval(_args[0] + '=' + JSON.stringify(_newList.split(/\r?\n/)));Dialog.close()>>
         <</button>>
         <<if _args[2]>>
-            <<set _defaultListVarName=_args[2]>>
-            <<button "♻ Reset to default">>
-                <<set
-                    _newList = eval(_defaultListVarName).join('\n');
-                    $('#textarea--newlist').val(_newList);
-                >>
-            <</button>>
+            <<button "♻ Reset to default">><<set
+                _newList = eval(_args[2]).join('\n');
+                $('#textarea--newlist').val(_newList);  
+            >><</button>>
         <</if>>
-        <span id="escAct">
-            <<button "❌ (Esc) Cancel">>
-                <<run Dialog.close()>>
-            <</button>>
-        </span>
+        <span id="escAct"><<button "❌ (Esc) Cancel">>
+            <<run Dialog.close()>>
+        <</button>></span>
     <</dialog>>
 <</widget>>
 <<widget npcAddressPlayer>><<- Player.getAddressing(_args[0] || $npc)>><</widget>>

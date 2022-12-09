@@ -4,10 +4,10 @@ type Sex = "male" | "female" | "herm";
 type Gender = "boy" | "girl" | "nb";
 type Genitals = "cunny" | "pussy" | "penis" | "dick";
 type AllGenitals = {
-  "male": Genitals
-  "female": Genitals
-  "all": string
-}
+  male: Genitals;
+  female: Genitals;
+  all: string;
+};
 interface Home {
   name: string;
   rent: number;
@@ -70,14 +70,13 @@ class Player {
   }
   //Use this to change the player's sex.
   setSex(sex: Sex, player?: Player) {
-    if(!player)
-      player = Variables().player as Player;
+    if (!player) player = Variables().player as Player;
     player.sex = sex;
     if (sex == "male") {
       player.genitals = {
-        "male": "dick",
-        "female": null,
-        "all": "dick"
+        male: "dick",
+        female: null,
+        all: "dick",
       };
       player.hasPenis = true;
       player.hasPussy = false;
@@ -85,9 +84,9 @@ class Player {
     }
     if (sex == "female") {
       player.genitals = {
-        "male": null,
-        "female": "pussy",
-        "all": "pussy"
+        male: null,
+        female: "pussy",
+        all: "pussy",
       };
       player.hasPenis = false;
       player.hasPussy = true;
@@ -95,9 +94,9 @@ class Player {
     }
     if (sex == "herm") {
       player.genitals = {
-        "male": "dick",
-        "female": "pussy",
-        "all": "dick and pussy"
+        male: "dick",
+        female: "pussy",
+        all: "dick and pussy",
       };
       player.hasPenis = true;
       player.hasPussy = true;
@@ -127,6 +126,32 @@ class Player {
     if (npc.status == "slave") return result;
     var specific = $addressing[npc.status];
     return specific ? specific : result;
+  }
+  //Bind a DOM element with a variable. So that when the element value is changed the variable changes too and the other way around.
+  bindSettingDom(
+    id: string,
+    variable: any,
+    onChanged: (element: HTMLElement) => void,
+    displayId: string
+  ): void {
+    let $element = $("#" + id);
+    switch ($element.attr("type")) {
+      case "checkbox":
+        $element
+          .on("change", function () {
+            if (onChanged) onChanged(this);
+            variable = (<HTMLInputElement>this).checked;
+          })
+          .prop("checked", variable);
+        break;
+      case "range":
+        $element.on("input", function () {
+          if (onChanged) onChanged(this);
+          variable = parseInt((<HTMLInputElement>this).value);
+          if (displayId) $("#" + displayId).val(variable);
+        });
+        break;
+    }
   }
 }
 /* Snippet to hook an event to an object. Might be useful someday.

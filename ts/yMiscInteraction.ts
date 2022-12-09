@@ -84,7 +84,7 @@ window.Interactions["houseSlave"] = {
         "🍳 Set $npc.name in charge of cooking and teach $npc.pronoun how to do it",
       minutesCost: 60,
       contents: `<<set 
-        $settings.cook={npc:$npc.uid,feedAtHunger:20,feedTimes:['7:00 AM','1:00 PM','7:00 PM'],exceptions:[]};
+        $settings.cook={npc:$npc.uid,feedEnabled:true,feedAtHunger:20,feedTimes:['7:00 AM','1:00 PM','7:00 PM'],exceptions:[]};
         Person.setStatus('servant');
         $npc.location='kitchen';
       >><<playerSay "Okay $npc.name, you're now in charge of cooking!">>
@@ -95,9 +95,20 @@ window.Interactions["houseSlave"] = {
           optionText: "⚙ Set feeding rules",
           action: true,
           contents: `<<dialog "Feeding rules">>
-            Feed the slaves that have at least <input type='number' id='feedAtHunger'> hunger.
+            <label><input type="checkbox" id="feedEnabled">Feed all the slaves that have at least </label><input type="number" id="feedAtHunger" style="width:3em" min="1" max="100">hunger.
+            Those slaves will be fed at 7AM, 1PM and 7PM
             Special cases:
-            
+            <<if $settings.cook.exceptions.length>>\
+              <<for _exception range $settings.cook.exceptions>>\
+                <<set _exceptionPerson = Person.get(_exception.npc)>>\
+                <span class="exceptionPerson" @data-exception="_exception">_exceptionPerson.name</span>
+              <</for>>\
+            <<else>>\
+              (none)
+            <</if>>\
+            <script>
+              
+            </script>\
           <</dialog>>`,
         },
       },

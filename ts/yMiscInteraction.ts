@@ -90,28 +90,28 @@ window.Interactions["houseSlave"] = {
       >><<playerSay "Okay $npc.name, you're now in charge of cooking!">>
       <<npcSay "Okay <<npcAddressPlayer>><<if $npc.fear lt 20>><<emoji 🙂>><<else>><<emoji 🥺>><</if>>">>
       <<playerSay "You'll have a key so you can feed the ones in the basement by yourself. Let me teach you how to do it.">>`,
-      next: {
-        rules: {
-          optionText: "⚙ Set feeding rules",
-          action: true,
-          contents: `<<dialog "Feeding rules">>
-            <label><input type="checkbox" id="feedEnabled">Feed all the slaves that have at least </label><input type="number" id="feedAtHunger" style="width:3em" min="1" max="100">hunger.
-            Those slaves will be fed at 7AM, 1PM and 7PM
-            Special cases:
-            <<if $settings.cook.exceptions.length>>\
-              <<for _exception range $settings.cook.exceptions>>\
-                <<set _exceptionPerson = Person.get(_exception.npc)>>\
-                <span class="exceptionPerson" @data-exception="_exception">_exceptionPerson.name</span>
-              <</for>>\
-            <<else>>\
-              (none)
-            <</if>>\
-            <script>
-              
-            </script>\
-          <</dialog>>`,
-        },
-      },
+      //next: {
+      //  rules: {
+      //    optionText: "⚙ Set feeding rules",
+      //    action: true,
+      //    contents: `<<dialog "Feeding rules">>
+      //      <label><input type="checkbox" id="feedEnabled">Feed all the slaves that have at least </label><input type="number" id="feedAtHunger" style="width:3em" min="1" max="100">hunger.
+      //      Those slaves will be fed at 7AM, 1PM and 7PM
+      //      Special cases:
+      //      <<if $settings.cook.exceptions.length>>\
+      //        <<for _exception range $settings.cook.exceptions>>\
+      //          <<set _exceptionPerson = Person.get(_exception.npc)>>\
+      //          <span class="exceptionPerson" @data-exception="_exception">_exceptionPerson.name</span>
+      //        <</for>>\
+      //      <<else>>\
+      //        (none)
+      //      <</if>>\
+      //      <script>
+      //        
+      //      </script>\
+      //    <</dialog>>`,
+      //  },
+      //},
     },
   },
   defaultStopOption: "✋ Leave $npc.pronoun alone",

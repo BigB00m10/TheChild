@@ -130,8 +130,9 @@ class Player {
   //Bind a DOM element with a variable. So that when the element value is changed the variable changes too and the other way around.
   bindSettingDom(
     id: string,
-    variable: any,
-    onChanged: (element: HTMLElement) => void,
+    variableParent: any,
+    variableName: string,
+    onChanged: (element: HTMLElement) => any,
     displayId: string
   ): void {
     let $element = $("#" + id);
@@ -139,17 +140,32 @@ class Player {
       case "checkbox":
         $element
           .on("change", function () {
-            if (onChanged) onChanged(this);
-            variable = (<HTMLInputElement>this).checked;
+            if (onChanged) variableParent[variableName] = onChanged(this);
+            if (!onChanged || variableParent[variableName] === undefined)
+              variableParent[variableName] = (<HTMLInputElement>this).checked;
           })
-          .prop("checked", variable);
+          .prop("checked", variableParent[variableName]);
         break;
       case "range":
-        $element.on("input", function () {
-          if (onChanged) onChanged(this);
-          variable = parseInt((<HTMLInputElement>this).value);
-          if (displayId) $("#" + displayId).val(variable);
-        });
+        $element
+          .on("input", function () {
+            if (onChanged) variableParent[variableName] = onChanged(this);
+            if (!onChanged || variableParent[variableName] === undefined)
+              variableParent[variableName] = parseInt(
+                (<HTMLInputElement>this).value
+              );
+            if (displayId) $("#" + displayId).val(variableParent[variableName]);
+          })
+          .val(variableParent[variableName] || 0);
+        break;
+      case "number":
+        $element
+          .on("change", function () {
+            if (onChanged) variableParent[variableName] = onChanged(this);
+            if (!onChanged || variableParent[variableName] === undefined)
+              variableParent[variableName] = $(this).val();
+          })
+          .val(variableParent[variableName] || 0);
         break;
     }
   }

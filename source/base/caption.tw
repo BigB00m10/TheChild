@@ -201,28 +201,17 @@ location: $npc.location
                         break
                 }
             })
-            $('#toggleEmoji').change(function() {
+            Player.bindSettingDom('toggleEmoji',$settings,'emoji',function(element){
                 var $emoji = $('.emoji')
-                if(this.checked)
+                if(element.checked)
                     $emoji.show()
                 else
                     $emoji.hide()
-                $settings.emoji = this.checked
-            }).prop('checked', $settings.emoji)
-            $('#toggleAnal').change(function() {
-                $settings.anal = this.checked
-            }).prop('checked', $settings.anal)
-            $('#toggleSlaveSell').change(function() {
-                $settings.slaveSelling = this.checked
-            }).prop('checked', $settings.slaveSelling)
-            $("#femalePercentSlider").on("input", function () {
-                $settings.childGeneration.femalePercentage = parseInt($(this).val())
-                $("#femalePercentDisplay").val($settings.childGeneration.femalePercentage)
-            }).val($settings.childGeneration.femalePercentage)
-            $("#hermPercentSlider").on("input", function () {
-                $settings.childGeneration.hermPercentage = parseInt($(this).val())
-                $("#hermPercentDisplay").val($settings.childGeneration.hermPercentage)
-            }).val($settings.childGeneration.hermPercentage)
+            })
+            Player.bindSettingDom('toggleAnal',$settings,'anal')
+            Player.bindSettingDom('toggleSlaveSell',$settings,'slaveSelling')
+            Player.bindSettingDom('femalePercentSlider',$settings.childGeneration,'femalePercentage',null,'femalePercentDisplay')
+            Player.bindSettingDom('hermPercentSlider',$settings.childGeneration,'hermPercentage',null,'hermPercentDisplay')
             var $femaleAgeFrom = $('#femaleAgeFrom')
             var $femaleAgeTo = $('#femaleAgeTo')
             var $maleAgeFrom = $('#maleAgeFrom')
@@ -271,10 +260,7 @@ location: $npc.location
                 $this.val(value)
                 $settings.childGeneration.herms.toAge = value
             }).val($settings.childGeneration.herms.toAge)
-            var $lustDecCum = $('#lustDecCum')
-            $lustDecCum.change(function(){
-                $settings.lustDecCum = $(this).val();
-            }).val($settings.lustDecCum || 0)
+            Player.bindSettingDom('lustDecCum',$settings,'lustDecCum')
         </script>\
     <</dialog>>\
 <</link>>

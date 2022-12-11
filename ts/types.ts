@@ -127,11 +127,17 @@ class Player {
     var specific = $addressing[npc.status];
     return specific ? specific : result;
   }
-  //Bind a DOM element with a variable. So that when the element value is changed the variable changes too and the other way around.
+  //Bind a HTML DOM element with a property. So that when the element value is changed the property changes too and the other way around.
+  //Parameters:
+  //id: ID of the HTML element that will be bind to the variable
+  //parentVariable: The parent variable or source property that contains the target property
+  //propertyName: The name of the target property in the parent variable
+  //onChanged: (optional, default:null) Extra function to execute when the element value is changed. If this function returns a value, that value will be used instead of the element's value.
+  //displayId: (optional) Only for range elements. It will apply the range value to the input with the specified id. So the player can see its current value.
   bindSettingDom(
     id: string,
-    variableParent: any,
-    variableName: string,
+    parentVariable: object,
+    propertyName: string,
     onChanged: (element: HTMLElement) => any,
     displayId: string
   ): void {
@@ -140,34 +146,65 @@ class Player {
       case "checkbox":
         $element
           .on("change", function () {
-            if (onChanged) variableParent[variableName] = onChanged(this);
-            if (!onChanged || variableParent[variableName] === undefined)
-              variableParent[variableName] = (<HTMLInputElement>this).checked;
+            if (onChanged) parentVariable[propertyName] = onChanged(this);
+            if (!onChanged || parentVariable[propertyName] === undefined)
+              parentVariable[propertyName] = (<HTMLInputElement>this).checked;
           })
-          .prop("checked", variableParent[variableName]);
+          .prop("checked", parentVariable[propertyName]);
         break;
       case "range":
         $element
           .on("input", function () {
-            if (onChanged) variableParent[variableName] = onChanged(this);
-            if (!onChanged || variableParent[variableName] === undefined)
-              variableParent[variableName] = parseInt(
+            if (onChanged) parentVariable[propertyName] = onChanged(this);
+            if (!onChanged || parentVariable[propertyName] === undefined)
+              parentVariable[propertyName] = parseInt(
                 (<HTMLInputElement>this).value
               );
-            if (displayId) $("#" + displayId).val(variableParent[variableName]);
+            if (displayId) $("#" + displayId).val(parentVariable[propertyName]);
           })
-          .val(variableParent[variableName] || 0);
+          .val(parentVariable[propertyName] || 0);
         break;
       case "number":
         $element
           .on("change", function () {
-            if (onChanged) variableParent[variableName] = onChanged(this);
-            if (!onChanged || variableParent[variableName] === undefined)
-              variableParent[variableName] = $(this).val();
+            if (onChanged) parentVariable[propertyName] = onChanged(this);
+            if (!onChanged || parentVariable[propertyName] === undefined)
+              parentVariable[propertyName] = $(this).val();
           })
-          .val(variableParent[variableName] || 0);
+          .val(parentVariable[propertyName] || 0);
         break;
     }
+  }
+  //Bind a pair of HTML DOM elements indicating a range with their respective properties of a variable. So that when the element value is changed the property changes too and the other way around.
+  //Parameters:
+  //elementIdBase: Used to get the id of the HTML elements. "From" and "To" will be appended to get the two element's IDs
+  //parentVariable: The variable that contains the from and to properties to bind.
+  //propertyBaseName: Used to get the name of the properties. The first letter will be uppercase'd, and "from" and "to" will be prepended to get the two property names.
+  bindRangeSettingsDom(
+    elementIdBase: string,
+    parentVariable: object,
+    propertyBaseName: string
+  ): void {
+    let $from = $("#" + elementIdBase + "From");
+    let $to = $("#" + elementIdBase + "To");
+    $from
+      .on("change", function () {
+        let toValue = parseInt(<string>$to.val());
+        let $this = $(this);
+        let value = Math.min(toValue, parseInt(<string>$this.val()));
+        $this.val(value);
+        parentVariable["from" + propertyBaseName.toUpperFirst()] = value;
+      })
+      .val(parentVariable["from" + propertyBaseName.toUpperFirst()]);
+    $to
+      .on("change", function () {
+        let fromValue = parseInt(<string>$from.val());
+        let $this = $(this);
+        let value = Math.max(fromValue, parseInt(<string>$this.val()));
+        $this.val(value);
+        parentVariable["to" + propertyBaseName.toUpperFirst()] = value;
+      })
+      .val(parentVariable["to" + propertyBaseName.toUpperFirst()]);
   }
 }
 /* Snippet to hook an event to an object. Might be useful someday.

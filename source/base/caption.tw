@@ -212,54 +212,9 @@ location: $npc.location
             Player.bindSettingDom('toggleSlaveSell',$settings,'slaveSelling')
             Player.bindSettingDom('femalePercentSlider',$settings.childGeneration,'femalePercentage',null,'femalePercentDisplay')
             Player.bindSettingDom('hermPercentSlider',$settings.childGeneration,'hermPercentage',null,'hermPercentDisplay')
-            var $femaleAgeFrom = $('#femaleAgeFrom')
-            var $femaleAgeTo = $('#femaleAgeTo')
-            var $maleAgeFrom = $('#maleAgeFrom')
-            var $maleAgeTo = $('#maleAgeTo')
-            var $hermAgeFrom = $('#hermAgeFrom')
-            var $hermAgeTo = $('#hermAgeTo')
-            $femaleAgeFrom.change(function(){
-                var toValue = parseInt($femaleAgeTo.val())
-                var $this = $(this)
-                var value = Math.min(toValue, parseInt($this.val()))
-                $this.val(value)
-                $settings.childGeneration.females.fromAge = value
-            }).val($settings.childGeneration.females.fromAge)
-            $femaleAgeTo.change(function(){
-                var fromValue = parseInt($femaleAgeFrom.val())
-                var $this = $(this)
-                var value = Math.max(fromValue, parseInt($this.val()))
-                $this.val(value)
-                $settings.childGeneration.females.toAge = value
-            }).val($settings.childGeneration.females.toAge)
-            $maleAgeFrom.change(function(){
-                var toValue = parseInt($maleAgeTo.val())
-                var $this = $(this)
-                var value = Math.min(toValue, parseInt($this.val()))
-                $this.val(value)
-                $settings.childGeneration.males.fromAge = value
-            }).val($settings.childGeneration.males.fromAge)
-            $maleAgeTo.change(function(){
-                var fromValue = parseInt($maleAgeFrom.val())
-                var $this = $(this)
-                var value = Math.max(fromValue, parseInt($this.val()))
-                $this.val(value)
-                $settings.childGeneration.males.toAge = value
-            }).val($settings.childGeneration.males.toAge)
-            $hermAgeFrom.change(function(){
-                var toValue = parseInt($hermAgeTo.val())
-                var $this = $(this)
-                var value = Math.min(toValue, parseInt($this.val()))
-                $this.val(value)
-                $settings.childGeneration.herms.fromAge = value
-            }).val($settings.childGeneration.herms.fromAge)
-            $hermAgeTo.change(function(){
-                var fromValue = parseInt($hermAgeFrom.val())
-                var $this = $(this)
-                var value = Math.max(fromValue, parseInt($this.val()))
-                $this.val(value)
-                $settings.childGeneration.herms.toAge = value
-            }).val($settings.childGeneration.herms.toAge)
+            Player.bindRangeSettingsDom('femaleAge',$settings.childGeneration.females,'age')
+            Player.bindRangeSettingsDom('maleAge',$settings.childGeneration.males,'age')
+            Player.bindRangeSettingsDom('hermAge',$settings.childGeneration.herms,'age')
             Player.bindSettingDom('lustDecCum',$settings,'lustDecCum')
         </script>\
     <</dialog>>\

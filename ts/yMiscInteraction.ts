@@ -97,9 +97,9 @@ window.Interactions["houseSlave"] = {
           contents: `<<dialog "Cook feeding rules">>
             <label><input type="checkbox" id="feedEnabled">Feed all the slaves that have at least </label><input type="number" id="feedAtHunger" style="width:3em" min="1" max="100">hunger.
             Those slaves will be fed at 7AM, 1PM and 7PM
-            Special cases:
             <div class="row">\
               <div class="one-half column">\
+                Special cases:
                 <span id="exceptionList"><<if $settings.cook.exceptions.length>>\
                   <<for _exception range $settings.cook.exceptions>>\
                     <<set _exceptionPerson = Person.get(_exception.npc)>>\
@@ -107,21 +107,25 @@ window.Interactions["houseSlave"] = {
                   <</for>>\
                 <<else>>\
                   (none)
-                <</if>><span>\
+                <</if>></span>\
                 <button id="addExceptionBtn">Add exception</button>
               </div><div class="one-half column" id="exceptionEditor"></div>\
             </div>\
             <<done>><<run
-              Player.bindSettingDom('feedEnabled',$settings.cook,'feedEnabled')
-              Player.bindSettingDom('feedAtHunger',$settings.cook,'feedAtHunger')
-              $('#exceptionBtn').on('click',function(){
-                $('#exceptionEditor').html('
-                  <h3>New exception</h3><br>
-                  Slave: <select id="exceptionSlaveSelect"></select>
-                  <label><input type="checkbox" id="feedEnabled" checked>Feed this the slave when they have at least </label><input type="number" id="feedAtHunger" style="width:3em" min="1" max="100">hunger.
-                  <button id="saveExceptionBtn">Save</button>
-                ')
-              })
+              Player.bindSettingDom('feedEnabled',$settings.cook,'feedEnabled');
+              Player.bindSettingDom('feedAtHunger',$settings.cook,'feedAtHunger');
+              $('#addExceptionBtn').on('click',function(){
+                $('#exceptionEditor').html('<h3>New exception</h3>\
+                Slave: <select id="exceptionSlaveSelect"></select><br>\
+                <label><input type="checkbox" id="feedEnabled" checked>Feed this the slave when they have at least </label><input type="number" id="feedAtHunger" style="width:3em" min="1" max="100" value="20">hunger.\
+                <br><button id="saveExceptionBtn">Save</button>');
+                $slaves.forEach(function(slave){
+                  $('#exceptionSlaveSelect').append($('<option/>',{
+                      text: slave.name + '(' + slave.age + ' y.o. ' + slave.hairColor + ')',
+                      value: slave.uid
+                  }))
+                })
+              });
             >><</done>>\
           <</dialog>>`,
         },

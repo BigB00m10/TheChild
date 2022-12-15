@@ -115,16 +115,21 @@ window.Interactions["houseSlave"] = {
               Player.bindSettingDom('feedEnabled',$settings.cook,'feedEnabled');
               Player.bindSettingDom('feedAtHunger',$settings.cook,'feedAtHunger');
               $('#addExceptionBtn').on('click',function(){
-                $('#exceptionEditor').html('<h3>New exception</h3>\
-                Slave: <select id="exceptionSlaveSelect"></select><br>\
+                var exceptionEditor = $('#exceptionEditor').html('<h3>New exception</h3>\
+                Slave:\
+                <select id="exceptionSlaveSelect" style="width:100%"></select>\
                 <label><input type="checkbox" id="feedEnabled" checked>Feed this the slave when they have at least </label><input type="number" id="feedAtHunger" style="width:3em" min="1" max="100" value="20">hunger.\
                 <br><button id="saveExceptionBtn">Save</button>');
-                $slaves.forEach(function(slave){
-                  $('#exceptionSlaveSelect').append($('<option/>',{
-                      text: slave.name + '(' + slave.age + ' y.o. ' + slave.hairColor + ')',
-                      value: slave.uid
-                  }))
-                })
+                $('#exceptionSlaveSelect').select2({
+                  placeholder:"Select slave...",
+                  dropdownParent:exceptionEditor,
+                  data:$.map($slaves,function(slave){
+                    return {
+                      id:slave.uid,
+                      text:slave.name + '(' + slave.age + ' y.o. ' + slave.hairColor + ' hair)'
+                    }
+                  })
+                }).val(null).trigger('change');
               });
             >><</done>>\
           <</dialog>>`,

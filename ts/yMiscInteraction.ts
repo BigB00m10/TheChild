@@ -112,15 +112,15 @@ window.Interactions["houseSlave"] = {
               </div><div class="one-half column" id="exceptionEditor"></div>\
             </div>\
             <<done>><<run
-              Player.bindSettingDom('feedEnabled',$settings.cook,'feedEnabled');
-              Player.bindSettingDom('feedAtHunger',$settings.cook,'feedAtHunger');
+              Player.bindSettingDom('feedEnabled',$settings.cook,'feedEnabled')
+              Player.bindSettingDom('feedAtHunger',$settings.cook,'feedAtHunger')
               $('#addExceptionBtn').on('click',function(){
                 var exceptionEditor = $('#exceptionEditor').html('<h3>New exception</h3>\
                 Slave:\
                 <select id="exceptionSlaveSelect" style="width:100%"></select>\
-                <label><input type="checkbox" id="feedEnabled" checked>Feed this the slave when they have at least </label><input type="number" id="feedAtHunger" style="width:3em" min="1" max="100" value="20">hunger.\
-                <br><button id="saveExceptionBtn">Save</button>');
-                $('#exceptionSlaveSelect').select2({
+                <label><input type="checkbox" id="exceptionFeedEnabled" checked>Feed this the slave when they have at least </label><input type="number" id="exceptionFeedAtHunger" style="width:3em" min="1" max="100" value="20">hunger.\
+                <br><button id="saveExceptionBtn">Save</button>')
+                var exceptionSlaveSelect = $('#exceptionSlaveSelect').select2({
                   placeholder:"Select slave...",
                   dropdownParent:exceptionEditor,
                   data:$.map($slaves,function(slave){
@@ -129,7 +129,18 @@ window.Interactions["houseSlave"] = {
                       text:slave.name + '(' + slave.age + ' y.o. ' + slave.hairColor + ' hair)'
                     }
                   })
-                }).val(null).trigger('change');
+                }).val(null).trigger('change')
+                $('#saveExceptionBtn').on('click',function(){
+                  var slaveId=exceptionSlaveSelect.val()
+                  if(!slaveId)return;
+                  $settings.cook.exceptions.push({
+                    slave:slaveId,
+                    feedEnabled:$('#exceptionFeedEnabled').is(':checked'),
+                    exceptionFeedAtHunger:$('#exceptionFeedAtHunger').val()
+                  })
+                  exceptionEditor.html('')
+                  //TODO update exception list
+                })
               });
             >><</done>>\
           <</dialog>>`,

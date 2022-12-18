@@ -240,3 +240,4 @@ class Now {
     return weekDay == 0 || weekDay == 6;
   }
 }
+ 

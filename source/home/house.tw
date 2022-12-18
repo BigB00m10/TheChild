@@ -16,6 +16,7 @@
     <<keyOption [[Go check|receivePacket]] 🚪>>
 <<else>>
     <<unlessEmergency>>\
+        <<wanderingSlaves>>\
         <<slaveDemands BedRoom>>
         <<keyOption [[Leave your room|main]] 🚪>>
         <<keyOption [[go to your computer|pc]] 💻>>

@@ -82,3 +82,12 @@ You are currently standing in the middle of the main room of your house.
         </span>\
     </span>\
 <</if>>\
+:: cookFeedExceptions
+<<if $settings.cook.exceptions.length>>\
+    <<for _exception range $settings.cook.exceptions>>\
+        <<set _exceptionPerson = Person.get(_exception.npc)>>\
+        <span class="exceptionPerson" @data-exception="_exception"><<npcGenderSymbol _exceptionPerson>>_exceptionPerson.name (_exceptionPerson.age y.o. _exceptionPerson.hairColor hair)</span>
+    <</for>>\
+<<else>>\
+    (none)
+<</if>>\

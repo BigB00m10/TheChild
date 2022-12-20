@@ -100,14 +100,7 @@ window.Interactions["houseSlave"] = {
             <div class="row">\
               <div class="one-half column">\
                 Special cases:
-                <span id="exceptionList"><<if $settings.cook.exceptions.length>>\
-                  <<for _exception range $settings.cook.exceptions>>\
-                    <<set _exceptionPerson = Person.get(_exception.npc)>>\
-                    <span class="exceptionPerson" @data-exception="_exception">_exceptionPerson.name</span>
-                  <</for>>\
-                <<else>>\
-                  (none)
-                <</if>></span>\
+                <span id="exceptionList"><<include cookFeedExceptions>></span>\
                 <button id="addExceptionBtn">Add exception</button>
               </div><div class="one-half column" id="exceptionEditor"></div>\
             </div>\
@@ -126,7 +119,7 @@ window.Interactions["houseSlave"] = {
                   data:$.map($slaves,function(slave){
                     return {
                       id:slave.uid,
-                      text:slave.name + '(' + slave.age + ' y.o. ' + slave.hairColor + ' hair)'
+                      text:slave.name + ' (' + slave.age + ' y.o. ' + slave.gender + ' ' + slave.hairColor + ' hair)'
                     }
                   })
                 }).val(null).trigger('change')
@@ -134,12 +127,12 @@ window.Interactions["houseSlave"] = {
                   var slaveId=exceptionSlaveSelect.val()
                   if(!slaveId)return;
                   $settings.cook.exceptions.push({
-                    slave:slaveId,
+                    npc:slaveId,
                     feedEnabled:$('#exceptionFeedEnabled').is(':checked'),
-                    exceptionFeedAtHunger:$('#exceptionFeedAtHunger').val()
+                    feedAtHunger:$('#exceptionFeedAtHunger').val()
                   })
                   exceptionEditor.html('')
-                  //TODO update exception list
+                  $('#exceptionList').html('').wiki('<<include cookFeedExceptions>>')
                 })
               });
             >><</done>>\

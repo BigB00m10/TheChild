@@ -21,6 +21,6 @@
   <</switch>>
   <<if _base64>>
     <<set _base64 to "data:image/png;base64," + _base64>>
-    <img @src="_base64">
+    <img @src="_base64"><<unset _base64>>
   <</if>>
 <</widget>>

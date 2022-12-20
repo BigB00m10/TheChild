@@ -35,7 +35,7 @@
     <</nobr>>\
     <<if _base64 != null && !$settings.hideScenery>>\
         <<set _base64 to "data:image/jpeg;base64," + _base64>>\
-        <img class="centerHouse" @src="_base64">
+        <img class="centerHouse" @src="_base64"><<unset _base64>>
         <hr>
     <</if>>\
 <</widget>>\

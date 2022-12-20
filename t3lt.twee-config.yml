@@ -62,3 +62,7 @@ sugarcube-2:
       name: npcStimulated
     slaveDemands:
       name: slaveDemands
+    printPersonLink:
+      name: printPersonLink
+    npcStats:
+      name: npcStats

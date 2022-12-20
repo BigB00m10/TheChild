@@ -67,9 +67,107 @@
     <</dialog>>
 <</widget>>
 <<widget npcAddressPlayer>><<- Player.getAddressing(_args[0] || $npc)>><</widget>>
+<<widget npcStats>>
+    <<set _npc to _args[0] || $npc>>
+    <<if typeof _npc == 'number'>>
+        <<set _npc to Person.get(_npc)>>
+    <</if>>
+    <<run
+        ['love', 'obedience', 'lust', 'pussyTraining', 'anusTraining', 'mouthTraining'].forEach(function(name) {
+            Meter.del(name);
+            Meter.add(name, {
+                label: name.beautifyStat() + ':' + $npc[name],
+                height: '20px'
+            }, $npc[name] / 100);
+        });
+        ['freedomWish', 'hunger', 'fear'].forEach(function(name) {
+            Meter.del(name);
+            Meter.add(name, {
+                label: name.beautifyStat() + ':' + $npc[name],
+                height: '20px',
+                full: '#FF4136',
+                empty: '#2ECC40'
+            }, $npc[name] / 100);
+        });
+    >>
+    <div class="row">
+        <<if _npc.fear>>
+            <div class="one-third column">
+                <<showmeter fear>>
+            </div>
+        <</if>>
+        <<if _npc.love>>
+            <div class="one-third column">
+                <<showmeter love>>
+            </div>
+        <</if>>
+        <<if _npc.obedience>>
+            <div class="one-third column">
+                <<showmeter obedience>>
+            </div>
+        <</if>>
+    </div>
+    <div class="row">
+        <<if _npc.lust>>
+            <div class="one-third column">
+                <<showmeter lust>>
+            </div>
+        <</if>>
+        <<if _npc.freedomWish>>
+            <div class="one-third column">
+                <<showmeter freedomWish>>
+            </div>
+        <</if>>
+        <<if _npc.hunger>>
+            <div class="one-third column">
+                <<showmeter hunger>>
+            </div>
+        <</if>>
+    </div>
+    <div class="row">
+        <<if _npc.pussyTraining>>
+            <div class="one-third column">
+                <<showmeter pussyTraining>>
+            </div>
+        <</if>>
+        <<if _npc.anusTraining>>
+            <div class="one-third column">
+                <<showmeter anusTraining>>
+            </div>
+        <</if>>
+        <<if _npc.mouthTraining>>
+            <div class="one-third column">
+                <<showmeter mouthTraining>>
+            </div>
+        <</if>>
+    </div>
+    <<unset _npc>>
+<</widget>>
+<<widget personProperties>>
+    <<npcStats _args[0]>>
+    <<set _npc to _args[0] || $npc>>
+    <<if typeof _npc == 'number'>>
+        <<set _npc to Person.get(_npc)>>
+    <</if>>
+    location: _npc.location<br>
+    <<if $cheat>>\
+        Personality preset: $npc.uniqueness.name <<button change>><<set _dialogTitle = "Personality for " + _npc.name>><<dialog _dialogTitle>>
+            <<for _presetIndex = 0; _presetIndex lt PersonUniquenessPresets.length; _presetIndex++>>
+                <<set _preset = PersonUniquenessPresets[_presetIndex]>>
+                <<print '<<button "_preset.name (' + Person.getPersonalityDescription(_preset) + ')">><<set _npc.uniqueness = PersonUniquenessPresets[' + _presetIndex + '];Dialog.close()>><</button>>'>>
+                <<unset _preset>>
+            <</for>>
+        <</dialog>><</button>><br>
+        Characteristics: <<- Person.getPersonalityDescription($npc.uniqueness)>>
+    <</if>>
+<</widget>>
 <<widget npcGenderSymbol>>
     <<set _genderSymbol = _args[0].sex == 'male' ? '♂' : _args[0].sex == 'female' ? '♀' : '⚤'>>
     <<emoji _genderSymbol>><<unset _genderSymbol>>
+<</widget>>
+<<widget printPersonLink>>
+    <<npcGenderSymbol _args[0]>>
+    <<print "<<link '" + (_args[2] ? _args[2] + ' ' : '') +  Person.getShortDescription(_args[0]) + "'>>" + _args[1] + "<</link>>">>
 <</widget>>
 <<widget wanderingSlaves>>
     <<set _wandering = Person.getWandering()>>
@@ -109,16 +207,12 @@
 <</widget>>
 <<widget personHunting>>
     <<set $found_kid = Person.generate($settings.childGeneration)>>
-    You found a $found_kid.age year old $found_kid.skin $found_kid.title with $found_kid.hairLength $found_kid.hairStyle $found_kid.hairColor hair 
-    and $found_kid.eyeColor eyes named $found_kid.name<br><br>
+    You found a <<- Person.getLongDescription($found_kid)>> named $found_kid.name<br><br>
     <<if Player.has('magic sunglasses')>>
         <label style="cursor:pointer"><<checkbox '$settings.usingMagicSunglasses' false true autocheck>> Put on magic sunglasses.<<emoji 😎>></label><br>
-        <<set 
-            _npcStatsStyle = $settings.usingMagicSunglasses ? '' : 'display:none';
-            $npc = $found_kid;
-        >>
+        <<set _npcStatsStyle = $settings.usingMagicSunglasses ? '' : 'display:none'>>
         <span id='npcStats' @style='_npcStatsStyle'>
-            <<include npcStats>>
+            <<npcStats $found_kid>>
             Traits: <<- Person.getPersonalityDescription($found_kid.uniqueness)>><br>
         </span><br>
         <script>

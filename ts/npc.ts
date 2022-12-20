@@ -302,7 +302,7 @@ class Person extends Npc {
       .filter((keyName) => typeof uniqueness[keyName] == "boolean")
       .join(", ");
   }
-  getHomePersonName(word: string, npc?: Npc) {
+  getHomePersonName(word: string, npc?: Npc): string {
     if (!npc) npc = Variables().npc;
     if (word == "sibling") word = npc.sex == "male" ? "bro" : "sis";
     if (npc.age < 5) {
@@ -356,6 +356,16 @@ class Person extends Npc {
         return "female";
     }
     return word.includes("boy") ? "male" : "female";
+  }
+  getShortDescription(person?: Person, addTitle?: boolean): string {
+    if (!person) person = Variables().npc;
+    return `${person.name} (${person.age} y.o. ${
+      addTitle ? person.title + " " : ""
+    }${person.hairColor} hair)`;
+  }
+  getLongDescription(person?: Person): string {
+    if (!person) person = Variables().npc;
+    return `${person.age} year old ${person.skin} ${person.title} with ${person.hairLength} ${npc.hairStyle} ${person.hairColor} hair and ${person.eyeColor} eyes`;
   }
 }
 interface GenderGeneration {

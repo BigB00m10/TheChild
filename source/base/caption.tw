@@ -25,19 +25,6 @@ Energy:<<if $cheat>>\
     $('#infiniteEnergy a').html("Make " + ($settings.infiniteEnergy ? "Finite" : "Infinite"));
 >><</link>></span><</if>>
 <<showmeter playerEnergy `$player.energy / 100`>>
-
-:: personProperties {"position":"1150,125","size":"200,100"}
-<<include npcStats>>
-location: $npc.location
-<<if $cheat>>\
-    Personality preset: $npc.uniqueness.name <<button change>><<set _dialogTitle = "Personality for " + $npc.name>><<dialog _dialogTitle>>\
-        <<for _presetIndex = 0; _presetIndex lt PersonUniquenessPresets.length; _presetIndex++>>\
-            <<set _preset = PersonUniquenessPresets[_presetIndex]>>\
-            <<print '<<button "_preset.name (' + Person.getPersonalityDescription(_preset) + ')">><<set $npc.uniqueness = PersonUniquenessPresets[' + _presetIndex + '];Dialog.close()>><</button>>'>>
-        <</for>>\
-    <</dialog>><</button>>
-    Characteristics: <<- Person.getPersonalityDescription($npc.uniqueness)>>
-<</if>>\
 :: StoryMenu {"position":"1025,125"}
 <<link "👨‍👩‍👧‍👦 Character stats">>
     <<dialog "Character stats">>
@@ -46,8 +33,8 @@ location: $npc.location
             <div class="eight columns" id="stats"><br></div>\
             <div class="four columns">\
                 <<for _slave range $slaves>>\
-                    <<npcGenderSymbol _slave>>\
-                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $npc to " + _slave.uid + ">><<replace '#stats'>><<include personProperties>><</replace>><</link>>">>
+                    <<set _action to "<<replace '#stats'>><<personProperties " + _slave.uid + ">><</replace>>">>\
+                    <<printPersonLink _slave _action>><<unset _action>>
                 <</for>>\
             </div>\
         </div>\

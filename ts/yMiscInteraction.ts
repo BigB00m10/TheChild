@@ -119,7 +119,7 @@ window.Interactions["houseSlave"] = {
                   data:$.map($slaves,function(slave){
                     return {
                       id:slave.uid,
-                      text:slave.name + ' (' + slave.age + ' y.o. ' + slave.gender + ' ' + slave.hairColor + ' hair)'
+                      text:Person.getShortDescription(slave,true)
                     }
                   })
                 }).val(null).trigger('change')

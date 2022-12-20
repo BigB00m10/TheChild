@@ -82,12 +82,21 @@ You are currently standing in the middle of the main room of your house.
         </span>\
     </span>\
 <</if>>\
-:: cookFeedExceptions
-<<if $settings.cook.exceptions.length>>\
-    <<for _exception range $settings.cook.exceptions>>\
-        <<set _exceptionPerson = Person.get(_exception.npc)>>\
-        <span class="exceptionPerson" @data-exception="_exception"><<npcGenderSymbol _exceptionPerson>>_exceptionPerson.name (_exceptionPerson.age y.o. _exceptionPerson.hairColor hair)</span>
-    <</for>>\
-<<else>>\
-    (none)
-<</if>>\
+:: cookFeedExceptions [nobr]
+<<if $settings.cook.exceptions.length>>
+    <<for _exception range $settings.cook.exceptions>>
+        <<set 
+            _exceptionPerson = Person.get(_exception.npc);
+            _action = '<<replace "#exceptionEditor">>\
+                <h3>Edit exception</h3>\
+                Slave:\
+                <select id="exceptionSlaveSelect" style="width:100%"></select>\
+                <label><input type="checkbox" id="exceptionFeedEnabled" checked>Feed this the slave when they have at least </label><input type="number" id="exceptionFeedAtHunger" style="width:3em" min="1" max="100" value="20">hunger.\
+                <br><button id="saveExceptionBtn">Save</button> <button id="deleteExceptionBtn">Delete</button>\
+            <</replace>>';
+        >>
+        <span class="exceptionPerson" @data-exception="_exception"><<printPersonLink _exceptionPerson _action>></span><br>
+    <</for>>
+<<else>>
+    (none)<br>
+<</if>>

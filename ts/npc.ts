@@ -144,10 +144,10 @@ abstract class Npc {
     Variables().slaves.push(npc);
   }
   static updateLocations(currentDate: Date): void {
-    let variables = Variables();
+    const variables = Variables();
     if (!currentDate) currentDate = variables.now.date;
     //const sleepTime = window.Now.isBetween("10:00 PM", "7:00 AM", currentDate);
-    let homeSpaces = variables.player.home.spaces.filter(
+    const homeSpaces = variables.player.home.spaces.filter(
       (space: string) => space != "basement" && !space.startsWith("tort")
     );
     const baseSeed = currentDate.getTime() - 1649048400000;
@@ -159,6 +159,30 @@ abstract class Npc {
             PseudoRandom.getSeed(baseSeed, slave.age, slave.name),
             homeSpaces
           );
+          break;
+        case "servant":
+          if (variables.settings.cook.npc != slave.uid) break;
+          let currentDate = window.Now.getCurrentDate();
+          for (const feedTimeString of variables.settings.cook.feedTimes) {
+            const currentTimeStamp = currentDate.getTime();
+            const feedTimeStamp = window.Now.dateFromTimeString(
+              feedTimeString,
+              currentDate
+            ).getTime();
+            if (
+              currentTimeStamp >= feedTimeStamp - 60 * 60 &&
+              currentTimeStamp <= feedTimeStamp
+            ) {
+              currentDate = null;
+              slave.location = "kitchen";
+              break;
+            }
+          }
+          if (currentDate)
+            slave.location = PseudoRandom.either(
+              PseudoRandom.getSeed(baseSeed, slave.age, slave.name),
+              homeSpaces.filter((space: string) => space != "kitchen")
+            );
           break;
       }
     });
@@ -365,7 +389,7 @@ class Person extends Npc {
   }
   getLongDescription(person?: Person): string {
     if (!person) person = Variables().npc;
-    return `${person.age} year old ${person.skin} ${person.title} with ${person.hairLength} ${npc.hairStyle} ${person.hairColor} hair and ${person.eyeColor} eyes`;
+    return `${person.age} year old ${person.skin} ${person.title} with ${person.hairLength} ${person.hairStyle} ${person.hairColor} hair and ${person.eyeColor} eyes`;
   }
 }
 interface GenderGeneration {

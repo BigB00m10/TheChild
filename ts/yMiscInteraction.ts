@@ -84,7 +84,7 @@ window.Interactions["houseSlave"] = {
         "🍳 Set $npc.name in charge of cooking and teach $npc.pronoun how to do it",
       minutesCost: 60,
       contents: `<<set 
-        $settings.cook={npc:$npc.uid,feedEnabled:true,feedAtHunger:20,feedTimes:['7:00 AM','1:00 PM','7:00 PM'],exceptions:[]};
+        $settings.cook={npc:$npc.uid,feedEnabled:true,feedAtHunger:20,feedTimes:['7:00 AM','1:00 PM','7:00 PM'],lastFeedings:[],exceptions:[]};
         Person.setStatus('servant');
         $npc.location='kitchen';
       >><<playerSay "Okay $npc.name, you're now in charge of cooking!">>

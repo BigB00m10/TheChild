@@ -29,7 +29,7 @@ class Now {
   }
   //Converts a time string to a Javascript Date object assuming the time is within the current day or the one passed as a reference (ref optional parameter)
   //The string should be something like "7:30 PM"
-  private dateFromTimeString(timeString: string, ref?: Date): Date {
+  dateFromTimeString(timeString: string, ref?: Date): Date {
     if (!ref) ref = this.getCurrentDate();
     return new Date(
       ref.toLocaleString("en-us", {

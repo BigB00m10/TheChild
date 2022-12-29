@@ -10,5 +10,10 @@ You are currently standing in your kitchen.
         <<addMinutes 45>>
         <<run Engine.show()>>
     <</keyAction>>: 45min + 6 Energy
+    <<if $settings.cook && $settings.cook.npc>>\
+        <<keyAction 'Set feeding rules' ⚙>>
+            <<showCookFeedingRules>>
+        <</keyAction>>
+    <</if>>\
     <<sleepOption>>
 <</unlessEmergency>>\

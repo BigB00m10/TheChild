@@ -150,7 +150,7 @@ abstract class Npc {
     const homeSpaces = variables.player.home.spaces.filter(
       (space: string) => space != "basement" && !space.startsWith("tort")
     );
-    const baseSeed = currentDate.getTime() - 1649048400000;
+    const baseSeed = currentDate.getTime() - 1649048400000;//Current date/time minus the start of the game
     variables.slaves.forEach((slave: Person) => {
       switch (slave.status) {
         case "home slave":
@@ -170,7 +170,7 @@ abstract class Npc {
               currentDate
             ).getTime();
             if (
-              currentTimeStamp >= feedTimeStamp - 60 * 60 &&
+              currentTimeStamp >= feedTimeStamp - 60 * 60 * 1000 &&
               currentTimeStamp <= feedTimeStamp
             ) {
               currentDate = null;

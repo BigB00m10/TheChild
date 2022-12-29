@@ -79,14 +79,13 @@ window.Interactions["houseSlave"] = {
       showDisabled:
         "Obedience $npc.obedience/60, Freedom Wish $npc.freedomWish/0",
       canBeShown: () => !Variables().settings.cook?.npc,
-      npcRequirements: ["obedience>=60", "freedomWish=0"],
+      npcRequirements: ["obedience>=60", "freedomWish=0", "age>4"],
       optionText:
         "🍳 Set $npc.name in charge of cooking and teach $npc.pronoun how to do it",
       minutesCost: 60,
       contents: `<<set 
         $settings.cook={npc:$npc.uid,feedEnabled:true,feedAtHunger:20,feedTimes:['7:00 AM','1:00 PM','7:00 PM'],lastFeedings:[],exceptions:[]};
         Person.setStatus('servant');
-        $npc.location='kitchen';
       >><<playerSay "Okay $npc.name, you're now in charge of cooking!">>
       <<npcSay "Okay <<npcAddressPlayer>><<if $npc.fear lt 20>><<emoji 🙂>><<else>><<emoji 🥺>><</if>>">>
       <<playerSay "You'll have a key so you can feed the ones in the basement by yourself. Let me teach you how to do it.">>`,
@@ -94,49 +93,7 @@ window.Interactions["houseSlave"] = {
         rules: {
           optionText: "⚙ Set feeding rules",
           action: true,
-          contents: `<<dialog "Cook feeding rules">>
-            <label><input type="checkbox" id="feedEnabled">Feed all the slaves that have at least </label><input type="number" id="feedAtHunger" style="width:3em" min="1" max="100">hunger.
-            Those slaves will be fed at 7AM, 1PM and 7PM
-            <div class="row">\
-              <div class="one-half column">\
-                Special cases:
-                <span id="exceptionList"><<include cookFeedExceptions>></span>\
-                <button id="addExceptionBtn">Add exception</button>
-              </div><div class="one-half column" id="exceptionEditor"></div>\
-            </div>\
-            <<done>><<run
-              Player.bindSettingDom('feedEnabled',$settings.cook,'feedEnabled')
-              Player.bindSettingDom('feedAtHunger',$settings.cook,'feedAtHunger')
-              $('#addExceptionBtn').on('click',function(){
-                var exceptionEditor = $('#exceptionEditor').html('<h3>New exception</h3>\
-                Slave:\
-                <select id="exceptionSlaveSelect" style="width:100%"></select>\
-                <label><input type="checkbox" id="exceptionFeedEnabled" checked>Feed this the slave when they have at least </label><input type="number" id="exceptionFeedAtHunger" style="width:3em" min="1" max="100" value="20">hunger.\
-                <br><button id="saveExceptionBtn">Save</button>')
-                var exceptionSlaveSelect = $('#exceptionSlaveSelect').select2({
-                  placeholder:"Select slave...",
-                  dropdownParent:exceptionEditor,
-                  data:$.map($slaves,function(slave){
-                    return {
-                      id:slave.uid,
-                      text:Person.getShortDescription(slave,true)
-                    }
-                  })
-                }).val(null).trigger('change')
-                $('#saveExceptionBtn').on('click',function(){
-                  var slaveId=exceptionSlaveSelect.val()
-                  if(!slaveId)return;
-                  $settings.cook.exceptions.push({
-                    npc:slaveId,
-                    feedEnabled:$('#exceptionFeedEnabled').is(':checked'),
-                    feedAtHunger:$('#exceptionFeedAtHunger').val()
-                  })
-                  exceptionEditor.html('')
-                  $('#exceptionList').html('').wiki('<<include cookFeedExceptions>>')
-                })
-              });
-            >><</done>>\
-          <</dialog>>`,
+          contents: `<<showCookFeedingRules>>`,
         },
       },
     },

@@ -76,18 +76,18 @@
         ['love', 'obedience', 'lust', 'pussyTraining', 'anusTraining', 'mouthTraining'].forEach(function(name) {
             Meter.del(name);
             Meter.add(name, {
-                label: name.beautifyStat() + ':' + $npc[name],
+                label: name.beautifyStat() + ':' + _npc[name],
                 height: '20px'
-            }, $npc[name] / 100);
+            }, _npc[name] / 100);
         });
         ['freedomWish', 'hunger', 'fear'].forEach(function(name) {
             Meter.del(name);
             Meter.add(name, {
-                label: name.beautifyStat() + ':' + $npc[name],
+                label: name.beautifyStat() + ':' + _npc[name],
                 height: '20px',
                 full: '#FF4136',
                 empty: '#2ECC40'
-            }, $npc[name] / 100);
+            }, _npc[name] / 100);
         });
     >>
     <div class="row">
@@ -264,6 +264,51 @@
     <<set _demandingSlaves = window[_args[0]].getDemandingSlaves()>>
     <<set _demandIndex to 0>>
     <<include slaveDemand>><<if _demandingSlaves.length>><br><</if>>
+<</widget>>
+<<widget showCookFeedingRules>>
+    <<dialog "Cook feeding rules">>
+        <label><input type="checkbox" id="feedEnabled">Feed all the slaves that have at least </label><input type="number" id="feedAtHunger" style="width:3em" min="1" max="100">hunger.<br>
+        Those slaves will be fed at 7AM, 1PM and 7PM<br>
+        <div class="row">
+            <div class="one-half column">
+                Special cases:<br>
+                <span id="exceptionList"><<include cookFeedExceptions>></span>
+                <br><button id="addExceptionBtn">Add exception</button>
+            </div><div class="one-half column" id="exceptionEditor"></div>
+        </div>
+        <<done>><<run
+            Player.bindSettingDom('feedEnabled',$settings.cook,'feedEnabled');
+            Player.bindSettingDom('feedAtHunger',$settings.cook,'feedAtHunger');
+            $('#addExceptionBtn').on('click',function(){
+                var exceptionEditor = $('#exceptionEditor').html('<h3>New exception</h3>\
+                    Slave:\
+                    <select id="exceptionSlaveSelect" style="width:100%"></select>\
+                    <label><input type="checkbox" id="exceptionFeedEnabled" checked>Feed this the slave when they have at least </label><input type="number" id="exceptionFeedAtHunger" style="width:3em" min="1" max="100" value="20">hunger.\
+                    <br><button id="saveExceptionBtn">Save</button>');
+                var exceptionSlaveSelect = $('#exceptionSlaveSelect').select2({
+                    placeholder:"Select slave...",
+                    dropdownParent:exceptionEditor,
+                    data:$slaves.filter(function(slave) {
+                        return !$settings.cook.exceptions.find(function(ex){ return ex.npc == slave.uid; });
+                    }).map(function(slave){return {
+                        id: slave.uid,
+                        text: Person.getShortDescription(slave, true)
+                    }})
+                }).val(null).trigger('change');
+                $('#saveExceptionBtn').on('click',function(){
+                    var slaveId=exceptionSlaveSelect.val();
+                    if(!slaveId)return;
+                    $settings.cook.exceptions.push({
+                        npc:slaveId,
+                        feedEnabled:$('#exceptionFeedEnabled').is(':checked'),
+                        feedAtHunger:$('#exceptionFeedAtHunger').val()
+                    });
+                    exceptionEditor.html('');
+                    $('#exceptionList').html('').wiki('<<include cookFeedExceptions>>');
+                });
+            });
+        >><</done>>
+    <</dialog>>
 <</widget>>
 :: workOption {"position":"875,0"}
 <<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\

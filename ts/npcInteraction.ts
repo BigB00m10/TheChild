@@ -317,7 +317,7 @@ Macro.add("npcInteraction", {
         result += "@@\n";
       }
     }
-    if (interaction && showNpcStats) result += "<<include npcStats>>\n";
+    if (interaction && showNpcStats) result += "<<npcStats>>\n";
     let baseRoute =
       interaction && interaction.baseRoute
         ? interaction.baseRoute(npc)

@@ -90,18 +90,22 @@ window.Interactions["houseSlave"] = {
       >><<playerSay "Okay $npc.name, you're now in charge of cooking!">>
       <<npcSay "Okay <<npcAddressPlayer>><<if $npc.fear lt 20>><<emoji 🙂>><<else>><<emoji 🥺>><</if>>">>
       <<playerSay "You'll have a key so you can feed the ones in the basement by yourself. Let me teach you how to do it.">>`,
-      next: {
-        rules: {
-          optionText: "⚙ Set feeding rules",
-          action: true,
-          contents: `<<showCookFeedingRules>>`,
+      next: () =>
+        <NpcInteractionOptions>{
+          rules: {
+            optionText: "⚙ Set feeding rules",
+            action: true,
+            contents: `<<showCookFeedingRules>>`,
+          },
+          ...baseInteractionOptions(),
         },
-      },
     },
     unsetCook: {
       canBeShown: () => Variables().settings.cook?.npc == Variables().npc.uid,
       optionText: "❌ Dismiss $npc.name as a cook",
-      contents: `<<unset $settings.cook.npc>>`,//TODO
+      contents: `<<playerSay "You don't need to cook anymore">>
+      <<npcSay "As you wish <<npcAddressPlayer>>">><<set $settings.cook.npc=null>>`,
+      next: baseInteractionOptions,
     },
   },
   defaultStopOption: "✋ Leave $npc.pronoun alone",

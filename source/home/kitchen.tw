@@ -1,6 +1,6 @@
 :: kitchen {"position":"900,625"}
 <<scenery kitchen>>
-You are currently standing in your kitchen.
+You are currently standing in your kitchen.<<if $settings.cook && $settings.cook.npc>> <<- Person.get($settings.cook.npc).name>> is in charge of cooking.<</if>>
 <<unlessEmergency>>\
     <<wanderingSlaves>>\
     <<slaveDemands Kitchen>>

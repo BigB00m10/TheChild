@@ -78,8 +78,9 @@ window.Interactions["houseSlave"] = {
     setCook: {
       showDisabled:
         "Obedience $npc.obedience/60, Freedom Wish $npc.freedomWish/0",
-      canBeShown: () => !Variables().settings.cook?.npc,
-      npcRequirements: ["obedience>=60", "freedomWish=0", "age>4"],
+      canBeShown: () =>
+        !Variables().settings.cook?.npc && Variables().npc.age > 4,
+      npcRequirements: ["obedience>=60", "freedomWish=0"],
       optionText:
         "🍳 Set $npc.name in charge of cooking and teach $npc.pronoun how to do it",
       minutesCost: 60,
@@ -96,6 +97,11 @@ window.Interactions["houseSlave"] = {
           contents: `<<showCookFeedingRules>>`,
         },
       },
+    },
+    unsetCook: {
+      canBeShown: () => Variables().settings.cook?.npc == Variables().npc.uid,
+      optionText: "❌ Dismiss $npc.name as a cook",
+      contents: `<<unset $settings.cook.npc>>`,//TODO
     },
   },
   defaultStopOption: "✋ Leave $npc.pronoun alone",

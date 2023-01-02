@@ -3,7 +3,12 @@
 !<<- Now.getWeekDay()>>
 !!!<<- Now.getTime()>>
 ----
-$player.name
+$player.name <<link "[Inventory]">><<dialog "Player Inventory">>\
+    <<set _items = Player.getInventory().items>>\
+    <<for _item range _items>>\
+        <<-_item.count?_item.count+" ":"">>_item.name
+    <</for>><<unset _items>>\
+<</dialog>><</link>>
 <<if $cheat>>\
     <<link "+10k">>\
         <<set $player.cash += 10000;Engine.show()>>

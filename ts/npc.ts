@@ -6,6 +6,7 @@ type NpcStatus =
   | "pet"
   | "servant"
   | "lover";
+type NpcEventType = "demand" | "ordinary";
 interface NpcValue {
   obedience: number;
   obedienceRatio: string;
@@ -55,7 +56,10 @@ abstract class Npc {
   freedomWish: number = 75;
   genitals: AllGenitals;
   status: NpcStatus = "citizen";
-  need: string;
+  //Name of the last event assigned to this NPC
+  event: string;
+  //Type of the last event
+  eventType: NpcEventType;
   //This property is not used anymore, it was to identify a slave using the index in the slave array.
   //Changes in the array caused problems easily so it was replaced with the uid property
   index: undefined;
@@ -150,7 +154,7 @@ abstract class Npc {
     const homeSpaces = variables.player.home.spaces.filter(
       (space: string) => space != "basement" && !space.startsWith("tort")
     );
-    const baseSeed = currentDate.getTime() - 1649048400000;//Current date/time minus the start of the game
+    const baseSeed = currentDate.getTime() - 1649048400000; //Current date/time minus the start of the game
     variables.slaves.forEach((slave: Person) => {
       switch (slave.status) {
         case "home slave":

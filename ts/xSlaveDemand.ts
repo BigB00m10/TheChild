@@ -96,7 +96,7 @@ class OkSleepWithPlayerDemand {
     next: OkSleepWithPlayerDemand.baseOptions,
   };
 }
-window.Interactions["slaveDemandHunger"] = {
+window.Interactions["slaveEventHunger"] = {
   contents: `$npc.name is asking for food.
   <<run
     var name = 'hunger'
@@ -278,14 +278,14 @@ window.Interactions["slaveDemandHunger"] = {
       altMinutes: (minutes) => (Temporary().denied ? 0 : minutes),
       npcStats: () =>
         (
-          window.Interactions.slaveDemandHunger.options["cum"]
+          window.Interactions.slaveEventHunger.options["cum"]
             .npcStats as CallableFunction
         )(),
     },
     punish: punishment,
   },
 };
-window.Interactions["slaveDemandSleepWithPlayer"] = {
+window.Interactions["slaveEventSleepWithPlayer"] = {
   contents: `$npc.name would like to sleep together in the bed with you tonight.
   Would you like to accept?`,
   options: {
@@ -531,7 +531,7 @@ window.Interactions["wakeUpAfterNightTogether"] = {
     },
   },
 };
-window.Interactions["slaveDemandCook"] = {
+window.Interactions["slaveEventCook"] = {
   contents: "$npc.name is cooking.",
   options: {
     kissNeck: {
@@ -544,7 +544,7 @@ window.Interactions["slaveDemandCook"] = {
       optionText: "👀 Look at $npc.pronoun with a lower angle.",
       contents: "WIP",
     },
-    grope: {
+    gropeAss: {
       optionText: "🖐 Grope $npc.possessive ass!",
       contents: "WIP",
     },

@@ -2,7 +2,7 @@
 <<scenery pc>>
 welcome to your computer.
 <<unlessEmergency>>\
-    <<slaveDemands BedRoom>>
+    <<slaveEvents BedRoom>>
     <<keyOption [[Leave your your computer|bed]] 💻>>
     <<keyOption [[Watch porn|watchPorn]] 💗>>: 30min
     <<keyOption [[Shop online |onlineStore]] 🛒>>

@@ -2,7 +2,7 @@
 <<scenery tort>>
 You are currently standing in your torture room.
 <<unlessEmergency>>\
-    <<slaveDemands Basement>>
+    <<slaveEvents Basement>>
     <<keyOption [[Leave your torture|basement]] 🚪>>
     <<keyOption [[Go to cage one|tortone]] ⛓️>>
     <<keyOption [[Go to cage two|tortwo]] ⛓️>>

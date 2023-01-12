@@ -17,7 +17,7 @@
 <<else>>
     <<unlessEmergency>>\
         <<wanderingSlaves>>\
-        <<slaveDemands BedRoom>>
+        <<slaveEvents BedRoom>>
         <<keyOption [[Leave your room|main]] 🚪>>
         <<keyOption [[go to your computer|pc]] 💻>>
         <<keyOption [[Your bathroom|bathroom]] 🛀>>
@@ -34,7 +34,7 @@ You are currently standing in the middle of the main room of your house.
 
 <<unlessEmergency>>\
     <<wanderingSlaves>>\
-    <<slaveDemands MainRoom>>
+    <<slaveEvents MainRoom>>
     <<keyOption [[Watch TV|watchTv]] 📺>>: 30min
     <<include workOption>>\
     <<keyOption [[Go outside|home]] 🚪>>
@@ -53,12 +53,14 @@ You are currently standing in the middle of the main room of your house.
 <<addMinutes 30>>\
 @@color:yellow;You spend the next half hour skimming through porn and <<if $player.gender == 'girl'>>buffing the muffin<<else>>jerking off<</if>>.@@
 <<include bed>>\
-:: slaveDemand {"position":"375,0"}
-<<if _demandingSlaves[_demandIndex]>>\
-    <span id="slaveDemand">\
-        <<set _slave to _demandingSlaves[_demandIndex]>>
-        _slave.name <<if _slave.fear gte 30>>cautiously<</if>> approaches, looking at you with _slave.possessive _slave.eyeColor eyes, and says:
-        "<<switch _slave.need>>\
+:: slaveEvent {"position":"375,0"}
+<<if _eventSlaves[_eventIndex]>>\
+    <span id="slaveEvent">\
+        <<set _slave to _eventSlaves[_eventIndex]>>
+        <<if _slave.eventType == "demand">>\
+            _slave.name <<if _slave.fear gte 30>>cautiously<</if>> approaches, looking at you with _slave.possessive _slave.eyeColor eyes, and says:
+        "<</if>>\
+/*     */<<switch _slave.event>>\
 /*        */<<case "hunger">>\
 /*          */<<if _slave.hunger gte 75>>\
 /*            */<<if _slave.age gte 5>>Please!!! I'm so hungry!!! <<emoji 🙁>><<else>>I'm hungryyyyyy!!! <<emoji 😢>><</if>>\
@@ -68,18 +70,18 @@ You are currently standing in the middle of the main room of your house.
 /*        */<<case 'sleepWithPlayer'>>\
 /*          */Hey <<npcAddressPlayer _slave>>, can I sleep in the same bed as you tonight?\
 /*        */<<case 'cook'>>\
-/*          */_slave.name is currently cooking.\
-/*      */<</switch>>"
-        <<set _demandInteraction to "slaveDemand" + _slave.need.toUpperFirst()>>
+/*          */_slave.name is currently cooking<<if !_slave.hasClothes>> while naked<</if>>.\
+/*      */<</switch>><<if _slave.eventType == "demand">>"<</if>>
+        <<set _eventInteraction to "slaveEvent" + _slave.event.toUpperFirst()>>
         <span id='hKeyAct'>\
             <<button '✅ (H) Handle'>>
-                <<set $npc to _demandingSlaves[_demandIndex]>>
-                <<openNpcInteraction _demandInteraction>>
+                <<set $npc to _eventSlaves[_eventIndex]>>
+                <<openNpcInteraction _eventInteraction>>
             <</button>>\
         </span><span id='iKeyAct'>\
             <<button '❌ (I) Ignore'>>\
-                <<set _demandIndex++>>
-                <<replace #slaveDemand>><<include slaveDemand>><</replace>>
+                <<set _eventIndex++>>
+                <<replace #slaveEvent>><<include slaveEvent>><</replace>>
             <</button>>\
         </span>\
     </span>\

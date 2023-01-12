@@ -4,7 +4,7 @@
 You are currently standing in your kitchen.<<if _cook>> _cook.name is in charge of cooking.<</if>>
 <<unlessEmergency>>\
     <<wanderingSlaves>>\
-    <<slaveDemands Kitchen>>
+    <<slaveEvents Kitchen>>
     <<keyOption [[Leave your kitchen|main]] 🚪>>
     <<keyAction 'Have a meal' ☕>>
         <<addMinutes 45>>

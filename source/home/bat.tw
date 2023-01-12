@@ -3,7 +3,7 @@
 You are currently standing in your bathroom.
 <<unlessEmergency>>\
     <<wanderingSlaves>>\
-    <<slaveDemands BathRoom>>
+    <<slaveEvents BathRoom>>
     <<keyOption [[Leave your bathroom|main]] 🚪>>
     <<keyAction 'Take a shower' 🛀>><<addHours 1>><<run Engine.show()>><</keyAction>>: 1 hour
     <<sleepOption>>

@@ -321,7 +321,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
   <<else>>\
     $npc.GenPronoun slowly take<<thirdPersonVerb>> $npc.possessive clothes off and then climb<<thirdPersonVerb>> on the bed.
     You take your clothes off and climb the bed after $npc.pronoun.
-  <</if>><<include npcStats>>`,
+  <</if>><<npcStats>>`,
   defaultStopOption: false, //This interaction cannot be stopped since the player sleeps after it.
   options: {
     touchGenitals: {
@@ -528,6 +528,25 @@ window.Interactions["wakeUpAfterNightTogether"] = {
       As $npc.pronoun clench<<thirdPersonVerbPlural>> $npc.possessive butt cheeks in pleasure<<if $npc.hasPussy>> wetting the bed a little<</if>>. 
       $npc.Possessive face is bright red.`,
       npcStats: ["love+10", "freedomWish-10"],
+    },
+  },
+};
+window.Interactions["slaveDemandCook"] = {
+  contents: "$npc.name is cooking.",
+  options: {
+    kissNeck: {
+      optionText:
+        "💋 Surprise $npc.pronoun with a kiss on $npc.possessive neck.",
+      contents:
+        "You silently approach $npc.pronoun from behind and slowly press your lips on $npc.possessive neck. (WIP)",
+    },
+    lookLow: {
+      optionText: "👀 Look at $npc.pronoun with a lower angle.",
+      contents: "WIP",
+    },
+    grope: {
+      optionText: "🖐 Grope $npc.possessive ass!",
+      contents: "WIP",
     },
   },
 };

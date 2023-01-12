@@ -67,6 +67,8 @@ You are currently standing in the middle of the main room of your house.
 /*          */<</if>>\
 /*        */<<case 'sleepWithPlayer'>>\
 /*          */Hey <<npcAddressPlayer _slave>>, can I sleep in the same bed as you tonight?\
+/*        */<<case 'cook'>>\
+/*          */_slave.name is currently cooking.\
 /*      */<</switch>>"
         <<set _demandInteraction to "slaveDemand" + _slave.need.toUpperFirst()>>
         <span id='hKeyAct'>\

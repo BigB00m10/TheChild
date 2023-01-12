@@ -1,16 +1,17 @@
 :: kitchen {"position":"900,625"}
 <<scenery kitchen>>
-You are currently standing in your kitchen.<<if $settings.cook && $settings.cook.npc>> <<- Person.get($settings.cook.npc).name>> is in charge of cooking.<</if>>
+<<if $settings.cook && $settings.cook.npc>><<set _cook=Person.get($settings.cook.npc)>><</if>>\
+You are currently standing in your kitchen.<<if _cook>> _cook.name is in charge of cooking.<</if>>
 <<unlessEmergency>>\
     <<wanderingSlaves>>\
     <<slaveDemands Kitchen>>
     <<keyOption [[Leave your kitchen|main]] 🚪>>
     <<keyAction 'Have a meal' ☕>>
-        <<set $player.energy = ($player.energy + 18).clamp(0, 100)>>
         <<addMinutes 45>>
+        <<set $player.energy = ($player.energy + 18).clamp(0, 100)>>
         <<run Engine.show()>>
     <</keyAction>>: 45min + 6 Energy
-    <<if $settings.cook && $settings.cook.npc>>\
+    <<if _cook>>\
         <<keyAction 'Set feeding rules' ⚙>>
             <<showCookFeedingRules>>
         <</keyAction>>

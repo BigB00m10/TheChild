@@ -34,11 +34,21 @@ abstract class HomeSpace {
   //The main passage associated with this room
   abstract passageName: string;
   getDemandingSlaves(): Person[] {
-    const slaves = Variables().slaves as Person[];
+    const variables = Variables();
+    const slaves = variables.slaves as Person[];
     let candidates: Person[] = [];
     for (let slaveIndex = 0; slaveIndex < slaves.length; slaveIndex++) {
       const slave = slaves[slaveIndex];
       if (slave.location != this.passageName || slave.age < 1) continue;
+      if (
+        this.passageName == "kitchen" &&
+        variables.settings.cook &&
+        slave.uid == variables.settings.cook.npc
+      ) {
+        slave.need = "cook";
+        candidates.push(slave);
+        continue;
+      }
       if (slave.hunger >= 25) {
         slave.need = "hunger";
         candidates.push(slave);

@@ -69,6 +69,11 @@ abstract class Npc {
   punishments: string[] = [];
   //Where this NPC is located in the house or in the world, try to match up with the scenery name.
   location: string = "unknown";
+  inventory: Inventory;
+  getInventory(npc?: Npc): Inventory {
+    if (!npc) npc = Variables().npc;
+    return (npc.inventory = new Inventory(npc.inventory));
+  }
   hasAchievement(achievement: string, npc?: Npc): boolean {
     if (!npc) npc = Variables().npc;
     return npc.achievements.includes(achievement);

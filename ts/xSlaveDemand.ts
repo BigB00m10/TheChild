@@ -532,7 +532,7 @@ window.Interactions["wakeUpAfterNightTogether"] = {
   },
 };
 window.Interactions["slaveEventCook"] = {
-  contents: "$npc.name is cooking.",
+  contents: `$npc.name is cooking<<if Person.getInventory().hasItem('apron')>><<elseif !$npc.hasClothes>><</if>>`,
   options: {
     kissNeck: {
       optionText:
@@ -541,6 +541,7 @@ window.Interactions["slaveEventCook"] = {
         "You silently approach $npc.pronoun from behind and slowly press your lips on $npc.possessive neck. (WIP)",
     },
     lookLow: {
+      npcRequirements: ["!haveClothes"],
       optionText: "👀 Look at $npc.pronoun with a lower angle.",
       contents: "WIP",
     },

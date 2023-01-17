@@ -1,10 +1,31 @@
 :: watchp {"position":"700,825"}
-<<scenery porn>>
+<<scenery watchp>>
     <<unlessEmergency>>\
-        <<slaveDemands BedRoom>>
         <<keyOption [[go to your computer|pc]] 💻>>
-        <<keyOption [[next video|next]] 🔞>>
-        <<keyOption [[mastubate|watchp]] 💦>>
+        <<keyOption [[go to pornhub|porn1]] 🔞>>
         <<addMinutes 30>>\
+        <<sleepOption>>
+    <</unlessEmergency>>\
+:: porn1 {"position":"600,1000"}
+<<addMinutes 30>>\
+<<scenery porn1>>
+    <<unlessEmergency>>\
+        <<keyOption [[next video|porna]] 🔞>>
+        <<keyOption [[mastubate|cumstop]] 💦>>
+        <<addMinutes 30>>\
+        <<sleepOption>>
+    <</unlessEmergency>>\
+:: porna {"position":"600,1000"}
+<<addMinutes 30>>\
+<<scenery porna>>
+    <<unlessEmergency>>\
+        <<keyOption [[mastubate|cumstop]] 💦>>
+        <<addMinutes 30>>\
+        <<sleepOption>>
+    <</unlessEmergency>>\
+:: cumstop {"position":"600,1000"}
+<<addMinutes 30>>\
+<<scenery cumstop>>
+    <<unlessEmergency>>\
         <<sleepOption>>
     <</unlessEmergency>>\

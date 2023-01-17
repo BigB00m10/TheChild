@@ -1,35 +1,35 @@
-:: pc {"position":"700,825"}
+:: pc {"position":"825,950"}
 <<scenery pc>>
 welcome to your computer.
 <<unlessEmergency>>\
-    <<slaveDemands BedRoom>>
+    <<slaveEvents BedRoom>>
     <<keyOption [[Leave your your computer|bed]] 💻>>
     <<keyOption [[Watch porn|watchp]] 💗>>: 30min
     <<keyOption [[Shop online |onlineStore]] 🛒>>
     <<keyOption [[change your name |changenames]]  💬>>
 <</unlessEmergency>>\
 
-:: changenames {"position":"1000,1000"}
-        <<set _dialogTitle = 'Change ' + $player.name + " name to:";>>\
-        <<dialog _dialogTitle>>\
-        <<textbox '_newName' $player.name>>
-        <span id="enterAct">\
-            <<button "✅ (Enter) your">>\
-                <<run
-                if(!$player.originalName)
-                    $player.originalName = $player.name;
-                _mewName = _newName.trim();
-                $player.name = _newName ? _newName : $player.originalName;
-                Engine.show();
-                Dialog.close();
-                >>\
-            <</button>>\
-        </span>\
-        <span id="escAct">\
-            <<button "❌ (Esc) Cancel">>\
-                <<run Dialog.close()>>\
-            <</button>>\
-        </span>\
-        <<run $(document).ready(function(){$('#textbox--newname').focus()})>>\
+:: changenames {"position":"950,950"}
+<<set _dialogTitle = 'Change ' + $player.name + " name to:";>>\
+<<dialog _dialogTitle>>\
+    <<textbox '_newName' $player.name>>
+    <span id="enterAct">\
+        <<button "✅ (Enter) your">>\
+            <<run
+            if(!$player.originalName)
+                $player.originalName = $player.name;
+            _mewName = _newName.trim();
+            $player.name = _newName ? _newName : $player.originalName;
+            Engine.show();
+            Dialog.close();
+            >>\
+        <</button>>\
+    </span>\
+    <span id="escAct">\
+        <<button "❌ (Esc) Cancel">>\
+            <<run Dialog.close()>>\
+        <</button>>\
+    </span>\
+    <<run $(document).ready(function(){$('#textbox--newname').focus()})>>\
 <</dialog>>
 <<include pc>>

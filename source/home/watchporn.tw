@@ -1,11 +1,3 @@
-:: watchp {"position":"700,825"}
-<<scenery watchp>>
-    <<unlessEmergency>>\
-        <<keyOption [[go to your computer|pc]] 💻>>
-        <<keyOption [[go to pornhub|porn1]] 🔞>>
-        <<addMinutes 30>>\
-        <<sleepOption>>
-    <</unlessEmergency>>\
 :: porn1 {"position":"600,1000"}
 <<addMinutes 30>>\
 <<scenery porn1>>

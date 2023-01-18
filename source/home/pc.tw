@@ -3,9 +3,10 @@
 welcome to your computer.
 <<unlessEmergency>>\
     <<slaveEvents BedRoom>>
-    <<keyOption [[Leave your your computer|bed]] 💻>>
-    <<keyOption [[Watch porn|watchp]] 💗>>: 30min
+    <<keyOption [[Leave your computer|bed]] 💻>>
+    <<keyOption [[Watch porn|porn1]] 💗>>: 30min
     <<keyOption [[Shop online |onlineStore]] 🛒>>
+    <<keyOption [[Tor Browser |DarkStore]] 🌐>>
     <<keyOption [[change your name |changenames]]  💬>>
 <</unlessEmergency>>\
 

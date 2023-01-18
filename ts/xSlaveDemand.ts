@@ -532,18 +532,32 @@ window.Interactions["wakeUpAfterNightTogether"] = {
   },
 };
 window.Interactions["slaveEventCook"] = {
-  contents: `$npc.name is cooking<<if Person.getInventory().hasItem('apron')>><<elseif !$npc.hasClothes>><</if>>`,
+  contents: `$npc.name is cooking<<if Person.getInventory().hasItem('cooking apron')>> using the apron that you gave $npc.pronoun<</if>>. It's pretty obvious that $npc.pronoun's naked underneath<<emoji 👀>><<elseif !$npc.hasClothes>> naked<</if>>.`,
   options: {
     kissNeck: {
       optionText:
         "💋 Surprise $npc.pronoun with a kiss on $npc.possessive neck.",
+      npcStats: ["love+10%"],
       contents:
         "You silently approach $npc.pronoun from behind and slowly press your lips on $npc.possessive neck. (WIP)",
     },
     lookLow: {
       npcRequirements: ["!haveClothes"],
       optionText: "👀 Look at $npc.pronoun with a lower angle.",
-      contents: "WIP",
+      contents:
+        `You deliberately crouch down behind $npc.possessive. Enough to properly admire $npc.possessive cute ass and <<if $npc.hasPussy>><<$npc.genitals.female>><<else>>a peek of $npc.possessive balls<</if>>`,
+      next: () =>
+        <NpcInteractionOptions>{
+          gropeAss: baseInteractionOptions().gropeAss,
+          spread: {
+            optionText: "👐 Spread $npc.pronoun",
+            contents: `WIP`,
+          },
+          back: {
+            optionText: "🔙 Go back",
+            contents: ``,
+          },
+        },
     },
     gropeAss: {
       optionText: "🖐 Grope $npc.possessive ass!",

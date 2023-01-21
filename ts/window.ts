@@ -91,6 +91,7 @@ $(document).on(":passageinit", () => {
         }
         let addSlaveUniqueness = !slaves[0].uniqueness;
         slaves.forEach((slave: Person) => {
+          if (!slave.hunger) slave.hunger = 0;
           if (!slave.GenPronoun) {
             slave.GenPronoun = slave.gender != "boy" ? "She" : "He";
             slave.genPronoun = slave.gender != "boy" ? "she" : "he";

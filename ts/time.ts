@@ -29,7 +29,7 @@ class Now {
   }
   //Converts a time string to a Javascript Date object assuming the time is within the current day or the one passed as a reference (ref optional parameter)
   //The string should be something like "7:30 PM"
-  private dateFromTimeString(timeString: string, ref?: Date): Date {
+  dateFromTimeString(timeString: string, ref?: Date): Date {
     if (!ref) ref = this.getCurrentDate();
     return new Date(
       ref.toLocaleString("en-us", {
@@ -192,14 +192,38 @@ class Now {
     if (!event) return;
     event.timeoutHours = Math.max(event.timeoutHours, hours);
   }
+  //Should be called when current game time changes.
+  timeChanged(currentDate: Date) {
+    Npc.updateLocations(currentDate);
+    let variables = Variables();
+    let cook = variables.settings.cook;
+    if (!cook || !cook.npc) return;
+    let today =
+      currentDate.getFullYear() * 1e4 +
+      currentDate.getMonth() * 1e2 +
+      currentDate.getDate();
+    for (let index = 0; index < cook.feedTimes.length; index++)
+      if (!cook.lastFeedings[index] || cook.lastFeedings[index] < today)
+        if (this.isEqualOrLaterThan(cook.feedTimes[index], currentDate)) {
+          for (let slave of variables.slaves) {
+            let config =
+              cook.exceptions.firstOrDefault((e: any) => e.npc == slave.uid) ??
+              cook;
+            if (!config.feedEnabled) continue;
+            if (slave.hunger >= config.feedAtHunger)
+              slave.hunger -= Math.max(5, slave.hunger - config.feedAtHunger);
+          }
+          cook.lastFeedings[index] = today;
+        }
+  }
   //Makes the specified number of hours pass in the game.
   addHours(amount: number): void {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
     currentDate.setHours(currentDate.getHours() + amount);
-    Npc.updateLocations(currentDate);
-    this.hoursPassed(amount);
     this.daysPassed(currentDate.getDay() - originalDay);
+    this.hoursPassed(amount);
+    this.timeChanged(currentDate);
   }
   //Skip time until the specified time of the day is reached (Even if it's on the next day).
   skipTo(timeString: string): void {
@@ -211,16 +235,16 @@ class Now {
     }
     this.hoursPassed(Math.abs(target.getTime() - currentDate.getTime()) / 36e5);
     currentDate.setTime(target.getTime());
-    Npc.updateLocations(currentDate);
+    this.timeChanged(currentDate);
   }
   //Makes the specified number of minutes pass in the game.
   addMinutes(amount: number): void {
     var currentDate = this.getCurrentDate();
     var originalDay = currentDate.getDay();
     currentDate.setMinutes(currentDate.getMinutes() + amount);
-    Npc.updateLocations(currentDate);
-    this.hoursPassed(amount / 60);
     this.daysPassed(currentDate.getDay() - originalDay);
+    this.hoursPassed(amount / 60);
+    this.timeChanged(currentDate);
   }
   //Returns the name of the current weekday in English
   getWeekDay(): string {

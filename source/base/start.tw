@@ -1,4 +1,4 @@
-:: Start {"position":"1075,875"}
+:: Start {"position":"1025,825"}
 <<set _sexOptions = ["man", "woman", "futanari"]>>\
 <<set _genderOptions = ["him", "her", "them"]>>
 Your name is <<textbox "$player.name" "David">>, a young <<listbox '_sex' autoselect>><<optionsfrom _sexOptions>><</listbox>>
@@ -29,7 +29,7 @@ It's currently a nice Monday morning and the start of a new life. For too long h
     });
   >>
 <</done>>
-:: IntroBed {"position":"1075,725"}
+:: IntroBed {"position":"1025,700"}
 <<scenery bed>>
 As the sun reveals the world to a nice Monday morning, you climb out of bed, ready to start a new day. <<print either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
 
@@ -37,7 +37,7 @@ Today is the day that you begin your debauchery.
 
 <<keyOption [[Leave your room|IntroMain]] 🚪>>
 <<keyOption [[Skip intro|main]] ⏭>>
-:: IntroMain {"position":"1075,575"}
+:: IntroMain {"position":"1025,575"}
 <<scenery mainRoom>>
 As you leave your room, you walk into your combined kitchen/living room. It’s not the most ideal layout, but at least you have a house with the terrible paychecks you get from work.
 
@@ -47,7 +47,7 @@ To pass the time you decide to head on down to the basement. It would probably b
 
 <<keyOption [[The Basement|IntroBasement]] 🚪>>
 <<keyOption [[Skip intro|main]] ⏭>>
-:: IntroBasement {"position":"1150,450"}
+:: IntroBasement {"position":"1025,450"}
 <<addMinutes 60>>\
 <<scenery basement>>
 Walking down creaky wooden steps, you arrive at the basement. It's quite barren with a concrete layout and exposed piping visible. But as much as it sucks, it is the most preferable option to keep a slave held in.
@@ -58,7 +58,7 @@ After a bit of daydreaming about your hopeful future, you check the time to see 
 
 <<keyOption [[Go outside|IntroHouse]] 🏡>>
 <<keyOption [[Skip intro|main]] ⏭>>
-:: IntroHouse {"position":"950,450"}
+:: IntroHouse {"position":"825,375"}
 <<scenery home>>
 Your home doesn’t contain much, but it’s a home that you’ve grown accustomed to. Along with the living space, you also have a job working as a $player.job.name. It doesn’t pay much, but something is better than nothing.
 

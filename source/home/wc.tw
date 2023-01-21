@@ -1,9 +1,9 @@
-:: wc {"position":"700,825"}
+:: wc {"position":"550,775"}
 <<scenery wc>>
 You are currently standing in your wc.
 <<unlessEmergency>>\
     <<wanderingSlaves>>\
-    <<slaveDemands Wc>>
+    <<slaveEvents Wc>>
     <<keyOption [[Leave your wc|main]] 🚪>>
     <<keyAction 'Go to the toilet' 🚽>><<addMinutes 5>><<run Engine.show()>><</keyAction>>: 5min
     <<if Player.getInventory().items.firstOrDefault(function(item){return item.name.startsWith('Used clothes')}) != null>>\
@@ -11,7 +11,7 @@ You are currently standing in your wc.
     <</if>>\
     <<sleepOption>>
 <</unlessEmergency>>\
-:: pantiescum {"position":"450,950"}
+:: pantiescum {"position":"550,900"}
 <<addMinutes 30>>\
 <<if $player.hasPenis>>\
     @@color:yellow;You wrap the underwear on your penis and fap until you cum in them.@@

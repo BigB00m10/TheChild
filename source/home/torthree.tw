@@ -2,9 +2,7 @@
 <<scenery tortone>>
 You are currently standing in your cages three.
 <<unlessEmergency>>\
-    <<set _slaves = Basement.getDemandingSlaves()>>\
-    <<set _demandIndex to 0>>\
-    <<include slaveDemand>>
+    <<slaveEvents Basement>>
     <<keyOption [[Leave your cages three|tort]] 🚪>>
     <<sleepOption>>
 <</unlessEmergency>>\

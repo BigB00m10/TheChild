@@ -45,7 +45,7 @@ const punishment: NpcInteraction = {
         Since <<genPronounIs>> naked, you can feel $npc.possessive body warmth on your legs and start spanking $npc.possessive $npc.skin bare ass.
       <</if>>\
 
-      ''$npc.name'': "\
+      <<npcSay "\
       <<if $npc.lust gte 70 && $npc.age gte 5>>\
         Ow!!...Yes!!...Punish me!!...I'm a bad $npc.title!!<<emoji 😩>>\
       <<elseif $npc.lust gte 50>>\
@@ -54,7 +54,7 @@ const punishment: NpcInteraction = {
         <<if $npc.age lt 5>>Waaaah!!!<<else>>I'm so sowwyyy!!<</if>><<emoji 😭>>\
       <<else>>\
         <<if $npc.age lt 5>>Nooo!!! Stoop iiit!!!<<else>>Ouch!! It hurts!! Please stop!!<</if>><<emoji 😫>>\
-      <</if>>"
+      <</if>>">>
       You let go of $npc.pronoun with visible tears running on $npc.possessive face.`,
       npcStats: (npc) => {
         let stats = ["obedience+10"];
@@ -96,7 +96,7 @@ class OkSleepWithPlayerDemand {
     next: OkSleepWithPlayerDemand.baseOptions,
   };
 }
-window.Interactions["slaveDemandHunger"] = {
+window.Interactions["slaveEventHunger"] = {
   contents: `$npc.name is asking for food.
   <<run
     var name = 'hunger'
@@ -123,12 +123,12 @@ window.Interactions["slaveDemandHunger"] = {
       optionText: "🥪 Give $npc.pronoun a small meal. (-10 hunger)",
       minutesCost: 10,
       contents: `You go to the kitchen to prepare something quick, come back and you give it to $npc.pronoun.
-      ''$npc.name'': "\
+      <<npcSay "\
       <<if $npc.love lt 80>>\
         Thank you\
       <<else>>\
         Thank you <<npcAddressPlayer>><<emoji ❤>>\
-      <</if>>."`,
+      <</if>>.">>`,
       npcStats: ["hunger-10", "love+1", "freedomWish-1"],
     },
     fullMeal: {
@@ -136,11 +136,11 @@ window.Interactions["slaveDemandHunger"] = {
       minutesCost: 40,
       contents: `You cook a full meal in the kitchen. When you come back $npc.name $npc.eyeColor eyes widen as it sees and smells the good meal you prepared for $npc.pronoun. <<emoji 😮>>
       You put it down and $npc.genPronoun starts happily eating it <<emoji 😊>>
-      ''$npc.name'': "<<if $npc.love lt 80>>\
+      <<npcSay "<<if $npc.love lt 80>>\
         Thank you!! It's really good!!\
       <<else>>\
         Thanks <<npcAddressPlayer>>!! I love you <<emoji ♥>>\
-      <</if>>"`,
+      <</if>>">>`,
       npcStats: ["hunger-80", "love+10", "freedomWish-20"],
     },
     cum: {
@@ -151,7 +151,7 @@ window.Interactions["slaveDemandHunger"] = {
       contents: `You show $npc.pronoun your dick while grabbing it with your hand and say:
       "Here, you can eat my special jelly. My body produces it, but you need to stimulate this to be able to get it out."
 
-      ''$npc.name'': "\
+      <<npcSay "\
       <<if $npc.lust gte 80>>\
         <<set _willing = true>>\
         <<if $npc.age lt 4>>\
@@ -178,31 +178,31 @@ window.Interactions["slaveDemandHunger"] = {
       <<else>>\
         <<set _denied = true>>\
         <<emoji 😟>>Ugh!! no... I don't wanna...\
-      <</if>>".<<if !_denied>>
+      <</if>>.">><<if !_denied>>
 
         <<if _willing>>$npc.name stretches out $npc.possessive hands to grab $npc.possessive "meal dispenser".
         <</if>>\
         With a hand in $npc.possessive $npc.hairColor $npc.hairStyle head you guide $npc.pronoun in giving you pleasure by licking and sucking your dick.
         The sounds of $npc.possessive wet tongue rubbing your penis inside $npc.possessive $npc.age year old mouth echoes on the basement's walls.
 
-        ''<<npcAddressPlayer>>'': "That's it. Good $npc.title. Just a little more and you'll have your meal."
+        <<playerSay "That's it. Good $npc.title. Just a little more and you'll have your meal.">>
         The feeling of $npc.possessive<<if $npc.age lt 10>> little<</if>> lips and tongue quickly brings you to the edge and start shooting your seed inside.
         <<if $npc.hunger gte 80>>\
           $npc.name is so hungry that, as soon as $npc.genPronoun feels your cum shooting on $npc.possessive tongue, eagerly eats your cum with passion till the last drop.
 
-          ''$npc.name'': "Haa... much better <<emoji 😫>>."
+          <<npcSay "Haa... much better <<emoji 😫>>.">>
         <<elseif _willing>>\
           As you shoot you can hear and feel $npc.name gulping down your semen while $npc.possessive lips keep pursed around your cock.
 
           Right after your dick stops shooting, $npc.genPronoun sucks out the remaining sperm in your urethra. Closing up $npc.possessive lips as $npc.genPronoun slowly takes out your penis from $npc.possessive mouth.
 
-          ''$npc.name'': "Thanks <<npcAddressPlayer>>. That was yummy<<emoji 😋>>."
+          <<npcSay "Thanks <<npcAddressPlayer>>. That was yummy<<emoji 😋>>.">>
         <<else>>\
           You can see $npc.name making a weird face as you shoot your seed inside $npc.possessive mouth<<emoji 😫>>.
           $npc.GenPronoun steps back after taking in some cumshots. You can hear $npc.pronoun making a gulp with $npc.possessive hands covering $npc.possessive mouth.
 
           Finally, $npc.genPronoun chews in the remaining cum on $npc.possessive tongue.
-          ''$npc.name'': "<<if $npc.age lt 5>>It's yucky!! <<emoji 😟>><<else>>Ugh! It doesn't taste very good...<<emoji 😖>><</if>>".
+          <<npcSay "<<if $npc.age lt 5>>It's yucky!! <<emoji 😟>><<else>>Ugh! It doesn't taste very good...<<emoji 😖>><</if>>">>
         <</if>>
       <</if>>`,
       altMinutes: (minutes) => (Temporary().denied ? 0 : minutes),
@@ -220,7 +220,7 @@ window.Interactions["slaveDemandHunger"] = {
       minutesCost: 30,
       contents: `You show $npc.pronoun your pussy and say:
       "Come here, you can drink my love juice. My body produces it, but you need to stimulate me down here to be able to get it out."
-      ''$npc.name'': "\
+      <<npcSay "\
       <<if $npc.lust gte 80>>\
         <<set _willing = true>>\
         <<if $npc.age lt 4>>\
@@ -247,45 +247,45 @@ window.Interactions["slaveDemandHunger"] = {
       <<else>>\
         <<set _denied = true>>\
         <<emoji 😟>>Ugh!! no... I don't wanna...\
-      <</if>>".<<if !_denied>>
+      <</if>>.">><<if !_denied>>
 
         <<if _willing>>$npc.name doesn't hesitate and puts $npc.possessive face between your legs while grabbing your legs.
         <</if>>\
         With a hand in $npc.possessive $npc.hairColor $npc.hairStyle head you guide $npc.pronoun in giving you pleasure by licking and sucking your pussy and clit.
         The sounds of $npc.possessive wet tongue gently slapping your privates echoes on the basement's walls.
 
-        ''$player.name'': "That's it. Good $npc.title. Just a little more and you'll have your meal."
+        <<playerSay "That's it. Good $npc.title. Just a little more and you'll have your meal.">>
         The feeling of $npc.possessive<<if $npc.age lt 10>> little<</if>> lips and tongue caressing you down there finally brings you to the edge and start squirting.
         <<if $npc.hunger gte 80>>\
           $npc.name is so hungry that, as soon as $npc.genPronoun feels your love juice on $npc.pronoun tongue, eagerly drinks and sucks your nectar with passion till the last drop.
 
-          ''$npc.name'': "Haa... much better <<emoji 😫>>."
+          <<npcSay "Haa... much better <<emoji 😫>>.">>
         <<elseif _willing>>\
           As you squirt, you can hear and feel $npc.name gulping down your nectar while $npc.possessive lips keep pressing on your pussy.
 
           Afterwards, $npc.genPronoun sucks out the remaining juice while doing a loud kiss down there.
 
-          ''$npc.name'': "Thanks <<npcAddressPlayer>>. That was yummy<<emoji 😋>>."
+          <<npcSay "Thanks <<npcAddressPlayer>>. That was yummy<<emoji 😋>>.">>
         <<else>>\
           You can see $npc.name making a weird face as you squirt in $npc.possessive mouth<<emoji 😫>>.
           $npc.GenPronoun steps back after taking a good portion of your nectar. You can hear $npc.pronoun making a gulp with $npc.possessive hand covering $npc.pronoun mouth.
 
           <<if $npc.age gte 5>>\
-            ''$npc.name'': "It tastes weird<<emoji 😑>>".\
+            <<npcSay "It tastes weird<<emoji 😑>>.">>\
           <</if>>\
         <</if>>\
       <</if>>`,
       altMinutes: (minutes) => (Temporary().denied ? 0 : minutes),
       npcStats: () =>
         (
-          window.Interactions.slaveDemandHunger.options["cum"]
+          window.Interactions.slaveEventHunger.options["cum"]
             .npcStats as CallableFunction
         )(),
     },
     punish: punishment,
   },
 };
-window.Interactions["slaveDemandSleepWithPlayer"] = {
+window.Interactions["slaveEventSleepWithPlayer"] = {
   contents: `$npc.name would like to sleep together in the bed with you tonight.
   Would you like to accept?`,
   options: {
@@ -321,7 +321,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
   <<else>>\
     $npc.GenPronoun slowly take<<thirdPersonVerb>> $npc.possessive clothes off and then climb<<thirdPersonVerb>> on the bed.
     You take your clothes off and climb the bed after $npc.pronoun.
-  <</if>><<include npcStats>>`,
+  <</if>><<npcStats>>`,
   defaultStopOption: false, //This interaction cannot be stopped since the player sleeps after it.
   options: {
     touchGenitals: {
@@ -490,7 +490,7 @@ window.Interactions["wakeUpAfterNightTogether"] = {
       optionText: "🖐 Touch $npc.possessive $npc.genitals.all.",
       minutesCost: 2,
       contents: `You gently move your hand below $npc.possessive waist and touch $npc.possessive $npc.genitals.all.
-      It takes $npc.pronoun a couple of seconds for $npc.pronoun to get wet.<<if $npc.hasPussy>>
+      It takes $npc.pronoun a couple of seconds for $npc.pronoun to get <<- $npc.hasPenis ? "hard" : "wet">>.<<npcStimulated>><<if $npc.hasPussy>>
       After that your finger slides smoothly inside $npc.pronoun tight $npc.genitals.all.<</if>>`,
       npcStats: (npc) =>
         npc.hasPussy ? ["pussyTraining%+20", "lust+1%"] : ["lust+1%"],
@@ -528,6 +528,40 @@ window.Interactions["wakeUpAfterNightTogether"] = {
       As $npc.pronoun clench<<thirdPersonVerbPlural>> $npc.possessive butt cheeks in pleasure<<if $npc.hasPussy>> wetting the bed a little<</if>>. 
       $npc.Possessive face is bright red.`,
       npcStats: ["love+10", "freedomWish-10"],
+    },
+  },
+};
+window.Interactions["slaveEventCook"] = {
+  contents: `$npc.name is cooking<<if Person.getInventory().hasItem('cooking apron')>> using the apron that you gave $npc.pronoun<</if>>. It's pretty obvious that $npc.pronoun's naked underneath<<emoji 👀>><<elseif !$npc.hasClothes>> naked<</if>>.`,
+  options: {
+    kissNeck: {
+      optionText:
+        "💋 Surprise $npc.pronoun with a kiss on $npc.possessive neck.",
+      npcStats: ["love+10%"],
+      contents:
+        "You silently approach $npc.pronoun from behind and slowly press your lips on $npc.possessive neck. (WIP)",
+    },
+    lookLow: {
+      npcRequirements: ["!haveClothes"],
+      optionText: "👀 Look at $npc.pronoun with a lower angle.",
+      contents:
+        `You deliberately crouch down behind $npc.possessive. Enough to properly admire $npc.possessive cute ass and <<if $npc.hasPussy>><<$npc.genitals.female>><<else>>a peek of $npc.possessive balls<</if>>`,
+      next: () =>
+        <NpcInteractionOptions>{
+          gropeAss: baseInteractionOptions().gropeAss,
+          spread: {
+            optionText: "👐 Spread $npc.pronoun",
+            contents: `WIP`,
+          },
+          back: {
+            optionText: "🔙 Go back",
+            contents: ``,
+          },
+        },
+    },
+    gropeAss: {
+      optionText: "🖐 Grope $npc.possessive ass!",
+      contents: "WIP",
     },
   },
 };

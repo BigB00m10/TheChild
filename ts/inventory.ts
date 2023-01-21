@@ -153,6 +153,14 @@ class OnlineStore {
       available: 1,
       tags: new Set(["player", "wearable", "eyes", "tech", "cheat"]),
     }),
+    new Product({
+      name: "Cooking apron",
+      description:
+        "Cute apron to give to a slave that you assigned as a cook. They will surely use it when cooking to protect their cute body, even if no other clothes are present<<emoji 👀>>",
+      price: 20,
+      available:1,
+      tags: new Set(["player", "wearable", "cooking", "clothes"]),
+    }),
   ];
   bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
   //Get a product from the store

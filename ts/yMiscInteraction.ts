@@ -75,6 +75,38 @@ window.Interactions["houseSlave"] = {
       action: true,
     },
     ...window.Interactions.slave.options,
+    setCook: {
+      showDisabled:
+        "Obedience $npc.obedience/60, Freedom Wish $npc.freedomWish/0",
+      canBeShown: () =>
+        !Variables().settings.cook?.npc && Variables().npc.age > 4,
+      npcRequirements: ["obedience>=60", "freedomWish=0"],
+      optionText:
+        "🍳 Set $npc.name in charge of cooking and teach $npc.pronoun how to do it",
+      minutesCost: 60,
+      contents: `<<set 
+        $settings.cook={npc:$npc.uid,feedEnabled:true,feedAtHunger:20,feedTimes:['7:00 AM','1:00 PM','7:00 PM'],lastFeedings:[],exceptions:[]};
+        Person.setStatus('servant');
+      >><<playerSay "Okay $npc.name, you're now in charge of cooking!">>
+      <<npcSay "Okay <<npcAddressPlayer>><<if $npc.fear lt 20>><<emoji 🙂>><<else>><<emoji 🥺>><</if>>">>
+      <<playerSay "You'll have a key so you can feed the ones in the basement by yourself. Let me teach you how to do it.">>`,
+      next: () =>
+        <NpcInteractionOptions>{
+          rules: {
+            optionText: "⚙ Set feeding rules",
+            action: true,
+            contents: `<<showCookFeedingRules>>`,
+          },
+          ...baseInteractionOptions(),
+        },
+    },
+    unsetCook: {
+      canBeShown: () => Variables().settings.cook?.npc == Variables().npc.uid,
+      optionText: "❌ Dismiss $npc.name as a cook",
+      contents: `<<playerSay "You don't need to cook anymore">>
+      <<npcSay "As you wish <<npcAddressPlayer>>">><<set $settings.cook.npc=null>>`,
+      next: baseInteractionOptions,
+    },
   },
   defaultStopOption: "✋ Leave $npc.pronoun alone",
   timeIncreaseNpcHunger: true,

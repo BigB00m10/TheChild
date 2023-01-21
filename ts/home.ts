@@ -34,14 +34,26 @@ abstract class HomeSpace {
   npcEvents: NpcEvent[] = [];
   //The main passage associated with this room
   abstract passageName: string;
-  getDemandingSlaves(): Person[] {
-    const slaves = Variables().slaves as Person[];
+  getEventSlaves(): Person[] {
+    const variables = Variables();
+    const slaves = variables.slaves as Person[];
     let candidates: Person[] = [];
     for (let slaveIndex = 0; slaveIndex < slaves.length; slaveIndex++) {
       const slave = slaves[slaveIndex];
       if (slave.location != this.passageName || slave.age < 1) continue;
+      if (
+        this.passageName == "kitchen" &&
+        variables.settings.cook &&
+        slave.uid == variables.settings.cook.npc
+      ) {
+        slave.eventType = "ordinary";
+        slave.event = "cook";
+        candidates.push(slave);
+        continue;
+      }
       if (slave.hunger >= 25) {
-        slave.need = "hunger";
+        slave.eventType = "demand";
+        slave.event = "hunger";
         candidates.push(slave);
         continue;
       }
@@ -55,7 +67,8 @@ abstract class HomeSpace {
       ) {
         var seed = PseudoRandom.getSeed(slave.name, slave.age, turns());
         if (PseudoRandom.either(seed, [true, false])) {
-          slave.need = "sleepWithPlayer";
+          slave.eventType = "demand";
+          slave.event = "sleepWithPlayer";
           candidates.push(slave);
           continue;
         }

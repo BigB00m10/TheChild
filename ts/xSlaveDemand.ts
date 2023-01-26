@@ -545,7 +545,8 @@ window.Interactions["slaveEventCook"] = {
       npcRequirements: ["!haveClothes"],
       optionText: "👀 Look at $npc.pronoun with a lower angle.",
       contents:
-        `You deliberately crouch down behind $npc.possessive. Enough to properly admire $npc.possessive cute ass and <<if $npc.hasPussy>><<$npc.genitals.female>><<else>>a peek of $npc.possessive balls<</if>>`,
+        `You deliberately crouch down behind $npc.possessive. Enough to properly admire $npc.possessive cute ass and <<if $npc.hasPussy>><<$npc.genitals.female>><<else>>a peek of $npc.possessive balls<</if>>
+        <<personUniqueness noticedBeingLookedLewdly>>`,
       next: () =>
         <NpcInteractionOptions>{
           gropeAss: baseInteractionOptions().gropeAss,

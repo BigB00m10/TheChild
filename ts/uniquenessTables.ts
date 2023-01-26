@@ -244,4 +244,15 @@ class UniquenessTables {
       },
     ],
   ];
+  static noticedBeingLookedLewdly = [
+    [],
+    [
+      5,
+      {
+        shy: "$npc.name takes a peek behind and notices your pervy gaze. $npc.GenPronoun stop<<thirdPersonVerb>> what <<genPronounIs>> doing while looking down and blushing heavily.",
+        naughty: "$npc.name notices you and suddenly spreads $npc.possessive legs without stopping $npc.possessive cooking making it easier for you to admire $npc.possessive privates.",
+        default: "",
+      }
+    ]
+  ];
 }

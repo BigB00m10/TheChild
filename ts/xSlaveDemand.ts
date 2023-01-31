@@ -537,32 +537,48 @@ window.Interactions["slaveEventCook"] = {
     kissNeck: {
       optionText:
         "💋 Surprise $npc.pronoun with a kiss on $npc.possessive neck.",
-      npcStats: ["love+10%"],
+      minutesCost: 5,
+      npcStats: ["love+5%"],
       contents:
-        "You silently approach $npc.pronoun from behind and slowly press your lips on $npc.possessive neck. (WIP)",
+        `You silently approach $npc.pronoun from behind and slowly press your lips on $npc.possessive neck while you grab $npc.possessive waist and gently press it towards you.
+        <<personUniqueness surpriseNeckKiss>>`,
+      next: () => baseInteractionOptions(),
     },
     lookLow: {
       npcRequirements: ["!haveClothes"],
       optionText: "👀 Look at $npc.pronoun with a lower angle.",
-      contents:
-        `You deliberately crouch down behind $npc.possessive. Enough to properly admire $npc.possessive cute ass and <<if $npc.hasPussy>><<$npc.genitals.female>><<else>>a peek of $npc.possessive balls<</if>>
-        <<personUniqueness noticedBeingLookedLewdly>>`,
+      contents: `You deliberately crouch down behind $npc.possessive. Enough to properly admire $npc.possessive cute ass and <<if $npc.hasPussy>><<$npc.genitals.female>><<else>>a peek of $npc.possessive balls<</if>>
+      <<personUniqueness noticedBeingLookedLewdly>>`,
       next: () =>
         <NpcInteractionOptions>{
           gropeAss: baseInteractionOptions().gropeAss,
           spread: {
-            optionText: "👐 Spread $npc.pronoun",
-            contents: `WIP`,
+            optionText: "👐 Spread $npc.possessive private parts.",
+            contents: `You grab both of $npc.possessive butt cheeks and spread them wide, revealing $npc.possessive bumhole<<if $npc.hasPussy>> and $npc.genitals.female<</if>>.`,
           },
           back: {
             optionText: "🔙 Go back",
-            contents: ``,
+            contents: window.Interactions["slaveEventCook"].contents,
+            next: baseInteractionOptions(),
+            baseRoute: () => "slaveEventCook",
           },
         },
     },
     gropeAss: {
       optionText: "🖐 Grope $npc.possessive ass!",
-      contents: "WIP",
+      contents: `You grab and squish $npc.possessive ass cheek. The squishiness feels amazing on your hand.`,
+    },
+    giveApron: {
+      inventoryRequirements: ["cooking apron"],
+      optionText: "🎁 Give $npc.pronoun the cooking apron.",
+      npcStats: ["love+30%", "freedomWish%-0"],
+      contents: `You give $npc.name the cute apron you bought. $npc.GenPronoun look<<thirdPersonVerb>> very happy.
+      <<personUniqueness receivedCookingApron>>
+      <<if $scenery=='kitchen'>>\
+        $npc.GenPronoun put it on right away<<if !npc.hasClothes>> barely covering $npc.possessive nude $npc.skinColor skin<</if>> and continue with their cooking.
+      <<else>>\
+        $npc.GenPronoun then run<<thirdPersonVerb>> off into the toilet to try $npc.possessive new outfit in front of the mirror.<<set $npc.location='toilet'>>
+      <</if>><<run Player.getInventory().moveByName('cooking apron', Person.getInventory())>>`,
     },
   },
 };

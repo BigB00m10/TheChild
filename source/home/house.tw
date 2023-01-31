@@ -86,7 +86,7 @@ You are currently standing in the middle of the main room of your house.
         </span>\
     </span>\
 <</if>>\
-:: cookFeedExceptions [nobr]
+:: cookFeedExceptions [nobr] {"position":"125,125"}
 <<if $settings.cook.exceptions.length>>
     <<for _exception range $settings.cook.exceptions>>
         <<set _exceptionPerson = Person.get(_exception.npc)>>

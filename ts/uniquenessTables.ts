@@ -245,14 +245,65 @@ class UniquenessTables {
     ],
   ];
   static noticedBeingLookedLewdly = [
-    [],
+    ["lust80"],
     [
       5,
       {
         shy: "$npc.name takes a peek behind and notices your pervy gaze. $npc.GenPronoun stop<<thirdPersonVerb>> what <<genPronounIs>> doing while looking down and blushing heavily.",
-        naughty: "$npc.name notices you and suddenly spreads $npc.possessive legs without stopping $npc.possessive cooking making it easier for you to admire $npc.possessive privates.",
-        default: "",
-      }
-    ]
+        naughty:
+          "$npc.name notices you and suddenly spreads $npc.possessive legs without stopping $npc.possessive cooking making it easier for you to admire $npc.possessive privates.",
+        default:
+          "$npc.name noticed you looking but $npc.genPronoun doesn't seem to mind your gaze and $npc.genPronoun continues with what <<genPronounIs>> doing.",
+      },
+      {
+        default: "=naughty",
+      },
+    ],
+  ];
+  static receivedCookingApron = [
+    ["fear40"],
+    [
+      5,
+      {
+        default: `say:Wow! Thank you sou much <<npcAddressPlayer>>!!<<emoji 🤗>>
+        $npc.name is so happy that he gives you a hug.`,
+        shy: `say:Ah!!... T-Thank you
+        $npc.GenPronoun timidly look<<thirdPersonVerb>> at you while covering $npc.possessive reddened face.`,
+        energetic: `say:Wooow!!! It's so cute!<<emoji 😃>>Thanks a lot <<npcAddressPlayer>>!!
+        $npc.GenPronoun happily jumps at you giving you a tight hug.`,
+      },
+      {
+        default: `say:Ah!!... T-Thank you<<emoji 🥺>>
+        $npc.name carefully takes the apron from you, a little scared.`,
+      },
+    ],
+  ];
+  static surpriseNeckKiss = [
+    ["love40"],
+    [
+      5,
+      {
+        shy: "say:Eh?! W-wha?<<emoji 😳>>",
+        default:
+          "$npc.name let's you do your thing obediently without reacting.",
+      },
+      {
+        default: `say:Kyaa!!<<emoji 😆>>
+        $npc.GenPronoun looks back to smile at you<<emoji 😏>>`,
+        shy: `say:Kyaa!!<<emoji 😆>>T-that tickles
+        $npc.GenPronoun says while blushing, as $npc.genPronoun continues with the cooking`,
+      },
+    ],
+  ];
+  static assGrabbed = [
+    [],
+    [
+      5,
+      {
+        shy: ``,
+        naughty: ``,
+        default: ``,
+      },
+    ],
   ];
 }

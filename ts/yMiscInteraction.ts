@@ -104,7 +104,8 @@ window.Interactions["houseSlave"] = {
       canBeShown: () => Variables().settings.cook?.npc == Variables().npc.uid,
       optionText: "❌ Dismiss $npc.name as a cook",
       contents: `<<playerSay "You don't need to cook anymore">>
-      <<npcSay "As you wish <<npcAddressPlayer>>">><<set $settings.cook.npc=null>>`,
+      <<npcSay "As you wish <<npcAddressPlayer>>">><<set $settings.cook.npc=null>>\
+      <<run Person.getInventory().moveByName('cooking apron', Player.getInventory())>>`,
       next: baseInteractionOptions,
     },
   },

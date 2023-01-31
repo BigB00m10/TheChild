@@ -76,9 +76,17 @@ class Inventory {
   hasAll(itemNames: string[]): boolean {
     return itemNames.countWith((n) => this.has(n)) == itemNames.length;
   }
+  //Moves an item from this inventory to another (including all quantity of that item)
   move(itemIndex: number, destination: Inventory): void {
     destination.add(this.items[itemIndex]);
     this.items.deleteAt(itemIndex);
+  }
+  //Moves an item from this inventory to another (including all quantity of that item)
+  moveByName(itemName: string, destination: Inventory): void {
+    let item = this.get(itemName);
+    if (item === null) return;
+    destination.add(item);
+    this.items.delete(item);
   }
   //Remove all items in this inventory
   clear(): void {
@@ -158,7 +166,7 @@ class OnlineStore {
       description:
         "Cute apron to give to a slave that you assigned as a cook. They will surely use it when cooking to protect their cute body, even if no other clothes are present<<emoji 👀>>",
       price: 20,
-      available:1,
+      available: 1,
       tags: new Set(["player", "wearable", "cooking", "clothes"]),
     }),
   ];

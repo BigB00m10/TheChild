@@ -49,9 +49,6 @@ You are currently standing in the middle of the main room of your house.
 <<addMinutes 30>>\
 @@color:yellow;You spend the next half hour skimming through channels and shows.@@
 <<include main>>\
-:: watchPorn {"position":"700,950"}
-<<addMinutes 30>>\
-@@color:yellow;You spend the next half hour skimming through porn and <<if $player.gender == 'girl'>>buffing the muffin<<else>>jerking off<</if>>.@@
 <<include bed>>\
 :: slaveEvent {"position":"375,0"}
 <<if _eventSlaves[_eventIndex]>>\

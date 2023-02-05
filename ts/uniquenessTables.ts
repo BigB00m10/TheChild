@@ -121,13 +121,13 @@ class UniquenessTables {
       1,
       {
         //default
-        default: `You open your arms to embrace $npc.name in a hug, $npc.GenPronoun doesn't seem to care either way, simply allowing you to hug $npc.pronoun. $npc.GenPronoun <<npcVerbIs>> almost limp in your embrace, offering little reaction.`,
+        default: `You open your arms to embrace $npc.name in a hug, $npc.GenPronoun do<<thirdPersonVerbPlural>>n't seem to care either way, simply allowing you to hug $npc.pronoun. $npc.GenPronoun <<npcVerbIs>> almost limp in your embrace, offering little reaction.`,
         stats: ["love+1"],
       },
       {
         //fear40
         default:
-          "You open your arms to embrace $npc.name in a hug, $npc.genPronoun take<<thirdPersonVerb>> a fearful step back but doesn't attempt to move away from you. You embrace $npc.pronoun in a hug. You can tell <<genPronounIs>> is a bit uneasy.",
+          "You open your arms to embrace $npc.name in a hug, $npc.genPronoun take<<thirdPersonVerb>> a fearful step back but do<<thirdPersonVerbPlural>>n't attempt to move away from you. You embrace $npc.pronoun in a hug. You can tell <<genPronounIs>> is a bit uneasy.",
         stats: ["fear-5"],
       },
       {
@@ -253,7 +253,7 @@ class UniquenessTables {
         naughty:
           "$npc.name notices you and suddenly spreads $npc.possessive legs without stopping $npc.possessive cooking making it easier for you to admire $npc.possessive privates.",
         default:
-          "$npc.name noticed you looking but $npc.genPronoun doesn't seem to mind your gaze and $npc.genPronoun continues with what <<genPronounIs>> doing.",
+          "$npc.name noticed you looking but $npc.genPronoun do<<thirdPersonVerbPlural>>n't seem to mind your gaze and $npc.genPronoun continue<<thirdPersonVerb>> with what <<genPronounIs>> doing.",
       },
       {
         default: "=naughty",
@@ -266,11 +266,11 @@ class UniquenessTables {
       5,
       {
         default: `say:Wow! Thank you sou much <<npcAddressPlayer>>!!<<emoji 🤗>>
-        $npc.name is so happy that he gives you a hug.`,
+        $npc.name is so happy that $npc.genPronoun give<<thirdPersonVerb>> you a hug.`,
         shy: `say:Ah!!... T-Thank you
         $npc.GenPronoun timidly look<<thirdPersonVerb>> at you while covering $npc.possessive reddened face.`,
         energetic: `say:Wooow!!! It's so cute!<<emoji 😃>>Thanks a lot <<npcAddressPlayer>>!!
-        $npc.GenPronoun happily jumps at you giving you a tight hug.`,
+        $npc.GenPronoun happily jump<<thirdPersonVerb>> at you giving you a tight hug.`,
       },
       {
         default: `say:Ah!!... T-Thank you<<emoji 🥺>>
@@ -289,20 +289,52 @@ class UniquenessTables {
       },
       {
         default: `say:Kyaa!!<<emoji 😆>>
-        $npc.GenPronoun looks back to smile at you<<emoji 😏>>`,
+        $npc.GenPronoun look<<thirdPersonVerb>> back to smile at you<<emoji 😏>>`,
         shy: `say:Kyaa!!<<emoji 😆>>T-that tickles
-        $npc.GenPronoun says while blushing, as $npc.genPronoun continues with the cooking`,
+        $npc.GenPronoun say<<thirdPersonVerb>> while blushing, as $npc.genPronoun continues with the cooking`,
       },
     ],
   ];
   static assGrabbed = [
+    ["love40", "love60", "fear40", "fear60"],
+    [
+      5,
+      {
+        shy: `$npc.name jumps in surprise.
+        <<npcSay "P-please be careful!">>`,
+        naughty: `say:Tee-hee, <<npcAddressPlayer>> is grabbing my ass!!<<emoji ❤>>`,
+        default: `$npc.name looks at you, not sure what to expect.`,
+      },
+      {
+        //love40
+        default: `$npc.name smiles at you while you grope $npc.pronoun.`,
+        shy: "=default",
+        naughty: "=default",
+      },
+      {
+        //love60
+        default: `$npc.name blushes and looks at you with a tender look.`,
+        shy: "=default",
+        naughty: "=default",
+      },
+      {
+        //fear40
+        default: `$npc.name jumps in surprise and looks at you looking a little worried.`,
+      },
+      {
+        //fear60
+        default: `$npc.name jumps in surprise and starts trembling.`,
+      },
+    ],
+  ];
+  static spreadPrivates = [
     [],
     [
       5,
       {
-        shy: ``,
-        naughty: ``,
-        default: ``,
+        default: "say:Ah! it's kinda chilly",
+        naughty: "say:Are we gonna do lewd things?",
+        shy: "say:Ah!... T-thats embarrassing <<npcAddressPlayer>>!!<<emoji 😳>>",
       },
     ],
   ];

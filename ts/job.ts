@@ -11,9 +11,9 @@ let Jobs: Record<string, Job> = {
     enterTime: "8:30 AM",
     workHours: 8,
   },
-  Teacher: {
-    name: "Teacher shool",
-    pay: Math.round((1000 / 11.14) * 100) / 100,
-    enterTime: "8:00 AM",
-  },
+  //Teacher: {
+  //  name: "Teacher shool",
+  //  pay: Math.round((1000 / 11.14) * 100) / 100,
+  //  enterTime: "8:00 AM",
+  //},
 };

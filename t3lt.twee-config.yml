@@ -68,3 +68,9 @@ sugarcube-2:
       name: npcStats
     showCookFeedingRules:
       name: showCookFeedingRules
+    thirdPersonVerb:
+      name: thirdPersonVerb
+    genPronounIs:
+      name: genPronounIs
+    thirdPersonAdjective:
+      name: thirdPersonAdjective

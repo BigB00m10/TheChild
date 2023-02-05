@@ -259,11 +259,7 @@ window.Interactions["slave"] = {
                   optionText: "💦 Make $npc.pronoun cum",
                   contents: `You vigorously rub inside $npc.name's vagina while you rub $npc.possessive clitoris at the same time making $npc.pronoun arc her body with the pleasure.
                   It doesn't take long until $npc.pronoun cums making your hand wet all over.<<npcCum>>`,
-                  npcStats: [
-                    "love+5",
-                    "freedomWish-10",
-                    "hunger+10",
-                  ],
+                  npcStats: ["love+5", "freedomWish-10", "hunger+10"],
                   next: afterStrip,
                 },
                 else: {
@@ -446,11 +442,7 @@ window.Interactions["slave"] = {
                           ];
                         if (npc.pussyTraining < 40)
                           return ["fear+5", "pussyTraining%+50"];
-                        let stats = [
-                          "pussyTraining%+60",
-                          "lust+10%",
-                          "fear-5",
-                        ];
+                        let stats = ["pussyTraining%+60", "lust+10%", "fear-5"];
                         if (
                           (npc.lust < 30 && npc.love >= 75) ||
                           (npc.lust >= 30 && npc.love >= 50)
@@ -639,11 +631,7 @@ window.Interactions["slave"] = {
                           ];
                         if (npc.anusTraining < 40)
                           return ["fear+5", "anusTraining%+50"];
-                        let stats = [
-                          "anusTraining%+60",
-                          "lust+10%",
-                          "fear-5",
-                        ];
+                        let stats = ["anusTraining%+60", "lust+10%", "fear-5"];
                         if (
                           (npc.lust < 30 && npc.love >= 75) ||
                           (npc.lust >= 30 && npc.love >= 50)
@@ -1139,11 +1127,7 @@ window.Interactions["slave"] = {
                                 "anusTraining%+20",
                               ];
                             if (npc.anusTraining < 40)
-                              return [
-                                "fear+5",
-                                "lust+10%",
-                                "anusTraining%+40",
-                              ];
+                              return ["fear+5", "lust+10%", "anusTraining%+40"];
                             let stats = [
                               "anusTraining%+50",
                               "lust+10%",
@@ -1281,11 +1265,7 @@ window.Interactions["slave"] = {
                     <<else>>\
                       You feel $npc.possessive dick shooting $npc.possessive seed inside you.
                     <</if>><<npcCum>>`,
-                  npcStats: [
-                    "love+10",
-                    "freedomWish-10",
-                    "hunger+10",
-                  ],
+                  npcStats: ["love+10", "freedomWish-10", "hunger+10"],
                   stopOption: "💤 Let $npc.pronoun rest.",
                 },
               },
@@ -1322,11 +1302,7 @@ window.Interactions["slave"] = {
                     <<else>>\
                       You feel $npc.possessive dick shooting his seed in your bowels.
                     <</if>><<npcCum>>`,
-                  npcStats: [
-                    "love+10",
-                    "freedomWish-10",
-                    "hunger+10",
-                  ],
+                  npcStats: ["love+10", "freedomWish-10", "hunger+10"],
                   playerStats: ["lust-10"],
                   stopOption: "💤 Let $npc.pronoun rest.",
                 },

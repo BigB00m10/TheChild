@@ -437,29 +437,34 @@ Macro.add("personUniqueness", {
       }
       setOutput(defaultCase);
     };
-    const setOutput = (uniquenessCase: UniquenessCase) => {
+    const setOutput = (
+      uniquenessCase: UniquenessCase,
+      specificField?: string
+    ) => {
       let output: string;
-      for (let fieldName in uniquenessCase) {
-        switch (fieldName) {
-          case "condition":
-          case "default":
-          case "stats":
-            continue;
-          default:
-            let okOutput = true;
-            if (fieldName.includes("And"))
-              fieldName
-                .split("And")
-                .forEach(
-                  (c) => (okOutput &&= person.uniqueness[c.toLowerCase()])
-                );
-            else okOutput = person.uniqueness[fieldName];
-            if (okOutput) output = uniquenessCase[fieldName];
-            else continue;
-            break;
+      if (!specificField)
+        for (let fieldName in uniquenessCase) {
+          switch (fieldName) {
+            case "condition":
+            case "default":
+            case "stats":
+              continue;
+            default:
+              let okOutput = true;
+              if (fieldName.includes("And"))
+                fieldName
+                  .split("And")
+                  .forEach(
+                    (c) => (okOutput &&= person.uniqueness[c.toLowerCase()])
+                  );
+              else okOutput = person.uniqueness[fieldName];
+              if (okOutput) output = uniquenessCase[fieldName];
+              else continue;
+              break;
+          }
+          break;
         }
-        break;
-      }
+      else output = uniquenessCase[specificField];
       if (!output) output = uniquenessCase.default;
       if (output == "=default") {
         setOutput(defaultCase);
@@ -471,7 +476,14 @@ Macro.add("personUniqueness", {
             .slice(1)
         );
         return;
-      } else if (output[0] == "=") output = uniquenessCase[output.substring(1)];
+      } else if (output[0] == "=") {
+        let fieldName = output.substring(1);
+        output = uniquenessCase[fieldName];
+        if (!output) {
+          setOutput(defaultCase, fieldName);
+          return;
+        }
+      }
       if (uniquenessCase.stats)
         Temporary().npcStatModifiers = uniquenessCase.stats;
       output = output.replace(/^say:(.+)/i, `''${person.name}'': "$1"`);

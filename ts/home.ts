@@ -10,11 +10,6 @@ let Homes: Record<string, Home> = {
       "wc",
       "garden",
       "kitchen",
-      "tort",
-      "tortone",
-      "tortwo",
-      "torthree",
-      "watchporn",
     ], //The spaces are where the wandering slaves will move into excluding the basement and everything starting with "tort"
   },
 };
@@ -128,13 +123,8 @@ class Garden extends HomeSpace {
   muffleBase: number = 0;
   passageName: string = "garden";
 }
-class TortureRoom extends HomeSpace {
-  muffleBase: number = 90;
-  passageName: string = "tort";
-  cages: [];
-}
-class watchporn extends HomeSpace {
-  muffleBase: number = 90;
-  passageName: string = "watchp";
-  cages: [];
-}
+//class TortureRoom extends HomeSpace {
+//  muffleBase: number = 90;
+//  passageName: string = "tort";
+//  cages: [];
+//}

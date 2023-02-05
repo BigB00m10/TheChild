@@ -531,42 +531,89 @@ window.Interactions["wakeUpAfterNightTogether"] = {
     },
   },
 };
+const goToStartSlaveEventCookOption: NpcInteraction = {
+  optionText: "🔙 Go back",
+  contents: `<<openNpcInteraction slaveEventCook>>`,
+  action: true,
+};
 window.Interactions["slaveEventCook"] = {
-  contents: `$npc.name is cooking<<if Person.getInventory().hasItem('cooking apron')>> using the apron that you gave $npc.pronoun<</if>>. It's pretty obvious that $npc.pronoun's naked underneath<<emoji 👀>><<elseif !$npc.hasClothes>> naked<</if>>.`,
+  defaultStopOption: "🛑 Leave $npc.pronoun alone",
+  contents: `$npc.name is cooking\
+  <<if Person.getInventory().has('cooking apron')>>\
+    using the apron that you gave $npc.pronoun.\
+    <<if !$npc.haveClothes>>\
+      It's pretty obvious that $npc.pronoun's naked underneath.<<emoji 👀>>\
+    <</if>>\
+  <<elseif !$npc.haveClothes>>\
+    naked.\
+  <</if>>`,
   options: {
     kissNeck: {
       optionText:
         "💋 Surprise $npc.pronoun with a kiss on $npc.possessive neck.",
       minutesCost: 5,
       npcStats: ["love+5%"],
+      contents: `You silently approach $npc.pronoun from behind and slowly press your lips on $npc.possessive neck while you grab $npc.possessive waist and gently press it towards you.
+      <<personUniqueness surpriseNeckKiss>>`,
+      next: () => baseInteractionOptions(),
+    },
+    pullDownClothes: {
+      canBeShown: () => !Temporary().pulledDownClothes,
+      npcRequirements: ["haveClothes"],
+      optionText: "👇 Pull $npc.possessive clothes down",
       contents:
-        `You silently approach $npc.pronoun from behind and slowly press your lips on $npc.possessive neck while you grab $npc.possessive waist and gently press it towards you.
-        <<personUniqueness surpriseNeckKiss>>`,
+        "You pull down $npc.possessive clothes exposing $npc.possessive naked butt.<<set _pulledDownClothes=true>>",
       next: () => baseInteractionOptions(),
     },
     lookLow: {
-      npcRequirements: ["!haveClothes"],
+      canBeShown: () =>
+        !Variables().npc.haveClothes || Temporary().pulledDownClothes,
       optionText: "👀 Look at $npc.pronoun with a lower angle.",
-      contents: `You deliberately crouch down behind $npc.possessive. Enough to properly admire $npc.possessive cute ass and <<if $npc.hasPussy>><<$npc.genitals.female>><<else>>a peek of $npc.possessive balls<</if>>
+      contents: `You deliberately crouch down behind $npc.possessive. Enough to properly admire $npc.possessive cute ass and <<if $npc.hasPussy>>$npc.genitals.female<<else>>a peek of $npc.possessive balls<</if>>.
       <<personUniqueness noticedBeingLookedLewdly>>`,
       next: () =>
         <NpcInteractionOptions>{
           gropeAss: baseInteractionOptions().gropeAss,
           spread: {
             optionText: "👐 Spread $npc.possessive private parts.",
-            contents: `You grab both of $npc.possessive butt cheeks and spread them wide, revealing $npc.possessive bumhole<<if $npc.hasPussy>> and $npc.genitals.female<</if>>.`,
+            npcStats: ["lust+5%"],
+            contents: `You grab both of $npc.possessive butt cheeks and spread them wide, revealing $npc.possessive bumhole<<if $npc.hasPussy>> and $npc.genitals.female<</if>>.
+            <<personUniqueness spreadPrivates>>`,
+            next: {
+              lick: {
+                optionText: "👅 Lick $npc.pronoun",
+                minutesCost: 10,
+                npcStats: ["+aroused", "lust+20%"],
+                contents: `You get your face closer to $npc.possessive privates and start licking $npc.pronoun.
+                <<npcSay "Hah!..Hah!..Ahn!">>
+                $npc.GenPronoun has a delicious taste<<emoji 😛>>`,
+                next: () =>
+                  (<CallableFunction>baseInteractionOptions().lookLow.next)()
+                    .spread.next,
+              },
+              sex: {
+                playerRequirements: ["hasPenis"],
+                optionText: "🍆 Get ready for sex.",
+                contents: `You place yourself behind $npc.genPronoun and make $npc.pronoun bend over the kitchen. $npc.GenPronoun obediently let<<thirdPersonVerb>> you do it without resistance.`,
+                next: {
+                  pushDickVag: afterStrip().pushDickVag,
+                  pushDickAnus: afterStrip().pushDickAnus,
+                  back: goToStartSlaveEventCookOption,
+                },
+              },
+              back: goToStartSlaveEventCookOption,
+            },
           },
-          back: {
-            optionText: "🔙 Go back",
-            contents: window.Interactions["slaveEventCook"].contents,
-            next: baseInteractionOptions(),
-            baseRoute: () => "slaveEventCook",
-          },
+          back: goToStartSlaveEventCookOption,
         },
     },
     gropeAss: {
-      optionText: "🖐 Grope $npc.possessive ass!",
-      contents: `You grab and squish $npc.possessive ass cheek. The squishiness feels amazing on your hand.`,
+      optionText: "🖐 Grope $npc.possessive ass!!",
+      minutesCost: 1,
+      contents: `You grab and squish $npc.possessive ass cheek. The squishiness feels amazing on your hand.
+      <<personUniqueness assGrabbed>>`,
+      npcStats: ["lust+5%"],
+      next: () => baseInteractionOptions(),
     },
     giveApron: {
       inventoryRequirements: ["cooking apron"],
@@ -575,9 +622,9 @@ window.Interactions["slaveEventCook"] = {
       contents: `You give $npc.name the cute apron you bought. $npc.GenPronoun look<<thirdPersonVerb>> very happy.
       <<personUniqueness receivedCookingApron>>
       <<if $scenery=='kitchen'>>\
-        $npc.GenPronoun put it on right away<<if !npc.hasClothes>> barely covering $npc.possessive nude $npc.skinColor skin<</if>> and continue with their cooking.
+        $npc.GenPronoun put it on right away<<if !$npc.haveClothes>> barely covering $npc.possessive nude $npc.skin skin<</if>> and continue with their cooking.
       <<else>>\
-        $npc.GenPronoun then run<<thirdPersonVerb>> off into the toilet to try $npc.possessive new outfit in front of the mirror.<<set $npc.location='toilet'>>
+        $npc.GenPronoun then run<<thirdPersonVerb>> off into the wc to try $npc.possessive new outfit in front of the mirror.<<set $npc.location='wc'>>
       <</if>><<run Player.getInventory().moveByName('cooking apron', Person.getInventory())>>`,
     },
   },

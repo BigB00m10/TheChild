@@ -100,12 +100,20 @@ window.Interactions["houseSlave"] = {
           ...baseInteractionOptions(),
         },
     },
+    giveApron: {
+      canBeShown: () => Variables().settings.cook?.npc == Variables().npc.uid,
+      ...(<NpcInteractionOptions>window.Interactions.slaveEventCook.options)
+        .giveApron,
+    },
     unsetCook: {
       canBeShown: () => Variables().settings.cook?.npc == Variables().npc.uid,
       optionText: "❌ Dismiss $npc.name as a cook",
       contents: `<<playerSay "You don't need to cook anymore">>
       <<npcSay "As you wish <<npcAddressPlayer>>">><<set $settings.cook.npc=null>>\
-      <<run Person.getInventory().moveByName('cooking apron', Player.getInventory())>>`,
+      <<if Person.getInventory().has('cooking apron')>>
+        $npc.name returns the cooking apron back to you.\
+        <<run Person.getInventory().moveByName('cooking apron', Player.getInventory())>>
+      <</if>>`,
       next: baseInteractionOptions,
     },
   },

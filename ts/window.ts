@@ -16,7 +16,6 @@ interface Window {
   Wc: Wc;
   Kitchen: Kitchen;
   Garden: Garden;
-  TortureRoom: TortureRoom;
   OnlineStore: OnlineStore;
   Interactions: Record<string, NpcInteractionCollection>;
   PersonUniquenessPresets: PersonUniqueness[];
@@ -34,7 +33,6 @@ window.BathRoom = new Bathroom();
 window.Wc = new Wc();
 window.Kitchen = new Kitchen();
 window.Garden = new Garden();
-window.TortureRoom = new TortureRoom();
 window.PersonGeneration = new PersonGeneration();
 window.PersonUniquenessPresets = personUniquenessPresets;
 //Interactions will be populated in the next files.

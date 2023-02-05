@@ -1,8 +1,0 @@
-:: tortwo {"position":"450,500"}
-<<scenery tortone>>
-	You are currently standing in your cages two.
-<<unlessEmergency>>\
-    <<slaveEvents Basement>>
-    <<keyOption [[Leave your cages two|tort]] 🚪>>
-    <<sleepOption>>
-<</unlessEmergency>>\

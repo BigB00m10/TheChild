@@ -1,8 +1,0 @@
-:: tortone {"position":"325,500"}
-<<scenery tortone>>
-You are currently standing in your cages one.
-<<unlessEmergency>>\
-    <<slaveEvents Basement>>
-    <<keyOption [[Leave your cages one|tort]] 🚪>>
-    <<sleepOption>>
-<</unlessEmergency>>\

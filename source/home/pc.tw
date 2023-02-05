@@ -4,10 +4,10 @@ welcome to your computer.
 <<unlessEmergency>>\
     <<slaveEvents BedRoom>>
     <<keyOption [[Leave your computer|bed]] 💻>>
-    <<keyOption [[Watch porn|porn1]] 💗>>: 30min
-    <<keyOption [[Shop online |onlineStore]] 🛒>>
-    <<keyOption [[Tor Browser |DarkStore]] 🌐>>
-    <<keyOption [[change your name |changenames]]  💬>>
+    <<keyOption [[Watch porn|watchPorn]] 💗>>: 30min
+    <<keyOption [[Shop online|onlineStore]] 🛒>>
+    <!--<keyOption [[Tor Browser|DarkStore]] 🌐>-->\
+    <<keyOption [[change your name|changenames]]  💬>>
 <</unlessEmergency>>\
 
 :: changenames {"position":"950,950"}
@@ -34,3 +34,7 @@ welcome to your computer.
     <<run $(document).ready(function(){$('#textbox--newname').focus()})>>\
 <</dialog>>
 <<include pc>>
+:: watchPorn {"position":"600,1000"}
+<<addMinutes 30>>\
+@@color:yellow;You spend the next half hour skimming through porn and <<if $player.gender == 'girl'>>buffing the muffin<<else>>jerking off<</if>>.@@
+<<include pc>>\

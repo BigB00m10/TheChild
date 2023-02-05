@@ -222,7 +222,7 @@ window.Interactions["slave"] = {
               optionText: "👉 Finger-train $npc.possessive ass.",
               minutesCost: 10,
               contents: `<<if $npc.anusTraining lt 20>>\
-                Using some of your own spit as lubricant, you gently rub your finger in $npc.name's ass.
+              <<if !$npc.lubricatedAss>>Using some of your own spit as lubricant, y<<else>>Y<</if>>ou gently rub your finger in $npc.name's ass.
                 The finger barely goes inside. <<emoji 😖>>
                 <<elseif $npc.anusTraining lt 40>>\
                 You gently push your finger inside $npc.name's ass.

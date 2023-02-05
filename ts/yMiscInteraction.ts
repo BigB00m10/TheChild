@@ -2,6 +2,7 @@ window.Interactions["houseSlave"] = {
   contents: "<<include slaveApproach>>",
   options: {
     putInBasement: {
+      npcRequirements: ['status!=servant'],
       optionText: "🔒 Put $npc.name back into the basement.",
       minutesCost: 10,
       contents: `You grab $npc.name's arm and head over to the basement.
@@ -113,7 +114,7 @@ window.Interactions["houseSlave"] = {
       <<if Person.getInventory().has('cooking apron')>>
         $npc.name returns the cooking apron back to you.\
         <<run Person.getInventory().moveByName('cooking apron', Player.getInventory())>>
-      <</if>>`,
+      <</if>><<run Person.setStatus("home slave")>>`,
       next: baseInteractionOptions,
     },
   },

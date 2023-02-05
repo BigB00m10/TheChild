@@ -49,7 +49,6 @@ You are currently standing in the middle of the main room of your house.
 <<addMinutes 30>>\
 @@color:yellow;You spend the next half hour skimming through channels and shows.@@
 <<include main>>\
-<<include bed>>\
 :: slaveEvent {"position":"375,0"}
 <<if _eventSlaves[_eventIndex]>>\
     <span id="slaveEvent">\

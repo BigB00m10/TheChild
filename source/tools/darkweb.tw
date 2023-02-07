@@ -1,4 +1,4 @@
-:: DarkStore {"position":"425,700"}
+:: DarkStore {"position":"675,950"}
 <<scenery deepweb>>
 <<unlessEmergency>>\
     <<keyOption [[Buy a child|DarkStore]] 🧑‍💻>>
@@ -9,7 +9,7 @@
     <<keyOption [[Leave your dark web|pc]] 💻>>
 <</unlessEmergency>>\
 
-:: sellchild {"position":"600,1000"}
+:: sellchild {"position":"575,1100"}
 <<set _dialogTitle = "$npc.name + 's value">>
     <<dialog _dialogTitle>>
         <span id="escAct">\
@@ -24,7 +24,7 @@
     <</dialog>>
     <<include DarkStore>>
 
-:: sellclothes
+:: sellclothes {"position":"700,1100"}
     <<set _dialogTitle = "Sell dirty clothes">>
     <<dialog _dialogTitle>>
         <span id="escAct">\

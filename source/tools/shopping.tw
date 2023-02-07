@@ -86,7 +86,7 @@ $buyProduct.description
             });
     });
 </script>
-:: receivePacket {"position":"425,825"}
+:: receivePacket {"position":"525,775"}
 <<scenery home>>
 ''Delivery man'': "I have a delivery for you"
 

@@ -1,9 +1,9 @@
-:: playground {"position":"525,375"}
+:: playground {"position":"550,500"}
 <<scenery playground>>
 <<personHunting>>
 <<keyOption [[Keep searching|playground]] 🔍>>
 <<keyOption [[Return home|home]] 🏠>>
-:: kidnap {"position":"150,475"}
+:: kidnap {"position":"425,500"}
 <<scenery home>>
 <<addMinutes 30>>\
 You start stalking the $found_kid.age year old kid waiting for the right moment.
@@ -18,7 +18,7 @@ You cover $found_kid.possessive body in a blanket and sneak up back to your home
 <<run Person.capture($found_kid)>>
 <<keyOption [[Enter the basement|basement]] 🚪>>
 
-:: CandyLure {"position":"250,350"}
+:: CandyLure {"position":"250,450"}
 <<scenery playground>>
 <<addMinutes 3>>\
 You sit on the park bench with a candy bar and wait for the $found_kid.age year old $found_kid.title to approach you. It takes a few minutes. But $found_kid.genPronoun finally approaches you.

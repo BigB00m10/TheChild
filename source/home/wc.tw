@@ -1,4 +1,4 @@
-:: wc {"position":"550,775"}
+:: wc {"position":"400,700"}
 <<scenery wc>>
 You are currently standing in your wc.
 <<unlessEmergency>>\
@@ -11,7 +11,7 @@ You are currently standing in your wc.
     <</if>>\
     <<sleepOption>>
 <</unlessEmergency>>\
-:: pantiescum {"position":"550,900"}
+:: pantiescum {"position":"400,825"}
 <<addMinutes 30>>\
 <<if $player.hasPenis>>\
     @@color:yellow;You wrap the underwear on your penis and fap until you cum in them.@@

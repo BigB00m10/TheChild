@@ -34,7 +34,7 @@ welcome to your computer.
     <<run $(document).ready(function(){$('#textbox--newname').focus()})>>\
 <</dialog>>
 <<include pc>>
-:: watchPorn {"position":"600,1000"}
+:: watchPorn {"position":"950,1075"}
 <<addMinutes 30>>\
 @@color:yellow;You spend the next half hour skimming through porn and <<if $player.gender == 'girl'>>buffing the muffin<<else>>jerking off<</if>>.@@
 <<include pc>>\

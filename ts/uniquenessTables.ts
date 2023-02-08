@@ -143,10 +143,10 @@ class UniquenessTables {
       },
       {
         //love80
-        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun <<thirdPerson "does"n't "don't">> give you time to fully open your arms before $npc.genPronoun <<thirdPerson "has" "have">> squirmed $npc.possessive way into your embrace, squeezing you as hard as $npc.genPronoun can. $npc.GenPronoun <<thirdPerson "hums" "hum">> happily as $npc.genPronoun <<thirdPerson "squeezes" "squeeze">> you.
+        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun <<thirdPerson "doesn't" "don't">> give you time to fully open your arms before $npc.genPronoun <<thirdPerson "has" "have">> squirmed $npc.possessive way into your embrace, squeezing you as hard as $npc.genPronoun can. $npc.GenPronoun <<thirdPerson "hums" "hum">> happily as $npc.genPronoun <<thirdPerson "squeezes" "squeeze">> you.
 
-        "I love you, <<npcAddressPlayer>>!" $npc.GenPronoun <<thirdPerson "says" "say">> as $npc.genPronoun <<thirdPerson "nuzzles" "nuzzle">> your chest.`,
-        naughty: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun <<thirdPerson "does"n't "don't">> give you time to fully open your arms before $npc.genPronoun <<thirdPerson "has" "have">> squirmed $npc.possessive way into your embrace, squeezing you as hard as $npc.genPronoun can. $npc.GenPronoun <<thirdPerson "hums" "hum">> happily as $npc.genPronoun <<thirdPerson "squeezes" "squeeze">> you. $npc.GenPronoun <<thirdPerson "takes" "take">> hold of your arm and gently <<thirdPerson "pulls" "pull">> it down, guiding your hand down between $npc.possessive legs, the look on $npc.possessive face is lewd and excited. $npc.GenPronoun <<thirdPerson "is" "are">> oh so naughty.`,
+        "I love you, <<npcAddressPlayer>>"! $npc.GenPronoun <<thirdPerson "says" "say">> as $npc.genPronoun <<thirdPerson "nuzzles" "nuzzle">> your chest.`,
+        naughty: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun <<thirdPerson "doesn't" "don't">> give you time to fully open your arms before $npc.genPronoun <<thirdPerson "has" "have">> squirmed $npc.possessive way into your embrace, squeezing you as hard as $npc.genPronoun can. $npc.GenPronoun <<thirdPerson "hums" "hum">> happily as $npc.genPronoun <<thirdPerson "squeezes" "squeeze">> you. $npc.GenPronoun <<thirdPerson "takes" "take">> hold of your arm and gently <<thirdPerson "pulls" "pull">> it down, guiding your hand down between $npc.possessive legs, the look on $npc.possessive face is lewd and excited. $npc.GenPronoun <<thirdPerson "is" "are">> oh so naughty.`,
         stats: ["love+20%", "fear-10", "freedomWish-20"],
       },
       {

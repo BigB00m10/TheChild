@@ -255,12 +255,7 @@
         <</if>>
     <</if>>
 <</widget>>
-<<widget thirdPersonVerb>><<- $npc.gender != 'nb' ? 's' : ''>><</widget>>
-<<widget thirdPersonVerbPlural>><<- $npc.gender != 'nb' ? 'es' : ''>><</widget>>
-<<widget pronounIs>><<set _npc = _args[0] || $npc>>$npc.pronoun<<- $npc.gender != 'nb' ? "'s" : "'re">><</widget>>
-<<widget genPronounIs>><<set _npc = _args[0] || $npc>>$npc.genPronoun<<- $npc.gender != 'nb' ? "'s" : "'re">><</widget>>
-<<widget npcVerbIs>><<- $npc.gender != 'nb' ? 'is' : 'are'>><</widget>>
-<<widget thirdPersonAdjective>><<- $npc.gender != 'nb' ? 'ed' : ''>><</widget>>
+<<widget thirdPerson>><<if $npc.gender != 'nb'>>$args[0]<<else>>$args[1]<</if>><</widget>>
 <<widget slaveEvents>>
     <<set _eventSlaves = window[_args[0]].getEventSlaves()>>
     <<set _eventIndex to 0>>

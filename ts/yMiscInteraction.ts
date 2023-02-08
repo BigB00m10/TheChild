@@ -7,17 +7,17 @@ window.Interactions["houseSlave"] = {
       minutesCost: 10,
       contents: `You grab $npc.name's arm and head over to the basement.
       <<if $npc.obedience lt 50>>\
-        As $npc.genPronoun sees the basement door, $npc.genPronoun struggles and tries to pull your hand away.
+        As $npc.genPronoun <<thirdPerson "sees" "see">> the basement door, $npc.genPronoun <<thirdPerson "struggles" "struggle">> and <<thirdPerson "tries" "try">> to pull your hand away.
         <<if $npc.age gte 4>>\
           ''$npc.name'': "No, please!! I want to stay here!! I'll be good. I promise!<<emoji 🥺>>"
 
-          $npc.GenPronoun doesn't want to go and promised to behave. What do you want to do?\
+          $npc.GenPronoun <<thirdPerson "doesn't" "don't">> want to go and promised to behave. What do you want to do?\
           <<set _askedToStay = true>>\
         <<else>>\
           But $npc.possessive resistance is futile and you push $npc.pronoun into the basement and immediately close the door.
         <</if>>\
       <<else>>\
-        $npc.GenPronoun obediently enters the basement by <<- $npc.pronoun>>self as you open the door.
+        $npc.GenPronoun obediently <<thirdPerson "enters" "enter">> the basement by <<- $npc.pronoun>>self as you open the door.
       <</if>>`,
       altOptions(npc, current) {
         if (Temporary().askedToStay) return current;

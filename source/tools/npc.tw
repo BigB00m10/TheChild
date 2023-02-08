@@ -8,13 +8,13 @@ $npc.name is a <<- Person.getLongDescription()>>.
 You approach $npc.pronoun.
 <<npcStats>>
 <<if $npc.fear gt 90>>\
-    $npc.GenPronoun walks back scared and wodering what you will do to $npc.pronoun.
+    $npc.GenPronoun <<thirdPerson "walks" "walk">> back scared and wodering what you will do to $npc.pronoun.
 <<elseif $npc.hasPenis && ($npc.lust gte 80 || ($npc.uniqueness.naughty && $npc.lust gte 30)) && $npc.fear lt 25>>\
-    $npc.GenPronoun look<<thirdPersonVerb>> at you with expectancy. <<if $npc.haveClothes>>@@color:deeppink;You can see a bump in $npc.possessive pants@@.<<else>>@@color:deeppink;<<genPronounIs>> already erect<<thirdPersonAdjective>>@@. <<emoji ❤>><</if>>
+    $npc.GenPronoun <<thirdPerson "looks" "look">> at you with expectancy. <<if $npc.haveClothes>>@@color:deeppink;You can see a bump in $npc.possessive pants@@.<<else>>@@color:deeppink;$npc.genPronoun<<thirdPerson "'s" "'re">> already erect@@. <<emoji ❤>><</if>>
     (High lust made $npc.pronoun "happy" to see you)<<npcStimulated>>\
 <<elseif ($npc.lust gte 80 || ($npc.uniqueness.naughty && $npc.lust gte 50)) && $npc.fear lt 25>>
-    $npc.GenPronoun look<<thirdPersonVerb>> at you with expectancy. <<if !$npc.haveClothes>>@@color:deeppink;$npc.Possessive pussy is wet and leaking@@. <<emoji ❤>><</if>>
+    $npc.GenPronoun <<thirdPerson "looks" "look">> at you with expectancy. <<if !$npc.haveClothes>>@@color:deeppink;$npc.Possessive pussy is wet and leaking@@. <<emoji ❤>><</if>>
     (High lust made $npc.pronoun "happy" to see you)<<npcStimulated>>\
 <<else>>\
-    $npc.GenPronoun nervously look<<thirdPersonVerb>> at you with $npc.possessive $npc.eyeColor eyes.
+    $npc.GenPronoun nervously <<thirdPerson "looks" "look">> at you with $npc.possessive $npc.eyeColor eyes.
 <</if>>

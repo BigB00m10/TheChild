@@ -282,6 +282,83 @@ window.Interactions["slaveEventHunger"] = {
             .npcStats as CallableFunction
         )(),
     },
+    breastfeed: {
+      playerRequirements: ["hasBoobs", "lactating"],
+      optionText: "🤱 Breastfeed (-30 hunger)",
+      minutesCost: 25,
+      contents: `You sit down and show $npc.pronoun your breast and say:
+      "Come have some of my milk."
+      <<if $npc.age lte 3>>\
+        <<set _willing = true>>\
+        <<if $npc.lust gt 60>>\
+          <<npcSay "Boobies! Yay!<<emoji 😛>>">>
+        <<elseif $npc.love gt 80>>\
+          <<npcSay "Okay <<emoji ❤>>">>
+        <<elseif $npc.hunger gt 40>>\
+          <<npcSay "So hungryyy...<<emoji 🥺>>">>
+        <<else>>\
+          <<npcSay "Hungry..<<emoji 😗>>">>
+        <</if>>\
+      <<elseif $npc.age lte 9>>\
+        <<if $npc.lust gt 60>>\
+          <<set _willing = true>>\
+          <<npcSay "Boobs! Yes!<<emoji 😛>>">>
+        <<elseif $npc.love gt 80>>\
+          <<set _willing = true>>\
+          <<npcSay "Okay <<emoji ❤>>">>
+        <<elseif $npc.hunger gt 50>>\
+          <<set _willing = true>>\
+          <<npcSay "Please, I'm so hungry!<<emoji 😗>>">>
+        <<elseif $npc.hunger gt 35>>\
+          <<npcSay "I'm not a baby, but if there's nothing else to eat...<<emoji 🙄>>">>
+        <<else>>\
+          <<set _denied = true>>\
+          <<npcSay "I'm not a baby.<<emoji 😟>>">>
+        <</if>>\
+      <<else>>\
+        <<if $npc.lust gt 60>>\
+          <<set _willing = true>>\
+          <<npcSay "Boobs! Yes!<<emoji 😛>>">>
+        <<elseif $npc.love gt 80>>\
+          <<set _willing = true>>\
+          <<npcSay "Okay <<emoji ❤>>">>
+        <<elseif $npc.hunger gt 80>>\
+          <<set _willing = true>>\
+          <<npcSay "Please, anything, I'm so hungry!<<emoji 😗>>">>
+        <<elseif $npc.hunger gt 50>>\
+          <<npcSay "That's gross, but if there's nothing else to eat...<<emoji 🙄>>">>
+        <<else>>\
+          <<set _denied = true>>\
+          <<npcSay "Ew, no!<<emoji 😟>>">>
+        <</if>>\
+      <</if>>\
+      <<if !_denied>>\
+        <<if _willing>>\
+          $npc.name <<if $npc.uniqueness.shy>>timidley approaches and <</if>>climbs into your lap.\
+          <<if $npc.uniqueness.curious>>$npc.GenPronoun <<thirdPerson "studies" "study">> your boobs for a moment.<</if>>\
+          $npc.GenPronoun eagerly <<thirdPerson "finds" "find">> your nipple.
+        <<else>>\
+          You pull $npc.name into your lap and guide $npc.possessive head to your nipple.
+        <</if>>\
+        <<if $npc.uniqueness.naughty || $npc.lust gt 60>>$npc.Possessive hand plays with your other boob.<</if>>\
+        You run your hand through $npc.possessive $npc.hairColor $npc.hairStyle hair as you feed $npc.pronoun.\
+        <<if $npc.uniqueness.energetic || $npc.hunger gt 40 >>$npc.GenPronoun vigerously <<thirdPerson "sucks" "suck">> down your milk.<</if>>\
+        <<if _willing>>$npc.GenPronoun <<thirdPerson "hums" "hum" contentedly>> and <<thirdPerson "relaxes" "relax">> in your arms.<</if>>
+      <</if>>
+      `,
+      altMinutes: (minutes) => (Temporary().denied ? 0 : minutes),
+      npcStats: () => {
+        let temp = Temporary();
+        if (temp.denied) return null;
+        let stats = ["hunger-30", "fear-5"];
+        if (temp.sexual) {
+          stats.push("lust+3%");
+          stats.push("mouthTraining+10")
+        }
+        if (temp.willing) stats.push("love+10");
+        return stats;
+      },
+    },
     punish: punishment,
   },
 };
@@ -352,6 +429,22 @@ window.Interactions["okSleepWithPlayerDemand"] = {
       contents: `You slide your hand down $npc.possessive waist and back to touch the $npc.age year old butt.
       The sensation on your hand feels amazing as you caress $npc.possessive butt cheeks and crack.<<npcStimulated>>`,
       next: OkSleepWithPlayerDemand.baseOptions,
+    },
+    touchBoobs: {
+      npcRequirements: ["hasBoobs"],
+      optionText: "🍈🍈 Fondle $npc.possessive boobs.",
+      minutesCost: 3,
+      contents:
+        `You bring your hands up to $npc.possessive beautiful melons and softly rub them, your thumbs brushing $npc.possessive nipples.`,
+      npcStats: ["lust+3%"],
+    },
+    suckBoobs: {
+      npcRequirements: ["hasBoobs"],
+      optionText: "🍈🍈👄 Suck $npc.possessive boobs.",
+      minutesCost: 10,
+      contents:
+        `You kiss your way down $npc.possessive neck and chest to $npc.possessive nipple. You suck it into your mouth and gently suckle. Your tongue makes circles around $npc.possessive nipple<<if $npc.lactating>>, lapping up their delicious milk<</if>>.`,
+      npcStats: ["lust+10%"],
     },
     pat: {
       optionText: "🥰👋 Pat $npc.possessive head.",
@@ -528,6 +621,22 @@ window.Interactions["wakeUpAfterNightTogether"] = {
       As $npc.genPronoun <<thirdPerson "clenches" "clench">> $npc.possessive butt cheeks in pleasure<<if $npc.hasPussy>> wetting the bed a little<</if>>. 
       $npc.Possessive face is bright red.`,
       npcStats: ["love+10", "freedomWish-10"],
+    },
+    touchBoobs: {
+      npcRequirements: ["hasBoobs"],
+      optionText: "🍈🍈 Fondle $npc.possessive boobs.",
+      minutesCost: 3,
+      contents:
+        `You bring your hands up to $npc.possessive beautiful melons and softly rub them, your thumbs brushing $npc.possessive nipples.`,
+      npcStats: ["lust+3%"],
+    },
+    suckBoobs: {
+      npcRequirements: ["hasBoobs"],
+      optionText: "🍈🍈👄 Suck $npc.possessive boobs.",
+      minutesCost: 10,
+      contents:
+        `You kiss your way down $npc.possessive neck and chest to $npc.possessive nipple. You suck it into your mouth and gently suckle. Your tongue makes circles around $npc.possessive nipple<<if $npc.lactating>>, lapping up their delicious milk<</if>>.`,
+      npcStats: ["lust+10%"],
     },
   },
 };

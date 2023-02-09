@@ -104,6 +104,10 @@ $(document).on(":passageinit", () => {
             slave.hasPenis = slave.sex == "male";
             slave.hasPussy = slave.sex == "female";
           }
+          if (slave.hasBoobs == undefined) {
+            slave.hasBoobs = slave.sex == "female" && slave.age >= 13;
+            slave.lactating = false;
+          }
           if (slave.analVirgin == undefined) {
             slave.analVirgin = true;
             slave.vaginaVirgin = true;

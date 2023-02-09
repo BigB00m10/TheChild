@@ -1687,7 +1687,7 @@ window.Interactions["slave"] = {
             <<if _willing>>\
               <<npcSay "Mmm, delicious!">>
             <<else>>\
-              $npc.GenPronoun <<thirdPerson "coughs" "cough">> and <<thirdPerson "sputters" "sputter">> and <<thirdPerson "wipes" "wipe">> $npc.possessive mouth with their hand before returning to the task.
+              $npc.GenPronoun <<thirdPerson "coughs" "cough">> and <<thirdPerson "sputters" "sputter">> and <<thirdPerson "wipes" "wipe">> $npc.possessive mouth with $npc.possessive hand before returning to the task.
             <</if>>\
             <<set _fed = true>>\
           <</if>>\

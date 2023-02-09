@@ -292,6 +292,7 @@ window.Interactions["slaveEventHunger"] = {
         <<set _willing = true>>\
         <<if $npc.lust gt 60>>\
           <<npcSay "Boobies! Yay!<<emoji 😛>>">>
+          <<set _sexual = true>>\
         <<elseif $npc.love gt 80>>\
           <<npcSay "Okay <<emoji ❤>>">>
         <<elseif $npc.hunger gt 40>>\
@@ -300,6 +301,7 @@ window.Interactions["slaveEventHunger"] = {
           <<npcSay "Hungry..<<emoji 😗>>">>
         <</if>>\
       <<elseif $npc.age lte 9>>\
+        <<set _sexual = true>>\
         <<if $npc.lust gt 60>>\
           <<set _willing = true>>\
           <<npcSay "Boobs! Yes!<<emoji 😛>>">>
@@ -316,6 +318,7 @@ window.Interactions["slaveEventHunger"] = {
           <<npcSay "I'm not a baby.<<emoji 😟>>">>
         <</if>>\
       <<else>>\
+        <<set _sexual = true>>\
         <<if $npc.lust gt 60>>\
           <<set _willing = true>>\
           <<npcSay "Boobs! Yes!<<emoji 😛>>">>

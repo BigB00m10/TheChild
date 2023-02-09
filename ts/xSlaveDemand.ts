@@ -395,7 +395,14 @@ window.Interactions["okSleepWithPlayerDemand"] = {
   <<if $npc.uniqueness.shy or $npc.love gte 80>>$npc.GenPronoun <<thirdPerson "blushes" "blush">>
   <<else>>$npc.GenPronoun <<thirdPerson "looks" "look">> nervous...
   <</if>><<if $npc.love gte 80>>\
-    $npc.GenPronoun happily <<thirdPerson "takes" "take">> all of $npc.possessive clothes off.<<if $npc.lust gte 60>>You can see $npc.possessive <<- $npc.hasPussy ? "wet " + $npc.genitals.female : "erected " + $npc.genitals.male>><<emoji 👀>><<npcStimulated>><</if>>
+    <<if $npc.haveClothes>>\
+      $npc.GenPronoun happily <<thirdPerson "takes" "take">> all of $npc.possessive clothes off.
+    <<elseif Person.getInventory().has('cooking apron')>>\
+      $npc.GenPronoun happily <<thirdPerson "takes" "take">> off $npc.possessive apron.
+    <</if>>\
+    <<if $npc.lust gte 60>>\
+      You can see $npc.possessive <<- $npc.hasPussy ? "wet " + $npc.genitals.female : "erected " + $npc.genitals.male>><<emoji 👀>><<npcStimulated>>
+    <</if>>\
     $npc.GenPronoun hastily <<thirdPerson "climbs" "climb">> in bed with you.
     You also climb in bed with $npc.pronoun, after taking your clothes off.
   <<else>>\

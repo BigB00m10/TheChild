@@ -140,6 +140,12 @@ class OnlineStore {
       soldOut: true, //Hidden product, for now
     }),
     new Product({
+      name: "Lactation pills",
+      description: "Got milk? Induces lactation (breasts reqiured)<<emoji 🥛>>.",
+      price: 30,
+      tags: new Set(["player", "consumable", "medicine"]),
+    }),
+    new Product({
       name: "Dildo",
       description: "Stimulating toy to play until complete satisfaction.",
       price: 20,

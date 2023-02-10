@@ -1,28 +1,78 @@
 :: DarkStore {"position":"675,950"}
 <<scenery deepweb>>
 <<unlessEmergency>>\
-    <<keyOption [[Buy a child|DarkStore]] 🧑‍💻>>
-    <<keyOption [[Buy torture object|DarkStore]] ⛓️>>
-    <<keyOption [[Buy a vehicle|DarkStore]] 🚗>>
+    /*<<keyOption [[Buy a child|DarkStore]] 🧑‍💻>>*/\
+    /*<<keyOption [[Buy torture object|DarkStore]] ⛓️>>*/\
+    /*<<keyOption [[Buy a vehicle|DarkStore]] 🚗>>*/\
     <<keyOption [[Sell a child|sellchild]] 💸>>
-    <<keyOption [[Sell a dirty clothes|sellclothes]] 👙>>
+    /*<<keyOption [[Sell a dirty clothes|sellclothes]] 👙>>*/\
     <<keyOption [[Leave your dark web|pc]] 💻>>
 <</unlessEmergency>>\
 
 :: sellchild {"position":"575,1100"}
-<<set _dialogTitle = "$npc.name + 's value">>
-    <<dialog _dialogTitle>>
-        <span id="escAct">\
-            <<button "✅ Yes, sell $npc.pronoun">>
-                <<cash _value.total>>
-                <<goto DarkStore>>
-                <</button>>\
-            <<button "🔙 (Esc) Go back">>\
-            <<run Dialog.close()>>\
-            <</button>>\
-        </span>\
-    <</dialog>>
-    <<include DarkStore>>
+<<scenery deepweb>>
+Choose slave to sell:
+<<set
+    _charcode = 97;
+>>\
+<<for _slave range $slaves>>\
+    <<set _value = Person.getValue(_slave)>>\
+    <<capture _slave _value>>\
+        <<set
+            if(_charcode == 104) _charcode += 2;
+            _char = String.fromCharCode(_charcode++);
+            _linkText = '(' + _char.toUpperCase() + ') ' + Person.getShortDescription(_slave) + ' for ¤' + _value.total.toFixed(2);
+            _keyId = _char + 'KeyAct';
+        >>\
+        <span @id='_keyId'><<link _linkText>>
+                <<set
+                    _dialogTitle = "Sell "+_slave.name;
+                >>
+                <<set _dialogTitle = _slave.name + "'s value">>
+                <<dialog _dialogTitle>>
+                    Obedience_value.obedienceRatio: ¤<<- _value.obedience.toFixed(2)>>
+                    Lust_value.lustRatio: ¤<<- _value.lust.toFixed(2)>>
+                    <<if _slave.hasPussy>>\
+                        Pussy Training_value.pussyRatio: ¤<<- _value.pussy.toFixed(2)>>
+                    <</if>>\
+                    Anal Training_value.anusRatio: ¤<<- _value.anus.toFixed(2)>>
+                    Oral Training_value.mouthRatio: ¤<<- _value.mouth.toFixed(2)>>
+                    <<if _slave.freedomWish>>\
+                        Freedom Wish Penalty: @@color:red;¤<<- Math.abs(_value.freedomWish).toFixed(2)>>@@
+                    <</if>>\
+                    <<if _value.virginType>>\
+                        @@color:deeppink;Bonus _value.virginType: ¤<<- _value.virginBonus.toFixed(2)>>@@
+                    <</if>>\
+                    Total: ¤<<- _value.total.toFixed(2)>>
+
+                    <span id="spaceAct">\
+                        <<button "💵 (Space) Sell _slave.name">>\
+                            <<set _dialogTitle = "Sell "+_slave.name>>\
+                            <<dialog _dialogTitle>>\
+                                Are you ''REALLY'' sure you want to sell out _slave.name for ¤<<- _value.total.toFixed(2)>>??
+                                You won't see _slave.pronoun ever again!!
+                                <<button "✅ Yes, sell _slave.name">>\
+                                    <<cash _value.total>>\
+                                    <<run Basement.deleteSlave(_slave);Dialog.close()>>\
+                                    <<goto DarkStore>>\
+                                <</button>>\
+                                <span id="escAct">\
+                                    <<button "🔙 (Esc) Go back">>\
+                                        <<run Dialog.close()>>\
+                                    <</button>>\
+                                </span>\
+                            <</dialog>>\
+                        <</button>>\
+                    </span>\
+                    <span id="escAct">\
+                        <<button "🔙 (Esc) Go back">>\
+                            <<run Dialog.close()>>
+                        <</button>>\
+                    </span>\
+                <</dialog>><</link>></span>
+    <</capture>>
+<</for>>
+<<keyOption [[Go back|DarkStore]]>>
 
 :: sellclothes {"position":"700,1100"}
     <<set _dialogTitle = "Sell dirty clothes">>

@@ -97,8 +97,8 @@ abstract class Npc {
     if (!npc) npc = Variables().npc;
     npc.achievements.delete(achievement);
   }
-  getValue(): NpcValue {
-    let npc = Variables().npc as Npc;
+  getValue(npc?: Npc): NpcValue {
+    if (!npc) npc = Variables().npc;
     const maxNonVirgin = 1500;
     const maxFwPenalty = -0.75; //Maximum freedom wish penalty 75%
     let calcValue = (stat: number, ratio: number) =>

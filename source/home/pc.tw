@@ -6,7 +6,7 @@ welcome to your computer.
     <<keyOption [[Leave computer|bed]] 💻>>
     <<keyOption [[Watch porn|watchPorn]] 💗>>: 30min
     <<keyOption [[Shop online|onlineStore]] 🛒>>
-    <!--<keyOption [[Tor Browser|DarkStore]] 🌐>-->\
+    <<keyOption [[Tor Browser|DarkStore]] 🌐>>
     <<keyOption [[change your name|changenames]]  💬>>
 <</unlessEmergency>>\
 :: changenames {"position":"950,950"}

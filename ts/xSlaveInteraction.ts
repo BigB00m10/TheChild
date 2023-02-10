@@ -1785,53 +1785,6 @@ window.Interactions["slave"] = {
       },
       stopOption: "🔽 Return to the basement",
     },
-    value: {
-      locationRequirements: ["basement"],
-      optionText: "💵 See $npc.name's selling value.",
-      settingsRequirements: ["slaveSelling"],
-      action: true,
-      contents: `<<set _dialogTitle = $npc.name + "'s value">>
-      <<dialog _dialogTitle>>
-          <<set _value = Person.getValue()>>\
-          Obedience_value.obedienceRatio: ¤<<- _value.obedience.toFixed(2)>>
-          Lust_value.lustRatio: ¤<<- _value.lust.toFixed(2)>>
-
-          <<if $npc.hasPussy>>Pussy Training_value.pussyRatio: ¤<<- _value.pussy.toFixed(2)>>
-          <</if>>Anal Training_value.anusRatio: ¤<<- _value.anus.toFixed(2)>>
-          Oral Training_value.mouthRatio: ¤<<- _value.mouth.toFixed(2)>>
-          <<if $npc.freedomWish>>
-          Freedom Wish Penalty: @@color:red;¤<<- Math.abs(_value.freedomWish).toFixed(2)>>@@<</if>><<if _value.virginType>>
-          @@color:deeppink;Bonus _value.virginType: ¤<<- _value.virginBonus.toFixed(2)>>@@<</if>><<if  $npc.freedomWish ||  _value.virginType>>
-          <</if>>
-          Total: ¤<<- _value.total.toFixed(2)>>\
-
-          <span id="spaceAct">\
-            <<button "💵 (Space) Sell $npc.name">>\
-              <<set _dialogTitle = "Sell "+$npc.name>>\
-              <<dialog _dialogTitle>>\
-                Are you ''REALLY'' sure you want to sell out $npc.name for ¤<<- _value.total.toFixed(2)>>??
-                You won't see $npc.pronoun ever again!!
-
-                <<button "✅ Yes, sell $npc.pronoun">>
-                  <<cash _value.total>>
-                  <<run Basement.deleteSlave($npc);Dialog.close()>>
-                  <<goto basement>>
-                <</button>>\
-                <span id="escAct">\
-                  <<button "❌ (Esc) No!!">>\
-                    <<run Dialog.close()>>\
-                  <</button>>\
-                </span>\
-              <</dialog>>
-            <</button>>\
-          </span>\
-          <span id="escAct">\
-            <<button "🔙 (Esc) Go back">>\
-              <<run Dialog.close()>>\
-            <</button>>\
-          </span>\
-      <</dialog>>`,
-    },
   },
   timeIncreaseNpcHunger: true,
 };

@@ -5,7 +5,7 @@
     /*<<keyOption [[Buy torture object|DarkStore]] ⛓️>>*/\
     /*<<keyOption [[Buy a vehicle|DarkStore]] 🚗>>*/\
     <<keyOption [[Sell a child|sellchild]] 💸>>
-    /*<<keyOption [[Sell a dirty clothes|sellclothes]] 👙>>*/\
+    <<keyOption [[Sell a dirty clothes|sellclothes]] 👙>>
     <<keyOption [[Leave your dark web|pc]] 💻>>
 <</unlessEmergency>>\
 
@@ -75,17 +75,40 @@ Choose slave to sell:
 <<keyOption [[Go back|DarkStore]]>>
 
 :: sellclothes {"position":"700,1100"}
-    <<set _dialogTitle = "Sell dirty clothes">>
-    <<dialog _dialogTitle>>
-        <span id="escAct">\
-            <<button "✅ Yes, sell $npc.pronoun">>
-                <<cash _value.total>>
-                <<goto DarkStore>>
+<<scenery deepweb>>
+Choose item to sell:
+<<set
+    _charcode = 97;
+    _clothes = Player.getInventory().items.filter((item) => item.tags.includes != undefined && item.tags.includes("clothes")  && !item.tags.includes("unsellable") && item.name != "Cooking apron");
+>>\
+<<for _item range _clothes>>\
+    <<set _value = 20>>\
+    <<capture _item _value>>\
+        <<set
+            if(_charcode == 104) _charcode += 2;
+            _char = String.fromCharCode(_charcode++);
+            _linkText = '(' + _char.toUpperCase() + ') ' + _item.name + ' for ¤' + _value;
+            _keyId = _char + 'KeyAct';
+        >>\
+        <span @id='_keyId'><<link _linkText>>
+            <<set
+                _dialogTitle = "Sell "+_item.name;
+            >>\
+            <<dialog _dialogTitle>>\
+                Do you want to sell _item.name for ¤<<- _value>>?
+                <<button "✅ Yes, sell _item.name">>\
+                    <<cash _value>>\
+                    <<run Player.removeItem(_item.name)>>\
+                    <<goto DarkStore>>\
                 <</button>>\
-            <<button "❌ (Esc) No!!">>\
-            <<run Dialog.close()>>\
-            <</button>>\
-        </span>\
-    <</dialog>>
-    <<include DarkStore>>
+                <span id="escAct">\
+                    <<button "🔙 (Esc) Go back">>\
+                        <<run Dialog.close()>>\
+                    <</button>>\
+                </span>\
+            <</dialog>><</link>>\
+        </span>
+    <</capture>>
+<</for>>
+<<keyOption [[Go back|DarkStore]]>>
 

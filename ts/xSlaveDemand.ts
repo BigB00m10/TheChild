@@ -16,7 +16,7 @@ const punishment: NpcInteraction = {
       <<set _item = {
         name:'Used clothes(' + $npc.age + ' y.o.)',
         description:'Used clothes from a ' + $npc.age + ' year old',
-        quantity: 1,
+        count: 1,
         tags:["person","clothes","used"]
       };
       Player.getInventory().add(_item);

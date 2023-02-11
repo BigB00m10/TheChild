@@ -46,7 +46,7 @@ class Inventory {
     let existing: Item = this.items.firstOrDefault(
       (i: Item) => i.name == item.name
     );
-    if (existing) existing.count += item.count;
+    if (existing) existing.count = (existing.count || 1) + (item.count || 1); // Add to existing item, taking into account that not all items have a count
     else this.items.push(new Item(item));
   }
   remove(item: Item, count: number = 1): void {

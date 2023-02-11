@@ -1794,6 +1794,7 @@ window.Interactions.slave.options["pushDown"].next.stealClothes.contents =
   `<<set _item = {
 name:'Used clothes(' + $npc.age + ' y.o.)',
 description:'Used clothes from a ' + $npc.age + ' year old',
+count:1,
 tags:["person","clothes","used"]
 };
 Player.getInventory().add(_item);>>

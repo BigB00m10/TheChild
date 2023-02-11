@@ -1758,6 +1758,51 @@ window.Interactions["slave"] = {
       npcStats: ["+lactating"],
       next: baseInteractionOptions,
     },
+    giveClothes: {
+      npcRequirements: ["!haveClothes"],
+      canBeShown: () => window.Player.has(`Used clothes(${Variables().npc.age} y.o.)`),
+      optionText: "👕 Give $npc.pronoun some clothes",
+      contents: `<<if $npc.age lte 3>>\
+          <<if $npc.uniqueness.naughty>>\
+            $npc.name stuggles and squirms but you manage to put clothes on $npc.pronoun.
+          <<else>>
+            You put clothes on $npc.name
+          <</if>>
+        <<else>>\
+          You offer $npc.name some clothes.
+          <<playerSay "Here, you can wear these.">>
+          <<if $npc.fear gt 40>>\
+            $npc.GenPronoun <<thirdPerson "snatches" "snatch">> the clothes out of your hand and <<thirdPerson "backs" "back">> away to put them on.
+          <<elseif $npc.love gt 60>>\
+            <<npcSay "Oh, thank you <<npcAddressPlayer>>!!">>
+            $npc.GenPronoun <<thirdPerson "gives" "give">> you a big hug and <<thirdPerson "puts" "put">> on the clothes.
+          <<elseif $npc.uniqueness.naughty>>\
+            <<npcSay "You sure you don't want to see this bod?">>
+            <<if $npc.lust gt 60>>\
+              $npc.GenPronoun <<thirdPerson "places" "place">> $npc.possessive hands on either side of $npc.possessive $npc.genitals.all and <<thirdPerson "stares" "stare">> at you for a moment.
+              <<playerSay "It is a smoking hot body, but for now put on some clothes.">>
+            <<else>>\
+              $npc.GenPronoun <<thirdPerson "puts" "put">> $npc.possessive hand on $npc.possessive hips.
+              <<playerSay "It is a very cute body, but for now put on some clothes.">>
+            <</if>>\
+            $npc.GenPronoun <<thirdPerson "puts" "put">> on the clothes.
+          <<elseif $npc.uniqueness.shy>>\
+            $npc.GenPronoun <<thirdPerson "blushes" "blush">> and <<thirdPerson "takes" "take">> the clothes.\
+            $npc.GenPronoun <<thirdPerson "turns" "turn">> around and quickly <<thirdPerson "puts" "put">> them on.\
+            $npc.GenPronoun <<thirdPerson "turns" "turn">> back towards you looking down at $npc.possessive clothes.\
+            With a little smile on $npc.possessive face $npc.genPronoun <<thirdPerson "says" "say">> "Thank you."
+          <<else>>\
+            $npc.GenPronoun <<thirdPerson "takes" "take">> the clothes and <<thirdPerson "puts" "put">> them on.
+          <</if>>\
+        <</if>>\
+        <<run Player.removeItem("Used clothes(" + $npc.age + " y.o.)")>>`,
+      npcStats: (npc) => {
+        let stats = ["+haveClothes", "fear-5"];
+        if (npc.love > 60) stats.push("love+5%");
+        return stats;
+      },
+      next: baseInteractionOptions,
+    },
     bringUpstairs: {
       locationRequirements: ["basement"],
       npcRequirements: ["freedomWish<=25"],

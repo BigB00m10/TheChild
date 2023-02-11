@@ -14,8 +14,9 @@
 Choose slave to sell:
 <<set
     _charcode = 97;
+    _slaves = $slaves.filter((slave) => slave.status!="servant");
 >>\
-<<for _slave range $slaves>>\
+<<for _slave range _slaves>>\
     <<set _value = Person.getValue(_slave)>>\
     <<capture _slave _value>>\
         <<set

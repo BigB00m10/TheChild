@@ -19,6 +19,7 @@ interface Window {
   OnlineStore: OnlineStore;
   Interactions: Record<string, NpcInteractionCollection>;
   PersonUniquenessPresets: PersonUniqueness[];
+  PornMovie: PornMovie;
 }
 window.Now = new Now();
 window.Homes = Homes;
@@ -35,6 +36,7 @@ window.Kitchen = new Kitchen();
 window.Garden = new Garden();
 window.PersonGeneration = new PersonGeneration();
 window.PersonUniquenessPresets = personUniquenessPresets;
+window.PornMovie = new PornMovie();
 //Interactions will be populated in the next files.
 //Typescript files are processed in alphabetical order, that's why letters are prepended to the file names.
 window.Interactions = {};

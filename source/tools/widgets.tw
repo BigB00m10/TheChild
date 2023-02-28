@@ -306,6 +306,16 @@
         >><</done>>
     <</dialog>>
 <</widget>>
+<<widget takeClothes>>
+    <<set _item = {
+        name:'Used clothes(' + $npc.age + ' y.o.)',
+        description:'Used clothes from a ' + $npc.age + ' year old',
+        count:1,
+        tags:["person","clothes","used"]
+        };
+        Player.getInventory().add(_item);>>
+    (_item.description added to your inventory)
+<</widget>>
 :: workOption {"position":"875,0"}
 <<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>

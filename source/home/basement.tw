@@ -31,7 +31,9 @@
             <</if>>\
         </div>\
         <div class="one-half column">\
-            <<set _availableBeds to Basement.availableBeds()>>
+            <<set
+                _availableBeds to Basement.availableBeds();
+            >>\
             <<if _availableBeds <= 0>>\
                 There's no more room for more slaves. You need to buy Mattresses if you want more.
             <<else>>\
@@ -40,12 +42,16 @@
         </div>\
     </div>
     <<keyOption [[Go back upstairs|main]] 🚪>>
+    <<if TortRafters.getSlaves().length>>\
+        <<keyOption [[Check on suspended slaves|tortRafters]] ⛓️>>
+    <</if>>\
     /*<<keyOption [[The torture room|tort]] ⛓️>>*/\
     <<if Player.has("pizza") && Basement.getHungrySlaves().length>>\
         <<keyOption [[Give pizza to all hungry slaves|giveSlavesPizza]] 🍕>>
     <</if>>\
     <<include workOption>>\
 <</unlessEmergency>>\
+
 :: giveSlavesPizza {"position":"250,775"}
 <<scenery basement>>
 You lay down the pizza<<if Player.has("pizza", 2)>>s<</if>> and all the slaves get around it to eat.

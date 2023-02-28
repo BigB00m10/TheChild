@@ -3,7 +3,7 @@ let afterStrip = () =>
   window.Interactions.slave.options["pushDown"].next.strip.next;
 //Returns the options that are after putting penis in the mouth
 let afterPenToMouth = () =>
-  (window.Interactions.slave.options["penToMouth"].next as CallableFunction)();
+  (window.Interactions.slave.options["takeHead"].next["penToMouth"].next as CallableFunction)();
 //returns the different options when cumming outside
 let cumOutsideOptions: NpcInteractionOptions = {
   cumBody: {
@@ -180,12 +180,14 @@ window.Interactions["slave"] = {
       },
     },
     hug: {
+      locationExclusions: ["tortRafters"],
       optionText: "🤗 give a hug to $npc.name.",
       minutesCost: 2,
       contents: `<<personUniqueness hug>>`,
       next: baseInteractionOptions,
     },
     pushDown: {
+      locationExclusions: ["tortRafters"],
       optionText: "👇 Push $npc.pronoun down",
       contents: `You push $npc.name down, placing your body over $npc.pronoun.
         <<if $npc.fear gt 25>>\
@@ -1767,6 +1769,7 @@ window.Interactions["slave"] = {
     },
     giveClothes: {
       npcRequirements: ["!haveClothes"],
+      locationExclusions: ["tortRafters"],
       canBeShown: () => window.Player.has(`Used clothes(${Variables().npc.age} y.o.)`),
       optionText: "👕 Give $npc.pronoun some clothes",
       contents: `<<if $npc.age lte 3>>\
@@ -1837,17 +1840,124 @@ window.Interactions["slave"] = {
       },
       stopOption: "🔽 Return to the basement",
     },
+    tieUp: {
+      locationRequirements: ["basement"],
+      inventoryRequirements: ["Rope"],
+      optionText: "⛓️ Suspend $npc.name from the rafters",
+      altMinutes: () => 30,
+      contents: `\
+        <<scenery tortRafters>>
+        <<if $npc.lust gt 60>>\
+          <<set _reaction = "lust">>\
+        <<elseif $npc.love gt 60>>\
+          <<set _reaction = "love">>\
+        <<elseif $npc.obedience gt $npc.freedomWish>>\
+          <<set _reaction = "obedience">>\
+        <<else>>\
+          <<set _reaction = "resistance">>\
+        <</if>>\
+        <<if $npc.haveClothes>>\
+          You strip $npc.name and take $npc.possessive clothes. <<takeClothes>><<run Player.removeItem("Rope")>>
+
+          You use your shibari skills to tie $npc.pronoun up.\
+          \
+        <<else>>
+          You use your shibari skills to tie $npc.name up.\
+        <</if>>\
+        You find the mid point of the rope and double it over on itself so you have two strands side by side.\
+        You start with a loop around $npc.possessive lower chest <<if $npc.hasBoobs>>under $npc.possessive breasts<<else>>at $npc.possessive sturnum<</if>>.\
+        You wrap the ropes over one shoulder, down <<if $npc.hasBoobs>>between $npc.possessive breasts<<else>>$npc.possessive chest<</if>>, \
+        around the ropes at $npc.possessive sturnum and back up over the other shoulder.\
+        Tying it in the back you bring the ropes under one armpit, accross $npc.possessive chest to the opposite side of $npc.possessive neck.\
+        You repeat on the other side, completing the upside down star pattern on $npc.possessive chest.
+
+        You bring the ropes down $npc.possessive back, between $npc.possessive butt checks and under $npc.possessive crotch.\
+        You put one strand on either side of $npc.possessive <<- $npc.genitals.all>>.\
+        You wrap the ropes around the ropes at $npc.possessive sturnum and back down, going back through $npc.possessive crotch to tie off at the back.
+
+        <<playerSay "Lie on the ground, face down.">>
+        <<if _reaction == "resistance">>\
+          <<npcSay "No, I don't want this!">>
+          <<playerSay "I said lie on the ground.">>
+
+          You grab $npc.possessive harness, pull $npc.pronoun to the ground and push $npc.pronoun to the prone position.
+        <<elseif _reaction == "lust">>\
+          $npc.GenPronoun <<thirdPerson "gives" "give">> you a mischievous smile and <<thirdPerson "winks" "wink">>.
+          <<npcSay "What are you going to do to me?">>
+          $npc.GenPronoun <<thirdPerson "lies" "lie">> down in the prone position.
+        <<elseif _reaction == "love">>\
+          $npc.GenPronoun <<thirdPerson "smiles" "smile">>.
+          <<npcSay "Yes, <<npcAddressPlayer>> <<emoji 💗>>!">>
+          $npc.GenPronoun <<thirdPerson "lies" "lie">> down in the prone position.
+        <<elseif _reaction == "obedience">>\
+          <<npcSay "Okay, <<npcAddressPlayer>>">>
+          $npc.GenPronoun <<thirdPerson "lies" "lie">> down in the prone position.
+        <<else>>\
+          $npc.GenPronoun <<thirdPerson "lies" "lie">> down in the prone position.
+        <</if>>\
+
+        You pull $npc.possessive limbs behind $npc.pronoun and lash them together.\
+        Tying the remaining rope securely to $npc.possessive harness you pass it through an anchor attached to the ceiling.\
+        You slowly hoist $npc.name off the ground until $npc.genPronoun <<thirdPerson "is" "are">> at the level of your crotch, tying off the end.
+
+        You step back and admire your handy work.\
+        <<if _reaction == "resistance">>\
+          $npc.name glares at you\
+        <<elseif _reaction == "obedience">>\
+          $npc.name has a resigned look on $npc.possessive face\
+        <<else>>\
+          $npc.name smiles at you
+        <</if>>\
+        as $npc.genPronoun slightly <<thirdPerson "rotates" "rotate">> back and forth on the end of the rope.
+        <<set $npc.location = "tortRafters">>`,
+      npcStats: (npc) => {
+        let temp = Temporary();
+        if (temp.reaction == "lust") {
+          return ["lust+10%"];
+        } else if (temp.reaction == "love") {
+          return ["love+5%"];
+        } else if (temp.reaction == "obedience" || temp.reaction == "resistance") {
+          return ["obedience+10", "freedomWish+10"];
+        }
+      },
+      next: {
+        stepBack: {
+          optionText: "Next",
+          contents: `<<goto tortRafters>>`,
+        },
+      },
+      stopOption: false,
+    },
+    untie: {
+      locationRequirements: ["tortRafters"],
+      optionText: "⛓️ Untie",
+      altMinutes: () => 30,
+      contents: `You untie the end of the rope and gently lower $npc.name to the ground.\
+        You untie $npc.possessive body and help $npc.pronoun to $npc.possessive feet.\
+        You examine the rope marks, tracing them gently with your hands: $npc.possessive chest and belly,\
+        $npc.possessive back, $npc.possessive legs, and $npc.possessive wrists.
+
+        Taking $npc.possessive wrist in your hand and rubbing it lightly you say "These marks will go away in a day or so."
+
+        $npc.GenPronoun <<thirdPerson "stretches and rubs" "stretch and rub">> $npc.possessive sore muscles. 
+        <<if $npc.love gt 60>>\
+          $npc.GenPronoun <<thirdPerson "gives" "give">> you a hug.
+        <</if>>\
+        <<set $npc.location = "basement">>\
+        `,
+      npcStats: ["fear-10", "love+5%"],
+      next: {
+        toBasement: {
+          optionText: "🚪 Return to main basement",
+          contents: "<<goto basement>>",
+          action: true,
+        },
+      },
+      stopOption: false,
+    },
   },
   timeIncreaseNpcHunger: true,
 };
 //Instead of duplicating same text on the two interactions I just copy the contents and add the code that steals the clothes.
 window.Interactions.slave.options["pushDown"].next.stealClothes.contents =
-  window.Interactions.slave.options["pushDown"].next.strip.contents +
-  `<<set _item = {
-name:'Used clothes(' + $npc.age + ' y.o.)',
-description:'Used clothes from a ' + $npc.age + ' year old',
-count:1,
-tags:["person","clothes","used"]
-};
-Player.getInventory().add(_item);>>
-(_item.description added to your inventory)`;
+  window.Interactions.slave.options["pushDown"].next.strip.contents + "<<takeClothes>>";

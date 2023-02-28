@@ -1,0 +1,29 @@
+:: tortRafters
+<<scenery tortRafters>>
+You are currently in the corner of your basement where you suspend slaves from the rafters.
+<<unlessEmergency>>\
+    <<slaveEvents TortRafters>>
+    <div class="row">\
+        <div class="one-half column">\
+            <<set _slaves = TortRafters.getSlaves()>>\
+            <<if _slaves.length > 0>>\
+                Approach slave:
+                <<set _charcode = 97>>\
+                <<for _slave range _slaves>><<if _slave.location == 'tortRafters'>>\
+                    <<set 
+                        if(_charcode == 104) _charcode += 2; 
+                        _char = String.fromCharCode(_charcode++);
+                        _keyId = _char + "KeyAct";
+                        _action = "<<openNpcInteraction slave " + _slave.uid + ">>";
+                        _prefix = "(" + _char.toUpperCase() + ")"
+                    >>\
+                    <span @id="_keyId">\
+                        <<printPersonLink _slave _action _prefix>>
+                    </span>\
+                <</if>><</for>>\
+            <</if>>\
+        </div>\
+    </div>
+    <<keyOption [[Return to main basement|basement]] 🚪>>\
+    <<include workOption>>\
+<</unlessEmergency>>\

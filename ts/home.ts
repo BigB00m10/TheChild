@@ -4,6 +4,7 @@ let Homes: Record<string, Home> = {
     rent: 400, //Unused right now, will be the amount to pay each month
     spaces: [
       "basement",
+      "tortRafters",
       "mainRoom",
       "bed",
       "bathroom",
@@ -94,13 +95,22 @@ class Basement extends HomeSpace {
   }
   getSlaves(): Person[] {
     return Variables().slaves.filter(
-      (slave: Person) => slave.location == "basement"
+      (slave: Person) => (slave.location == "basement")
     );
   }
   deleteSlave(slave: Person) {
     let slaves: Person[] = Variables().slaves;
     let index = slaves.indexOf(slave);
     if (index != -1) slaves.splice(index, 1);
+  }
+}
+class TortRafters extends HomeSpace {
+  muffleBase: number = 90;
+  passageName: string = "tortRafters";
+  getSlaves(): Person[] {
+    return Variables().slaves.filter(
+      (slave: Person) => (slave.location == "tortRafters")
+    );
   }
 }
 class MainRoom extends HomeSpace {

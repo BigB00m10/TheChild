@@ -7,7 +7,7 @@
 $npc.name is a <<- Person.getLongDescription()>>.
 You approach $npc.pronoun.
 <<npcStats>>
-<<if $npc.fear gt 90>>\
+<<if $npc.fear gt 90>>\  /*&& $npc.location != "tortRafters">>\*/
     $npc.GenPronoun <<thirdPerson "walks" "walk">> back scared and wodering what you will do to $npc.pronoun.
 <<elseif $npc.hasPenis && ($npc.lust gte 80 || ($npc.uniqueness.naughty && $npc.lust gte 30)) && $npc.fear lt 25>>\
     $npc.GenPronoun <<thirdPerson "looks" "look">> at you with expectancy. <<if $npc.haveClothes>>@@color:deeppink;You can see a bump in $npc.possessive pants@@.<<else>>@@color:deeppink;$npc.genPronoun<<thirdPerson "'s" "'re">> already erect@@. <<emoji ❤>><</if>>

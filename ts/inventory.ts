@@ -85,8 +85,21 @@ class Inventory {
   moveByName(itemName: string, destination: Inventory): void {
     let item = this.get(itemName);
     if (item === null) return;
-    destination.add(item);
-    this.items.delete(item);
+  }
+  //Moves some of an item from this inventory to another, optionally leaving some behind
+  moveByNameAndCount(itemName: string, count: number, destination: Inventory): void {
+    let item = this.get(itemName);
+    if (item === null) return;
+    if (count >= item.count) {
+      //Moving all items
+      destination.add(item);
+      this.items.delete(item);
+    } else {
+      let newItem = {...item};
+      newItem.count = count;
+      item.count -= count;
+      destination.add(item);
+    }
   }
   //Remove all items in this inventory
   clear(): void {
@@ -174,6 +187,12 @@ class OnlineStore {
       price: 20,
       available: 1,
       tags: new Set(["player", "wearable", "cooking", "clothes", "unsellable"]),
+    }),
+    new Product({
+      name: "Rope",
+      description: "A stong sturdy rope",
+      price: 20,
+      tags: new Set(["player", "sex", "toy"]),
     }),
   ];
   bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)

@@ -1,15 +1,15 @@
-:: DarkStore {"position":"675,950"}
+:: DarkStore {"position":"400,975"}
 <<scenery deepweb>>
 <<unlessEmergency>>\
     /*<<keyOption [[Buy a child|DarkStore]] 🧑‍💻>>*/\
     /*<<keyOption [[Buy torture object|DarkStore]] ⛓️>>*/\
     /*<<keyOption [[Buy a vehicle|DarkStore]] 🚗>>*/\
     <<keyOption [[Sell a child|sellchild]] 💸>>
-    <<keyOption [[Sell a dirty clothes|sellclothes]] 👙>>
-    <<keyOption [[Leave your dark web|pc]] 💻>>
+    <<keyOption [[Sell dirty clothes|sellclothes]] 👙>>
+    <<keyOption [[Leave the dark web|pc]] 💻>>
 <</unlessEmergency>>\
 
-:: sellchild {"position":"575,1100"}
+:: sellchild {"position":"250,925"}
 <<scenery deepweb>>
 Choose slave to sell:
 <<set
@@ -75,7 +75,7 @@ Choose slave to sell:
 <</for>>
 <<keyOption [[Go back|DarkStore]]>>
 
-:: sellclothes {"position":"700,1100"}
+:: sellclothes {"position":"250,1050"}
 <<scenery deepweb>>
 Choose item to sell:
 <<set
@@ -97,11 +97,16 @@ Choose item to sell:
             >>\
             <<dialog _dialogTitle>>\
                 Do you want to sell _item.name for ¤<<- _value>>?
-                <<button "✅ Yes, sell _item.name">>\
-                    <<cash _value>>\
-                    <<run Player.removeItem(_item.name)>>\
-                    <<goto DarkStore>>\
-                <</button>>\
+                <span id='spaceAct'>
+                    <<button "✅ (Space) Yes, sell _item.name">>\
+                        <<cash _value>>\
+                        <<run 
+                            Player.removeItem(_item.name);
+                            Engine.show();
+                            Dialog.close();
+                        >>\
+                    <</button>>\
+                </span>
                 <span id="escAct">\
                     <<button "🔙 (Esc) Go back">>\
                         <<run Dialog.close()>>\

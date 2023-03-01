@@ -1,4 +1,4 @@
-:: pc {"position":"825,950"}
+:: pc {"position":"550,975"}
 <<scenery pc>>
 welcome to your computer.
 <<unlessEmergency>>\
@@ -9,7 +9,7 @@ welcome to your computer.
     <<keyOption [[Tor Browser|DarkStore]] 🌐>>
     <<keyOption [[change your name|changenames]]  💬>>
 <</unlessEmergency>>\
-:: changenames {"position":"950,950"}
+:: changenames {"position":"675,975"}
 <<set _dialogTitle = 'Change ' + $player.name + " name to:";>>\
 <<dialog _dialogTitle>>\
     <<textbox '_newName' $player.name>>
@@ -33,14 +33,14 @@ welcome to your computer.
     <<run $(document).ready(function(){$('#textbox--newname').focus()})>>\
 <</dialog>>
 <<include pc>>
-:: watchPorn {"position":"950,1075"}
+:: watchPorn {"position":"575,1125"}
 <div style="width:320px;height:320px;border:1px solid #555"><img id="pornMovie"/></div>
 What movie do you want to masturbate to?
 <<for _movieName range PornMovie.names()>>
     <<print '<<keyAction "'+_movieName+'" 🎬>><<run PornMovie.show("'+_movieName+'")>><</keyAction>>'>>
 <</for>>
 <<keyOption [[cum|cumstop]] 💦>>
-:: cumstop {"position":"300,950"}
+:: cumstop {"position":"800,975"}
 <<addMinutes 30>>\
 <<if $player.hasPenis>>\
     <<scenery cumstop>>

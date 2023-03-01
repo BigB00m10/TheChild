@@ -46,7 +46,7 @@ class Inventory {
     let existing: Item = this.items.firstOrDefault(
       (i: Item) => i.name == item.name
     );
-    if (existing) existing.count += item.count;
+    if (existing) existing.count = (existing.count || 1) + (item.count || 1); // Add to existing item, taking into account that not all items have a count
     else this.items.push(new Item(item));
   }
   remove(item: Item, count: number = 1): void {
@@ -122,7 +122,7 @@ class OnlineStore {
       description:
         "Slippery lotion. Can be used for easier screwing, among other things<<emoji 😏>>",
       price: 15,
-      tags: new Set(["player", "sex"]),
+      tags: new Set(["player", "sex", "unsellable"]),
       available: 1,
     }),
     new Product({
@@ -138,6 +138,12 @@ class OnlineStore {
       tags: new Set(["player", "capture", "medicine"]),
       available: 20,
       soldOut: true, //Hidden product, for now
+    }),
+    new Product({
+      name: "Lactation pills",
+      description: "Got milk? Induces lactation (breasts reqiured)<<emoji 🥛>>.",
+      price: 30,
+      tags: new Set(["player", "consumable", "medicine"]),
     }),
     new Product({
       name: "Dildo",
@@ -159,7 +165,7 @@ class OnlineStore {
         "These hi-tec sunglasses detect subtle variations on people behavior and allows you to see more details about them.",
       price: 500,
       available: 1,
-      tags: new Set(["player", "wearable", "eyes", "tech", "cheat"]),
+      tags: new Set(["player", "wearable", "eyes", "tech", "cheat", "unsellable"]),
     }),
     new Product({
       name: "Cooking apron",
@@ -167,7 +173,7 @@ class OnlineStore {
         "Cute apron to give to a slave that you assigned as a cook. They will surely use it when cooking to protect their cute body, even if no other clothes are present<<emoji 👀>>",
       price: 20,
       available: 1,
-      tags: new Set(["player", "wearable", "cooking", "clothes"]),
+      tags: new Set(["player", "wearable", "cooking", "clothes", "unsellable"]),
     }),
   ];
   bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)

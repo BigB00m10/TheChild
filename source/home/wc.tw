@@ -23,7 +23,7 @@ You are currently standing in your wc.
 <<include wc>>\
 <<run
     if($player.hasPenis)
-        Player.getInventory().add({name:'Cum filled underwear',description:'Underwear that was filled with your cum',tags:['slave','wearable','clothes','playerPresent']});
+        Player.getInventory().add({name:'Cum filled underwear',description:'Underwear that was filled with your cum',count:1,tags:['slave','wearable','clothes','playerPresent']});
     else
-        Player.getInventory().add({name:'Love juice stained underwear',description:'Underwear that was stained with your love juice',tags:['slave','wearable','clothes','playerPresent']});
+        Player.getInventory().add({name:'Love juice stained underwear',description:'Underwear that was stained with your love juice',count:1,tags:['slave','wearable','clothes','playerPresent']});
 >>\

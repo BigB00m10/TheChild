@@ -4,7 +4,8 @@
     /*<<keyOption [[Buy a child|DarkStore]] 🧑‍💻>>*/\
     /*<<keyOption [[Buy torture object|DarkStore]] ⛓️>>*/\
     /*<<keyOption [[Buy a vehicle|DarkStore]] 🚗>>*/\
-    <<keyOption [[Sell a child|sellchild]] 💸>>
+    <<if $settings.slaveSelling>><<keyOption [[Sell a child|sellchild]] 💸>>
+    <</if>>\
     <<keyOption [[Sell dirty clothes|sellclothes]] 👙>>
     <<keyOption [[Leave the dark web|pc]] 💻>>
 <</unlessEmergency>>\

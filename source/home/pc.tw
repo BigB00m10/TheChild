@@ -41,7 +41,7 @@ What movie do you want to masturbate to?
 <</for>>
 <<keyOption [[cum|cumstop]] 💦>>
 :: cumstop {"position":"300,950"}
-<<addMinutes 30>>\
+<<addMinutes 30>><<run Player.manageEnergy(1)>>\
 <<if $player.hasPenis>>\
     <<scenery cumstop>>
 <<else>>\
@@ -49,7 +49,6 @@ What movie do you want to masturbate to?
 <</if>>\
 <<unlessEmergency>>\
     <<keyOption [[Leave computer|bed]] 💻>>
-    <<keyOption [[Shop online|onlineStore]] 🛒>>
-    <<keyOption [[change your name|changenames]] 💬>>
+    <<keyOption [[Do something else|pc]] 🔙>>
     <<sleepOption>>
 <</unlessEmergency>>\

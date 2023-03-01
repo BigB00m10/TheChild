@@ -31,6 +31,8 @@ abstract class Npc {
   gender: Gender;
   hasPussy: boolean;
   hasPenis: boolean;
+  hasBoobs: boolean;
+  lactating: boolean;
   lubricatedAss: boolean;
   lubricatedPussy: boolean;
   pussyTraining: number = 0;
@@ -95,8 +97,8 @@ abstract class Npc {
     if (!npc) npc = Variables().npc;
     npc.achievements.delete(achievement);
   }
-  getValue(): NpcValue {
-    let npc = Variables().npc as Npc;
+  getValue(npc?: Npc): NpcValue {
+    if (!npc) npc = Variables().npc;
     const maxNonVirgin = 1500;
     const maxFwPenalty = -0.75; //Maximum freedom wish penalty 75%
     let calcValue = (stat: number, ratio: number) =>
@@ -285,6 +287,7 @@ class Person extends Npc {
     person.age =
       Math.floor(Math.random() * (genGen.toAge - genGen.fromAge)) +
       genGen.fromAge;
+    person.hasBoobs = (person.sex == "female" || person.sex == "herm") && person.age >= 13;
     if (person.age < 6)
       person.freedomWish -= ((6 - person.age) / 6) * person.freedomWish;
     person.genitals = {

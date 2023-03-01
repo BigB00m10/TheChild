@@ -31,6 +31,8 @@ class Player {
   genitals: AllGenitals;
   hasPussy: boolean;
   hasPenis: boolean;
+  hasBoobs: boolean;
+  lactating: boolean;
   //The name of the hole where the player can be fucked by default (not sure if this will be used)
   sexHole: string;
   home: Home = Homes.smallUrban;
@@ -80,6 +82,7 @@ class Player {
       };
       player.hasPenis = true;
       player.hasPussy = false;
+      player.hasBoobs = false;
       player.sexHole = "ass";
     }
     if (sex == "female") {
@@ -90,6 +93,7 @@ class Player {
       };
       player.hasPenis = false;
       player.hasPussy = true;
+      player.hasBoobs = true;
       player.sexHole = "pussy";
     }
     if (sex == "herm") {
@@ -100,6 +104,7 @@ class Player {
       };
       player.hasPenis = true;
       player.hasPussy = true;
+      player.hasBoobs = true;
       player.sexHole = "pussy";
     }
   }

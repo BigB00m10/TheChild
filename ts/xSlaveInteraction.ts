@@ -3,7 +3,7 @@ let afterStrip = () =>
   window.Interactions.slave.options["pushDown"].next.strip.next;
 //Returns the options that are after putting penis in the mouth
 let afterPenToMouth = () =>
-  (window.Interactions.slave.options["penToMouth"].next as CallableFunction)();
+  (window.Interactions.slave.options['takeHead'].next.penToMouth.next as CallableFunction)();
 //returns the different options when cumming outside
 let cumOutsideOptions: NpcInteractionOptions = {
   cumBody: {
@@ -1219,7 +1219,6 @@ window.Interactions["slave"] = {
               minutesCost: 10,
               contents:
                 `You kiss your way down $npc.possessive neck and chest to $npc.possessive nipple. You suck it into your mouth and gently suckle. $npc.GenPronoun <<thirdPerson "arcs" "arc">> $npc.possessive back.<<npcStimulated>> Your tongue makes circles around $npc.possessive nipple<<if $npc.lactating>>, lapping up $npc.possessive delicious milk<</if>>.`,
-              npcStats: ["lust+20%"],
               npcStats: (npc) => {
                 let stats = ["fear-5", "lust+10%", "freedomWish-2"];
                 if (npc.lust >= 65 && npc.love > 50) stats = ["love+5"];
@@ -1677,7 +1676,7 @@ window.Interactions["slave"] = {
               <<if $npc.uniqueness.curious>>$npc.GenPronoun <<thirdPerson "studies" "study">> your boobs for a moment.<</if>>
               <<if $npc.mouthTraining lt 15>>\
                 $npc.GenPronoun clumsily <<thirdPerson "sucks" "suck">> your tit. <<if $npc.age gt 1>>"Ow! Less teeth and more tongue!" you say.<</if>> $npc.GenPronoun <<thirdPerson "is" "are">> a little rough<<if _willing>>, but $npc.genPronoun <<thirdPerson "has" "have">> the spirit<</if>>.
-              <<elseif $npc.mouthTrainin lt 30>>\
+              <<elseif $npc.mouthTraining lt 30>>\
                 $npc.GenPronoun <<thirdPerson "sucks" "suck">> your tit.
                 <<if _willing>>\
                   $npc.GenPronoun <<thirdPerson "is" "are">> not too bad.
@@ -1688,7 +1687,7 @@ window.Interactions["slave"] = {
                 $npc.GenPronoun <<if _willing>>skillfully <</if>><<thirdPerson "sucks" "suck">> your tit. $npc.GenPronoun <<thirdPerson "works" "work">> stimulates your nipple with $npc.possessive tongue<<if _willing>>, sending shivers down your spine.<<else>>. $npc.GenPronoun <<thirdPerson "is" "are">> pretty good, but you can tell $npc.genPronoun would be so much better if $npc.genPronoun put in the effort.<</if>>
               <</if>>\
               <<if $player.lactating>>\
-                $npc.GenPronoun <<if _willing>>hungerily <</if>><<thirdPerson "drinks" "drink">> your milk.
+                $npc.GenPronoun <<if _willing>>hungrily <</if>><<thirdPerson "drinks" "drink">> your milk.
                 <<if _willing>>\
                   <<npcSay "Mmm, delicious!">>
                 <<else>>\
@@ -1771,7 +1770,7 @@ window.Interactions["slave"] = {
       optionText: "👕 Give $npc.pronoun some clothes",
       contents: `<<if $npc.age lte 3>>\
           <<if $npc.uniqueness.naughty>>\
-            $npc.name stuggles and squirms but you manage to put clothes on $npc.pronoun.
+            $npc.name struggles and squirms but you manage to put clothes on $npc.pronoun.
           <<else>>
             You put clothes on $npc.name
           <</if>>

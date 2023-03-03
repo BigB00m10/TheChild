@@ -337,7 +337,7 @@ window.Interactions["slaveEventHunger"] = {
       <</if>>\
       <<if !_denied>>\
         <<if _willing>>\
-          $npc.name <<if $npc.uniqueness.shy>>timidley approaches and <</if>>climbs into your lap.\
+          $npc.name <<if $npc.uniqueness.shy>>timidly approaches and <</if>>climbs into your lap.\
           <<if $npc.uniqueness.curious>>$npc.GenPronoun <<thirdPerson "studies" "study">> your boobs for a moment.<</if>>\
           $npc.GenPronoun eagerly <<thirdPerson "finds" "find">> your nipple.
         <<else>>\
@@ -345,7 +345,7 @@ window.Interactions["slaveEventHunger"] = {
         <</if>>\
         <<if $npc.uniqueness.naughty || $npc.lust gt 60>>$npc.Possessive hand plays with your other boob.<</if>>\
         You run your hand through $npc.possessive $npc.hairColor $npc.hairStyle hair as you feed $npc.pronoun.\
-        <<if $npc.uniqueness.energetic || $npc.hunger gt 40 >>$npc.GenPronoun vigerously <<thirdPerson "sucks" "suck">> down your milk.<</if>>\
+        <<if $npc.uniqueness.energetic || $npc.hunger gt 40 >>$npc.GenPronoun vigorously <<thirdPerson "sucks" "suck">> down your milk.<</if>>\
         <<if _willing>>$npc.GenPronoun <<thirdPerson "hums" "hum" contentedly>> and <<thirdPerson "relaxes" "relax">> in your arms.<</if>>
       <</if>>
       `,

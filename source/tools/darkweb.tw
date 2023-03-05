@@ -74,7 +74,7 @@ Choose slave to sell:
                 <</dialog>><</link>></span>
     <</capture>>
 <</for>>
-<<keyOption [[Go back|DarkStore]]>>
+<<keyOption [[Go back|DarkStore]] 🔙>>
 
 :: sellclothes {"position":"250,1050"}
 <<scenery deepweb>>
@@ -117,5 +117,5 @@ Choose item to sell:
         </span>
     <</capture>>
 <</for>>
-<<keyOption [[Go back|DarkStore]]>>
+<<keyOption [[Go back|DarkStore]] 🔙>>
 

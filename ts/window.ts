@@ -180,12 +180,15 @@ $(document).on(":passageinit", () => {
       if (variables.achievements == undefined) variables.achievements = [];
       let onlineStore = variables.onlineStore as OnlineStore;
       if (onlineStore.products.length < window.OnlineStore.products.length)
-        for (
-          let productIndex = onlineStore.products.length;
+        for (//A new product was added to the backend class
+          let productIndex = 0;
           productIndex < window.OnlineStore.products.length;
           productIndex++
-        )
-          onlineStore.products.push(window.OnlineStore.products[productIndex]);
+        ) {//Find where the name doesn't match and insert the new products in the right position
+          let product = window.OnlineStore.products[productIndex];
+          if (onlineStore.products[productIndex].name != product.name)
+            onlineStore.products.splice(productIndex, 0, product);
+        }
       if (!onlineStore.version || onlineStore.version < 2) {
         onlineStore.products[2].description =
           window.OnlineStore.products[2].description;

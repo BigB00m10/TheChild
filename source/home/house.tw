@@ -19,8 +19,8 @@
         <<wanderingSlaves>>\
         <<slaveEvents BedRoom>>
         <<keyOption [[Leave your room|main]] 🚪>>
-        <<keyOption [[go to your computer|pc]] 💻>>
-        <<keyOption [[Your bathroom|bathroom]] 🛀>>
+        <<keyOption [[Open your computer|pc]] 💻>>
+        <<keyOption [[Bathroom|bathroom]] 🛀>>
         <<sleepOption>>
     <</unlessEmergency>>\
 <</if>>
@@ -40,10 +40,10 @@ You are currently standing in the middle of the main room of your house.
     <<keyOption [[Go outside|home]] 🚪>>
     <<keyOption [[The Basement|basement]] 🔒>>
     <<keyOption [[Your Bedroom|bed]] 🛌>>
-    <<keyOption [[Your garden|garden]] 🌺>>
-    <<keyOption [[Your kitchen|kitchen]] ☕>>
-    <<keyOption [[Your toilet|wc]] 🚽>>
-    <<keyOption [[Your bathroom|bathroom]] 🛀>>
+    <<keyOption [[Garden|garden]] 🌺>>
+    <<keyOption [[Kitchen|kitchen]] ☕>>
+    <<keyOption [[Toilet|wc]] 🚽>>
+    <<keyOption [[Bathroom|bathroom]] 🛀>>
 <</unlessEmergency>>\
 :: watchTv {"position":"875,825"}
 <<addMinutes 30>>\

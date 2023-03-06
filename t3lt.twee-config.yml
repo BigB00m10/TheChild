@@ -60,5 +60,11 @@ sugarcube-2:
       name: sleepOption
     npcStimulated:
       name: npcStimulated
-    slaveDemands:
-      name: slaveDemands
+    slaveEvents:
+      name: slaveEvents
+    printPersonLink:
+      name: printPersonLink
+    npcStats:
+      name: npcStats
+    showCookFeedingRules:
+      name: showCookFeedingRules

@@ -6,6 +6,7 @@ type NpcStatus =
   | "pet"
   | "servant"
   | "lover";
+type NpcEventType = "demand" | "ordinary";
 interface NpcValue {
   obedience: number;
   obedienceRatio: string;
@@ -55,7 +56,10 @@ abstract class Npc {
   freedomWish: number = 75;
   genitals: AllGenitals;
   status: NpcStatus = "citizen";
-  need: string;
+  //Name of the last event assigned to this NPC
+  event: string;
+  //Type of the last event
+  eventType: NpcEventType;
   //This property is not used anymore, it was to identify a slave using the index in the slave array.
   //Changes in the array caused problems easily so it was replaced with the uid property
   index: undefined;
@@ -65,6 +69,11 @@ abstract class Npc {
   punishments: string[] = [];
   //Where this NPC is located in the house or in the world, try to match up with the scenery name.
   location: string = "unknown";
+  inventory: Inventory;
+  getInventory(npc?: Npc): Inventory {
+    if (!npc) npc = Variables().npc;
+    return (npc.inventory = new Inventory(npc.inventory));
+  }
   hasAchievement(achievement: string, npc?: Npc): boolean {
     if (!npc) npc = Variables().npc;
     return npc.achievements.includes(achievement);
@@ -144,13 +153,13 @@ abstract class Npc {
     Variables().slaves.push(npc);
   }
   static updateLocations(currentDate: Date): void {
-    let variables = Variables();
+    const variables = Variables();
     if (!currentDate) currentDate = variables.now.date;
     //const sleepTime = window.Now.isBetween("10:00 PM", "7:00 AM", currentDate);
-    let homeSpaces = variables.player.home.spaces.filter(
+    const homeSpaces = variables.player.home.spaces.filter(
       (space: string) => space != "basement" && !space.startsWith("tort")
     );
-    const baseSeed = currentDate.getTime() - 1649048400000;
+    const baseSeed = currentDate.getTime() - 1649048400000; //Current date/time minus the start of the game
     variables.slaves.forEach((slave: Person) => {
       switch (slave.status) {
         case "home slave":
@@ -159,6 +168,30 @@ abstract class Npc {
             PseudoRandom.getSeed(baseSeed, slave.age, slave.name),
             homeSpaces
           );
+          break;
+        case "servant":
+          if (variables.settings.cook.npc != slave.uid) break;
+          let currentDate = window.Now.getCurrentDate();
+          for (const feedTimeString of variables.settings.cook.feedTimes) {
+            const currentTimeStamp = currentDate.getTime();
+            const feedTimeStamp = window.Now.dateFromTimeString(
+              feedTimeString,
+              currentDate
+            ).getTime();
+            if (
+              currentTimeStamp >= feedTimeStamp - 60 * 60 * 1000 &&
+              currentTimeStamp <= feedTimeStamp
+            ) {
+              currentDate = null;
+              slave.location = "kitchen";
+              break;
+            }
+          }
+          if (currentDate)
+            slave.location = PseudoRandom.either(
+              PseudoRandom.getSeed(baseSeed, slave.age, slave.name),
+              homeSpaces.filter((space: string) => space != "kitchen")
+            );
           break;
       }
     });
@@ -302,7 +335,7 @@ class Person extends Npc {
       .filter((keyName) => typeof uniqueness[keyName] == "boolean")
       .join(", ");
   }
-  getHomePersonName(word: string, npc?: Npc) {
+  getHomePersonName(word: string, npc?: Npc): string {
     if (!npc) npc = Variables().npc;
     if (word == "sibling") word = npc.sex == "male" ? "bro" : "sis";
     if (npc.age < 5) {
@@ -356,6 +389,16 @@ class Person extends Npc {
         return "female";
     }
     return word.includes("boy") ? "male" : "female";
+  }
+  getShortDescription(person?: Person, addTitle?: boolean): string {
+    if (!person) person = Variables().npc;
+    return `${person.name} (${person.age} y.o. ${
+      addTitle ? person.title + " " : ""
+    }${person.hairColor} hair)`;
+  }
+  getLongDescription(person?: Person): string {
+    if (!person) person = Variables().npc;
+    return `${person.age} year old ${person.skin} ${person.title} with ${person.hairLength} ${person.hairStyle} ${person.hairColor} hair and ${person.eyeColor} eyes`;
   }
 }
 interface GenderGeneration {

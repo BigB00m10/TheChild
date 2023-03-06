@@ -1,0 +1,41 @@
+:: DarkStore {"position":"425,700"}
+<<scenery deepweb>>
+<<unlessEmergency>>\
+    <<keyOption [[Buy a child|DarkStore]] 🧑‍💻>>
+    <<keyOption [[Buy torture object|DarkStore]] ⛓️>>
+    <<keyOption [[Buy a vehicle|DarkStore]] 🚗>>
+    <<keyOption [[Sell a child|sellchild]] 💸>>
+    <<keyOption [[Sell a dirty clothes|sellclothes]] 👙>>
+    <<keyOption [[Leave your dark web|pc]] 💻>>
+<</unlessEmergency>>\
+
+:: sellchild {"position":"600,1000"}
+<<set _dialogTitle = "$npc.name + 's value">>
+    <<dialog _dialogTitle>>
+        <span id="escAct">\
+            <<button "✅ Yes, sell $npc.pronoun">>
+                <<cash _value.total>>
+                <<goto DarkStore>>
+                <</button>>\
+            <<button "🔙 (Esc) Go back">>\
+            <<run Dialog.close()>>\
+            <</button>>\
+        </span>\
+    <</dialog>>
+    <<include DarkStore>>
+
+:: sellclothes
+    <<set _dialogTitle = "Sell dirty clothes">>
+    <<dialog _dialogTitle>>
+        <span id="escAct">\
+            <<button "✅ Yes, sell $npc.pronoun">>
+                <<cash _value.total>>
+                <<goto DarkStore>>
+                <</button>>\
+            <<button "❌ (Esc) No!!">>\
+            <<run Dialog.close()>>\
+            <</button>>\
+        </span>\
+    <</dialog>>
+    <<include DarkStore>>
+

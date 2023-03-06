@@ -9,7 +9,7 @@
     You are currently in your basement.
 <</if>>\
 <<unlessEmergency>>\
-    <<slaveDemands Basement>>
+    <<slaveEvents Basement>>
     <div class="row">\
         <div class="one-half column">\
             <<set _slaves = Basement.getSlaves()>>\
@@ -21,10 +21,11 @@
                         if(_charcode == 104) _charcode += 2; 
                         _char = String.fromCharCode(_charcode++);
                         _keyId = _char + "KeyAct";
+                        _action = "<<openNpcInteraction slave " + _slave.uid + ">>";
+                        _prefix = "(" + _char.toUpperCase() + ")"
                     >>\
                     <span @id="_keyId">\
-                        <<npcGenderSymbol _slave>>\
-                        <<print "<<link '(" + _char.toUpperCase() + ") _slave.name (_slave.age y.o. _slave.hairColor hair)'>><<openNpcInteraction slave " + _slave.uid + ">><</link>>">>
+                        <<printPersonLink _slave _action _prefix>>
                     </span>\
                 <</if>><</for>>\
             <</if>>\

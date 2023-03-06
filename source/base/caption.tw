@@ -3,7 +3,12 @@
 !<<- Now.getWeekDay()>>
 !!!<<- Now.getTime()>>
 ----
-$player.name
+$player.name <<link "[Inventory]">><<dialog "Player Inventory">>\
+    <<set _items = Player.getInventory().items>>\
+    <<for _item range _items>>\
+        <<-_item.count?_item.count+" ":"">>_item.name
+    <</for>><<unset _items>>\
+<</dialog>><</link>>
 <<if $cheat>>\
     <<link "+10k">>\
         <<set $player.cash += 10000;Engine.show()>>
@@ -25,19 +30,6 @@ Energy:<<if $cheat>>\
     $('#infiniteEnergy a').html("Make " + ($settings.infiniteEnergy ? "Finite" : "Infinite"));
 >><</link>></span><</if>>
 <<showmeter playerEnergy `$player.energy / 100`>>
-
-:: personProperties {"position":"1150,125","size":"200,100"}
-<<include npcStats>>
-location: $npc.location
-<<if $cheat>>\
-    Personality preset: $npc.uniqueness.name <<button change>><<set _dialogTitle = "Personality for " + $npc.name>><<dialog _dialogTitle>>\
-        <<for _presetIndex = 0; _presetIndex lt PersonUniquenessPresets.length; _presetIndex++>>\
-            <<set _preset = PersonUniquenessPresets[_presetIndex]>>\
-            <<print '<<button "_preset.name (' + Person.getPersonalityDescription(_preset) + ')">><<set $npc.uniqueness = PersonUniquenessPresets[' + _presetIndex + '];Dialog.close()>><</button>>'>>
-        <</for>>\
-    <</dialog>><</button>>
-    Characteristics: <<- Person.getPersonalityDescription($npc.uniqueness)>>
-<</if>>\
 :: StoryMenu {"position":"1025,125"}
 <<link "👨‍👩‍👧‍👦 Character stats">>
     <<dialog "Character stats">>
@@ -46,8 +38,8 @@ location: $npc.location
             <div class="eight columns" id="stats"><br></div>\
             <div class="four columns">\
                 <<for _slave range $slaves>>\
-                    <<npcGenderSymbol _slave>>\
-                    <<print "<<link '_slave.name (_slave.age y.o. _slave.hairColor hair)'>><<set $npc to " + _slave.uid + ">><<replace '#stats'>><<include personProperties>><</replace>><</link>>">>
+                    <<set _action to "<<replace '#stats'>><<personProperties " + _slave.uid + ">><</replace>>">>\
+                    <<printPersonLink _slave _action>><<unset _action>>
                 <</for>>\
             </div>\
         </div>\
@@ -96,16 +88,16 @@ location: $npc.location
                     </div>\
                 </div>\
                 <<button "Hair colors">>\
-                    <<userEditListVar "$settings.childGeneration.hairColors" "Edit hair colors">>
+                    <<userEditListVar "$settings.childGeneration.hairColors" "Edit hair colors" PersonGeneration.hairColors>>
                 <</button>>\
                 <<button "Hair styles">>\
-                    <<userEditListVar "$settings.childGeneration.hairStyles" "Edit hair styles">>
+                    <<userEditListVar "$settings.childGeneration.hairStyles" "Edit hair styles" PersonGeneration.hairStyles>>
                 <</button>>\
                 <<button "Eye colors">>\
-                    <<userEditListVar "$settings.childGeneration.eyeColors" "Edit eye colors">>
+                    <<userEditListVar "$settings.childGeneration.eyeColors" "Edit eye colors" PersonGeneration.eyeColors>>
                 <</button>>\
                 <<button "Skins">>\
-                    <<userEditListVar "$settings.childGeneration.skins" "Edit skins">>
+                    <<userEditListVar "$settings.childGeneration.skins" "Edit skins" PersonGeneration.skins>>
                 <</button>>\
             </div>\
             <input type="radio" name="configTabs" id="tab-tweaks">\
@@ -201,80 +193,21 @@ location: $npc.location
                         break
                 }
             })
-            $('#toggleEmoji').change(function() {
+            Player.bindSettingDom('toggleEmoji',$settings,'emoji',function(element){
                 var $emoji = $('.emoji')
-                if(this.checked)
+                if(element.checked)
                     $emoji.show()
                 else
                     $emoji.hide()
-                $settings.emoji = this.checked
-            }).prop('checked', $settings.emoji)
-            $('#toggleAnal').change(function() {
-                $settings.anal = this.checked
-            }).prop('checked', $settings.anal)
-            $('#toggleSlaveSell').change(function() {
-                $settings.slaveSelling = this.checked
-            }).prop('checked', $settings.slaveSelling)
-            $("#femalePercentSlider").on("input", function () {
-                $settings.childGeneration.femalePercentage = parseInt($(this).val())
-                $("#femalePercentDisplay").val($settings.childGeneration.femalePercentage)
-            }).val($settings.childGeneration.femalePercentage)
-            $("#hermPercentSlider").on("input", function () {
-                $settings.childGeneration.hermPercentage = parseInt($(this).val())
-                $("#hermPercentDisplay").val($settings.childGeneration.hermPercentage)
-            }).val($settings.childGeneration.hermPercentage)
-            var $femaleAgeFrom = $('#femaleAgeFrom')
-            var $femaleAgeTo = $('#femaleAgeTo')
-            var $maleAgeFrom = $('#maleAgeFrom')
-            var $maleAgeTo = $('#maleAgeTo')
-            var $hermAgeFrom = $('#hermAgeFrom')
-            var $hermAgeTo = $('#hermAgeTo')
-            $femaleAgeFrom.change(function(){
-                var toValue = parseInt($femaleAgeTo.val())
-                var $this = $(this)
-                var value = Math.min(toValue, parseInt($this.val()))
-                $this.val(value)
-                $settings.childGeneration.females.fromAge = value
-            }).val($settings.childGeneration.females.fromAge)
-            $femaleAgeTo.change(function(){
-                var fromValue = parseInt($femaleAgeFrom.val())
-                var $this = $(this)
-                var value = Math.max(fromValue, parseInt($this.val()))
-                $this.val(value)
-                $settings.childGeneration.females.toAge = value
-            }).val($settings.childGeneration.females.toAge)
-            $maleAgeFrom.change(function(){
-                var toValue = parseInt($maleAgeTo.val())
-                var $this = $(this)
-                var value = Math.min(toValue, parseInt($this.val()))
-                $this.val(value)
-                $settings.childGeneration.males.fromAge = value
-            }).val($settings.childGeneration.males.fromAge)
-            $maleAgeTo.change(function(){
-                var fromValue = parseInt($maleAgeFrom.val())
-                var $this = $(this)
-                var value = Math.max(fromValue, parseInt($this.val()))
-                $this.val(value)
-                $settings.childGeneration.males.toAge = value
-            }).val($settings.childGeneration.males.toAge)
-            $hermAgeFrom.change(function(){
-                var toValue = parseInt($hermAgeTo.val())
-                var $this = $(this)
-                var value = Math.min(toValue, parseInt($this.val()))
-                $this.val(value)
-                $settings.childGeneration.herms.fromAge = value
-            }).val($settings.childGeneration.herms.fromAge)
-            $hermAgeTo.change(function(){
-                var fromValue = parseInt($hermAgeFrom.val())
-                var $this = $(this)
-                var value = Math.max(fromValue, parseInt($this.val()))
-                $this.val(value)
-                $settings.childGeneration.herms.toAge = value
-            }).val($settings.childGeneration.herms.toAge)
-            var $lustDecCum = $('#lustDecCum')
-            $lustDecCum.change(function(){
-                $settings.lustDecCum = $(this).val();
-            }).val($settings.lustDecCum || 0)
+            })
+            Player.bindSettingDom('toggleAnal',$settings,'anal')
+            Player.bindSettingDom('toggleSlaveSell',$settings,'slaveSelling')
+            Player.bindSettingDom('femalePercentSlider',$settings.childGeneration,'femalePercentage',null,'femalePercentDisplay')
+            Player.bindSettingDom('hermPercentSlider',$settings.childGeneration,'hermPercentage',null,'hermPercentDisplay')
+            Player.bindRangeSettingsDom('femaleAge',$settings.childGeneration.females,'age')
+            Player.bindRangeSettingsDom('maleAge',$settings.childGeneration.males,'age')
+            Player.bindRangeSettingsDom('hermAge',$settings.childGeneration.herms,'age')
+            Player.bindSettingDom('lustDecCum',$settings,'lustDecCum')
         </script>\
     <</dialog>>\
 <</link>>

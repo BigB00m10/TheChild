@@ -10,7 +10,7 @@
     <<run $player.cash = Math.round(($player.cash + _args[0]) * 100) / 100
         ;_cashAction = _args[0] < 1 ? 'lost' : 'received'
         ;_cashColor = _args[0] < 1 ? 'red' : 'green'>>
-    @@color:_cashColor;You _cashAction ¤<<- _args[0].toFixed(2)>>@@
+    @@color:_cashColor;You _cashAction ¤<<- Math.abs(_args[0]).toFixed(2)>>@@
 <</widget>>
 <<widget workOption>>
     <<set _workEmoji = $player.gender != "boy" ? "👷‍♀️" : "👷‍♂️"; _workText = "Go to work" + (Now.isWeekend()?" (Optional)":"")>>
@@ -55,17 +55,119 @@
         <<button "✅ Save">>
             <<run eval(_args[0] + '=' + JSON.stringify(_newList.split(/\r?\n/)));Dialog.close()>>
         <</button>>
-        <span id="escAct">
-            <<button "❌ (Esc) Cancel">>
-                <<run Dialog.close()>>
-            <</button>>
-        </span>
+        <<if _args[2]>>
+            <<button "♻ Reset to default">><<set
+                _newList = eval(_args[2]).join('\n');
+                $('#textarea--newlist').val(_newList);  
+            >><</button>>
+        <</if>>
+        <span id="escAct"><<button "❌ (Esc) Cancel">>
+            <<run Dialog.close()>>
+        <</button>></span>
     <</dialog>>
 <</widget>>
 <<widget npcAddressPlayer>><<- Player.getAddressing(_args[0] || $npc)>><</widget>>
+<<widget npcStats>>
+    <<set _npc to _args[0] || $npc>>
+    <<if typeof _npc == 'number'>>
+        <<set _npc to Person.get(_npc)>>
+    <</if>>
+    <<run
+        ['love', 'obedience', 'lust', 'pussyTraining', 'anusTraining', 'mouthTraining'].forEach(function(name) {
+            Meter.del(name);
+            Meter.add(name, {
+                label: name.beautifyStat() + ':' + _npc[name],
+                height: '20px'
+            }, _npc[name] / 100);
+        });
+        ['freedomWish', 'hunger', 'fear'].forEach(function(name) {
+            Meter.del(name);
+            Meter.add(name, {
+                label: name.beautifyStat() + ':' + _npc[name],
+                height: '20px',
+                full: '#FF4136',
+                empty: '#2ECC40'
+            }, _npc[name] / 100);
+        });
+    >>
+    <div class="row">
+        <<if _npc.fear>>
+            <div class="one-third column">
+                <<showmeter fear>>
+            </div>
+        <</if>>
+        <<if _npc.love>>
+            <div class="one-third column">
+                <<showmeter love>>
+            </div>
+        <</if>>
+        <<if _npc.obedience>>
+            <div class="one-third column">
+                <<showmeter obedience>>
+            </div>
+        <</if>>
+    </div>
+    <div class="row">
+        <<if _npc.lust>>
+            <div class="one-third column">
+                <<showmeter lust>>
+            </div>
+        <</if>>
+        <<if _npc.freedomWish>>
+            <div class="one-third column">
+                <<showmeter freedomWish>>
+            </div>
+        <</if>>
+        <<if _npc.hunger>>
+            <div class="one-third column">
+                <<showmeter hunger>>
+            </div>
+        <</if>>
+    </div>
+    <div class="row">
+        <<if _npc.pussyTraining>>
+            <div class="one-third column">
+                <<showmeter pussyTraining>>
+            </div>
+        <</if>>
+        <<if _npc.anusTraining>>
+            <div class="one-third column">
+                <<showmeter anusTraining>>
+            </div>
+        <</if>>
+        <<if _npc.mouthTraining>>
+            <div class="one-third column">
+                <<showmeter mouthTraining>>
+            </div>
+        <</if>>
+    </div>
+    <<unset _npc>>
+<</widget>>
+<<widget personProperties>>
+    <<npcStats _args[0]>>
+    <<set _npc to _args[0] || $npc>>
+    <<if typeof _npc == 'number'>>
+        <<set _npc to Person.get(_npc)>>
+    <</if>>
+    location: _npc.location <<button "Go there" _npc.location>><<run Dialog.close()>><</button>><br>
+    <<if $cheat>>\
+        Personality preset: $npc.uniqueness.name <<button change>><<set _dialogTitle = "Personality for " + _npc.name>><<dialog _dialogTitle>>
+            <<for _presetIndex = 0; _presetIndex lt PersonUniquenessPresets.length; _presetIndex++>>
+                <<set _preset = PersonUniquenessPresets[_presetIndex]>>
+                <<print '<<button "_preset.name (' + Person.getPersonalityDescription(_preset) + ')">><<set _npc.uniqueness = PersonUniquenessPresets[' + _presetIndex + '];Dialog.close()>><</button>>'>>
+                <<unset _preset>>
+            <</for>>
+        <</dialog>><</button>><br>
+        Characteristics: <<- Person.getPersonalityDescription($npc.uniqueness)>>
+    <</if>>
+<</widget>>
 <<widget npcGenderSymbol>>
     <<set _genderSymbol = _args[0].sex == 'male' ? '♂' : _args[0].sex == 'female' ? '♀' : '⚤'>>
     <<emoji _genderSymbol>><<unset _genderSymbol>>
+<</widget>>
+<<widget printPersonLink>>
+    <<npcGenderSymbol _args[0]>>
+    <<print "<<link '" + (_args[2] ? _args[2] + ' ' : '') +  Person.getShortDescription(_args[0]) + "'>>" + _args[1] + "<</link>>">>
 <</widget>>
 <<widget wanderingSlaves>>
     <<set _wandering = Person.getWandering()>>
@@ -105,16 +207,12 @@
 <</widget>>
 <<widget personHunting>>
     <<set $found_kid = Person.generate($settings.childGeneration)>>
-    You found a $found_kid.age year old $found_kid.skin $found_kid.title with $found_kid.hairLength $found_kid.hairStyle $found_kid.hairColor hair 
-    and $found_kid.eyeColor eyes named $found_kid.name<br><br>
+    You found a <<- Person.getLongDescription($found_kid)>> named $found_kid.name<br><br>
     <<if Player.has('magic sunglasses')>>
         <label style="cursor:pointer"><<checkbox '$settings.usingMagicSunglasses' false true autocheck>> Put on magic sunglasses.<<emoji 😎>></label><br>
-        <<set 
-            _npcStatsStyle = $settings.usingMagicSunglasses ? '' : 'display:none';
-            $npc = $found_kid;
-        >>
+        <<set _npcStatsStyle = $settings.usingMagicSunglasses ? '' : 'display:none'>>
         <span id='npcStats' @style='_npcStatsStyle'>
-            <<include npcStats>>
+            <<npcStats $found_kid>>
             Traits: <<- Person.getPersonalityDescription($found_kid.uniqueness)>><br>
         </span><br>
         <script>
@@ -162,10 +260,55 @@
 <<widget pronounIs>><<set _npc = _args[0] || $npc>>$npc.pronoun<<- $npc.gender != 'nb' ? "'s" : "'re">><</widget>>
 <<widget genPronounIs>><<set _npc = _args[0] || $npc>>$npc.genPronoun<<- $npc.gender != 'nb' ? "'s" : "'re">><</widget>>
 <<widget npcVerbIs>><<- $npc.gender != 'nb' ? 'is' : 'are'>><</widget>>
-<<widget slaveDemands>>
-    <<set _demandingSlaves = window[_args[0]].getDemandingSlaves()>>
-    <<set _demandIndex to 0>>
-    <<include slaveDemand>><<if _demandingSlaves.length>><br><</if>>
+<<widget slaveEvents>>
+    <<set _eventSlaves = window[_args[0]].getEventSlaves()>>
+    <<set _eventIndex to 0>>
+    <<include slaveEvent>><<if _eventSlaves.length>><br><</if>>
+<</widget>>
+<<widget showCookFeedingRules>>
+    <<dialog "Cook feeding rules">>
+        <label><input type="checkbox" id="feedEnabled">Feed all the slaves that have at least </label><input type="number" id="feedAtHunger" style="width:3em" min="1" max="100">hunger.<br>
+        Those slaves will be fed at 7AM, 1PM and 7PM<br>
+        <div class="row">
+            <div class="one-half column">
+                Special cases:<br>
+                <span id="exceptionList"><<include cookFeedExceptions>></span>
+                <br><button id="addExceptionBtn">Add exception</button>
+            </div><div class="one-half column" id="exceptionEditor"></div>
+        </div>
+        <<done>><<run
+            Player.bindSettingDom('feedEnabled',$settings.cook,'feedEnabled');
+            Player.bindSettingDom('feedAtHunger',$settings.cook,'feedAtHunger');
+            $('#addExceptionBtn').on('click',function(){
+                var exceptionEditor = $('#exceptionEditor').html('<h3>New exception</h3>\
+                    Slave:\
+                    <select id="exceptionSlaveSelect" style="width:100%"></select>\
+                    <label><input type="checkbox" id="exceptionFeedEnabled" checked>Feed this the slave when they have at least </label><input type="number" id="exceptionFeedAtHunger" style="width:3em" min="1" max="100" value="20">hunger.\
+                    <br><button id="saveExceptionBtn">Save</button>');
+                var exceptionSlaveSelect = $('#exceptionSlaveSelect').select2({
+                    placeholder:"Select slave...",
+                    dropdownParent:exceptionEditor,
+                    data:$slaves.filter(function(slave) {
+                        return !$settings.cook.exceptions.find(function(ex){ return ex.npc == slave.uid; });
+                    }).map(function(slave){return {
+                        id: slave.uid,
+                        text: Person.getShortDescription(slave, true)
+                    }})
+                }).val(null).trigger('change');
+                $('#saveExceptionBtn').on('click',function(){
+                    var slaveId=exceptionSlaveSelect.val();
+                    if(!slaveId)return;
+                    $settings.cook.exceptions.push({
+                        npc:slaveId,
+                        feedEnabled:$('#exceptionFeedEnabled').is(':checked'),
+                        feedAtHunger:$('#exceptionFeedAtHunger').val()
+                    });
+                    exceptionEditor.html('');
+                    $('#exceptionList').html('').wiki('<<include cookFeedExceptions>>');
+                });
+            });
+        >><</done>>
+    <</dialog>>
 <</widget>>
 :: workOption {"position":"875,0"}
 <<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\

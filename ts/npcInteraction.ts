@@ -77,6 +77,7 @@ interface NpcInteraction {
   timeIncreaseNpcHunger?: boolean | undefined;
   //If the option is not available it will still show, unlinked and with the specified string between brackets and parsed as Sugarcube markup.
   //A condition on the npc for showing the option can be prepended using '=>' as a separator.
+  //Update 0.1.11.6: If no condition is specified canBeShown will be used as a condition instead, if it exists.
   //Example: "hasPussy=>Love $npc.love/50, Hunger $npc.hunger/30" to show "[Love 10/50, Hunger 20/30]" if NPC has a pussy.
   showDisabled?: string;
 }
@@ -316,7 +317,7 @@ Macro.add("npcInteraction", {
         result += "@@\n";
       }
     }
-    if (interaction && showNpcStats) result += "<<include npcStats>>\n";
+    if (interaction && showNpcStats) result += "<<npcStats>>\n";
     let baseRoute =
       interaction && interaction.baseRoute
         ? interaction.baseRoute(npc)
@@ -335,7 +336,7 @@ Macro.add("npcInteraction", {
               let components = disabledText.split("=>");
               if (!checkCondition("npc", components[0])) continue;
               disabledText = components[1];
-            }
+            } else if (option.canBeShown && !option.canBeShown()) continue;
             let optionText = option.optionText
               .replace(/'/g, "\\'")
               .replace(/"/g, "&quot;");

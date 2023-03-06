@@ -41,16 +41,16 @@ class UniquenessTables {
         default: "$npc.name smiles at you and blushes a little<<emoji 😊>>",
         shy: "$npc.name is blushes a lot while showing a mild smile<<emoji 🙂>>",
         energetic: `say:<<npcAddressPlayer>>!!
-        $npc.GenPronoun says with a big smile as $npc.pronoun jumps on you.`, //say: is a shortcut to <<npcSay>> widget using the rest of the line as input
+        $npc.GenPronoun say<<thirdPersonVerb>> with a big smile as $npc.pronoun jumps on you.`, //say: is a shortcut to <<npcSay>> widget using the rest of the line as input
       },
       {
         //lust80 (adding condition:"lust80" field would also do the same)
         default:
           "$npc.name doesn't answer and stretches out $npc.possessive hands towards your $player.genitals.all while making toddler sounds.",
         shy: `say:...
-        ($npc.GenPronoun blushes while $npc.possessive eyes keep looking between your legs.)`,
+        ($npc.GenPronoun blush<<thirdPersonVerbPlural>> while $npc.possessive eyes keep looking between your legs.)`,
         energetic: `say:<<npcAddressPlayer>>!!
-        $npc.GenPronoun says smiling while rubbing $npc.possessive $npc.genitals.all.`,
+        $npc.GenPronoun say<<thirdPersonVerb>> smiling while rubbing $npc.possessive $npc.genitals.all.`,
       },
     ],
     [
@@ -103,7 +103,7 @@ class UniquenessTables {
         default: "say:I'm horny...Can we have sex? <<emoji 😛>>",
         shy: "=age5",
         energetic: `$npc.name comes closer to you and says "I'm ready anytime<<emoji 😛>>".
-        $npc.GenPronoun touches you gently while drooling a little bit<<emoji 🤤>>`,
+        $npc.GenPronoun touch<<thirdPersonVerbPlural>> you gently while drooling a little bit<<emoji 🤤>>`,
       },
     ],
   ];
@@ -113,51 +113,52 @@ class UniquenessTables {
       0,
       {
         default: `You grab $npc.name on your arms and give $npc.pronoun a tight loving hug<<emoji 🥰>>
-          The baby feels pretty warm on your body.<<set _addLove=5>>`,
+          The baby feels pretty warm on your body.`,
+        stats: ["love+5"],
       },
     ],
     [
       1,
       {
         //default
-        default: `You open your arms to embrace $npc.name in a hug, $npc.GenPronoun doesn't seem to care either way, simply allowing you to hug $npc.pronoun. $npc.GenPronoun is almost limp in your embrace, offering little reaction.`,
+        default: `You open your arms to embrace $npc.name in a hug, $npc.GenPronoun doesn't seem to care either way, simply allowing you to hug $npc.pronoun. $npc.GenPronoun <<npcVerbIs>> almost limp in your embrace, offering little reaction.`,
         stats: ["love+1"],
       },
       {
         //fear40
         default:
-          "You open your arms to embrace $npc.name in a hug, $npc.genPronoun takes a fearful step back but doesn't attempt to move away from you. You embrace $npc.pronoun in a hug. You can tell <<genPronounIs>> is a bit uneasy.",
+          "You open your arms to embrace $npc.name in a hug, $npc.genPronoun take<<thirdPersonVerb>> a fearful step back but doesn't attempt to move away from you. You embrace $npc.pronoun in a hug. You can tell <<genPronounIs>> is a bit uneasy.",
         stats: ["fear-5"],
       },
       {
         //love40
-        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun doesn't seem to mind. You can feel $npc.possessive warmth, and you even feel $npc.possessive arms gently returning the hug.`,
+        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun do<<thirdPersonVerbPlural>>n't seem to mind. You can feel $npc.possessive warmth, and you even feel $npc.possessive arms gently returning the hug.`,
         stats: ["love+5", "fear-5"],
       },
       {
         //love60
-        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun smiles at you and throws $npc.possessive arms around you and squeezes you tightly. You gently rock back and forth holding $npc.pronoun contentedly.`,
-        naughty: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun smiles at you and throws $npc.possessive arms around you and squeezes you tightly. You feel $npc.possessive hand slide down your chest, and grope you before quickly returning to the hug. $npc.name's naughtiness makes you <<- $player.hasPenis?'hard':'wet'>>. 'Such a naughty little thing' you think as you smirk at $npc.pronoun.`,
+        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun smile<<thirdPersonVerb>> at you and throws $npc.possessive arms around you and squeezes you tightly. You gently rock back and forth holding $npc.pronoun contentedly.`,
+        naughty: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun smile<<thirdPersonVerb>> at you and throws $npc.possessive arms around you and squeezes you tightly. You feel $npc.possessive hand slide down your chest, and grope you before quickly returning to the hug. $npc.name's naughtiness makes you <<- $player.hasPenis?'hard':'wet'>>. 'Such a naughty little thing' you think as you smirk at $npc.pronoun.`,
         stats: ["love+20%", "fear-10", "freedomWish-10"],
       },
       {
         //love80
-        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun doesn't give you time to fully open your arms before $npc.genPronoun has squirmed $npc.possessive way into your embrace, squeezing you as hard as $npc.genPronoun can. $npc.GenPronoun hums happily as $npc.genPronoun squeezes you.
+        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun do<<thirdPersonVerbPlural>>n't give you time to fully open your arms before $npc.genPronoun has squirmed $npc.possessive way into your embrace, squeezing you as hard as $npc.genPronoun can. $npc.GenPronoun hum<<thirdPersonVerb>> happily as $npc.genPronoun squeezes you.
 
-        "I love you, <<npcAddressPlayer>>!" $npc.GenPronoun says as $npc.genPronoun nuzzles your chest.`,
-        naughty: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun doesn't give you time to fully open your arms before $npc.genPronoun has squirmed $npc.possessive way into your embrace, squeezing you as hard as $npc.genPronoun can. $npc.GenPronoun hums happily as $npc.genPronoun squeezes you. $npc.GenPronoun takes hold of your arm and gently pulls it down, guiding your hand down between $npc.possessive legs, the look on $npc.possessive face is lewd and excited. $npc.GenPronoun is oh so naughty.`,
+        "I love you, <<npcAddressPlayer>>!" $npc.GenPronoun say<<thirdPersonVerb>> as $npc.genPronoun nuzzle<<thirdPersonVerb>> your chest.`,
+        naughty: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun do<<thirdPersonVerbPlural>>n't give you time to fully open your arms before $npc.genPronoun has squirmed $npc.possessive way into your embrace, squeezing you as hard as $npc.genPronoun can. $npc.GenPronoun hum<<thirdPersonVerb>> happily as $npc.genPronoun squeeze<<thirdPersonVerb>> you. $npc.GenPronoun take<<thirdPersonVerb>> hold of your arm and gently pulls it down, guiding your hand down between $npc.possessive legs, the look on $npc.possessive face is lewd and excited. $npc.GenPronoun <<npcVerbIs>> oh so naughty.`,
         stats: ["love+20%", "fear-10", "freedomWish-20"],
       },
       {
         //fear60
         default:
-          "You open your arms to embrace $npc.name in a hug, but $npc.genPronoun pushes against you trying to stop the embrace. You can feel them trembling with fear within your arms.",
+          "You open your arms to embrace $npc.name in a hug, but $npc.genPronoun push<<thirdPersonVerbPlural>> against you trying to stop the embrace. You can feel them trembling with fear within your arms.",
         stats: ["fear-1"],
       },
       {
         //fear80
         default:
-          "You open your arms to embrace $npc.name in a hug, but $npc.GenPronoun is so terrified of you $npc.genPronoun immediately starts crying and backing away, looking for an escape. You enclose $npc.pronoun in your embrace anyway, trying to make $npc.pronoun feel loved. $npc.GenPronoun squirms and yells in a desperate attempt to escape your hold, pushing and pressing every which way trying to escape; tears run down $npc.possessive face as $npc.genPronoun cries.",
+          "You open your arms to embrace $npc.name in a hug, but $npc.GenPronoun <<npcVerbIs>> so terrified of you $npc.genPronoun immediately start<<thirdPersonVerb>> crying and backing away, looking for an escape. You enclose $npc.pronoun in your embrace anyway, trying to make $npc.pronoun feel loved. $npc.GenPronoun squirm<<thirdPersonVerb>> and yells in a desperate attempt to escape your hold, pushing and pressing every which way trying to escape; tears run down $npc.possessive face as $npc.genPronoun cr<<- $npc.gender != 'nb' ? 'ies' : 'y'>>.",
         stats: ["freedomWish+10"],
       },
     ],

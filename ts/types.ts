@@ -4,10 +4,10 @@ type Sex = "male" | "female" | "herm";
 type Gender = "boy" | "girl" | "nb";
 type Genitals = "cunny" | "pussy" | "penis" | "dick";
 type AllGenitals = {
-  "male": Genitals
-  "female": Genitals
-  "all": string
-}
+  male: Genitals;
+  female: Genitals;
+  all: string;
+};
 interface Home {
   name: string;
   rent: number;
@@ -70,14 +70,13 @@ class Player {
   }
   //Use this to change the player's sex.
   setSex(sex: Sex, player?: Player) {
-    if(!player)
-      player = Variables().player as Player;
+    if (!player) player = Variables().player as Player;
     player.sex = sex;
     if (sex == "male") {
       player.genitals = {
-        "male": "dick",
-        "female": null,
-        "all": "dick"
+        male: "dick",
+        female: null,
+        all: "dick",
       };
       player.hasPenis = true;
       player.hasPussy = false;
@@ -85,9 +84,9 @@ class Player {
     }
     if (sex == "female") {
       player.genitals = {
-        "male": null,
-        "female": "pussy",
-        "all": "pussy"
+        male: null,
+        female: "pussy",
+        all: "pussy",
       };
       player.hasPenis = false;
       player.hasPussy = true;
@@ -95,9 +94,9 @@ class Player {
     }
     if (sex == "herm") {
       player.genitals = {
-        "male": "dick",
-        "female": "pussy",
-        "all": "dick and pussy"
+        male: "dick",
+        female: "pussy",
+        all: "dick and pussy",
       };
       player.hasPenis = true;
       player.hasPussy = true;
@@ -127,6 +126,85 @@ class Player {
     if (npc.status == "slave") return result;
     var specific = $addressing[npc.status];
     return specific ? specific : result;
+  }
+  //Bind a HTML DOM element with a property. So that when the element value is changed the property changes too and the other way around.
+  //Parameters:
+  //id: ID of the HTML element that will be bind to the variable
+  //parentVariable: The parent variable or source property that contains the target property
+  //propertyName: The name of the target property in the parent variable
+  //onChanged: (optional, default:null) Extra function to execute when the element value is changed. If this function returns a value, that value will be used instead of the element's value.
+  //displayId: (optional) Only for range elements. It will apply the range value to the input with the specified id. So the player can see its current value.
+  bindSettingDom(
+    id: string,
+    parentVariable: object,
+    propertyName: string,
+    onChanged: (element: HTMLElement) => any,
+    displayId: string
+  ): void {
+    let $element = $("#" + id);
+    switch ($element.attr("type")) {
+      case "checkbox":
+        $element
+          .on("change", function () {
+            if (onChanged) parentVariable[propertyName] = onChanged(this);
+            if (!onChanged || parentVariable[propertyName] === undefined)
+              parentVariable[propertyName] = (<HTMLInputElement>this).checked;
+          })
+          .prop("checked", parentVariable[propertyName]);
+        break;
+      case "range":
+        $element
+          .on("input", function () {
+            if (onChanged) parentVariable[propertyName] = onChanged(this);
+            if (!onChanged || parentVariable[propertyName] === undefined)
+              parentVariable[propertyName] = parseInt(
+                (<HTMLInputElement>this).value
+              );
+            if (displayId) $("#" + displayId).val(parentVariable[propertyName]);
+          })
+          .val(parentVariable[propertyName] || 0);
+        break;
+      case "number":
+        $element
+          .on("change", function () {
+            if (onChanged) parentVariable[propertyName] = onChanged(this);
+            if (!onChanged || parentVariable[propertyName] === undefined)
+              parentVariable[propertyName] = $(this).val();
+          })
+          .val(parentVariable[propertyName] || 0);
+        break;
+    }
+  }
+  //Bind a pair of HTML DOM elements indicating a range with their respective properties of a variable. So that when the element value is changed the property changes too and the other way around.
+  //Parameters:
+  //elementIdBase: Used to get the id of the HTML elements. "From" and "To" will be appended to get the two element's IDs
+  //parentVariable: The variable that contains the from and to properties to bind.
+  //propertyBaseName: Used to get the name of the properties. The first letter will be uppercase'd, and "from" and "to" will be prepended to get the two property names.
+  bindRangeSettingsDom(
+    elementIdBase: string,
+    parentVariable: object,
+    propertyBaseName: string
+  ): void {
+    let $from = $("#" + elementIdBase + "From");
+    let $to = $("#" + elementIdBase + "To");
+    $from
+      .on("change", function () {
+        let toValue = parseInt(<string>$to.val());
+        let $this = $(this);
+        let value = Math.min(toValue, parseInt(<string>$this.val()));
+        $this.val(value);
+        parentVariable["from" + propertyBaseName.toUpperFirst()] = value;
+      })
+      .val(parentVariable["from" + propertyBaseName.toUpperFirst()]);
+    $to
+      .on("change", function () {
+        let fromValue = parseInt(<string>$from.val());
+        let $this = $(this);
+        let value = Math.max(fromValue, parseInt(<string>$this.val()));
+        $this.val(value);
+        parentVariable["to" + propertyBaseName.toUpperFirst()] = value;
+      })
+      .val(parentVariable["to" + propertyBaseName.toUpperFirst()]);
   }
 }
 /* Snippet to hook an event to an object. Might be useful someday.

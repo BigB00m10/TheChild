@@ -4,7 +4,8 @@ You are currently standing in your bathroom.
 <<unlessEmergency>>\
     <<wanderingSlaves>>\
     <<slaveEvents BathRoom>>
-    <<keyOption [[Leave your bathroom|main]] 🚪>>
+    <<keyOption [[Go to the main room|main]] 🚪>>
+    <<keyOption [[Go to the bedroom|bed]] 🛌>>
     <<keyAction 'Take a shower' 🛀>><<addHours 1>><<run Engine.show()>><</keyAction>>: 1 hour
     <<sleepOption>>
 <</unlessEmergency>>\

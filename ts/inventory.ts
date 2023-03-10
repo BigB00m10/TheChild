@@ -85,21 +85,8 @@ class Inventory {
   moveByName(itemName: string, destination: Inventory): void {
     let item = this.get(itemName);
     if (item === null) return;
-  }
-  //Moves some of an item from this inventory to another, optionally leaving some behind
-  moveByNameAndCount(itemName: string, count: number, destination: Inventory): void {
-    let item = this.get(itemName);
-    if (item === null) return;
-    if (count >= item.count) {
-      //Moving all items
-      destination.add(item);
-      this.items.delete(item);
-    } else {
-      let newItem = {...item};
-      newItem.count = count;
-      item.count -= count;
-      destination.add(item);
-    }
+    destination.add(item);
+    this.items.delete(item);
   }
   //Remove all items in this inventory
   clear(): void {

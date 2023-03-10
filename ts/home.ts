@@ -95,7 +95,7 @@ class Basement extends HomeSpace {
   }
   getSlaves(): Person[] {
     return Variables().slaves.filter(
-      (slave: Person) => (slave.location == "basement")
+      (slave: Person) => slave.location == "basement"
     );
   }
   deleteSlave(slave: Person) {

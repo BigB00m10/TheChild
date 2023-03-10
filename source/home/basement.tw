@@ -31,9 +31,7 @@
             <</if>>\
         </div>\
         <div class="one-half column">\
-            <<set
-                _availableBeds to Basement.availableBeds();
-            >>\
+            <<set _availableBeds to Basement.availableBeds()>>
             <<if _availableBeds <= 0>>\
                 There's no more room for more slaves. You need to buy Mattresses if you want more.
             <<else>>\

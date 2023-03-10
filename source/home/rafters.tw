@@ -10,8 +10,8 @@ You are currently in the corner of your basement where you suspend slaves from t
                 Approach slave:
                 <<set _charcode = 97>>\
                 <<for _slave range _slaves>><<if _slave.location == 'tortRafters'>>\
-                    <<set 
-                        if(_charcode == 104) _charcode += 2; 
+                    <<set
+                        if(_charcode == 104) _charcode += 2;
                         _char = String.fromCharCode(_charcode++);
                         _keyId = _char + "KeyAct";
                         _action = "<<openNpcInteraction slave " + _slave.uid + ">>";

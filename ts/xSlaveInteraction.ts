@@ -3,7 +3,10 @@ let afterStrip = () =>
   window.Interactions.slave.options["pushDown"].next.strip.next;
 //Returns the options that are after putting penis in the mouth
 let afterPenToMouth = () =>
-  (window.Interactions.slave.options["takeHead"].next["penToMouth"].next as CallableFunction)();
+  (
+    window.Interactions.slave.options["takeHead"].next.penToMouth
+      .next as CallableFunction
+  )();
 //returns the different options when cumming outside
 let cumOutsideOptions: NpcInteractionOptions = {
   cumBody: {
@@ -1210,8 +1213,7 @@ window.Interactions["slave"] = {
               npcRequirements: ["hasBoobs"],
               optionText: "🍈🍈 Fondle $npc.possessive boobs.",
               minutesCost: 5,
-              contents:
-                `You bring your hands up to $npc.possessive beautiful melons and softly rub them, your thumbs brushing $npc.possessive nipples.`,
+              contents: `You bring your hands up to $npc.possessive beautiful melons and softly rub them, your thumbs brushing $npc.possessive nipples.`,
               npcStats: ["fear-5", "lust+10%"],
               next: afterStrip,
             },
@@ -1219,9 +1221,7 @@ window.Interactions["slave"] = {
               npcRequirements: ["hasBoobs"],
               optionText: "🍈🍈👄 Suck $npc.possessive boobs.",
               minutesCost: 10,
-              contents:
-                `You kiss your way down $npc.possessive neck and chest to $npc.possessive nipple. You suck it into your mouth and gently suckle. $npc.GenPronoun <<thirdPerson "arcs" "arc">> $npc.possessive back.<<npcStimulated>> Your tongue makes circles around $npc.possessive nipple<<if $npc.lactating>>, lapping up $npc.possessive delicious milk<</if>>.`,
-              npcStats: ["lust+20%"],
+              contents: `You kiss your way down $npc.possessive neck and chest to $npc.possessive nipple. You suck it into your mouth and gently suckle. $npc.GenPronoun <<thirdPerson "arcs" "arc">> $npc.possessive back.<<npcStimulated>> Your tongue makes circles around $npc.possessive nipple<<if $npc.lactating>>, lapping up $npc.possessive delicious milk<</if>>.`,
               npcStats: (npc) => {
                 let stats = ["fear-5", "lust+10%", "freedomWish-2"];
                 if (npc.lust >= 65 && npc.love > 50) stats = ["love+5"];
@@ -1463,8 +1463,8 @@ window.Interactions["slave"] = {
                 },
                 next: () =>
                   (
-                    window.Interactions.slave.options["askLickPus"]
-                      .next as CallableFunction
+                    window.Interactions.slave.options["takeHead"].next
+                      .askLickPus.next as CallableFunction
                   )(),
               },
               punish: thisPunish,
@@ -1515,7 +1515,8 @@ window.Interactions["slave"] = {
             };
             Object.assign(thisPunish, punishment);
             Variables().punishReason = "refusing your request";
-            thisPunish.canBeShown = () => !Temporary().okBj || Temporary().refused;
+            thisPunish.canBeShown = () =>
+              !Temporary().okBj || Temporary().refused;
             return {
               balls: {
                 canBeShown: () => Temporary().okBj,
@@ -1596,7 +1597,9 @@ window.Interactions["slave"] = {
                 npcStats(npc) {
                   let temp = Temporary();
                   if (temp.refused) return temp.okBj ? ["fear+5"] : ["fear+10"];
-                  return [npc.lust >= 80 ? "mouthTraining+20" : "mouthTraining+10"];
+                  return [
+                    npc.lust >= 80 ? "mouthTraining+20" : "mouthTraining+10",
+                  ];
                 },
                 next: afterPenToMouth,
               },
@@ -1644,7 +1647,7 @@ window.Interactions["slave"] = {
             } as NpcInteractionOptions;
           },
         },
-        askSuckBoobs:{
+        askSuckBoobs: {
           playerRequirements: ["hasBoobs"],
           optionText: "🍈 Ask $npc.pronoun to suck your tits.",
           minutesCost: 25,
@@ -1679,7 +1682,7 @@ window.Interactions["slave"] = {
               <<if $npc.uniqueness.curious>>$npc.GenPronoun <<thirdPerson "studies" "study">> your boobs for a moment.<</if>>
               <<if $npc.mouthTraining lt 15>>\
                 $npc.GenPronoun clumsily <<thirdPerson "sucks" "suck">> your tit. <<if $npc.age gt 1>>"Ow! Less teeth and more tongue!" you say.<</if>> $npc.GenPronoun <<thirdPerson "is" "are">> a little rough<<if _willing>>, but $npc.genPronoun <<thirdPerson "has" "have">> the spirit<</if>>.
-              <<elseif $npc.mouthTrainin lt 30>>\
+              <<elseif $npc.mouthTraining lt 30>>\
                 $npc.GenPronoun <<thirdPerson "sucks" "suck">> your tit.
                 <<if _willing>>\
                   $npc.GenPronoun <<thirdPerson "is" "are">> not too bad.
@@ -1690,7 +1693,7 @@ window.Interactions["slave"] = {
                 $npc.GenPronoun <<if _willing>>skillfully <</if>><<thirdPerson "sucks" "suck">> your tit. $npc.GenPronoun <<thirdPerson "works" "work">> stimulates your nipple with $npc.possessive tongue<<if _willing>>, sending shivers down your spine.<<else>>. $npc.GenPronoun <<thirdPerson "is" "are">> pretty good, but you can tell $npc.genPronoun would be so much better if $npc.genPronoun put in the effort.<</if>>
               <</if>>\
               <<if $player.lactating>>\
-                $npc.GenPronoun <<if _willing>>hungerily <</if>><<thirdPerson "drinks" "drink">> your milk.
+                $npc.GenPronoun <<if _willing>>hungrily <</if>><<thirdPerson "drinks" "drink">> your milk.
                 <<if _willing>>\
                   <<npcSay "Mmm, delicious!">>
                 <<else>>\
@@ -1725,7 +1728,8 @@ window.Interactions["slave"] = {
         },
         rubPenToSlaveFace: {
           playerRequirements: ["hasPenis"],
-          optionText: "😐🍆 Rub your $player.genitals.male on $npc.name's face.",
+          optionText:
+            "😐🍆 Rub your $player.genitals.male on $npc.name's face.",
           minutesCost: 10,
           contents: `You grab $npc.name's head and press it between your legs and start rubbing.
             $npc.Possessive nose and lips feel really good on your $player.genitals.male.
@@ -1741,7 +1745,8 @@ window.Interactions["slave"] = {
         },
         rubVagToSlaveFace: {
           playerRequirements: ["hasPussy"],
-          optionText: "😐🍆 Rub your $player.genitals.female on $npc.name's face.",
+          optionText:
+            "😐🍆 Rub your $player.genitals.female on $npc.name's face.",
           minutesCost: 10,
           contents: `You grab $npc.name's head and press it between your legs and start rubbing.
             $npc.Possessive nose and lips feel really good on your $player.genitals.female.
@@ -1759,7 +1764,7 @@ window.Interactions["slave"] = {
     },
     giveLactationPill: {
       inventoryRequirements: ["Lactation pills"],
-      npcRequirements: ["hasBoobs","!lactating"],
+      npcRequirements: ["hasBoobs", "!lactating"],
       optionText: "💊 Give $npc.pronoun a lactation pill.",
       contents: `You give $npc.name a lactation pill.
       <<run Player.removeItem("Lactation pills")>>
@@ -1774,7 +1779,7 @@ window.Interactions["slave"] = {
       optionText: "👕 Give $npc.pronoun some clothes",
       contents: `<<if $npc.age lte 3>>\
           <<if $npc.uniqueness.naughty>>\
-            $npc.name stuggles and squirms but you manage to put clothes on $npc.pronoun.
+            $npc.name struggles and squirms but you manage to put clothes on $npc.pronoun.
           <<else>>
             You put clothes on $npc.name
           <</if>>

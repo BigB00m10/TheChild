@@ -292,7 +292,7 @@ window.Interactions["slave"] = {
                   minutesCost: 20,
                   contents: `You push your dick against $npc.possessive $npc.genitals.female
                   <<if $npc.age gt 3 && ($npc.lust lt 30 || $npc.fear gte 40)>>\
-                    $npc.GenPronoun <<thirdPerson "panics" "panic">> <<emoji 😨>> as $npc.genPronoun <<thirdPerson "sees" "see">> your dick pressing against $npc.possessive private place.
+                    $npc.GenPronoun <<thirdPerson "panics" "panic">> <<emoji 😨>> as $npc.genPronoun <<if $npc.location=="tortRafters">><<thirdPerson "feels" "feel">><<else>><<thirdPerson "sees" "see">><</if>> your dick pressing against $npc.possessive private place.
                   <</if>>\
                   <<if $npc.aroused>>\
                     You can feel the moist on the tip of your dick.
@@ -322,7 +322,7 @@ window.Interactions["slave"] = {
                 "🍆 Push your dick into $npc.possessive $npc.genitals.female",
               contents: `You push your dick against $npc.possessive $npc.genitals.female
                 <<if $npc.age gt 3 && ($npc.lust lt 30 || $npc.fear gte 40)>>\
-                  $npc.GenPronoun <<thirdPerson "panics" "panic">> <<emoji 😨>> as $npc.genPronoun <<thirdPerson "sees" "see">> your dick pressing against $npc.possessive private place.
+                  $npc.GenPronoun <<thirdPerson "panics" "panic">> <<emoji 😨>> as $npc.genPronoun <<if $npc.location=="tortRafters">><<thirdPerson "feels" "feel">><<else>><<thirdPerson "sees" "see">><</if>> your dick pressing against $npc.possessive private place.
                 <</if>>\
                 <<if $npc.aroused>>\
                   You can feel the moist on the tip of your dick.
@@ -463,7 +463,7 @@ window.Interactions["slave"] = {
                       contents: `You thrust your dick into $npc.name's $npc.genitals.female. Making $npc.pronoun bounce with a fast pelvic piston movement.
                       <<run Player.manageEnergy(3)>>\
                       <<if $npc.pussyTraining lt 40>>\
-                        $npc.GenPronoun <<if $npc.age gt 0>><<thirdPerson "pushes" "push">> you while crying<<else>><<thirdPerson "cries" "cry">><</if>> desperately. <<emoji 😭>>
+                        $npc.GenPronoun <<if $npc.age gt 0 || $npc.location!="tortRafters">><<thirdPerson "pushes" "push">> you while crying<<else>><<thirdPerson "cries" "cry">><</if>> desperately. <<emoji 😭>>
                       <<elseif $npc.pussyTraining lt 60>>\
                         $npc.name seems to have a hard time taking your thrusts while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
                       <<elseif $npc.lust lt 60>>\
@@ -616,7 +616,7 @@ window.Interactions["slave"] = {
                       optionText: "🦥 Fuck $npc.pronoun slowly.",
                       contents: `You try your best in slowly going in and out of $npc.name's $npc.age year old rectum.
                         <<if $npc.anusTraining lt 20>>\
-                          $npc.GenPronoun <<thirdPerson "keeps" "keep">> crying<<if $npc.age gt 0>> and pushing you while saying "Stop! It hurts!!"<</if>>. <<emoji 😢>>
+                          $npc.GenPronoun <<thirdPerson "keeps" "keep">> crying<<if $npc.age gt 0>><<if $npc.location!="tortRafters">> and pushing you<</if>> while saying "Stop! It hurts!!"<</if>>. <<emoji 😢>>
                         <<elseif $npc.anusTraining lt 40>>\
                           $npc.name seems to have a hard time taking your dick while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
                         <<elseif $npc.lust lt 30>>\
@@ -726,7 +726,7 @@ window.Interactions["slave"] = {
                     "🥒 Push the dildo into $npc.possessive $npc.genitals.female.",
                   contents: `You push the dildo against $npc.possessive $npc.genitals.female.
                     <<if $npc.age gt 3 && ($npc.lust lt 30 || $npc.fear gte 40)>>\
-                      $npc.GenPronoun <<thirdPerson "panics" "panic">> <<emoji 😨>> as $npc.genPronoun <<thirdPerson "sees" "see">> the dildo pressing against $npc.possessive private place.
+                      $npc.GenPronoun <<thirdPerson "panics" "panic">> <<emoji 😨>> as $npc.genPronoun <<if $npc.location=="tortRafters">><<thirdPerson "feels" "feel">><<else>><<thirdPerson "sees" "see">><</if>> the dildo pressing against $npc.possessive private place.
                     <</if>>\
                     <<if $npc.aroused>>\
                       The dildo is already getting wet from $npc.name's $npc.genitals.female juices.
@@ -835,7 +835,7 @@ window.Interactions["slave"] = {
                             "🦥 Fuck $npc.pronoun slowly with the dildo.",
                           contents: `You try your best in slowly going in and out of $npc.name's $npc.age year old $npc.genitals.female.
                             <<if $npc.pussyTraining lt 20>>\
-                              $npc.GenPronoun <<thirdPerson "keeps" "keep">> crying<<if $npc.age gt 0>> and pushing your hand while saying "Stop! It hurts!!"<</if>>. <<emoji 😢>>
+                              $npc.GenPronoun <<thirdPerson "keeps" "keep">> crying<<if $npc.age gt 0>><<if $npc.location=="tortRafters">> and pushing your hand<</if>> while saying "Stop! It hurts!!"<</if>>. <<emoji 😢>>
                             <<elseif $npc.pussyTraining lt 40>>\
                               $npc.name seems to have a hard time taking the dildo while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
                             <<elseif $npc.lust lt 30>>\
@@ -876,7 +876,7 @@ window.Interactions["slave"] = {
                           contents: `You thrust the dildo into $npc.name's $npc.genitals.female, making $npc.pronoun bounce with a fast piston movement.
                           <<run Player.manageEnergy(1)>>\
                           <<if $npc.pussyTraining lt 40>>\
-                            $npc.GenPronoun <<if $npc.age gt 0>><<thirdPerson "pushes" "push">> you while crying<<else>><<thirdPerson "cries" "cry">><</if>> desperately.<<emoji 😭>>
+                            $npc.GenPronoun <<if $npc.age gt 0 || $npc.location!="tortRafters"*/>><<thirdPerson "pushes" "push">> you while crying<<else>><<thirdPerson "cries" "cry">><</if>> desperately.<<emoji 😭>>
                           <<elseif $npc.pussyTraining lt 60>>\
                             $npc.name seems to have a hard time taking your thrusts while squinting $npc.possessive eyes<<emoji 😣>> while you dildo fuck $npc.pronoun.
                           <<elseif $npc.lust lt 60>>\
@@ -1022,7 +1022,7 @@ window.Interactions["slave"] = {
                             "🦥 Fuck $npc.pronoun bottom slowly with the dildo.",
                           contents: `You try your best in slowly going in and out of $npc.name's $npc.age year old rectum.
                             <<if $npc.anusTraining lt 20>>\
-                              $npc.GenPronoun <<thirdPerson "keeps" "keep">> crying<<if $npc.age gt 0>> and pushing your hand while saying "Stop! It hurts!!"<</if>>.<<emoji 😢>>
+                              $npc.GenPronoun <<thirdPerson "keeps" "keep">> crying<<if $npc.age gt 0>><<if $npc.location!="tortRafters">> and pushing your hand<</if>> while saying "Stop! It hurts!!"<</if>>.<<emoji 😢>>
                             <<elseif $npc.anusTraining lt 40>>\
                               $npc.name seems to have a hard time taking the dildo while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun.
                             <<elseif $npc.lust lt 30>>\
@@ -1063,7 +1063,7 @@ window.Interactions["slave"] = {
                           contents: `You thrust the dildo into $npc.name's anus. Making $npc.pronoun bounce with a fast piston movement.
                           <<run Player.manageEnergy(1)>>\
                           <<if $npc.anusTraining lt 40>>\
-                            $npc.GenPronoun <<if $npc.age gt 0>><<thirdPerson "pushes" "push">> your hand while crying<<else>>cries<</if>> desperately. <<emoji 😭>>
+                            $npc.GenPronoun <<if $npc.age gt 0 || $npc.location!="tortRafters">><<thirdPerson "pushes" "push">> your hand while crying<<else>>cries<</if>> desperately. <<emoji 😭>>
                           <<elseif $npc.anusTraining lt 60>>\
                             $npc.name seems to have a hard time taking your thrusts while squinting $npc.possessive eyes<<emoji 😣>> while you fuck $npc.pronoun with the dildo.
                           <<elseif $npc.lust lt 60>>\
@@ -1213,7 +1213,7 @@ window.Interactions["slave"] = {
               npcRequirements: ["hasBoobs"],
               optionText: "🍈🍈 Fondle $npc.possessive boobs.",
               minutesCost: 5,
-              contents: `You bring your hands up to $npc.possessive beautiful melons and softly rub them, your thumbs brushing $npc.possessive nipples.`,
+              contents: `You bring your hands <<if $npc.location=="tortRafters">>down<<else>>up<</if>> to $npc.possessive beautiful melons and softly rub them, your thumbs brushing $npc.possessive nipples.`,
               npcStats: ["fear-5", "lust+10%"],
               next: afterStrip,
             },
@@ -1233,6 +1233,7 @@ window.Interactions["slave"] = {
               npcRequirements: ["hasPenis", "aroused"],
               playerRequirements: ["hasPussy"],
               settingsRequirements: ["anal"],
+              locationExclusions: ["tortRafters"],
               contents: "Which hole should $npc.name fuck?",
               optionText: "🤙 Let $npc.name fuck you.",
               next: {
@@ -1265,6 +1266,7 @@ window.Interactions["slave"] = {
               playerRequirements: ["hasPussy"],
               npcRequirements: ["hasPenis", "aroused"],
               settingsRequirements: ["!anal"],
+              locationExclusions: ["tortRafters"],
               optionText: "🤙 Have sex with $npc.name.",
               minutesCost: 20,
               contents: `You grab $npc.name erected penis and enter it in your pussy and start bouncing and enjoying $npc.possessive dick.
@@ -1301,6 +1303,7 @@ window.Interactions["slave"] = {
               npcRequirements: ["hasPenis", "aroused"],
               settingsRequirements: ["anal"],
               playerRequirements: ["!hasPussy"],
+              locationExclusions: ["tortRafters"],
               optionText:
                 "🍆 Insert $npc.possessive erected penis in your ass.",
               minutesCost: 20,
@@ -1379,6 +1382,17 @@ window.Interactions["slave"] = {
             window.Interactions.slave.options["pushDown"].next["strip"].next,
         },
       },
+    },
+    useBody: {
+      locationRequirements: ["tortRafters"],
+      optionText: `👉 Use <<-$npc.name>>'s body`,
+      contents: `You place your hand on <<-$npc.name>>'s body deciding what to do.
+        <<if $npc.fear gt 25>>\
+          $npc.GenPronoun <<thirdPerson "trembles" "tremble">> in fear under your shadow.
+        <<elseif $npc.love gt 50>>\
+          $npc.GenPronoun <<thirdPerson "smiles" "smile">> at you<<emoji â™¥>>.
+        <</if>>`,
+      next: afterStrip,
     },
     takeHead: {
       npcRequirements: ["age>0"],
@@ -1523,7 +1537,11 @@ window.Interactions["slave"] = {
                 optionText: '👅🥚 "Lick my balls."',
                 minutesCost: 5,
                 contents: `<<set _okBj = true>>\
-                $npc.name pushes your dick upwards with $npc.possessive<<if $npc.age lt 7>> little<</if>> hands in order to reach your balls.
+                <<if $npc.location == "tortRafters">>\
+                  You lift your dick out of the way so $npc.name can reach your balls.
+                <<else>>\
+                  $npc.name pushes your dick upwards with $npc.possessive<<if $npc.age lt 7>> little<</if>> hands in order to reach your balls.
+                <</if>>\
                 $npc.GenPronoun <<thirdPerson "moves" "move">> $npc.possessive mouth down to them and <<thirdPerson "starts" "start">> licking.
                 Your balls bounce a little bit with $npc.possessive<<if $npc.age lt 7>> little<</if>> tongue.
                 <<if $npc.mouthTraining gte 60>>\
@@ -1537,11 +1555,10 @@ window.Interactions["slave"] = {
                 optionText: '👅🍆 "Lick along my shaft."',
                 minutesCost: 5,
                 contents: `<<set _okBj = true>>\
-               $npc.name grabs your dick with $npc.possessive hands and licks you under your shaft.
-               Painting your dick with $npc.possessive saliva.
-               <<if $npc.mouthTraining gte 60>>\
-                 Then $npc.genPronoun slowly <<thirdPerson "slides" "slide">> $npc.possessive tongue from head to base using your cock's entire length.
-                 And then moves back to the head doing rapid little licks along the way.
+                $npc.name <<if $npc.location != "tortRafters">>grabs your dick with $npc.possessive hands and <</if>>licks you under your shaft, painting your dick with $npc.possessive saliva.
+                <<if $npc.mouthTraining gte 60>>\
+                  Then $npc.genPronoun slowly <<thirdPerson "slides" "slide">> $npc.possessive tongue from head to base using your cock's entire length.
+                  And then moves back to the head doing rapid little licks along the way.
                 <</if>>`,
                 npcStats(npc) {
                   let stats = ["fear-5", "lust+3%"];
@@ -1614,7 +1631,7 @@ window.Interactions["slave"] = {
                   _sucking = true
                 >>\
                 <<if $npc.mouthTraining gte 50>>\
-                  $npc.GenPronoun then <<thirdPerson "starts" "start">> sucking and jerking while your dick goes in and out of $npc.possessive mouth.
+                  $npc.GenPronoun then <<thirdPerson "starts" "start">> sucking <<if $npc.location != "tortRafters">>and jerking <</if>>while your dick goes in and out of $npc.possessive mouth.
                   You can see $npc.possessive head bobbing down on you at the rhythm of your pleasure peaks.\
                 <<else>>\
                   $npc.name sucks and licks your tip. Feels good, but you think it could be better. So you grab $npc.possessive head with both hands and penetrate $npc.possessive lips a little more than $npc.genPronoun <<thirdPerson "was" "were">> doing.\
@@ -1637,7 +1654,7 @@ window.Interactions["slave"] = {
                 <<if $npc.hunger gte 50 || $npc.lust gte 80>>\
                   $npc.GenPronoun <<thirdPerson "gulps" "gulp">> all of your load directly after each spurt.
                 <<else>>\
-                  $npc.GenPronoun <<thirdPerson "does" "do">> not seem to appreciate your sperm very much and quickly <<thirdPerson "retreats" "retreat">> while coughing and spitting.
+                  $npc.GenPronoun <<thirdPerson "does" "do">> not seem to appreciate your sperm very much and quickly <<if $npc.location == "tortRafters">><<thirdPerson "pulls" "pull">> $npc.possessive head away<<else>><<thirdPerson "retreats" "retreat">><</if>> while coughing and spitting.
                 <</if>>`,
                 npcStats: (npc) =>
                   npc.hunger >= 50 || npc.lust >= 80 ? ["hunger-5"] : null,
@@ -1667,7 +1684,7 @@ window.Interactions["slave"] = {
               <<npcSay "Okay <<emoji ❤>>">>
             <<elseif $npc.mouthTraining gt 30>>\
               <<npcSay "Okay...">>
-              $npc.GenPronoun <<thirdPerson "isn't" "aren't">> too enthusiastic, but they are used to it by now.
+              $npc.GenPronoun <<thirdPerson "isn't" "aren't">> too enthusiastic, but $npc.genPronoun <<thirdPerson "is" "are">> used to it by now.
             <<elseif $npc.obedience gt 30>>\
               <<npcSay "If that's what you want me to do.">>
             <<else>>\
@@ -1690,7 +1707,7 @@ window.Interactions["slave"] = {
                   You can tell $npc.genPronoun <<thirdPerson "is" "are">> just going through the motions, but $npc.genPronoun <<thirdPerson "is" "are">> not bad.
                 <</if>>\
               <<else>>\
-                $npc.GenPronoun <<if _willing>>skillfully <</if>><<thirdPerson "sucks" "suck">> your tit. $npc.GenPronoun <<thirdPerson "works" "work">> stimulates your nipple with $npc.possessive tongue<<if _willing>>, sending shivers down your spine.<<else>>. $npc.GenPronoun <<thirdPerson "is" "are">> pretty good, but you can tell $npc.genPronoun would be so much better if $npc.genPronoun put in the effort.<</if>>
+                $npc.GenPronoun <<if _willing>>skillfully <</if>><<thirdPerson "sucks" "suck">> your tit. $npc.GenPronoun <<thirdPerson "stimulates" "stimulate">>  your nipple with $npc.possessive tongue<<if _willing>>, sending shivers down your spine.<<else>>. $npc.GenPronoun <<thirdPerson "is" "are">> pretty good, but you can tell $npc.genPronoun would be so much better if $npc.genPronoun put in the effort.<</if>>
               <</if>>\
               <<if $player.lactating>>\
                 $npc.GenPronoun <<if _willing>>hungrily <</if>><<thirdPerson "drinks" "drink">> your milk.

@@ -1965,6 +1965,14 @@ window.Interactions["slave"] = {
         <<if $npc.love gt 60>>\
           $npc.GenPronoun <<thirdPerson "gives" "give">> you a hug.
         <</if>>\
+        <<set _item = {
+          name: "Rope",
+          description: "A stong sturdy rope",
+          count:1,
+          tags: ["player", "sex", "toy"],
+          };
+          Player.getInventory().add(_item);>>
+        (_item.description added to your inventory)
         <<set $npc.location = "basement">>\
         `,
       npcStats: ["fear-10", "love+5%"],

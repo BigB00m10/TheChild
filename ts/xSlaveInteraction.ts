@@ -1868,7 +1868,7 @@ window.Interactions["slave"] = {
     },
     tieUp: {
       locationRequirements: ["basement"],
-      inventoryRequirements: ["Rope"],
+      inventoryRequirements: ["Rope", "The Art of Shibari"],
       optionText: "⛓️ Suspend $npc.name from the rafters",
       altMinutes: () => 30,
       contents: `\

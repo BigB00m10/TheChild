@@ -182,13 +182,17 @@ $(document).on(":passageinit", () => {
       if (variables.achievements == undefined) variables.achievements = [];
       let onlineStore = variables.onlineStore as OnlineStore;
       if (onlineStore.products.length < window.OnlineStore.products.length)
-        for (//A new product was added to the backend class
+        for (
+          //A new product was added to the backend class
           let productIndex = 0;
           productIndex < window.OnlineStore.products.length;
           productIndex++
-        ) {//Find where the name doesn't match and insert the new products in the right position
+        ) {
+          //Find where the name doesn't match and insert the new products in the right position
           let product = window.OnlineStore.products[productIndex];
-          if (onlineStore.products[productIndex].name != product.name)
+          let saveProduct = onlineStore.products[productIndex];
+          if (!saveProduct) onlineStore.products.push(product);
+          else if (saveProduct.name != product.name)
             onlineStore.products.splice(productIndex, 0, product);
         }
       if (!onlineStore.version || onlineStore.version < 2) {

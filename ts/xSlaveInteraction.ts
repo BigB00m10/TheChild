@@ -1500,7 +1500,7 @@ window.Interactions["slave"] = {
             <</if>>\
           <<else>>\
             <<if $npc.mouthTraining lt 60 && $npc.hunger lt 80>>\
-              $npc.name <<if _willing>>blushes at the sight of your dick pointing to $npc.possessive mouth and <</if>>starts licking the under your dick head while timidly looking at you with $npc.possessive $npc.eyeColor eyes.<<emoji 🥺>>
+              $npc.name <<if _willing>>blushes at the sight of your dick pointing to $npc.possessive mouth and <</if>>starts licking under your dick head while timidly looking at you with $npc.possessive $npc.eyeColor eyes.<<emoji 🥺>>
               $npc.Possessive<<if $npc.age lt 7>> little<</if>> tongue rubbing and wetting your dick feels really good.\
             <<else>>\
               $npc.name <<if $npc.hunger gt 80>>is so hungry that $npc.genPronoun <<thirdPerson "does" "do">><<else>>does<</if>> not hesitate and <<thirdPerson "opens" "open">> $npc.possessive mouth allowing you to enter.
@@ -1576,12 +1576,16 @@ window.Interactions["slave"] = {
                 _okBj = _refused ? ($npc.lust gte 40 || $npc.love gte 30) : true;>>\
                 You push your dick into $npc.possessive mouth. As much as you can.
                 <<if _refused>>\
-                  $npc.name immediately pushes you and takes your dick out of $npc.possessive mouth while coughing.
+                  $npc.name immediately <<if $npc.location=='tortRafters'>>pulls $npc.possessive head away<<else>>pushes you and takes your dick out of $npc.possessive mouth<</if>> while coughing.
                   <<if $npc.age gte 4>>\
                     <<npcSay "Don't do that!!">>
                   <</if>>\
                   <<if !_okBj>>\
-                    $npc.name steps back surprised by the sudden thrust.
+                    <<if $npc.location=='tortRafters'>>\
+                      $npc.name struggles against the ropes.
+                    <<else>>\
+                      $npc.name steps back surprised by the sudden thrust.
+                    <</if>>\
                     <<if $npc.age gte 4>>\
                       <<npcSay "I don't want to do this anymore...">>
                     <<else>>\

@@ -313,6 +313,7 @@
         count:1,
         tags:["person","clothes","used"]
         };
+        $npc.haveClothes = false;
         Player.getInventory().add(_item);>>
     (_item.description added to your inventory)
 <</widget>>

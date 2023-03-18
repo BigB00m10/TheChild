@@ -38,11 +38,15 @@ const punishment: NpcInteraction = {
     spank: {
       optionText: "🖐 Give $npc.pronoun a spanking.",
       minutesCost: 10,
-      contents: `You grab $npc.name and force $npc.pronoun to bend over your lap.
-      <<if $npc.haveClothes>>\
-        You reveal $npc.possessive $npc.skin buttocks and start spanking $npc.pronoun.
+      contents: `<<if $npc.location=='tortRafters'>>\
+        You spin $npc.name around and step between $npc.possessive legs to reach $npc.possessive ass. Using one hand to steady $npc.pronoun you spank $npc.pronoun with the other.
       <<else>>\
-        Since $npc.genPronoun<<thirdPerson "'s" "'re">> naked, you can feel $npc.possessive body warmth on your legs and start spanking $npc.possessive $npc.skin bare ass.
+        You grab $npc.name and force $npc.pronoun to bend over your lap.
+        <<if $npc.haveClothes>>\
+          You reveal $npc.possessive $npc.skin buttocks and start spanking $npc.pronoun.
+        <<else>>\
+          Since $npc.genPronoun<<thirdPerson "'s" "'re">> naked, you can feel $npc.possessive body warmth on your legs and start spanking $npc.possessive $npc.skin bare ass.
+        <</if>>\
       <</if>>\
 
       <<npcSay "\

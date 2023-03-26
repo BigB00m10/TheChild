@@ -218,8 +218,8 @@ class Now {
   }
   //Makes the specified number of hours pass in the game.
   addHours(amount: number): void {
-    var currentDate = this.getCurrentDate();
-    var originalDay = currentDate.getDay();
+    let currentDate = this.getCurrentDate();
+    let originalDay = currentDate.getDay();
     currentDate.setHours(currentDate.getHours() + amount);
     this.daysPassed(currentDate.getDay() - originalDay);
     this.hoursPassed(amount);
@@ -239,12 +239,26 @@ class Now {
   }
   //Makes the specified number of minutes pass in the game.
   addMinutes(amount: number): void {
-    var currentDate = this.getCurrentDate();
-    var originalDay = currentDate.getDay();
+    let currentDate = this.getCurrentDate();
+    let originalDay = currentDate.getDay();
     currentDate.setMinutes(currentDate.getMinutes() + amount);
     this.daysPassed(currentDate.getDay() - originalDay);
     this.hoursPassed(amount / 60);
     this.timeChanged(currentDate);
+  }
+  skipDays(amount: number): void {
+    let currentDate = this.getCurrentDate();
+    let player = <Player>Variables().player;
+    player.sleeping = true;
+    this.hoursPassed(amount * 24);
+    for (let index = 0; index < amount; index++) {
+      currentDate.setDate(currentDate.getDate() + 1);
+      this.daysPassed(1);
+      this.timeChanged(currentDate);
+      if (player.job && !this.isWeekend(currentDate))
+        player.cash += player.job.pay;
+    }
+    player.sleeping = false;
   }
   //Returns the name of the current weekday in English
   getWeekDay(): string {
@@ -258,9 +272,17 @@ class Now {
       hour12: true,
     });
   }
+  //Return the current in-game date in English format.
+  getDateString(): string {
+    return this.getCurrentDate().toLocaleString("en-us", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
   //Checks if the game date is currently on a weekend.
-  isWeekend(): boolean {
-    var weekDay = this.getCurrentDate().getDay();
+  isWeekend(currentDate?: Date): boolean {
+    var weekDay = (currentDate ?? this.getCurrentDate()).getDay();
     return weekDay == 0 || weekDay == 6;
   }
 }

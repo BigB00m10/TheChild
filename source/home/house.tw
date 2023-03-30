@@ -22,6 +22,12 @@
         <<keyOption [[Open your computer|pc]] 💻>>
         <<keyOption [[Bathroom|bathroom]] 🛀>>
         <<sleepOption>>
+        <<keyAction 'Fast forward time' ⌛>>\
+            <<dialog 'Fast forward time'>>\
+                ''Warning:'' This will make days pass entirely with all the consequences. If you don't have a cook, slaves will get hungry and possibly hate you for it.
+                /*TODO */
+            <</dialog>>\
+        <</keyAction>>
     <</unlessEmergency>>\
 <</if>>
 <<set $player.sleeping = false>>

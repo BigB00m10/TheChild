@@ -246,10 +246,17 @@ class Now {
     this.hoursPassed(amount / 60);
     this.timeChanged(currentDate);
   }
+  //Fasts forwards the number of specified days while triggering all that would happen on them and ending up in the same time and player energy as before calling the function
   skipDays(amount: number): void {
-    let currentDate = this.getCurrentDate();
-    let player = <Player>Variables().player;
-    player.sleeping = true;
+    let variables = Variables();
+    let currentDate = variables.now.date;
+    let player = <Player>variables.player;
+    let oEnergy = player.energy;
+    let oTime = this.getTime();
+    if (variables.cook?.npc)
+      currentDate.setTime(
+        this.dateFromTimeString(variables.cook.feedTimes[0], currentDate)
+      );
     this.hoursPassed(amount * 24);
     for (let index = 0; index < amount; index++) {
       currentDate.setDate(currentDate.getDate() + 1);
@@ -258,7 +265,8 @@ class Now {
       if (player.job && !this.isWeekend(currentDate))
         player.cash += player.job.pay;
     }
-    player.sleeping = false;
+    currentDate.setTime(this.dateFromTimeString(oTime, currentDate));
+    player.energy = oEnergy;
   }
   //Returns the name of the current weekday in English
   getWeekDay(): string {

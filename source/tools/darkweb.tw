@@ -60,7 +60,7 @@ Choose slave to sell:
                                 <</button>>\
                                 <span id="escAct">\
                                     <<button "🔙 (Esc) Go back">>\
-                                        <<run Dialog.close()>>\
+                                        <<dialogclose>>\
                                     <</button>>\
                                 </span>\
                             <</dialog>>\
@@ -68,7 +68,7 @@ Choose slave to sell:
                     </span>\
                     <span id="escAct">\
                         <<button "🔙 (Esc) Go back">>\
-                            <<run Dialog.close()>>
+                            <<dialogclose>>
                         <</button>>\
                     </span>\
                 <</dialog>><</link>></span>
@@ -110,7 +110,7 @@ Choose item to sell:
                 </span>
                 <span id="escAct">\
                     <<button "🔙 (Esc) Go back">>\
-                        <<run Dialog.close()>>\
+                        <<dialogclose>>\
                     <</button>>\
                 </span>\
             <</dialog>><</link>>\

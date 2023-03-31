@@ -62,7 +62,7 @@
             >><</button>>
         <</if>>
         <span id="escAct"><<button "❌ (Esc) Cancel">>
-            <<run Dialog.close()>>
+            <<dialogclose>>
         <</button>></span>
     <</dialog>>
 <</widget>>
@@ -149,7 +149,7 @@
     <<if typeof _npc == 'number'>>
         <<set _npc to Person.get(_npc)>>
     <</if>>
-    location: _npc.location <<button "Go there" _npc.location>><<run Dialog.close()>><</button>><br>
+    location: _npc.location <<button "Go there" _npc.location>><<dialogclose>><</button>><br>
     <<if $cheat>>\
         Personality preset: $npc.uniqueness.name <<button change>><<set _dialogTitle = "Personality for " + _npc.name>><<dialog _dialogTitle>>
             <<for _presetIndex = 0; _presetIndex lt PersonUniquenessPresets.length; _presetIndex++>>
@@ -252,7 +252,7 @@
             <</keyAction>>
         <<else>>
             <<keyAction _sleepSentence 😴>><<sleep>><</keyAction>>
-        <</if>>
+        <</if>><br>
     <</if>>
 <</widget>>
 <<widget thirdPerson>><<if $npc.gender != 'nb'>>$args[0]<<else>>$args[1]<</if>><</widget>>

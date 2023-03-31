@@ -256,16 +256,30 @@ class Now {
     if (variables.cook?.npc)
       currentDate.setTime(
         this.dateFromTimeString(variables.cook.feedTimes[0], currentDate)
-      );
+      ); //If there's a cook, set the time to the first feed time so the feed triggers on the timeChanged event
     this.hoursPassed(amount * 24);
-    for (let index = 0; index < amount; index++) {
+    let advanceDay = () => {
       currentDate.setDate(currentDate.getDate() + 1);
       this.daysPassed(1);
       this.timeChanged(currentDate);
+    };
+    for (let index = 0; index < amount - 1; index++) {
+      //Trigger all events on all days except the last one
+      advanceDay();
       if (player.job && !this.isWeekend(currentDate))
         player.cash += player.job.pay;
     }
+    //Last day to advance will be executed on the original hour instead of the first feed time
     currentDate.setTime(this.dateFromTimeString(oTime, currentDate));
+    advanceDay();
+    if (
+      player.job &&
+      !this.isWeekend(currentDate) &&
+      this.isEqualOrLaterThan(player.job.enterTime, currentDate)
+    ) {
+      player.cash += player.job.pay;
+      player.workedToday = true;
+    }
     player.energy = oEnergy;
   }
   //Returns the name of the current weekday in English

@@ -27,7 +27,7 @@ welcome to your computer.
     </span>\
     <span id="escAct">\
         <<button "❌ (Esc) Cancel">>\
-            <<run Dialog.close()>>\
+            <<dialogclose>>\
         <</button>>\
     </span>\
     <<run $(document).ready(function(){$('#textbox--newname').focus()})>>\
@@ -50,5 +50,5 @@ What movie do you want to masturbate to?
 <<unlessEmergency>>\
     <<keyOption [[Leave computer|bed]] 💻>>
     <<keyOption [[Do something else|pc]] 🔙>>
-    <<sleepOption>>
+    <<sleepOption>>\
 <</unlessEmergency>>\

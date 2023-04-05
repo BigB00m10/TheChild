@@ -1,5 +1,6 @@
 :: StoryCaption {"position":"250,0"}
 ----
+<<- Now.getDateString()>>
 !<<- Now.getWeekDay()>>
 !!!<<- Now.getTime()>>
 ----

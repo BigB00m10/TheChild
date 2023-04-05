@@ -35,7 +35,7 @@ $buyProduct.description
 </span>\
 <span id="escAct">\
     <<button "❌ (Esc) Cancel">>\
-        <<run Dialog.close()>>\
+        <<dialogclose>>\
     <</button>>\
 </span>\
 :: onlineStore [nobr] {"position":"775,1125"}

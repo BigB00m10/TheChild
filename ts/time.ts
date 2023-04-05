@@ -218,8 +218,8 @@ class Now {
   }
   //Makes the specified number of hours pass in the game.
   addHours(amount: number): void {
-    var currentDate = this.getCurrentDate();
-    var originalDay = currentDate.getDay();
+    let currentDate = this.getCurrentDate();
+    let originalDay = currentDate.getDay();
     currentDate.setHours(currentDate.getHours() + amount);
     this.daysPassed(currentDate.getDay() - originalDay);
     this.hoursPassed(amount);
@@ -239,12 +239,48 @@ class Now {
   }
   //Makes the specified number of minutes pass in the game.
   addMinutes(amount: number): void {
-    var currentDate = this.getCurrentDate();
-    var originalDay = currentDate.getDay();
+    let currentDate = this.getCurrentDate();
+    let originalDay = currentDate.getDay();
     currentDate.setMinutes(currentDate.getMinutes() + amount);
     this.daysPassed(currentDate.getDay() - originalDay);
     this.hoursPassed(amount / 60);
     this.timeChanged(currentDate);
+  }
+  //Fasts forwards the number of specified days while triggering all that would happen on them and ending up in the same time and player energy as before calling the function
+  skipDays(amount: number): void {
+    let variables = Variables();
+    let currentDate = variables.now.date;
+    let player = <Player>variables.player;
+    let oEnergy = player.energy;
+    let oTime = this.getTime();
+    if (variables.cook?.npc)
+      currentDate.setTime(
+        this.dateFromTimeString(variables.cook.feedTimes[0], currentDate)
+      ); //If there's a cook, set the time to the first feed time so the feed triggers on the timeChanged event
+    this.hoursPassed(amount * 24);
+    let advanceDay = () => {
+      currentDate.setDate(currentDate.getDate() + 1);
+      this.daysPassed(1);
+      this.timeChanged(currentDate);
+    };
+    for (let index = 0; index < amount - 1; index++) {
+      //Trigger all events on all days except the last one
+      advanceDay();
+      if (player.job && !this.isWeekend(currentDate))
+        player.cash += player.job.pay;
+    }
+    //Last day to advance will be executed on the original hour instead of the first feed time
+    currentDate.setTime(this.dateFromTimeString(oTime, currentDate));
+    advanceDay();
+    if (
+      player.job &&
+      !this.isWeekend(currentDate) &&
+      this.isEqualOrLaterThan(player.job.enterTime, currentDate)
+    ) {
+      player.cash += player.job.pay;
+      player.workedToday = true;
+    }
+    player.energy = oEnergy;
   }
   //Returns the name of the current weekday in English
   getWeekDay(): string {
@@ -258,9 +294,17 @@ class Now {
       hour12: true,
     });
   }
+  //Return the current in-game date in English format.
+  getDateString(): string {
+    return this.getCurrentDate().toLocaleString("en-us", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
   //Checks if the game date is currently on a weekend.
-  isWeekend(): boolean {
-    var weekDay = this.getCurrentDate().getDay();
+  isWeekend(currentDate?: Date): boolean {
+    var weekDay = (currentDate ?? this.getCurrentDate()).getDay();
     return weekDay == 0 || weekDay == 6;
   }
 }

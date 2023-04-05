@@ -5,5 +5,5 @@ You are currently standing in your garden.
     <<wanderingSlaves>>\
     <<keyOption [[Leave your garden|main]] 🚪>>
     <<keyAction 'gardening' 🌺>><<addMinutes 30>><<run Engine.show()>><</keyAction>>: 30min
-    <<sleepOption>>
+    <<sleepOption>>\
 <</unlessEmergency>>\

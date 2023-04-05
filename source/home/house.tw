@@ -21,7 +21,42 @@
         <<keyOption [[Leave your room|main]] 🚪>>
         <<keyOption [[Open your computer|pc]] 💻>>
         <<keyOption [[Bathroom|bathroom]] 🛀>>
-        <<sleepOption>>
+        <<sleepOption>>\
+        <<keyAction 'Fast forward time' ⏩>>\
+            <<dialog 'Fast forward time'>>\
+                <<set _units = ['days','months','years']>>\
+                ''Warning:'' This will make days pass entirely with all the consequences. If you don't have a cook, slaves will get hungry and possibly hate you for it.
+                <label>Fast forward <input type="number" min="1" max="31" id="skipAmount" style="width:3em"><<listbox '_unit' autoselect>><<optionsfrom _units>><</listbox>></label>
+                <<done>><<run $('#skipAmount').focus()>><</done>>\
+
+                <span id="enterAct">\
+                    <<button "⌛ (Enter) Go">>\
+                        <<set _days = document.getElementById('skipAmount').value>>
+                        <<if _days>><<dialogclose>><<dialog "Fast forwarding time">>\
+                            Fast forwarding time...
+                            <<done>><<run
+                                switch(_unit) {
+                                    case 'months':
+                                        _days *= 30;
+                                        break;
+                                    case 'years':
+                                        _days *= 365;
+                                        break;
+                                }
+                                Now.skipDays(_days);
+                                SugarCube.Engine.play('bed');
+                                Dialog.close();
+                            >><</done>>\
+                        <</dialog>><</if>>
+                    <</button>>\
+                </span>\
+                <span id="escAct">\
+                    <<button "❌ (Esc) Cancel">>\
+                        <<dialogclose>>\
+                    <</button>>\
+                </span>\
+            <</dialog>>\
+        <</keyAction>>
     <</unlessEmergency>>\
 <</if>>
 <<set $player.sleeping = false>>

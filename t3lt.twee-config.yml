@@ -76,3 +76,5 @@ sugarcube-2:
       name: npcSay
     takeClothes:
       name: takeClothes
+    dialogclose:
+      name: dialogclose

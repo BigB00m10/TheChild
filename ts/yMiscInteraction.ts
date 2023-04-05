@@ -68,7 +68,7 @@ window.Interactions["houseSlave"] = {
         </span>\
         <span id="escAct">\
             <<button "❌ (Esc) Cancel">>\
-                <<run Dialog.close()>>\
+                <<dialogclose>>\
             <</button>>\
         </span>\
         <<run $(document).ready(function(){$('#textbox--newname').focus()})>>\

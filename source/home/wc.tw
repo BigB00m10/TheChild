@@ -9,7 +9,7 @@ You are currently standing in your wc.
     <<if Player.getInventory().items.firstOrDefault(function(item){return item.name.startsWith('Used clothes')}) != null>>\
         <<keyOption [[Masturbate using stolen slave underwear|pantiescum]] 💦>>: 30min
     <</if>>\
-    <<sleepOption>>
+    <<sleepOption>>\
 <</unlessEmergency>>\
 :: pantiescum {"position":"400,825"}
 <<addMinutes 30>>\

@@ -164,6 +164,14 @@ $(document).on(":passageinit", () => {
                   : "pussy",
             };
           }
+          if (slave.ageProgress == undefined) {
+            slave.ageProgress = PseudoRandom.getFromRange(
+              PseudoRandom.getSeed(slave.name, slave.age),
+              0,
+              5
+            );
+            slave.ageIntroduced = slave.age;
+          }
         });
         if (addSlaveUniqueness) {
           Dialog.setup("Slave personalities");

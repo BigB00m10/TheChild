@@ -26,7 +26,10 @@ interface NpcValue {
 abstract class Npc {
   uid: Uid;
   name: string;
+  ageIntroduced: number; //What was the age of the NPC when it was introduced to the game (generated).
   age: number;
+  ageProgress: number = 0; //Number of days passed while having the current age.
+  pregnantDays?: number; //Number of days passed while being pregnant or undefined if not pregnant.
   sex: Sex;
   gender: Gender;
   hasPussy: boolean;
@@ -243,6 +246,7 @@ class Person extends Npc {
   skin: string;
   haveClothes: boolean = true;
   uniqueness: PersonUniqueness;
+  stopAging?: boolean;
   generate(gen?: PersonGeneration): Person {
     if (gen === undefined) gen = new PersonGeneration();
     let person = new Person();
@@ -287,6 +291,7 @@ class Person extends Npc {
     person.age =
       Math.floor(Math.random() * (genGen.toAge - genGen.fromAge)) +
       genGen.fromAge;
+    person.ageIntroduced = person.age;
     person.hasBoobs = (person.sex == "female" || person.sex == "herm") && person.age >= 13;
     if (person.age < 6)
       person.freedomWish -= ((6 - person.age) / 6) * person.freedomWish;

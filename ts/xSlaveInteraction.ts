@@ -1818,7 +1818,7 @@ window.Interactions["slave"] = {
     },
     bringUpstairs: {
       locationRequirements: ["basement"],
-      showDisabled: "Freedom Wish $npc.freedomWish/25",
+      showDisabled: "status=slave=>Freedom Wish $npc.freedomWish/25",
       npcRequirements: ["freedomWish<=25"],
       optionText: "🚪 Let $npc.name roam the house.",
       altMinutes: () => 2,

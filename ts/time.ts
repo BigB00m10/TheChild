@@ -100,6 +100,17 @@ class Now {
     let player = variables.player as Player;
     player.workedToday = false;
     let slaves = variables.slaves as Person[];
+    let agingIgDays = variables.settings.agingIgDays ?? 12;
+    let manageAging =
+      agingIgDays > 0
+        ? (slave: Person) => {
+            if (slave.stopAging || ++slave.ageProgress < agingIgDays) return;
+            slave.ageProgress = 0;
+            slave.age++;
+            if (!variables.agedUpNpc) variables.agedUpNpc = new Set<number>();
+            (<Set<number>>variables.agedUpNpc).add(slave.uid);
+          }
+        : () => {};
     for (let index = 0; index < amount; index++) {
       slaves.forEach((slave) => {
         slave.aroused = false;
@@ -117,6 +128,7 @@ class Now {
           else slave.punishments.delete("naked");
         } else slave.obedience = Math.max(0, slave.obedience - 1);
         window.Person.removeAchievement("howAreYou", slave);
+        manageAging(slave);
       });
       player.lust = Math.min(100, player.lust + 10);
     }

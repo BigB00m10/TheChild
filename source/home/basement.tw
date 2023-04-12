@@ -40,12 +40,16 @@
         </div>\
     </div>
     <<keyOption [[Go back upstairs|main]] 🚪>>
+    <<if TortRafters.getSlaves().length>>\
+        <<keyOption [[Check on suspended slaves|tortRafters]] ⛓️>>
+    <</if>>\
     /*<<keyOption [[The torture room|tort]] ⛓️>>*/\
     <<if Player.has("pizza") && Basement.getHungrySlaves().length>>\
         <<keyOption [[Give pizza to all hungry slaves|giveSlavesPizza]] 🍕>>
     <</if>>\
     <<include workOption>>\
 <</unlessEmergency>>\
+
 :: giveSlavesPizza {"position":"250,775"}
 <<scenery basement>>
 You lay down the pizza<<if Player.has("pizza", 2)>>s<</if>> and all the slaves get around it to eat.

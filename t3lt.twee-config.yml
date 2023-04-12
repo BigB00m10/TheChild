@@ -70,5 +70,11 @@ sugarcube-2:
       name: showCookFeedingRules
     thirdPerson:
       name: thirdPerson
+    playerSay:
+      name: playerSay
+    npcSay:
+      name: npcSay
+    takeClothes:
+      name: takeClothes
     dialogclose:
       name: dialogclose

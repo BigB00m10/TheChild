@@ -10,6 +10,7 @@ interface Window {
   Person: Person;
   PersonGeneration: PersonGeneration;
   Basement: Basement;
+  TortRafters: TortRafters;
   MainRoom: MainRoom;
   BedRoom: BedRoom;
   BathRoom: Bathroom;
@@ -28,6 +29,7 @@ window.Player = new Player();
 window.Person = new Person();
 window.OnlineStore = new OnlineStore();
 window.Basement = new Basement();
+window.TortRafters = new TortRafters();
 window.MainRoom = new MainRoom();
 window.BedRoom = new BedRoom();
 window.BathRoom = new Bathroom();

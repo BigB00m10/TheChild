@@ -175,6 +175,19 @@ class OnlineStore {
       available: 1,
       tags: new Set(["player", "wearable", "cooking", "clothes", "unsellable"]),
     }),
+    new Product({
+      name: "Rope",
+      description: "A stong sturdy rope",
+      price: 20,
+      tags: new Set(["player", "sex", "toy"]),
+    }),
+    new Product({
+      name: "The Art of Shibari",
+      description: "Learn the art of tying and suspending submissives",
+      price: 50,
+      available: 1,
+      tags: new Set(["player", "book", "skill", "unsellable"]),
+    }),
   ];
   bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
   //Get a product from the store

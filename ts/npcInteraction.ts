@@ -4,6 +4,7 @@ type complexRequirement = {
   npcRequirements?: string[];
   inventoryRequirements?: string[];
   locationRequirements?: string[];
+  locationExclusions?: string[];
   settingsRequirements?: string[];
 };
 //Describes an option that once selected will display a passage and optionally affect the relationship between the player and an NPC
@@ -19,6 +20,8 @@ interface NpcInteraction {
   inventoryRequirements?: string[];
   //A list of items that the current location needs to comply (location name or items present in the location)
   locationRequirements?: string[];
+  //A list of locations where this option can't be shown
+  locationExclusions?: string[];
   //A list of requirements that the settings need to comply in order to show this option
   settingsRequirements?: string[];
   //A list of object containing the previous requirement variables, used when more than one combination of settings is acceptable.
@@ -158,6 +161,12 @@ const checkCanBeShown = (option: NpcInteraction) => {
   if (!canBeShown) return false;
   if (option.locationRequirements)
     canBeShown = option.locationRequirements.includes(Variables().scenery);
+  if (!canBeShown) return false;
+  if (option.locationExclusions)
+    option.locationExclusions.forEach(
+      (location) => (canBeShown &&= (location != Variables().scenery))
+    );
+  if (!canBeShown) return false;
   //TODO: also check room inventory for locationRequirements
   //ComplexRequirements should be used on a parent choice, to disable it when the conditions for none of its children are met.
   if (option.complexRequirements) {
@@ -182,6 +191,10 @@ const checkCanBeShown = (option: NpcInteraction) => {
         );
       if (combination.locationRequirements)
         canBeShown = option.locationRequirements.includes(Variables().scenery);
+      if (option.locationExclusions)
+        option.locationExclusions.forEach(
+          (location) => (canBeShown &&= (location != Variables().scenery))
+        );
       if (canBeShown) complexCanBeShown = true;
     });
     canBeShown = complexCanBeShown;

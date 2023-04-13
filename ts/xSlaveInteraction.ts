@@ -1796,7 +1796,8 @@ window.Interactions["slave"] = {
     giveClothes: {
       npcRequirements: ["!haveClothes"],
       locationExclusions: ["tortRafters"],
-      canBeShown: () => window.Player.has(`Used clothes(${Variables().npc.age} y.o.)`),
+      canBeShown: () =>
+        window.Player.has(`Used clothes(${Variables().npc.age} y.o.)`),
       optionText: "👕 Give $npc.pronoun some clothes",
       contents: `<<if $npc.age lte 3>>\
           <<if $npc.uniqueness.naughty>>\
@@ -1892,15 +1893,15 @@ window.Interactions["slave"] = {
           You use your shibari skills to tie $npc.name up.\
         <</if>>\
         You find the mid point of the rope and double it over on itself so you have two strands side by side.\
-        You start with a loop around $npc.possessive lower chest <<if $npc.hasBoobs>>under $npc.possessive breasts<<else>>at $npc.possessive sturnum<</if>>.\
+        You start with a loop around $npc.possessive lower chest <<if $npc.hasBoobs>>under $npc.possessive breasts<<else>>at $npc.possessive sternum<</if>>.\
         You wrap the ropes over one shoulder, down <<if $npc.hasBoobs>>between $npc.possessive breasts<<else>>$npc.possessive chest<</if>>, \
-        around the ropes at $npc.possessive sturnum and back up over the other shoulder.\
-        Tying it in the back you bring the ropes under one armpit, accross $npc.possessive chest to the opposite side of $npc.possessive neck.\
+        around the ropes at $npc.possessive sternum and back up over the other shoulder.\
+        Tying it in the back you bring the ropes under one armpit, across $npc.possessive chest to the opposite side of $npc.possessive neck.\
         You repeat on the other side, completing the upside down star pattern on $npc.possessive chest.
 
         You bring the ropes down $npc.possessive back, between $npc.possessive butt checks and under $npc.possessive crotch.\
         You put one strand on either side of $npc.possessive <<- $npc.genitals.all>>.\
-        You wrap the ropes around the ropes at $npc.possessive sturnum and back down, going back through $npc.possessive crotch to tie off at the back.
+        You wrap the ropes around the ropes at $npc.possessive sternum and back down, going back through $npc.possessive crotch to tie off at the back.
 
         <<playerSay "Lie on the ground, face down.">>
         <<if _reaction == "resistance">>\
@@ -1938,13 +1939,14 @@ window.Interactions["slave"] = {
         as $npc.genPronoun slightly <<thirdPerson "rotates" "rotate">> back and forth on the end of the rope.
         <<set $npc.location = "tortRafters">>`,
       npcStats: (npc) => {
-        let temp = Temporary();
-        if (temp.reaction == "lust") {
-          return ["lust+10%"];
-        } else if (temp.reaction == "love") {
-          return ["love+5%"];
-        } else if (temp.reaction == "obedience" || temp.reaction == "resistance") {
-          return ["obedience+10", "freedomWish+10"];
+        switch (Temporary().reaction) {
+          case "lust":
+            return ["lust+10%"];
+          case "love":
+            return ["love+5%"];
+          case "obedience":
+          case "resistance":
+            return ["obedience+10", "freedomWish+10"];
         }
       },
       next: {
@@ -1972,7 +1974,7 @@ window.Interactions["slave"] = {
         <</if>>\
         <<set _item = {
           name: "Rope",
-          description: "A stong sturdy rope",
+          description: "A strong sturdy rope",
           count:1,
           tags: ["player", "sex", "toy"],
           };
@@ -1995,4 +1997,5 @@ window.Interactions["slave"] = {
 };
 //Instead of duplicating same text on the two interactions I just copy the contents and add the code that steals the clothes.
 window.Interactions.slave.options["pushDown"].next.stealClothes.contents =
-  window.Interactions.slave.options["pushDown"].next.strip.contents + "<<takeClothes>>";
+  window.Interactions.slave.options["pushDown"].next.strip.contents +
+  "<<takeClothes>>";

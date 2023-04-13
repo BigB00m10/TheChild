@@ -48,7 +48,7 @@ Energy:<<if $cheat>>\
 <</link>>
 <<link "⚙ Settings">>
     <<dialog Settings>>\
-        <style>.addressing{width: 6em;min-width: 0 !important}</style>
+        <style>.addressing{width: 6em;min-width: 0 !important}h3{color:yellow}</style>
         <div class="tabs">\
             <input type="radio" name="configTabs" id="tab-childGen" checked>\
             <label for="tab-childGen">Child generator</label>\
@@ -106,7 +106,7 @@ Energy:<<if $cheat>>\
             <div>\
                 <div class="row">\
                     <div class="one-half column">\
-                        <h3 style="color:yellow">Change job</h3>\
+                        <h3>Change job</h3>\
                         Current job: <<- $player.job ? $player.job.name.toUpperFirst() : "Unemployed">>
                         <<for _jobKey, _job range Jobs>>\
                             <<set _jobDesc = _job.name.toUpperFirst() + ": Pay:¤" + _job.pay.toFixed(2) + "/day, Go time:" + _job.enterTime>>\
@@ -114,16 +114,27 @@ Energy:<<if $cheat>>\
                         <</for>>\
                         <<button '<<emoji 🚫>>None'>><<run $player.job = null;Engine.show()>><<dialog "Job changed">>You're now unemployed.<</dialog>><</button>>\
                     </div><div class="one-half column">\
-                        <h3 style="color:yellow">Lust drop</h3>\
+                        <h3>Lust drop</h3>\
                         <label>Amount of lust drop after NPC ejaculating: <input type="number" id="lustDecCum" style="width:3em"></label>
                     </div>\
+                </div><div class="row">\
+                    <div class="one-half column">\
+                        <h3>Addressing</h3>\
+                        How should your kids call you? (leaving them blank reverts them to default value)
+                        Slaves: <input type="text" class="addressing" data-target="slave">
+                        Servants: <input type="text" class="addressing" data-target="servant">(Cook)
+                        Lovers: <input type="text" class="addressing" data-target="lover">(Unused for now)
+                        Your Sons/Daughters: <input type="text" class="addressing" data-target="offspring">(Coming soon)
+                    </div><div class="one-half column">\
+                        <h3>NPC Aging</h3>
+                        How much time do characters need to age up.
+                        <label><input type="radio" name="agingOption">Real in-game time (1 in-game year to age 1 year)</label>
+                        <label><input type="radio" name="agingOption">Age up in <input type="number" id="agingIgDays" val=12 style="with:3em" min=1 max=999> days.</label>
+                        <label><input type="radio" name="agingOption">Disabled (Nobody ages).</label>
+                        Stop aging of these NPCs: <span id="noAgingNpcList"></span> <<button Modify>>
+                        <</button>>
+                    </div>\
                 </div>\
-                <h3 style="color:yellow">Addressing</h3>\
-                How should your kids call you? (leaving them blank reverts them to default value)
-                Slaves: <input type="text" class="addressing" data-target="slave">
-                Servants: <input type="text" class="addressing" data-target="servant">
-                Lovers: <input type="text" class="addressing" data-target="lover">
-                Your Sons/Daughters: <input type="text" class="addressing" data-target="offspring">
             </div>\
             <input type="radio" name="configTabs" id="tab-switches">\
             <label for="tab-switches">Switches</label>\
@@ -150,6 +161,22 @@ Energy:<<if $cheat>>\
         <script>
             var $variables = SugarCube.State.variables
             var $settings = $variables.settings
+            var agingOptions = $('input[name=agingOption]');
+            switch($settings.agingIgDays){
+                case undefined:
+                case 365.25:
+                    agingOptions[0].checked=true;
+                    break;
+                case 0:
+                    agingOptions[2].checked=true;
+                    break;
+                default:
+                    agingOptions[1].checked=true;
+                    $('#agingIgDays').val($settings.agingIgDays);
+                    break;
+            }
+            //TODO: Aging radio option event
+            //TODO: Aging number ig days event
             var defaultOffspringAddr = $variables.player.gender != 'male' ? 'mommy' : 'daddy'
             var addrUpdateValue = function(element){
                 var addrDefault = $settings.addressing.slave ? $settings.addressing.slave : $variables.player.name

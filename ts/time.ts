@@ -100,11 +100,11 @@ class Now {
     let player = variables.player as Player;
     player.workedToday = false;
     let slaves = variables.slaves as Person[];
-    let agingIgDays = variables.settings.agingIgDays ?? 12;
+    let agingIgDays = variables.settings.agingIgDays ?? 365.25;
     let manageAging =
       agingIgDays > 0
         ? (slave: Person) => {
-            if (slave.stopAging || ++slave.ageProgress < agingIgDays) return;
+            if (slave.stopAging || ++slave.ageProgress < agingIgDays) return;//TODO: if real time, age on the same day/month every year
             slave.ageProgress = 0;
             slave.age++;
             if (!variables.agedUpNpc) variables.agedUpNpc = new Set<number>();

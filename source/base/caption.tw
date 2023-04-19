@@ -126,11 +126,11 @@ Energy:<<if $cheat>>\
                         Lovers: <input type="text" class="addressing" data-target="lover">(Unused for now)
                         Your Sons/Daughters: <input type="text" class="addressing" data-target="offspring">(Coming soon)
                     </div><div class="one-half column">\
-                        <h3>NPC Aging</h3>
+                        <h3>NPC Aging</h3>\
                         How much time do characters need to age up.
-                        <label><input type="radio" name="agingOption">Real in-game time (1 in-game year to age 1 year)</label>
-                        <label><input type="radio" name="agingOption">Age up in <input type="number" id="agingIgDays" val=12 style="with:3em" min=1 max=999> days.</label>
-                        <label><input type="radio" name="agingOption">Disabled (Nobody ages).</label>
+                        <label><input type="radio" name="agingOption" value=365.25>Real in-game time (1 in-game year to age 1 year)</label>
+                        <label><input type="radio" name="agingOption" value=12>Age up in <input type="number" id="agingIgDays" value=12 style="with:3em" min=1 max=999> days.</label>
+                        <label><input type="radio" name="agingOption" value=0>Disabled (Nobody ages).</label>
                         Stop aging of these NPCs: <span id="noAgingNpcList"></span> <<button Modify>>
                         <</button>>
                     </div>\
@@ -162,6 +162,7 @@ Energy:<<if $cheat>>\
             var $variables = SugarCube.State.variables
             var $settings = $variables.settings
             var agingOptions = $('input[name=agingOption]');
+            var agingIgDaysInput = $('#agingIgDays');
             switch($settings.agingIgDays){
                 case undefined:
                 case 365.25:
@@ -172,11 +173,16 @@ Energy:<<if $cheat>>\
                     break;
                 default:
                     agingOptions[1].checked=true;
-                    $('#agingIgDays').val($settings.agingIgDays);
+                    agingIgDaysInput.val($settings.agingIgDays);
                     break;
             }
-            //TODO: Aging radio option event
-            //TODO: Aging number ig days event
+            agingOptions.on('change', function(){
+                $settings.agingIgDays = parseFloat($('input[name=agingOption]:checked').val());
+            });
+            agingIgDaysInput.on('input blur', function(){
+                agingOptions[1].checked = true;
+                $settings.agingIgDays = parseFloat(agingOptions[1].value = agingIgDaysInput.val());
+            });
             var defaultOffspringAddr = $variables.player.gender != 'male' ? 'mommy' : 'daddy'
             var addrUpdateValue = function(element){
                 var addrDefault = $settings.addressing.slave ? $settings.addressing.slave : $variables.player.name

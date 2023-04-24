@@ -1,5 +1,5 @@
-:: tortRafters
-<<scenery tortRafters>>
+:: tortRafters {"position":"100,625"}
+<<scenery basement>>
 You are currently in the corner of your basement where you suspend slaves from the rafters.
 <<unlessEmergency>>\
     <<slaveEvents TortRafters>>

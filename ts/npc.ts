@@ -29,6 +29,7 @@ abstract class Npc {
   ageIntroduced: number; //What was the age of the NPC when it was introduced to the game (generated).
   age: number;
   ageProgress: number = 0; //Number of days passed while having the current age.
+  stopAging?: boolean;
   pregnantDays?: number; //Number of days passed while being pregnant or undefined if not pregnant.
   sex: Sex;
   gender: Gender;
@@ -100,6 +101,7 @@ abstract class Npc {
     if (!npc) npc = Variables().npc;
     npc.achievements.delete(achievement);
   }
+  //Gets the NPC's current disaggregated selling value.
   getValue(npc?: Npc): NpcValue {
     if (!npc) npc = Variables().npc;
     const maxNonVirgin = 1500;
@@ -141,6 +143,7 @@ abstract class Npc {
     value.total += value.freedomWish + value.virginBonus;
     return value;
   }
+  //Changes the NPC social status and triggers the necessary actions or events
   setStatus(status: NpcStatus, npc?: Npc): void {
     if (!npc) npc = Variables().npc;
     switch (status) {
@@ -153,10 +156,12 @@ abstract class Npc {
     }
     npc.status = status;
   }
+  //Turns the NPC into a slave of the child trainer
   capture(npc: Npc): void {
     this.setStatus("slave", npc);
     Variables().slaves.push(npc);
   }
+  //Updates the locations of all Npc according to the provided date/time.
   static updateLocations(currentDate: Date): void {
     const variables = Variables();
     if (!currentDate) currentDate = variables.now.date;
@@ -201,11 +206,20 @@ abstract class Npc {
       }
     });
   }
+  //Returns an array with all NPCs present in the game. Optionally, a function to filter them can be provided.
+  all(): Npc[];
+  all(filter?: (npc: Npc[]) => Npc[]): Npc[] {
+    let all = Variables().slaves;
+    if (filter) return all.filter(filter);
+    return all;
+  }
+  //Get the NPC with the indicated unique ID
   get(uid: Uid): Npc {
-    return Variables().slaves.firstOrDefault(
-      (slave: Person) => slave.uid == uid
+    return this.all().firstOrDefault(
+      (slave: Npc) => slave.uid == uid
     );
   }
+  //Constructs a sentence indicating the stats requirements and optionally the current values in an NPC.
   getMinRequirementsSentence(
     requirements: Record<string, number>,
     npc?: Npc,
@@ -246,7 +260,6 @@ class Person extends Npc {
   skin: string;
   haveClothes: boolean = true;
   uniqueness: PersonUniqueness;
-  stopAging?: boolean;
   generate(gen?: PersonGeneration): Person {
     if (gen === undefined) gen = new PersonGeneration();
     let person = new Person();
@@ -292,7 +305,8 @@ class Person extends Npc {
       Math.floor(Math.random() * (genGen.toAge - genGen.fromAge)) +
       genGen.fromAge;
     person.ageIntroduced = person.age;
-    person.hasBoobs = (person.sex == "female" || person.sex == "herm") && person.age >= 13;
+    person.hasBoobs =
+      (person.sex == "female" || person.sex == "herm") && person.age >= 13;
     if (person.age < 6)
       person.freedomWish -= ((6 - person.age) / 6) * person.freedomWish;
     person.genitals = {

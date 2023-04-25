@@ -47,7 +47,7 @@ Energy:<<if $cheat>>\
     <</dialog>>
 <</link>>
 <<link "⚙ Settings">><<include settings>><</link>>
-:: settings
+:: settings {"position":"500,125"}
 <<dialog Settings>>\
     <style>.addressing{width: 6em;min-width: 0 !important}h3{color:yellow}</style>
     <div class="tabs">\
@@ -273,7 +273,7 @@ Energy:<<if $cheat>>\
         Player.bindSettingDom('lustDecCum',$settings,'lustDecCum')
     </script>\
 <</dialog>>\
-:: noAgingNpcList [nobr]
+:: noAgingNpcList [nobr] {"position":"375,125"}
 <<if $settings.cook.exceptions.length>>
     <<for _exception range $settings.cook.exceptions>>
         <<set _exceptionPerson = Person.get(_exception.npc)>>

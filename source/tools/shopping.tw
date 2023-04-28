@@ -41,7 +41,7 @@ $buyProduct.description
 :: onlineStore [nobr] {"position":"775,1125"}
 <div class='container' style="text-align: center;">
     <div class='row'><!--https://fictionalcompanies.fandom.com/wiki/Amazoon-->
-        <h2>Anazom</h2><h3>Next day delivery</h3>
+        <h2 class="passageHead">Anazom</h2><h3 class="passageHead">Next day delivery</h3>
     </div>
     <div class='row'>
         <<for _productIndex to 0; _productIndex lt $onlineStore.products.length; _productIndex++>>

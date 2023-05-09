@@ -43,21 +43,8 @@ $buyProduct.description
     <div class='row'><!--https://fictionalcompanies.fandom.com/wiki/Amazoon-->
         <h2 class="passageHead">Anazom</h2><h3 class="passageHead">Next day delivery</h3>
     </div>
-    <div class='row'>
-        <<for _productIndex to 0; _productIndex lt $onlineStore.products.length; _productIndex++>>
-            <<set
-                _product = $onlineStore.products[_productIndex];
-                _priceStyle = "color:" + (_product.price > $player.cash ? "red" : "#8af");
-            >>
-            <<if !_product.soldOut>>
-                <a class="product" @data-productindex="_productIndex" @data-product="JSON.stringify(_product)">
-                    <div class='four columns shopProduct'>
-                        <<itemImage _product.name>>
-                        <div><<- OnlineStore.productText(_product)>><span @style="_priceStyle"><<-  OnlineStore.priceText(_product)>></span></div>
-                    </div>
-                </a>
-            <</if>>
-        <</for>>
+    <div class='row' id="productList">
+        <<storeProductList $onlineStore 0>>
     </div>
     <br><br>
     <div class='row'>
@@ -72,20 +59,6 @@ $buyProduct.description
         </div>
     </div>
 </div>
-<script>
-    $('.product').each(function() {
-        let $this = $(this);
-        let index = $this.data('productindex');
-        if(OnlineStore.canBuy(index))
-            $this.on('click', function() {
-                SugarCube.State.variables.buyProduct = $this.data('product');
-                SugarCube.State.variables.buyProductIndex = index;
-                SugarCube.Dialog.setup("Buy " + SugarCube.State.variables.buyProduct.name);
-                SugarCube.Dialog.wiki(SugarCube.Story.get("buyProduct").processText());
-                SugarCube.Dialog.open();
-            });
-    });
-</script>
 :: receivePacket {"position":"525,775"}
 <<scenery home>>
 ''Delivery man'': "I have a delivery for you"

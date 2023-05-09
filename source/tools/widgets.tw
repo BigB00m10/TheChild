@@ -318,6 +318,54 @@
         Player.getInventory().add(_item);>>
     (_item.description added to your inventory)
 <</widget>>
+<<widget storeProductList>>
+    <<set 
+        _store = _args[0];
+        _filterTag = _args[2];
+        _search = _args[3];
+        _productsPerPage = 20;/*TODO: calc this*/
+        _pageCount = Math.ceil(_store.products.length / _productsPerPage);
+        _page = Math.min(_args[1], _pageCount - 1);
+        _productIndex = _page * _productsPerPage;
+        _endIndex = Math.min(_store.products.length, _productIndex + _productsPerPage + 1);
+    >>
+    <<for ; _productIndex lt _endIndex; _productIndex++>>
+        <<set
+            _product = _store.products[_productIndex];
+            _priceStyle = "color:" + (_product.price > $player.cash ? "red" : "#8af");
+            if(_search) {
+                _search = _search.trim();
+                _matches = _product.name.includes(_search);
+                if(!_matches)
+                    _matches = _product.description.includes(_search);
+                if(!_matches)
+                    _matches = _product.tags.has(_search);
+            } else _matches = true;
+        >>
+        <<if !_product.soldOut && (!_filterTag || _product.tags.has(_filterTag)) && _matches>>
+            <a class="product" @data-productindex="_productIndex" @data-product="JSON.stringify(_product)">
+                <div class='four columns shopProduct'>
+                    <<itemImage _product.name>>
+                    <div><<- OnlineStore.productText(_product)>><span @style="_priceStyle"><<- OnlineStore.priceText(_product)>></span></div>
+                </div>
+            </a>
+        <</if>>
+    <</for>>
+    <script>
+        $('.product').each(function() {
+            let $this = $(this);
+            let index = $this.data('productindex');
+            if(OnlineStore.canBuy(index))
+                $this.on('click', function() {
+                    SugarCube.State.variables.buyProduct = $this.data('product');
+                    SugarCube.State.variables.buyProductIndex = index;
+                    SugarCube.Dialog.setup("Buy " + SugarCube.State.variables.buyProduct.name);
+                    SugarCube.Dialog.wiki(SugarCube.Story.get("buyProduct").processText());
+                    SugarCube.Dialog.open();
+                });
+        });
+    </script>
+<</widget>>
 :: workOption {"position":"875,0"}
 <<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>

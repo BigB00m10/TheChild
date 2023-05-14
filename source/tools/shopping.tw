@@ -18,52 +18,62 @@ $buyProduct.description
     How many? <input type="number" min="1" @max="_max" value="1" id="buyProductQuantity">
 <</if>>\
 
-<span id="spaceAct">\
-    <<button "✅ (Space) Order">>\
-        <<run
-            var input = document.getElementById("buyProductQuantity");
-            var quantity = input ? input.value : 1;
-            if(quantity > 0) {
-                var bought = OnlineStore.buy($buyProductIndex, quantity);
-                if(bought) {
-                    Dialog.close();
-                    Engine.show();
-                }
-            }
-        >>\
-    <</button>>\
-</span>\
-<span id="escAct">\
-    <<button "❌ (Esc) Cancel">>\
-        <<dialogclose>>\
-    <</button>>\
-</span>\
+<span id="spaceAct"><<button "✅ (Space) Order">><<run
+    var input = document.getElementById("buyProductQuantity");
+    var quantity = input ? input.value : 1;
+    if(quantity > 0) {
+        var bought = OnlineStore.buy($buyProduct.name, quantity);
+        if(bought) {
+            Dialog.close();
+            $buyProduct = undefined;
+            Engine.show();
+        }
+    }  
+>><</button>></span> \
+<span id="escAct"><<button "❌ (Esc) Cancel">>
+    <<unset $buyProduct>>
+    <<dialogclose>>
+<</button>></span>\
 :: onlineStore [nobr] {"position":"775,1125"}
+<<set _page = 0>>
 <div class='container' style="text-align: center;">
     <div class='row'><!--https://fictionalcompanies.fandom.com/wiki/Amazoon-->
         <h2 class="passageHead">Anazom</h2><h3 class="passageHead">Next day delivery</h3>
     </div>
-    <div class='row' id="productList">
-        <<storeProductList $onlineStore 0>>
-    </div>
-    <br><br>
-    <div class='row'>
-        <div id='oneAct' class="three columns">
-            <<if State.peek(1).title != State.passage>>
-                <<set $returnPassage to State.peek(1).title>>
-            <</if>>
-            <<keyOption [[Return|$returnPassage]] 🔙>>
-        </div>
-        <div class="nine columns" style="text-align:right">
-            You currently own ¤<<- $player.cash.toFixed(2)>>
-        </div>
+    <div id="productList" style="position:relative;padding-bottom:93%">
+        <div class='row' style="position:absolute;width:100%"></div>
     </div>
 </div>
+<div id="nav"></div>
+<br class="extraSpace"><br class="extraSpace">
+<div class='container'>
+    <div style="text-align:right;float:right">
+        You currently own ¤<<- $player.cash.toFixed(2)>>
+    </div>
+    <div id='oneAct' style="float:left">
+        <<if State.peek(1).title != State.passage>>
+            <<set $returnPassage to State.peek(1).title>>
+        <</if>>
+        <<keyOption [[Return|$returnPassage]] 🔙>>
+    </div>
+</div>
+<<done>><<run
+    var nav = $('#nav').pagination({
+        onPageClick: function(pageNumber) {
+            $('#productList>div').html('').wiki('<<storeProductList $onlineStore ' + (pageNumber-1) + '>>')
+        }
+    });
+    (window.onresize = function() {
+        $('#productList>div').html('').wiki('<<storeProductList $onlineStore ' + _page + '>>');
+        $('#productList').css('padding-bottom', _productListRelHeight + '%');
+        nav.pagination('updateItems', _pageCount);
+    })();
+>><</done>>
 :: receivePacket {"position":"525,775"}
 <<scenery home>>
 ''Delivery man'': "I have a delivery for you"
 
-You received: <<- $onlineStore.bought.items.map(function(item){return item.count + 'x ' + item.name.charAt(0).toUpperCase() + item.name.slice(1)}).join(', ').replace(/, ((?:.(?!, ))+)$/, ' and $1')>>
+You received: <<- $onlineStore.bought.items.map(function(item){return item.count + 'x ' + item.name.toUpperFirst()}).join(', ').replace(/, ((?:.(?!, ))+)$/, ' and $1')>>
 
 <<if !Player.hasAchievement("boughtMattress") && OnlineStore.isBought("mattress")>>\
     <<set $achievements.push("boughtMattress")>>\

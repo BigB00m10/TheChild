@@ -21,6 +21,7 @@ class Product {
   constructor(init?: Product) {
     Object.assign(this, init);
   }
+  //Create an item from this product and add it to the provided inventory. The product availability is not altered by this method.
   transferTo?(inventory: Inventory, count: number = 1) {
     inventory.add({
       name: this.itemName ? this.itemName : this.name,
@@ -46,7 +47,8 @@ class Inventory {
     let existing: Item = this.items.firstOrDefault(
       (i: Item) => i.name == item.name
     );
-    if (existing) existing.count = (existing.count || 1) + (item.count || 1); // Add to existing item, taking into account that not all items have a count
+    if (existing) existing.count = (existing.count || 1) + (item.count || 1);
+    // Add to existing item, taking into account that not all items have a count
     else this.items.push(new Item(item));
   }
   remove(item: Item, count: number = 1): void {
@@ -141,7 +143,8 @@ class OnlineStore {
     }),
     new Product({
       name: "Lactation pills",
-      description: "Got milk? Induces lactation (breasts reqiured)<<emoji 🥛>>.",
+      description:
+        "Got milk? Induces lactation (breasts reqiured)<<emoji 🥛>>.",
       price: 30,
       tags: new Set(["player", "consumable", "medicine"]),
     }),
@@ -165,7 +168,14 @@ class OnlineStore {
         "These hi-tec sunglasses detect subtle variations on people behavior and allows you to see more details about them.",
       price: 500,
       available: 1,
-      tags: new Set(["player", "wearable", "eyes", "tech", "cheat", "unsellable"]),
+      tags: new Set([
+        "player",
+        "wearable",
+        "eyes",
+        "tech",
+        "cheat",
+        "unsellable",
+      ]),
     }),
     new Product({
       name: "Cooking apron",
@@ -190,37 +200,36 @@ class OnlineStore {
     }),
   ];
   bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
-  //Get a product from the store
-  get(name: string): Product {
-    let store: OnlineStore = Variables().onlineStore as OnlineStore;
+  //Get a product from the store, optionally provide the sugarcube variables object to save computing power.
+  get(name: string, variables?: any): Product {
+    if (!variables) variables = Variables();
+    let store: OnlineStore = variables.onlineStore as OnlineStore;
     if (!store) store = this;
-    return store.products.firstOrDefault(
+    let index = store.products.findIndex(
       (p: Product) => p.name.toLowerCase() == name.toLowerCase()
     );
+    if (index == -1) return null;
+    return (store.products[index] = new Product(store.products[index]));
   }
   //Check if a product on the store can be bought with the current available player's money.
-  canBuy(productIndex: number, count: number = 1): boolean {
+  canBuy(name: string, count: number = 1): boolean {
     let variables = Variables();
-    let player = variables.player as Player;
-    let store = variables.onlineStore as OnlineStore;
-    let product = store.products[productIndex];
-    return player.cash >= product.price * count;
+    return variables.player.cash >= this.get(name, variables).price * count;
   }
   //Performs a purchase on a product
-  buy(productIndex: number, count: number = 1): boolean {
+  buy(name: string, count: number = 1): boolean {
     let variables = Variables();
     let player = variables.player as Player;
     let store = variables.onlineStore as OnlineStore;
-    let product = new Product(store.products[productIndex]);
+    let product = this.get(name, variables);
     let total = product.price * count;
     if (total > player.cash) return false;
     store.bought = new Inventory(store.bought);
     product.transferTo(store.bought, count);
     player.cash = Math.round((player.cash - total) * 100) / 100;
     if (product.available > 0) {
-      if (product.available <= count)
-        variables.onlineStore.products[productIndex].soldOut = true;
-      else variables.onlineStore.products[productIndex].available -= count;
+      if (product.available <= count) product.soldOut = true;
+      else product.available -= count;
     }
     return true;
   }

@@ -63,11 +63,20 @@ $buyProduct.description
             $('#productList>div').html('').wiki('<<storeProductList $onlineStore ' + (pageNumber-1) + '>>')
         }
     });
-    (window.onresize = function() {
-        $('#productList>div').html('').wiki('<<storeProductList $onlineStore ' + _page + '>>');
-        $('#productList').css('padding-bottom', _productListRelHeight + '%');
-        nav.pagination('updateItems', _pageCount);
-    })();
+    var resizeTimeout;
+    var resizeEvent = function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function(){
+            $('#productList>div').html('').wiki('<<storeProductList $onlineStore ' + _page + '>>');
+            $('#productList').css('padding-bottom', _productListRelHeight + '%');
+            if(_pageCount>1)
+                nav.show().pagination('updateItems', _pageCount);
+            else
+                nav.hide();
+        }, 50)};
+    $(window).on('resize', resizeEvent);
+    $(document).one(':passageinit ', function(){ $(window).off('resize', resizeEvent) });
+    resizeEvent();
 >><</done>>
 :: receivePacket {"position":"525,775"}
 <<scenery home>>

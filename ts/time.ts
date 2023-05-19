@@ -101,14 +101,26 @@ class Now {
     player.workedToday = false;
     let slaves = variables.slaves as Person[];
     let agingIgDays = variables.settings.agingIgDays ?? 365.25;
+    let ageUp = (slave: Person) => {
+      slave.ageProgress = 0;
+      slave.age++;
+      if (!variables.agedUpNpc) variables.agedUpNpc = new Set<number>();
+      (<Set<number>>variables.agedUpNpc).add(slave.uid);
+    };
     let manageAging =
-      agingIgDays > 0
+      agingIgDays == 365.25
         ? (slave: Person) => {
-            if (slave.stopAging || ++slave.ageProgress < agingIgDays) return;//TODO: if real time, age on the same day/month every year
-            slave.ageProgress = 0;
-            slave.age++;
-            if (!variables.agedUpNpc) variables.agedUpNpc = new Set<number>();
-            (<Set<number>>variables.agedUpNpc).add(slave.uid);
+            if (slave.stopAging) return;
+            let currentDate = this.getCurrentDate();
+            let nextBirthDay = new Date(currentDate); //Date object to calculate next birthday. Starting with current date.
+            nextBirthDay.setDate(nextBirthDay.getDate() - ++slave.ageProgress); //First, increase progress and go to last birthday
+            nextBirthDay.setFullYear(nextBirthDay.getFullYear() + 1); //Then advance a year
+            if (currentDate >= nextBirthDay) ageUp(slave);
+          }
+        : agingIgDays > 0
+        ? (slave: Person) => {
+            if (!slave.stopAging || ++slave.ageProgress >= agingIgDays)
+              ageUp(slave);
           }
         : () => {};
     for (let index = 0; index < amount; index++) {

@@ -215,9 +215,7 @@ abstract class Npc {
   }
   //Get the NPC with the indicated unique ID
   get(uid: Uid): Npc {
-    return this.all().firstOrDefault(
-      (slave: Npc) => slave.uid == uid
-    );
+    return this.all().firstOrDefault((slave: Npc) => slave.uid == uid);
   }
   //Constructs a sentence indicating the stats requirements and optionally the current values in an NPC.
   getMinRequirementsSentence(
@@ -414,6 +412,7 @@ class Person extends Npc {
   }
   getShortDescription(person?: Person, addTitle?: boolean): string {
     if (!person) person = Variables().npc;
+    if (typeof person == "number") person = <Person>window.Person.get(person);
     return `${person.name} (${person.age} y.o. ${
       addTitle ? person.title + " " : ""
     }${person.hairColor} hair)`;

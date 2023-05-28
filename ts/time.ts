@@ -119,7 +119,7 @@ class Now {
           }
         : agingIgDays > 0
         ? (slave: Person) => {
-            if (!slave.stopAging || ++slave.ageProgress >= agingIgDays)
+            if (!slave.stopAging && ++slave.ageProgress >= agingIgDays)
               ageUp(slave);
           }
         : () => {};

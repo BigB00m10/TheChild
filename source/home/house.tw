@@ -9,12 +9,15 @@
 	As the sun reveals the world to a nice <<- Now.getWeekDay()>> morning, you climb out of bed, ready to start a new day. <<- either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
 <<else>>\
 	You currently stand in the middle of your cozy small bedroom.
+<</if>><<if $agedUpNpc && $agedUpNpc.size>>
+    @@color:yellow;''<<- Array.from($agedUpNpc).map(uid=>Person.getShortDescription(uid)).getSentence() + ' aged up!'>>''@@
+    <<unset $agedUpNpc>>
 <</if>>\
 <<if $player.sleeping && OnlineStore.pendingOrder()>>
     Someone is knocking at the front door!!
     Who might that be?
     <<keyOption [[Go check|receivePacket]] 🚪>>
-<<else>>
+<<else>>\
     <<unlessEmergency>>\
         <<wanderingSlaves>>\
         <<slaveEvents BedRoom>>

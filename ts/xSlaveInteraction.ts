@@ -1783,15 +1783,31 @@ window.Interactions["slave"] = {
         },
       },
     },
-    giveLactationPill: {
-      inventoryRequirements: ["Lactation pills"],
-      npcRequirements: ["hasBoobs", "!lactating"],
-      optionText: "💊 Give $npc.pronoun a lactation pill.",
-      contents: `You give $npc.name a lactation pill.
-      <<run Player.removeItem("Lactation pills")>>
-      `,
-      npcStats: ["+lactating"],
-      next: baseInteractionOptions,
+    givePill: {
+      optionText: "💊 Give $npc.pronoun a pill",
+      showIfEmpty: false,
+      contents: "Which pill do you want to give to $npc.name?",
+      next: {
+        lactation: {
+          inventoryRequirements: ["Lactation pills"],
+          npcRequirements: ["hasBoobs", "!lactating"],
+          optionText: "💊 Give $npc.pronoun a lactation pill.",
+          contents: `You give $npc.name a lactation pill.
+          <<run Player.removeItem("Lactation pills")>>
+          `,
+          npcStats: ["+lactating"],
+          next: baseInteractionOptions,
+        },
+        agingStop: {
+          inventoryRequirements: ["Aging stop pill"],
+          npcRequirements: ['!stopAging'],
+          optionText: "💊 Give $npc.pronoun an aging stop pill.",
+          contents: `You give $npc.name an aging stop pill.<<run Player.removeItem('Aging stop pill')>>
+          From now on, $npc.genPronoun will not age anymore and $npc.genPronoun'll stay like this forever.`,
+          npcStats: ["+stopAging"],
+          next: baseInteractionOptions,
+        },
+      },
     },
     giveClothes: {
       npcRequirements: ["!haveClothes"],

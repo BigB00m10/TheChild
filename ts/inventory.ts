@@ -144,7 +144,7 @@ class OnlineStore {
     new Product({
       name: "Lactation pills",
       description:
-        "Got milk? Induces lactation (breasts reqiured)<<emoji 🥛>>.",
+        "Got milk? Induces lactation (breasts required)<<emoji 🥛>>.",
       price: 30,
       tags: new Set(["player", "consumable", "medicine"]),
     }),
@@ -187,7 +187,7 @@ class OnlineStore {
     }),
     new Product({
       name: "Rope",
-      description: "A stong sturdy rope",
+      description: "A strong sturdy rope",
       price: 20,
       tags: new Set(["player", "sex", "toy"]),
     }),
@@ -197,6 +197,12 @@ class OnlineStore {
       price: 50,
       available: 1,
       tags: new Set(["player", "book", "skill", "unsellable"]),
+    }),
+    new Product({
+      name: "Aging stop pill",
+      description: "Miraculous pill that freezes the age of any NPC forever",
+      price: 100,
+      tags: new Set(["player", "consumable", "medicine"]),
     }),
   ];
   bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)

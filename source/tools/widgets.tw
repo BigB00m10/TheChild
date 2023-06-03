@@ -168,21 +168,21 @@
             <</for>>
         <</dialog>><</button>><br>
         Characteristics: <<- Person.getPersonalityDescription($npc.uniqueness)>>
-        <label class="toggle-button">\
-            <input id="toggleAging" type="checkbox" class="macro-checkbox"><span>Stop aging</span>\
+        <br><label class="toggle-button">
+            <input id="toggleAging" type="checkbox" class="macro-checkbox"><span>Stop aging</span>
         </label>
-        <<button 'Age up right now'>>
+        <br><<button 'Age up right now'>>
             <<set _dialogTitle='Aging up ' + _npc.name>>
-            <<dialog _dialogTitle>>\
+            <<dialog _dialogTitle>>
                 Are you sure you want to age up _npc.name?
                 This action cannot be reversed in the future.
-                <span id="spaceAct"><<button "✅ (Space) Yes">>
+                <br><span id="spaceAct"><<button "✅ (Space) Yes">>
                     <<set _npc.age++>>
                     <<dialogclose>>
-                <</button>></span> \
+                <</button>></span>
                 <span id="escAct"><<button "❌ (Esc) Cancel">>
                     <<dialogclose>>
-                <</button>></span>\
+                <</button>></span>
             <</dialog>>
         <</button>>
         <<done>><<run

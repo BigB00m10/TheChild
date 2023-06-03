@@ -136,14 +136,32 @@ Energy:<<if $cheat>>\
                     Stop aging of these NPCs: <<- _stopAgingNpcs.map(function(npc){return npc.name}).getSentence()>> <<button Modify>>
                         <<dialog "Non-aging NPCs">>\
                             <style>@media(min-width:714px){#nonAgingNpcContent{min-width:665px}}</style>\
+                            <<set 
+                                _updateNonAgingNpcSelect = function() {
+                                    _nonAgingNpcSelect.empty().select2({
+                                        placeholder:"Select NPC...",
+                                        dropdownParent:$('#npcSelector'),
+                                        data:Person.all(function(npc){
+                                            return !npc.stopAging;
+                                        }).map(function(npc){return {
+                                            id: npc.uid,
+                                            text: Person.getShortDescription(npc, true)/*TODO: might not be a person in the future*/
+                                        }})
+                                    }).val(null).trigger('change');
+                                };
+                                _removeNonAgingNpc = function(uid) {
+                                    Person.get(uid).stopAging = false;
+                                    $('#nonAging' + uid).remove();
+                                    _updateNonAgingNpcSelect();
+                                };
+                            >>
                             <div class="row" id="nonAgingNpcContent">\
                                 <div class="one-half column" id="nonAgingList">\
                                     <<for _npc range _stopAgingNpcs>><<capture _npc>>\
                                         <<set _nonAgingNpcId='nonAging'+_npc.uid>>\
-                                        <span @id="_nonAgingNpcId"><<- Person.getShortDescription(_npc)>><<button Remove>><<run
-                                            _npc.stopAging = false;
-                                            $('#nonAging'+_npc.uid).remove();
-                                        >><</button>>
+                                        <span @id="_nonAgingNpcId"><<- Person.getShortDescription(_npc)>><<button Remove>>
+                                            <<run _removeNonAgingNpc(_npc.uid)>>
+                                        <</button>>
                                     </span><</capture>><</for>>\
                                 </div><div class="one-half column" id="npcSelector">\
                                     NPCs:
@@ -153,23 +171,14 @@ Energy:<<if $cheat>>\
                             </div>
                             <<button 'Return to settings'>><<include settings>><</button>>
                             <<done>><<run
-                                $('#nonAgingNpcSelect').select2({
-                                    placeholder:"Select NPC...",
-                                    dropdownParent:$('#npcSelector'),
-                                    data: Person.all(function(npc){
-                                        return !npc.stopAging;
-                                    }).map(function(npc){return {
-                                        id: npc.uid,
-                                        text: Person.getShortDescription(npc, true)/*TODO: might not be a person in the future*/
-                                    }})
-                                }).val(null).trigger('change');
+                                _nonAgingNpcSelect = $('#nonAgingNpcSelect');
+                                _updateNonAgingNpcSelect();
                                 $('#addNonAgingNpcBtn').on('click', function(){
                                     var uid = $('#nonAgingNpcSelect').val();
                                     var npc = Person.get(uid);
                                     npc.stopAging = true;
-                                    var npcDom = document.createElement('span');
-                                    npcDom.id = "nonAging" + uid;
-                                    $('#nonAgingList').append($(npcDom).wiki(Person.getShortDescription(npc) + '<<button Remove>><<run Person.get(' + uid + ').stopAging=false;$("#nonAging' + uid + '").remove()>><</button>><br>'));
+                                    $('#nonAgingList').append($('<span id="nonAging' + uid + '">').wiki(Person.getShortDescription(npc) + '<<button Remove>><<run _removeNonAgingNpc(' + uid + ')>><</button>><br>'));
+                                    _updateNonAgingNpcSelect();
                                 });
                             >><</done>>
                         <</dialog>>

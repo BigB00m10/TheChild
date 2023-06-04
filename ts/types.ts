@@ -270,6 +270,9 @@ class PseudoRandom {
           for (let charIndex = 0; charIndex < component.length; charIndex++)
             seed = (seed << 5) - seed + component.charCodeAt(charIndex);
           break;
+        case "object":
+          if (component.getTime) seed += component.getTime() / 60000;
+          break;
       }
     }
     return Math.abs(seed);

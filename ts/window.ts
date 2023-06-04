@@ -92,6 +92,7 @@ $(document).on(":passageinit", () => {
           reassignUid = true;
         }
         let addSlaveUniqueness = !slaves[0].uniqueness;
+        let randomIndex = 0;
         slaves.forEach((slave: Person) => {
           if (!slave.hunger) slave.hunger = 0;
           if (!slave.GenPronoun) {
@@ -168,9 +169,9 @@ $(document).on(":passageinit", () => {
           }
           if (slave.ageProgress == undefined) {
             slave.ageProgress = PseudoRandom.getFromRange(
-              PseudoRandom.getSeed(slave.name, slave.age),
+              PseudoRandom.getSeed(variables.now.date, randomIndex++),
               0,
-              5
+              7
             );
             slave.ageIntroduced = slave.age;
           }

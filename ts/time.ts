@@ -106,6 +106,7 @@ class Now {
       slave.age++;
       if (!variables.agedUpNpc) variables.agedUpNpc = new Set<number>();
       (<Set<number>>variables.agedUpNpc).add(slave.uid);
+      window.Person.adjustPubescence(true, slave);
     };
     let manageAging =
       agingIgDays == 365.25

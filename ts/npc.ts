@@ -31,11 +31,14 @@ abstract class Npc {
   ageProgress: number = 0; //Number of days passed while having the current age.
   stopAging?: boolean;
   pregnantDays?: number; //Number of days passed while being pregnant or undefined if not pregnant.
+  impregnator?: Uid; //UID of the NPC which this NPC is pregnant from.
   sex: Sex;
   gender: Gender;
   hasPussy: boolean;
   hasPenis: boolean;
   hasBoobs: boolean;
+  producesSperm: boolean;
+  impregnationChance: number; //Percentage chance of this NPC getting impregnated when receiving sperm internally.
   lactating: boolean;
   lubricatedAss: boolean;
   lubricatedPussy: boolean;
@@ -76,6 +79,32 @@ abstract class Npc {
   //Where this NPC is located in the house or in the world, try to match up with the scenery name.
   location: string = "unknown";
   inventory: Inventory;
+  adjustPubescence(agedUp: boolean = false, npc: Npc = undefined): void {
+    if (!npc) npc = this;
+    if ((agedUp && npc.age == 13) || npc.age > 12)
+      //Pubescent for the first time
+      switch (npc.sex) {
+        case "female":
+          npc.hasBoobs = true;
+          npc.impregnationChance = 80;
+          break;
+        case "herm":
+          npc.hasBoobs = npc.producesSperm = true;
+          npc.impregnationChance = 80;
+          break;
+        case "male":
+          npc.producesSperm = true;
+          break;
+      }
+    else {
+      if (npc.hasBoobs == undefined) npc.hasBoobs = false;
+      if (npc.producesSperm == undefined) {
+        npc.producesSperm = false;
+        npc.impregnationChance = 0;
+      }
+      return;
+    }
+  }
   getInventory(npc?: Npc): Inventory {
     if (!npc) npc = Variables().npc;
     return (npc.inventory = new Inventory(npc.inventory));
@@ -303,8 +332,7 @@ class Person extends Npc {
       Math.floor(Math.random() * (genGen.toAge - genGen.fromAge)) +
       genGen.fromAge;
     person.ageIntroduced = person.age;
-    person.hasBoobs =
-      (person.sex == "female" || person.sex == "herm") && person.age >= 13;
+    person.adjustPubescence();
     if (person.age < 6)
       person.freedomWish -= ((6 - person.age) / 6) * person.freedomWish;
     person.genitals = {

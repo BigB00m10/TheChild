@@ -1890,7 +1890,7 @@ window.Interactions["slave"] = {
       optionText: "⛓️ Suspend $npc.name from the rafters",
       altMinutes: () => 30,
       contents: `\
-        <<scenery tortRafters>>
+        <<set $scenery='tortRafters'>>
         <<if $npc.lust gt 60>>\
           <<set _reaction = "lust">>\
         <<elseif $npc.love gt 60>>\

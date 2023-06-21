@@ -97,10 +97,16 @@ abstract class Npc {
           break;
       }
     else {
-      if (npc.hasBoobs == undefined) npc.hasBoobs = false;
+      const fertile = npc.age > 12;
+      const female = npc.sex == "female" || npc.sex == "herm";
+      const male = npc.sex == "male" || npc.sex == "herm";
+      if (npc.hasBoobs == undefined) {
+        npc.hasBoobs = fertile && female;
+        npc.lactating = false;
+      }
       if (npc.producesSperm == undefined) {
-        npc.producesSperm = false;
-        npc.impregnationChance = 0;
+        npc.producesSperm = fertile && male;
+        npc.impregnationChance = fertile && female ? 80 : 0;
       }
       return;
     }
@@ -964,6 +970,7 @@ class PersonUniqueness {
   constructor(prototype: PersonUniqueness) {
     Object.assign(this, prototype);
   }
+  //Add a random preset personality to the indicated person. If the apply parameter is set to false the apply function (see above) will not be called (useful when adding a personality to an existing person without altering the current stats)
   static applyRandom(person: Person, apply = true): PersonUniqueness {
     let randomNumber = PseudoRandom.getFromRange(
       PseudoRandom.getSeed(person.age, person.name),

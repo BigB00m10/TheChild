@@ -23,23 +23,27 @@ interface NpcValue {
   virginBonus?: number;
   total?: number;
 }
-abstract class Npc {
-  uid: Uid;
+abstract class LivingCharacter {
   name: string;
+  sex: Sex;
+  gender: Gender;
+  uid: Uid;
+  hasPussy: boolean;
+  hasPenis: boolean;
+  hasBoobs: boolean;
+  lactating: boolean;
+  pregnantDays?: number; //Number of days passed while being pregnant or undefined if not pregnant.
+  impregnator?: Uid; //UID of the character which this character is pregnant from.
+  impregnationChance: number; //Percentage chance of this character getting impregnated when receiving sperm internally.
+  genitals: AllGenitals; //Description of this character genitals
+  inventory: Inventory;
+}
+abstract class Npc extends LivingCharacter {
   ageIntroduced: number; //What was the age of the NPC when it was introduced to the game (generated).
   age: number;
   ageProgress: number = 0; //Number of days passed while having the current age.
   stopAging?: boolean;
-  pregnantDays?: number; //Number of days passed while being pregnant or undefined if not pregnant.
-  impregnator?: Uid; //UID of the NPC which this NPC is pregnant from.
-  sex: Sex;
-  gender: Gender;
-  hasPussy: boolean;
-  hasPenis: boolean;
-  hasBoobs: boolean;
   producesSperm: boolean;
-  impregnationChance: number; //Percentage chance of this NPC getting impregnated when receiving sperm internally.
-  lactating: boolean;
   lubricatedAss: boolean;
   lubricatedPussy: boolean;
   pussyTraining: number = 0;
@@ -63,7 +67,6 @@ abstract class Npc {
   obedience: number = 25;
   lust: number = 0;
   freedomWish: number = 75;
-  genitals: AllGenitals;
   status: NpcStatus = "citizen";
   //Name of the last event assigned to this NPC
   event: string;
@@ -78,7 +81,6 @@ abstract class Npc {
   punishments: string[] = [];
   //Where this NPC is located in the house or in the world, try to match up with the scenery name.
   location: string = "unknown";
-  inventory: Inventory;
   adjustPubescence(agedUp: boolean = false, npc: Npc = undefined): void {
     if (!npc) npc = this;
     if ((agedUp && npc.age == 13) || npc.age > 12)

@@ -22,17 +22,10 @@ function Variables(): any {
 function Temporary(): any {
   return temporary() as any;
 }
-class Player {
+class Player extends LivingCharacter {
+  gameVersion: string = "0.1.14.2_BETA";
   //Zero UID identifies the player.
   uid: Uid = 0;
-  name: string;
-  sex: Sex;
-  gender: Gender;
-  genitals: AllGenitals;
-  hasPussy: boolean;
-  hasPenis: boolean;
-  hasBoobs: boolean;
-  lactating: boolean;
   //The name of the hole where the player can be fucked by default (not sure if this will be used)
   sexHole: string;
   home: Home = Homes.smallUrban;
@@ -74,38 +67,43 @@ class Player {
   setSex(sex: Sex, player?: Player) {
     if (!player) player = Variables().player as Player;
     player.sex = sex;
-    if (sex == "male") {
-      player.genitals = {
-        male: "dick",
-        female: null,
-        all: "dick",
-      };
-      player.hasPenis = true;
-      player.hasPussy = false;
-      player.hasBoobs = false;
-      player.sexHole = "ass";
-    }
-    if (sex == "female") {
-      player.genitals = {
-        male: null,
-        female: "pussy",
-        all: "pussy",
-      };
-      player.hasPenis = false;
-      player.hasPussy = true;
-      player.hasBoobs = true;
-      player.sexHole = "pussy";
-    }
-    if (sex == "herm") {
-      player.genitals = {
-        male: "dick",
-        female: "pussy",
-        all: "dick and pussy",
-      };
-      player.hasPenis = true;
-      player.hasPussy = true;
-      player.hasBoobs = true;
-      player.sexHole = "pussy";
+    switch (sex) {
+      case "male":
+        player.genitals = {
+          male: "dick",
+          female: null,
+          all: "dick",
+        };
+        player.hasPenis = true;
+        player.hasPussy = false;
+        player.hasBoobs = false;
+        player.sexHole = "ass";
+        player.impregnationChance = 0;
+        break;
+      case "female":
+        player.genitals = {
+          male: null,
+          female: "pussy",
+          all: "pussy",
+        };
+        player.hasPenis = false;
+        player.hasPussy = true;
+        player.hasBoobs = true;
+        player.sexHole = "pussy";
+        player.impregnationChance = 80;
+        break;
+      case "herm":
+        player.genitals = {
+          male: "dick",
+          female: "pussy",
+          all: "dick and pussy",
+        };
+        player.hasPenis = true;
+        player.hasPussy = true;
+        player.hasBoobs = true;
+        player.sexHole = "pussy";
+        player.impregnationChance = 80;
+        break;
     }
   }
   //Achievements are used to keep track of what things are already done before.

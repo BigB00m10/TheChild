@@ -204,6 +204,20 @@ class OnlineStore {
       price: 100,
       tags: new Set(["player", "consumable", "medicine"]),
     }),
+    new Product({
+      name: "Female fertility pill",
+      description: `Advanced tech pill that permanently increases the chance of getting pregnant by 20%
+      This pill will work on any living character, including yourself.`,
+      price: 30,
+      tags: new Set(["player", "consumable", "medicine", "fertility"]),
+    }),
+    new Product({
+      name: "Male fertility pill",
+      description: `Advanced tech pill that gives the ability to produce sperm permanently.
+      This pill will work on any living character with male genitals.`,
+      price: 30,
+      tags: new Set(["player", "consumable", "medicine", "fertility"]),
+    }),
   ];
   bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
   //Get a product from the store, optionally provide the sugarcube variables object to save computing power.

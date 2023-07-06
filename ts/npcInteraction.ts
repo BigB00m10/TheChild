@@ -164,7 +164,7 @@ const checkCanBeShown = (option: NpcInteraction) => {
   if (!canBeShown) return false;
   if (option.locationExclusions)
     option.locationExclusions.forEach(
-      (location) => (canBeShown &&= (location != Variables().scenery))
+      (location) => (canBeShown &&= location != Variables().scenery)
     );
   if (!canBeShown) return false;
   //TODO: also check room inventory for locationRequirements
@@ -193,7 +193,7 @@ const checkCanBeShown = (option: NpcInteraction) => {
         canBeShown = option.locationRequirements.includes(Variables().scenery);
       if (option.locationExclusions)
         option.locationExclusions.forEach(
-          (location) => (canBeShown &&= (location != Variables().scenery))
+          (location) => (canBeShown &&= location != Variables().scenery)
         );
       if (canBeShown) complexCanBeShown = true;
     });
@@ -529,5 +529,38 @@ Macro.add("npcStimulated", {
       if (!Temporary().npcStatModifiers) Temporary().npcStatModifiers = [];
       Temporary().npcStatModifiers.push("+aroused");
     } else window.Now.assertTimedEvent($npc.uid + "arousalEnd", 0.5);
+  },
+});
+function hasActiveContraception(character: LivingCharacter) {
+  return character.uid //If the UID is zero it's the player, otherwise it's an NPC
+    ? window.Person.hasAchievement("activeContraception", <Npc>character)
+    : window.Player.hasAchievement("activeContraception");
+}
+//To indicate that there has been an internal cumshot from the first indicated character to the second and make the second pregnant if applicable.
+Macro.add("checkImpregnation", {
+  handler: () => {
+    const impregnator: LivingCharacter = this.args[0];
+    const target: LivingCharacter = this.args[1];
+    if (
+      !target.pregnantDays || //Already pregnant
+      !target.impregnationChance || //Cannot get pregnant
+      (impregnator.uid && !(<Npc>impregnator).producesSperm) ||
+      hasActiveContraception(target) ||
+      hasActiveContraception(impregnator)
+    )
+      return;
+    if (
+      target.impregnationChance > 98 ||
+      PseudoRandom.getInt(
+        PseudoRandom.getSeed(target.name, target.uid, turns())
+      ) < target.impregnationChance
+    ) {
+      //Target got impregnated
+      target.pregnantDays = 0;
+      target.impregnator = impregnator.uid;
+    }
+    $(document.createElement("span"))
+      .wiki(`@@color:yellow;${target.name} might have been impregnated@@`)
+      .appendTo(this.output);
   },
 });

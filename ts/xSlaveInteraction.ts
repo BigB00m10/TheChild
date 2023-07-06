@@ -37,6 +37,11 @@ let cumOutsideOptions: NpcInteractionOptions = {
 let baseInteractionRoute = () => Variables().npcInteractionRoute.split(".")[0];
 let baseInteractionOptions = () =>
   <NpcInteractionOptions>window.Interactions[baseInteractionRoute()].options;
+let goBackToBeginningOption: NpcInteraction = {
+  optionText: "🔙 Go back",
+  action: true,
+  contents: '<<openNpcInteraction $npcInteractionRoute.split(".")[0]>>',
+};
 //Returns the different talk options
 let talkOptions = () =>
   window.Interactions[baseInteractionRoute()].options["talk"]
@@ -167,19 +172,10 @@ window.Interactions["slave"] = {
                 "<<set Person.setAchievement('playerAskedPreviousExperienceLiked')>><<personUniqueness likedPreviousNaughty>>",
               next: () => talkOptions().sexExp.next as NpcInteractionOptions,
             },
-            back: {
-              optionText: "🔙 Go back",
-              action: true,
-              contents:
-                '<<openNpcInteraction $npcInteractionRoute.split(".")[0]>>',
-            },
+            back: goBackToBeginningOption,
           },
         },
-        back: {
-          optionText: "🔙 Go back",
-          action: true,
-          contents: '<<openNpcInteraction $npcInteractionRoute.split(".")[0]>>',
-        },
+        back: goBackToBeginningOption,
       },
     },
     hug: {
@@ -507,7 +503,7 @@ window.Interactions["slave"] = {
                         $npc.pussySpermAmount++;
                         $player.lust = 0;
                       >>\
-                      After shooting all your load you pull out your dick leaving $npc.pronoun with your present inside.`,
+                      After shooting all your load you pull out your dick leaving $npc.pronoun with your present inside.<<checkImpregnation $player $npc>>`,
                       next: () => afterStrip(),
                     },
                     ...cumOutsideOptions,
@@ -1785,13 +1781,13 @@ window.Interactions["slave"] = {
     },
     givePill: {
       optionText: "💊 Give $npc.pronoun a pill",
-      showIfEmpty: false,
+      showIfEmpty: false, //Do not show this option if it has to lead to an empty interaction (no options except ending the interaction tree)
       contents: "Which pill do you want to give to $npc.name?",
       next: {
         lactation: {
           inventoryRequirements: ["Lactation pills"],
           npcRequirements: ["hasBoobs", "!lactating"],
-          optionText: "💊 Give $npc.pronoun a lactation pill.",
+          optionText: "🍼 Give $npc.pronoun a lactation pill.",
           contents: `You give $npc.name a lactation pill.
           <<run Player.removeItem("Lactation pills")>>
           `,
@@ -1800,11 +1796,52 @@ window.Interactions["slave"] = {
         },
         agingStop: {
           inventoryRequirements: ["Aging stop pill"],
-          npcRequirements: ['!stopAging'],
-          optionText: "💊 Give $npc.pronoun an aging stop pill.",
+          npcRequirements: ["!stopAging"],
+          optionText: "⏱ Give $npc.pronoun an aging stop pill.",
           contents: `You give $npc.name an aging stop pill.<<run Player.removeItem('Aging stop pill')>>
           From now on, $npc.genPronoun will not age anymore and $npc.genPronoun'll stay like this forever.`,
           npcStats: ["+stopAging"],
+          next: baseInteractionOptions,
+        },
+        femaleFertility: {
+          inventoryRequirements: ["Female fertility pill"],
+          npcRequirements: ["impregnationChance<100"],
+          optionText: "♀ Give $npc.pronoun a female fertility pill",
+          contents: `You give $npc.name a female fertility pill.<<run Player.removeItem("Female fertility pill")>>
+          The chance of $npc.pronoun getting pregnant is increased.
+          (<<- Player.has('Female fertility pill') ? Player.getInventory().get('Female fertility pill').count : 'No'>> pills left)`,
+          npcStats: ["impregnationChance+20"],
+          showNpcStats: false,
+          next: {
+            another: {
+              inventoryRequirements: ["Female fertility pill"],
+              npcRequirements: ["impregnationChance<100"],
+              optionText: "♀ Give $npc.pronoun another one",
+              contents: `You give $npc.name another female fertility pill.<<run Player.removeItem("Female fertility pill")>>
+              The chance of $npc.pronoun getting pregnant is increased even more.
+              (<<- Player.has('Female fertility pill') ? Player.getInventory().get('Female fertility pill').count : 'No'>> pills left)`,
+              showNpcStats: false,
+              npcStats: () =>
+                baseInteractionOptions().givePill.next["femaleFertility"]
+                  .npcStats,
+              next: () =>
+                <NpcInteractionOptions>{
+                  another:
+                    baseInteractionOptions().givePill.next["femaleFertility"],
+                  back: goBackToBeginningOption,
+                },
+            },
+            back: goBackToBeginningOption,
+          },
+        },
+        maleFertility: {
+          inventoryRequirements: ["Male fertility pill"],
+          npcRequirements: ["hasPenis", "!producesSperm"],
+          optionText: "🤍 Give $npc.pronoun a male fertility pill",
+          contents: `You give $npc.name a male fertility pill.<<run Player.removeItem("Male fertility pill")>>
+          From now on $npc.possessive balls will start producing sperm.
+          (<<- Player.has('Male fertility pill') ? Player.getInventory().get('Male fertility pill').count : 'No'>> pills left)`,
+          npcStats: ["+producesSperm"],
           next: baseInteractionOptions,
         },
       },

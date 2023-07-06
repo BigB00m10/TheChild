@@ -78,11 +78,16 @@ $(document).on(":passageinit", () => {
     Save.onLoad.add((save) => {
       let stateIndex = save.state.history.length - 1;
       let variables = save.state.history[stateIndex].variables;
-      if (!variables.player.genitals.all) {
+      if (
+        !variables.player.genitals.all ||
+        variables.player.impregnationChance == undefined
+      ) {
+        if (!variables.player.genitals.all)
+          variables.player.gender =
+            variables.player.gender != "male" ? "girl" : "boy";
         //Change to new gender/sex format from a 0.1.8.2 save or older
+        //This will now also run when updating from 0.1.14.1 or older to add pregnancy stats
         window.Player.setSex(variables.player.gender, variables.player);
-        variables.player.gender =
-          variables.player.gender != "male" ? "girl" : "boy";
       }
       let slaves = variables.slaves as Person[];
       if (slaves && slaves.length) {

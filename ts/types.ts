@@ -106,9 +106,15 @@ class Player extends LivingCharacter {
         break;
     }
   }
+  setAchievement(achievement: string): void {
+    (Variables().achievements as string[]).pushUnique(achievement);
+  }
   //Achievements are used to keep track of what things are already done before.
-  hasAchievement(achievement: string) {
+  hasAchievement(achievement: string): boolean {
     return (Variables().achievements as string[]).includes(achievement);
+  }
+  removeAchievement(achievement: string): void {
+    (Variables().achievements as string[]).delete(achievement);
   }
   //Get how the specified NPC calls the player (how is the player addressed)
   getAddressing(npc: Npc) {

@@ -206,15 +206,26 @@ $(document).on(":passageinit", () => {
           else if (saveProduct.name != product.name)
             onlineStore.products.splice(productIndex, 0, product);
         }
-      if (!onlineStore.version || onlineStore.version < 2) {
-        onlineStore.products[2].description =
-          window.OnlineStore.products[2].description;
-        if (onlineStore.products[1].name == "Matress")
-          onlineStore.products[1] = window.OnlineStore.products[1];
-      }
-      if (onlineStore.version < 3) {
-        onlineStore.products[2] = window.OnlineStore.products[2];
-        onlineStore.version = 3;
+      if (!onlineStore.version || onlineStore.version < 4) {
+        let mattressIndex = onlineStore.products.findIndex(
+          (p) => p.name == "Matress" //Old typo
+        );
+        if (mattressIndex == -1)
+          mattressIndex = onlineStore.products.findIndex(
+            (p) => p.name == "Mattress"
+          );
+        onlineStore.products[mattressIndex] =
+          window.OnlineStore.get("Mattress");
+        const lubeIndex = onlineStore.products.findIndex(
+          (p) => p.name == "Lube"
+        );
+        const lubeOut = onlineStore.products[lubeIndex].soldOut;
+        onlineStore.products[lubeIndex] = window.OnlineStore.get("Lube");
+        onlineStore.products[lubeIndex].soldOut = lubeOut;
+        onlineStore.products[
+          onlineStore.products.findIndex((p) => p.name == "Condom")
+        ] = window.OnlineStore.get("Condom");
+        onlineStore.version = 4;
       }
       let childGen: PersonGeneration = settings.childGeneration;
       if (!childGen.hairStyles)

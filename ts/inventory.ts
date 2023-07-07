@@ -18,6 +18,7 @@ class Product {
   available?: number; //How many times this product can be purchased. This value will decrease after each purchase and set soldOut to true when it reaches zero.
   soldOut?: boolean = false; //If set to true it will not appear available for purchasing.
   tags: Set<string>; //Keywords related to the product. The first keyword indicates where the item go after receiving it. It will be used to filter the products in the future.
+  use?: (item: Item, inventory: Inventory) => void; //Action executed when the player uses this item from an inventory (not through an interaction)
   constructor(init?: Product) {
     Object.assign(this, init);
   }
@@ -101,7 +102,7 @@ class Inventory {
 //The only store available right now, if more are created maybe a parent abstract class should be created.
 class OnlineStore {
   //Updating this class does not automatically updates the $onlineStore story variable unless a new product is added, the version number is used to know if the story variable object should be updated when loading an old save.
-  version: number = 3;
+  version: number = 4;
   products: Product[] = [
     new Product({
       name: "Chloroform",
@@ -158,9 +159,38 @@ class OnlineStore {
     new Product({
       name: "Condom",
       description:
-        "The condom or condom is a thin and flexible case, impermeable to blood",
+        "High quality male condom that adapts to any penis size and avoids pregnancy. Players with penis can use it by using it through the inventory before penetration. Also, the option to put it on others, having an erected penis, appear during sex interactions.",
       price: 8,
-      tags: new Set(["player", "sex", "toy"]),
+      tags: new Set(["player", "sex", "consumable", "fertility"]),
+      use(item, inventory) {
+        const variables = Variables();
+        if (!variables.player.hasPenis) {
+          if (
+            passage() == "npcInteraction" &&
+            variables.npc.hasPenis &&
+            variables.npc.aroused &&
+            !window.Person.hasAchievement("activeContraception")
+          ) {
+            window.Person.setAchievement("activeContraception");
+            inventory.remove(item, 1);
+            return $.wiki(
+              "<<dialog 'Succeed'>>You peel out one condom and slowly wrap $npc.name's $npc.genitals.male with it.<</dialog>>"
+            );
+          }
+          return $.wiki(
+            "<<dialog 'Non applicable'>>There's no erected naked penis near you to put on the condom right now.<</dialog>>"
+          );
+        }
+        if (window.Player.hasAchievement("activeContraception"))
+          return $.wiki(
+            "<<dialog 'Non applicable'>>You are already wearing a condom!<</dialog>>"
+          );
+        window.Player.setAchievement("activeContraception");
+        inventory.remove(item, 1);
+        $.wiki(
+          "<<dialog 'Succeed'>>You peel out one condom and wrap your cock in it.<br>It will stay until you cum or you take it out from the inventory window. But it cannot be reused.<</dialog>>"
+        );
+      },
     }),
     new Product({
       name: "Magic sunglasses",

@@ -52,11 +52,13 @@ class Inventory {
     // Add to existing item, taking into account that not all items have a count
     else this.items.push(new Item(item));
   }
+  //Removes one item from the inventory, the count indicated, or all of them if the specified count is zero.
   remove(item: Item, count: number = 1): void {
     if (!item) return;
     if (!count || count >= item.count) this.items.delete(item);
     else item.count -= count;
   }
+  //Get the item with the specified name or starting with the specified word ignoring case.
   get(name: string): Item {
     let found: Item = this.items.firstOrDefault(
       (i: Item) => i.name.toLowerCase() == name.toLowerCase()
@@ -67,22 +69,29 @@ class Inventory {
       );
     return found;
   }
+  //Same as the remove action but selecting the item by name or starting with the specified word ignoring case.
   removeByName(name: string, count: number = 1): void {
     this.remove(this.get(name), count);
   }
+  //Check if the inventory contains at least the specified count of items selected by name or, if count not specified, at least one.
   has(itemName: string, count: number = 0): boolean {
     let item: Item = this.get(itemName);
     if (item === null) return false;
     if (!count) return true;
     return item.count >= count;
   }
+  //Check if the inventory has at least one item of all of the specified by name.
   hasAll(itemNames: string[]): boolean {
     return itemNames.countWith((n) => this.has(n)) == itemNames.length;
   }
   //Moves an item from this inventory to another (including all quantity of that item)
-  move(itemIndex: number, destination: Inventory): void {
-    destination.add(this.items[itemIndex]);
-    this.items.deleteAt(itemIndex);
+  move(item: Item, destination: Inventory): void;
+  move(itemIndex: number, destination: Inventory): void;
+  move(itemOrIndex: number | Item, destination: Inventory): void {
+    const item =
+      typeof itemOrIndex == "number" ? this.items[itemOrIndex] : itemOrIndex;
+    destination.add(item);
+    this.items.delete(item);
   }
   //Moves an item from this inventory to another (including all quantity of that item)
   moveByName(itemName: string, destination: Inventory): void {
@@ -186,7 +195,7 @@ class OnlineStore {
             "<<dialog 'Non applicable'>>You are already wearing a condom!<</dialog>>"
           );
         window.Player.setAchievement("activeContraception");
-        inventory.remove(item, 1);
+        inventory.move(item, window.Player.getWearingInventory());
         $.wiki(
           "<<dialog 'Succeed'>>You peel out one condom and wrap your cock in it.<br>It will stay until you cum or you take it out from the inventory window. But it cannot be reused.<</dialog>>"
         );

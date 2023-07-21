@@ -7,8 +7,13 @@
 $player.name <<link "[Inventory]">><<dialog "Player Inventory">>\
     <<set _items = Player.getInventory().items>>\
     <<for _item range _items>>\
-        <<-_item.count?_item.count+" ":"">>_item.name
-    <</for>><<unset _items>>\
+        <<print OnlineStore.getInventoryLine(_item)>>
+    <</for>>\
+    <<set _items = Player.getWearingInventory().items>>\
+    <<if _items.length>>!!!Worn Items:
+    <<for _item range _items>>\
+        _item.name
+    <</for>><</if>><<unset _items>>\
 <</dialog>><</link>>
 <<if $cheat>>\
     <<link "+10k">>\

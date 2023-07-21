@@ -225,6 +225,13 @@ $(document).on(":passageinit", () => {
         onlineStore.products[
           onlineStore.products.findIndex((p) => p.name == "Condom")
         ] = window.OnlineStore.get("Condom");
+        var mGlassesIndex = onlineStore.products.findIndex(
+          (p) => p.name == "Magic sunglasses"
+        );
+        var mGlassesOut = onlineStore.products[mGlassesIndex].soldOut;
+        onlineStore.products[mGlassesIndex] =
+          window.OnlineStore.get("Magic sunglasses");
+        onlineStore.products[mGlassesIndex].soldOut = mGlassesOut;
         onlineStore.version = 4;
       }
       let childGen: PersonGeneration = settings.childGeneration;

@@ -113,8 +113,9 @@ abstract class Npc extends LivingCharacter {
       return;
     }
   }
-  getInventory(npc?: Npc): Inventory {
-    if (!npc) npc = Variables().npc;
+  getInventory(npc?: Npc, variables?: any): Inventory {
+    if (!variables) variables = Variables();
+    if (!npc) npc = variables.npc;
     return (npc.inventory = new Inventory(npc.inventory));
   }
   hasAchievement(achievement: string, npc?: Npc): boolean {

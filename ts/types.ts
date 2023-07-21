@@ -43,11 +43,14 @@ class Player extends LivingCharacter {
   //Wearables that the player is currently wearing
   wearingItems: Inventory;
   //Gets the player inventory object from the Sugarcube variables.
-  getInventory(): Inventory {
-    return new Inventory(Variables().player.inventory);
+  getInventory(variables?: any): Inventory {
+    if (!variables) variables = Variables();
+    return new Inventory(variables.player.inventory);
   }
-  getWearingInventory(): Inventory {
-    return new Inventory(Variables().player.wearingItems);
+  //Gets the player inventory object for the currently wearing items from the Sugarcube variables.
+  getWearingInventory(variables?: any): Inventory {
+    if (!variables) variables = Variables();
+    return variables.player.wearingItems = new Inventory(variables.player.wearingItems);
   }
   //Checks if the player has an item in their inventory.
   has(itemName: string, count: number = 1) {

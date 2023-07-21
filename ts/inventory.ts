@@ -18,7 +18,7 @@ class Product {
   available?: number; //How many times this product can be purchased. This value will decrease after each purchase and set soldOut to true when it reaches zero.
   soldOut?: boolean = false; //If set to true it will not appear available for purchasing.
   tags: Set<string>; //Keywords related to the product. The first keyword indicates where the item go after receiving it. It will be used to filter the products in the future.
-  use?: (item: Item, inventory: Inventory) => void; //Action executed when the player uses this item from an inventory (not through an interaction)
+  use?: (characterUid?: Uid) => void; //Action executed when this item is used from an inventory (not through an interaction) by the player or another character indicated by the Uid
   constructor(init?: Product) {
     Object.assign(this, init);
   }
@@ -44,13 +44,19 @@ class Item {
 }
 class Inventory {
   items: Item[] = [];
-  add(item: Item): void {
-    let existing: Item = this.items.firstOrDefault(
+  //Adds the specified item to the inventory optionally overriding the quantity of the number of items to be added
+  add(item: Item, quantity: number = 0): void {
+    const existing: Item = this.items.firstOrDefault(
       (i: Item) => i.name == item.name
     );
-    if (existing) existing.count = (existing.count || 1) + (item.count || 1);
+    if (existing)
+      existing.count = (existing.count || 1) + (quantity || item.count || 1);
     // Add to existing item, taking into account that not all items have a count
-    else this.items.push(new Item(item));
+    else {
+      const destItem = new Item(item);
+      if (quantity) destItem.count = quantity;
+      this.items.push(destItem);
+    }
   }
   //Removes one item from the inventory, the count indicated, or all of them if the specified count is zero.
   remove(item: Item, count: number = 1): void {
@@ -121,14 +127,14 @@ class OnlineStore {
       price: 33,
       tags: new Set(["player", "consumable", "capture"]),
       packQuantity: 10,
-    }),
+    }), //Chloroform
     new Product({
       name: "Mattress",
       description:
         "Adds an additional bed to your basement so another slave can move in.",
       price: 70,
       tags: new Set(["basement", "home", "furniture"]),
-    }),
+    }), //Mattress
     new Product({
       name: "Lube",
       description:
@@ -136,13 +142,13 @@ class OnlineStore {
       price: 15,
       tags: new Set(["player", "sex", "unsellable"]),
       available: 1,
-    }),
+    }), //Lube
     new Product({
       name: "Candy",
       description: "Most people like these. Kids, especially<<emoji 🤭>>.",
       price: 5,
       tags: new Set(["player", "lure", "bribery", "capture", "food"]),
-    }),
+    }), //Candy
     new Product({
       name: "Sleeping pills",
       description: "Sweet dreams are made of these.<<emoji 💤>>.",
@@ -150,29 +156,32 @@ class OnlineStore {
       tags: new Set(["player", "capture", "medicine"]),
       available: 20,
       soldOut: true, //Hidden product, for now
-    }),
+    }), //Sleeping pills
     new Product({
       name: "Lactation pills",
       description:
         "Got milk? Induces lactation (breasts required)<<emoji 🥛>>.",
       price: 30,
       tags: new Set(["player", "consumable", "medicine"]),
-    }),
+    }), //Lactation pills
     new Product({
       name: "Dildo",
       description: "Stimulating toy to play until complete satisfaction.",
       price: 20,
       tags: new Set(["player", "sex", "toy"]),
       available: 1,
-    }),
+    }), //Dildo
     new Product({
       name: "Condom",
       description:
         "High quality male condom that adapts to any penis size and avoids pregnancy. Players with penis can use it by using it through the inventory before penetration. Also, the option to put it on others, having an erected penis, appear during sex interactions.",
       price: 8,
       tags: new Set(["player", "sex", "consumable", "fertility"]),
-      use(item, inventory) {
+      use(characterUid) {
+        if (characterUid) return; //Can only be used by the player right now.
         const variables = Variables();
+        const inventory = window.Player.getInventory(variables);
+        const item = inventory.get(this.name);
         if (!variables.player.hasPenis) {
           if (
             passage() == "npcInteraction" &&
@@ -195,12 +204,13 @@ class OnlineStore {
             "<<dialog 'Non applicable'>>You are already wearing a condom!<</dialog>>"
           );
         window.Player.setAchievement("activeContraception");
-        inventory.move(item, window.Player.getWearingInventory());
+        inventory.remove(item);
+        window.Player.getWearingInventory(variables).add(item, 1);
         $.wiki(
           "<<dialog 'Succeed'>>You peel out one condom and wrap your cock in it.<br>It will stay until you cum or you take it out from the inventory window. But it cannot be reused.<</dialog>>"
         );
       },
-    }),
+    }), //Condom
     new Product({
       name: "Magic sunglasses",
       description:
@@ -215,7 +225,7 @@ class OnlineStore {
         "cheat",
         "unsellable",
       ]),
-    }),
+    }), //Magic sunglasses
     new Product({
       name: "Cooking apron",
       description:
@@ -223,40 +233,40 @@ class OnlineStore {
       price: 20,
       available: 1,
       tags: new Set(["player", "wearable", "cooking", "clothes", "unsellable"]),
-    }),
+    }), //Cooking apron
     new Product({
       name: "Rope",
       description: "A strong sturdy rope",
       price: 20,
       tags: new Set(["player", "sex", "toy"]),
-    }),
+    }), //Rope
     new Product({
       name: "The Art of Shibari",
       description: "Learn the art of tying and suspending submissives",
       price: 50,
       available: 1,
       tags: new Set(["player", "book", "skill", "unsellable"]),
-    }),
+    }), //The Art of Shibari
     new Product({
       name: "Aging stop pill",
       description: "Miraculous pill that freezes the age of any NPC forever",
       price: 100,
       tags: new Set(["player", "consumable", "medicine"]),
-    }),
+    }), //Aging stop pill
     new Product({
       name: "Female fertility pill",
       description: `Advanced tech pill that permanently increases the chance of getting pregnant by 20%
       This pill will work on any living character, including yourself.`,
       price: 30,
       tags: new Set(["player", "consumable", "medicine", "fertility"]),
-    }),
+    }), //Female fertility pill
     new Product({
       name: "Male fertility pill",
       description: `Advanced tech pill that gives the ability to produce sperm permanently.
       This pill will work on any living character with male genitals.`,
       price: 30,
       tags: new Set(["player", "consumable", "medicine", "fertility"]),
-    }),
+    }), //Male fertility pill
   ];
   bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
   //Get a product from the store, optionally provide the sugarcube variables object to save computing power.
@@ -264,11 +274,24 @@ class OnlineStore {
     if (!variables) variables = Variables();
     let store: OnlineStore = variables.onlineStore as OnlineStore;
     if (!store) store = this;
-    let index = store.products.findIndex(
+    const index = store.products.findIndex(
       (p: Product) => p.name.toLowerCase() == name.toLowerCase()
     );
     if (index == -1) return null;
     return (store.products[index] = new Product(store.products[index]));
+  }
+  getInventoryLine(item: Item, characterUid: Uid = 0): string {
+    const index = this.products.findIndex(
+      (p: Product) =>
+        (p.itemName ? p.itemName : p.name).toLowerCase() ==
+        item.name.toLowerCase()
+    );
+    let result = (item.count ? item.count + " " : "") + item.name;
+    if (index == -1 || !this.products[index].use) return result;
+    return (
+      result +
+      ` <<button "use">><<run OnlineStore.products[${index}].use(${characterUid})>><</button>>`
+    );
   }
   //Check if a product on the store can be bought with the current available player's money.
   canBuy(name: string, count: number = 1): boolean {

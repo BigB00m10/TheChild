@@ -19,6 +19,7 @@ class Product {
   soldOut?: boolean = false; //If set to true it will not appear available for purchasing.
   tags: Set<string>; //Keywords related to the product. The first keyword indicates where the item go after receiving it. It will be used to filter the products in the future.
   use?: (characterUid?: Uid) => void; //Action executed when this item is used from an inventory (not through an interaction) by the player or another character indicated by the Uid
+  remove?: (characterUid?: Uid) => void; //Action executed when the remove button is pressed from a list of worn items (not through an interaction) by the player or another character indicated by the Uid
   constructor(init?: Product) {
     Object.assign(this, init);
   }
@@ -210,6 +211,16 @@ class OnlineStore {
           "<<dialog 'Succeed'>>You peel out one condom and wrap your cock in it.<br>It will stay until you cum or you take it out from the inventory window. But it cannot be reused.<</dialog>>"
         );
       },
+      remove(characterUid) {
+        if (characterUid) return; //Can only be used by the player right now.
+        const variables = Variables();
+        const inventory = window.Player.getWearingInventory(variables);
+        inventory.removeByName(this.name);
+        window.Player.removeAchievement("activeContraception");
+        $.wiki(
+          "<<dialog 'Condom removed'>>You slip off the condom from your cock and dispose of it.<</dialog>>"
+        );
+      },
     }), //Condom
     new Product({
       name: "Magic sunglasses",
@@ -280,17 +291,31 @@ class OnlineStore {
     if (index == -1) return null;
     return (store.products[index] = new Product(store.products[index]));
   }
-  getInventoryLine(item: Item, characterUid: Uid = 0): string {
+  private internalInventoryLine(item: Item): [number, string] {
     const index = this.products.findIndex(
       (p: Product) =>
         (p.itemName ? p.itemName : p.name).toLowerCase() ==
         item.name.toLowerCase()
     );
-    let result = (item.count ? item.count + " " : "") + item.name;
+    return [
+      index,
+      (item.count && item.count > 1 ? item.count + " " : "") + item.name,
+    ];
+  }
+  getInventoryLine(item: Item, characterUid: Uid = 0): string {
+    let [index, result] = this.internalInventoryLine(item);
     if (index == -1 || !this.products[index].use) return result;
     return (
       result +
       ` <<button "use">><<run OnlineStore.products[${index}].use(${characterUid})>><</button>>`
+    );
+  }
+  getWornInventoryLine(item: Item, characterUid: Uid = 0): string {
+    let [index, result] = this.internalInventoryLine(item);
+    if (index == -1 || !this.products[index].remove) return result;
+    return (
+      result +
+      ` <<button "remove">><<run OnlineStore.products[${index}].remove(${characterUid})>><</button>>`
     );
   }
   //Check if a product on the store can be bought with the current available player's money.

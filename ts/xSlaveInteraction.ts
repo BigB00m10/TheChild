@@ -497,13 +497,13 @@ window.Interactions["slave"] = {
                     },
                     cumInside: {
                       optionText: "⛽ Cum inside $npc.pronoun.",
-                      contents: `You release your seed inside $npc.name's body, filling up $npc.possessive womb.
+                      contents: `You release your seed inside <<if Player.wearing('condom')>>the condom, making it grow with cum inside $npc.name's womb<<else>>$npc.name's body, filling up $npc.possessive womb<</if>>.
                       <<set 
                         Player.manageEnergy(1);
-                        $npc.pussySpermAmount++;
+                        if(!Player.wearing('condom'))$npc.pussySpermAmount++;
                         $player.lust = 0;
                       >>\
-                      After shooting all your load you pull out your dick leaving $npc.pronoun with your present inside.<<checkImpregnation $player $npc>>`,
+                      After shooting all your load you pull out your dick <<if Player.wearing('condom')>>and remove the cum filled condom<<run OnlineStore.getBase('condom').removed()>><<else>>leaving $npc.pronoun with your present inside<<checkImpregnation $player $npc>><</if>>.`,
                       next: () => afterStrip(),
                     },
                     ...cumOutsideOptions,
@@ -686,13 +686,13 @@ window.Interactions["slave"] = {
                     },
                     cumInside: {
                       optionText: "⛽ Cum inside $npc.pronoun.",
-                      contents: `You release your seed inside $npc.name's body. Filling up $npc.possessive bowels.
+                      contents: `You release your seed inside <<if Player.wearing('condom')>>the condom, making it grow with cum inside $npc.name's body<<else>>$npc.name's body. Filling up $npc.possessive bowels<</if>>.
                       <<set 
                         Player.manageEnergy(1);
-                        $npc.assSpermAmount++;
+                        if(!Player.wearing('condom'))$npc.assSpermAmount++;
                         $player.lust = 0;
                       >>\
-                      After shooting all your load you pull out your dick leaving $npc.pronoun with your present inside.`,
+                      After shooting all your load you pull out your dick <<if Player.wearing('condom')>>and remove the cum filled condom<<run OnlineStore.getBase('condom').removed()>><<else>>leaving $npc.pronoun with your present inside<<checkImpregnation $player $npc>><</if>>.`,
                       next: () => afterStrip(),
                     },
                     ...cumOutsideOptions,

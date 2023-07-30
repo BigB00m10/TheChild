@@ -19,6 +19,7 @@ class Product {
   soldOut?: boolean = false; //If set to true it will not appear available for purchasing.
   tags: Set<string>; //Keywords related to the product. The first keyword indicates where the item go after receiving it. It will be used to filter the products in the future.
   use?: (characterUid?: Uid) => void; //Action executed when this item is used from an inventory (not through an interaction) by the player or another character indicated by the Uid
+  removed?: (characterUid?: Uid) => void; //Event to fire when the item is removed through an interaction or the player pressing the inventory button.
   remove?: (characterUid?: Uid) => void; //Action executed when the remove button is pressed from a list of worn items (not through an interaction) by the player or another character indicated by the Uid
   constructor(init?: Product) {
     Object.assign(this, init);
@@ -211,12 +212,24 @@ class OnlineStore {
           "<<dialog 'Succeed'>>You peel out one condom and wrap your cock in it.<br>It will stay until you cum or you take it out from the inventory window. But it cannot be reused.<</dialog>>"
         );
       },
-      remove(characterUid) {
+      removed(characterUid) {
         if (characterUid) return; //Can only be used by the player right now.
         const variables = Variables();
-        const inventory = window.Player.getWearingInventory(variables);
-        inventory.removeByName(this.name);
+        window.Player.getWearingInventory(variables).removeByName(this.name);
         window.Player.removeAchievement("activeContraception");
+        if (
+          passage() == "npcInteraction" &&
+          variables.npcInteractionRoute.split(".").last().includes("cum")
+        )//When the condom is removed after the player cums in an interaction.
+          window.Player.getInventory().add({
+            name: "Cum filled condom",
+            description: "A used condom with your seed in it",
+            tags: new Set(["npc", "used", "impregnation", "garbage"]),
+          });
+      },
+      remove(characterUid) {
+        if (characterUid) return; //Can only be used by the player right now.
+        this.removed(characterUid);
         $.wiki(
           "<<dialog 'Condom removed'>>You slip off the condom from your cock and dispose of it.<</dialog>>"
         );
@@ -290,6 +303,12 @@ class OnlineStore {
     );
     if (index == -1) return null;
     return (store.products[index] = new Product(store.products[index]));
+  }
+  //Get the a product's base class to get access to the methods defined in that product or the initial field values. Not the actual values.
+  getBase(name: string): Product {
+    return this.products.firstOrDefault(
+      (p: Product) => p.name.toLowerCase() == name.toLowerCase()
+    );
   }
   private internalInventoryLine(item: Item): [number, string] {
     const index = this.products.findIndex(

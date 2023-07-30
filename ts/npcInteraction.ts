@@ -538,11 +538,11 @@ function hasActiveContraception(character: LivingCharacter) {
 }
 //To indicate that there has been an internal cumshot from the first indicated character to the second and make the second pregnant if applicable.
 Macro.add("checkImpregnation", {
-  handler: () => {
+  handler: function () {
     const impregnator: LivingCharacter = this.args[0];
     const target: LivingCharacter = this.args[1];
     if (
-      !target.pregnantDays || //Already pregnant
+      target.pregnantDays != undefined || //Already pregnant
       !target.impregnationChance || //Cannot get pregnant
       (impregnator.uid && !(<Npc>impregnator).producesSperm) ||
       hasActiveContraception(target) ||
@@ -560,7 +560,7 @@ Macro.add("checkImpregnation", {
       target.impregnator = impregnator.uid;
     }
     $(document.createElement("span"))
-      .wiki(`@@color:yellow;${target.name} might have been impregnated@@`)
+      .wiki(`<br><br>@@color:yellow;${target.name} might have been impregnated@@`)
       .appendTo(this.output);
   },
 });

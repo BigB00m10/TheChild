@@ -192,9 +192,10 @@ class OnlineStore {
             !window.Person.hasAchievement("activeContraception")
           ) {
             window.Person.setAchievement("activeContraception");
-            inventory.remove(item, 1);
+            inventory.remove(item);
+            window.Person.getWearingInventory(variables).add(item, 1);
             return $.wiki(
-              "<<dialog 'Succeed'>>You peel out one condom and slowly wrap $npc.name's $npc.genitals.male with it.<</dialog>>"
+              "<<dialog 'Succeed'>>You unwrap one condom and slowly wrap $npc.name's $npc.genitals.male with it.<br>It will be removed after $npc.name ejaculates or when the interaction with $npc.pronoun ends.<</dialog>>"
             );
           }
           return $.wiki(
@@ -209,7 +210,7 @@ class OnlineStore {
         inventory.remove(item);
         window.Player.getWearingInventory(variables).add(item, 1);
         $.wiki(
-          "<<dialog 'Succeed'>>You peel out one condom and wrap your cock in it.<br>It will stay until you cum or you take it out from the inventory window. But it cannot be reused.<</dialog>>"
+          "<<dialog 'Succeed'>>You unwrap one condom and wrap your cock in it.<br>It will stay until you cum or you take it out from the inventory window. But it cannot be reused.<</dialog>>"
         );
       },
       removed(characterUid) {

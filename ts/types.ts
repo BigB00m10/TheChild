@@ -40,8 +40,6 @@ class Player extends LivingCharacter {
   workedToday: boolean = false;
   //Holds the items that the player has available to use.
   inventory: Inventory = new Inventory();
-  //Wearables that the player is currently wearing
-  wearingItems: Inventory;
   //Gets the player inventory object from the Sugarcube variables.
   getInventory(variables?: any): Inventory {
     if (!variables) variables = Variables();
@@ -54,8 +52,8 @@ class Player extends LivingCharacter {
       variables.player.wearingItems
     ));
   }
-  wearing(itemName: string): boolean {
-    return this.getWearingInventory().has(itemName);
+  wearing(itemName: string, variables?: any): boolean {
+    return this.getWearingInventory(variables).has(itemName);
   }
   //Checks if the player has an item in their inventory.
   has(itemName: string, count: number = 1) {

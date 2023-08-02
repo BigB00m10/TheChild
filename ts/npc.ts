@@ -37,6 +37,7 @@ abstract class LivingCharacter {
   impregnationChance: number; //Percentage chance of this character getting impregnated when receiving sperm internally.
   genitals: AllGenitals; //Description of this character genitals
   inventory: Inventory;
+  wearingItems: Inventory; //Wearables that the character is currently wearing
 }
 abstract class Npc extends LivingCharacter {
   ageIntroduced: number; //What was the age of the NPC when it was introduced to the game (generated).
@@ -117,6 +118,14 @@ abstract class Npc extends LivingCharacter {
     if (!variables) variables = Variables();
     if (!npc) npc = variables.npc;
     return (npc.inventory = new Inventory(npc.inventory));
+  }
+  //Gets the NPC inventory object for the currently wearing items from the Sugarcube variables.
+  getWearingInventory(npc?: Npc): Inventory {
+    if (!npc) npc = Variables().npc;
+    return (npc.wearingItems = new Inventory(npc.wearingItems));
+  }
+  wearing(itemName: string, npc?: Npc, variables?: any): boolean {
+    return this.getWearingInventory(variables).has(itemName);
   }
   hasAchievement(achievement: string, npc?: Npc): boolean {
     if (!npc) npc = Variables().npc;

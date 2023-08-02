@@ -692,7 +692,7 @@ window.Interactions["slave"] = {
                         if(!Player.wearing('condom'))$npc.assSpermAmount++;
                         $player.lust = 0;
                       >>\
-                      After shooting all your load you pull out your dick <<if Player.wearing('condom')>>and remove the cum filled condom<<run OnlineStore.getBase('condom').removed()>><<else>>leaving $npc.pronoun with your present inside<<checkImpregnation $player $npc>><</if>>.`,
+                      After shooting all your load you pull out your dick <<if Player.wearing('condom')>>and remove the cum filled condom<<run OnlineStore.getBase('condom').removed()>><<else>>leaving $npc.pronoun with your present inside<<if !$npc.hasPussy>><<checkImpregnation $player $npc>><</if>><</if>>.`,
                       next: () => afterStrip(),
                     },
                     ...cumOutsideOptions,
@@ -1205,25 +1205,37 @@ window.Interactions["slave"] = {
               npcStats: ["fear-5", "lust+20%"],
               next: afterStrip,
             },
-            touchBoobs: {
+            boobAttention: {
               npcRequirements: ["hasBoobs"],
-              optionText: "🍈🍈 Fondle $npc.possessive boobs.",
-              minutesCost: 5,
-              contents: `You bring your hands <<if $npc.location=="tortRafters">>down<<else>>up<</if>> to $npc.possessive beautiful melons and softly rub them, your thumbs brushing $npc.possessive nipples.`,
-              npcStats: ["fear-5", "lust+10%"],
-              next: afterStrip,
-            },
-            suckBoobs: {
-              npcRequirements: ["hasBoobs"],
-              optionText: "🍈🍈👄 Suck $npc.possessive boobs.",
-              minutesCost: 10,
-              contents: `You kiss your way down $npc.possessive neck and chest to $npc.possessive nipple. You suck it into your mouth and gently suckle. $npc.GenPronoun <<thirdPerson "arcs" "arc">> $npc.possessive back.<<npcStimulated>> Your tongue makes circles around $npc.possessive nipple<<if $npc.lactating>>, lapping up $npc.possessive delicious milk<</if>>.`,
-              npcStats: (npc) => {
-                let stats = ["fear-5", "lust+10%", "freedomWish-2"];
-                if (npc.lust >= 65 && npc.love > 50) stats = ["love+5"];
-                return stats;
+              optionText: "🍈🍈 Give some attention to $npc.possessive boobs.",
+              contents:
+                "What type of attention you want to give to $npc.possessive boobs?",
+              next: {
+                fondle: {
+                  optionText: "🍈🍈 Fondle them.",
+                  minutesCost: 5,
+                  contents: `You bring your hands <<if $npc.location=="tortRafters">>down<<else>>up<</if>> to $npc.possessive beautiful melons and softly rub them, your thumbs brushing $npc.possessive nipples.`,
+                  npcStats: ["fear-5", "lust+10%"],
+                  next: afterStrip,
+                },
+                suck: {
+                  optionText: "🍈🍈👄 Suck them.",
+                  minutesCost: 10,
+                  contents: `You kiss your way down $npc.possessive neck and chest to $npc.possessive nipple. You suck it into your mouth and gently suckle. $npc.GenPronoun <<thirdPerson "arcs" "arc">> $npc.possessive back.<<npcStimulated>> Your tongue makes circles around $npc.possessive nipple<<if $npc.lactating>>, lapping up $npc.possessive delicious milk<</if>>.`,
+                  npcStats: (npc) => {
+                    let stats = ["fear-5", "lust+10%", "freedomWish-2"];
+                    if (npc.lust >= 65 && npc.love > 50) stats = ["love+5"];
+                    return stats;
+                  },
+                  next: afterStrip,
+                },
+                back: {
+                  optionText: "🔙 Go back",
+                  action: true,
+                  contents:
+                    '<<openNpcInteraction $npcInteractionRoute.split(".")[0]+".pushDown.strip">>',
+                },
               },
-              next: afterStrip,
             },
             getPenetrated: {
               npcRequirements: ["hasPenis", "aroused"],
@@ -1366,6 +1378,74 @@ window.Interactions["slave"] = {
                   contents: `You decide not to add any lube for now.`,
                   next: afterStrip,
                 },
+              },
+            },
+            condom: {
+              inventoryRequirements: ["condom"],
+              showIfEmpty: false,
+              optionText: "🌂 Use a condom",
+              contents: `<<set
+                  _canPlayer = $player.hasPenis && !Player.wearing('condom');
+                  _canNpc = $npc.hasPenis && $npc.aroused && !Person.wearing('condom');
+                >><<if _canPlayer && _canNpc>>\
+                  Who are you going to put the condom to?
+                <<elseif _canPlayer>>\
+                  You unwrap one condom and wrap your cock in it.<br>It will stay until you cum or you take it out from the inventory window. But it cannot be reused.<<run
+                    Player.setAchievement("activeContraception");
+                    var inventory = Player.getInventory();
+                    var item = inventory.get('condom');
+                    inventory.remove(item);
+                    Player.getWearingInventory().add(item, 1);
+                  >>
+                <<else>>\
+                  You unwrap one condom and slowly wrap $npc.name's $npc.genitals.male with it.<br>It will be removed after $npc.name ejaculates or when the interaction with $npc.pronoun ends.<<run
+                    Person.setAchievement("activeContraception");
+                    var inventory = Player.getInventory();
+                    var item = inventory.get('condom');
+                    inventory.remove(item);
+                    Person.getWearingInventory().add(item, 1);
+                  >>
+                <</if>>\
+              `,
+              baseRoute: () => (Temporary().canPlayer && Temporary().canNpc) ? "slave.pushDown.strip.condom" : "slave.pushDown.strip",
+              next() {
+                const variables = Variables();
+                const canPlayer =
+                  variables.player.hasPenis &&
+                  !window.Player.wearing("condom", variables);
+                const canNpc =
+                  variables.npc.hasPenis &&
+                  variables.npc.aroused &&
+                  !window.Person.wearing("condom", variables.npc);
+                if (canPlayer && canNpc)
+                  return {
+                    player: {
+                      optionText: "On myself",
+                      contents: `You unwrap one condom and wrap your cock in it.<br>It will stay until you cum or you take it out from the inventory window. But it cannot be reused.<<run
+                        Player.setAchievement("activeContraception");
+                        var inventory = Player.getInventory();
+                        var item = inventory.get('condom');
+                        inventory.remove(item);
+                        Player.getWearingInventory().add(item, 1);
+                      >>`,
+                      next: afterStrip,
+                      baseRoute: () => "slave.pushDown.strip",
+                    },
+                    npc: {
+                      optionText: "On $npc.name",
+                      contents: `You unwrap one condom and slowly wrap $npc.name's $npc.genitals.male with it.<br>It will be removed after $npc.name ejaculates or when the interaction with $npc.pronoun ends.<<run
+                        Person.setAchievement("activeContraception");
+                        var inventory = Player.getInventory();
+                        var item = inventory.get('condom');
+                        inventory.remove(item);
+                        Person.getWearingInventory().add(item, 1);
+                      >>`,
+                      next: afterStrip,
+                      baseRoute: () => "slave.pushDown.strip",
+                    },
+                  };
+                if (!canPlayer && !canNpc) return null;
+                return afterStrip();
               },
             },
           },

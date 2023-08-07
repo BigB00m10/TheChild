@@ -1296,10 +1296,14 @@ window.Interactions["slave"] = {
                 },
                 cum: {
                   optionText: "👍 Let $npc.pronoun cum.",
-                  contents: `<<if $npc.age lt 14>>\
-                      You feel $npc.name shaking while $npc.genPronoun <<thirdPerson "has" "have">> a nice dry cum.
+                  contents: `<<if $npc.producesSperm>>\
+                      <<if Person.wearing('condom')>>\
+                        $npc.name fills up the condom with cum while inside of you. Then you slowly pull yourself out and remove the cum filled condom from $npc.possessive $npc.genitals.male.<<run OnlineStore.getBase('condom').removed($npc.uid)>>
+                      <<else>>\
+                        You feel $npc.possessive dick shooting $npc.possessive seed inside you.<<checkImpregnation $npc $player>>
+                      <</if>>\
                     <<else>>\
-                      You feel $npc.possessive dick shooting $npc.possessive seed inside you.
+                      You feel $npc.name shaking while $npc.genPronoun <<thirdPerson "has" "have">> a nice dry cum.
                     <</if>><<npcCum>>`,
                   npcStats: ["love+10", "freedomWish-10", "hunger+10"],
                   stopOption: "💤 Let $npc.pronoun rest.",
@@ -1407,7 +1411,10 @@ window.Interactions["slave"] = {
                   >>
                 <</if>>\
               `,
-              baseRoute: () => (Temporary().canPlayer && Temporary().canNpc) ? "slave.pushDown.strip.condom" : "slave.pushDown.strip",
+              baseRoute: () =>
+                Temporary().canPlayer && Temporary().canNpc
+                  ? "slave.pushDown.strip.condom"
+                  : "slave.pushDown.strip",
               next() {
                 const variables = Variables();
                 const canPlayer =
@@ -2127,6 +2134,7 @@ window.Interactions["slave"] = {
     },
   },
   timeIncreaseNpcHunger: true,
+  beforeStop: '<<run OnlineStore.getBase("condom").removed($npc.uid)>>',
 };
 //Instead of duplicating same text on the two interactions I just copy the contents and add the code that steals the clothes.
 window.Interactions.slave.options["pushDown"].next.stealClothes.contents =

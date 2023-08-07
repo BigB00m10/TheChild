@@ -120,8 +120,9 @@ abstract class Npc extends LivingCharacter {
     return (npc.inventory = new Inventory(npc.inventory));
   }
   //Gets the NPC inventory object for the currently wearing items from the Sugarcube variables.
-  getWearingInventory(npc?: Npc): Inventory {
-    if (!npc) npc = Variables().npc;
+  getWearingInventory(npc?: Npc, variables?: any): Inventory {
+    if (!variables) variables = Variables();
+    if (!npc) npc = variables.npc;
     return (npc.wearingItems = new Inventory(npc.wearingItems));
   }
   wearing(itemName: string, npc?: Npc, variables?: any): boolean {

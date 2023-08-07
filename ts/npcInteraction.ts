@@ -531,11 +531,6 @@ Macro.add("npcStimulated", {
     } else window.Now.assertTimedEvent($npc.uid + "arousalEnd", 0.5);
   },
 });
-function hasActiveContraception(character: LivingCharacter) {
-  return character.uid //If the UID is zero it's the player, otherwise it's an NPC
-    ? window.Person.hasAchievement("activeContraception", <Npc>character)
-    : window.Player.hasAchievement("activeContraception");
-}
 //To indicate that there has been an internal cumshot from the first indicated character to the second and make the second pregnant if applicable.
 Macro.add("checkImpregnation", {
   handler: function () {
@@ -545,8 +540,9 @@ Macro.add("checkImpregnation", {
       target.pregnantDays != undefined || //Already pregnant
       !target.impregnationChance || //Cannot get pregnant
       (impregnator.uid && !(<Npc>impregnator).producesSperm) ||
-      hasActiveContraception(target) ||
-      hasActiveContraception(impregnator)
+      (impregnator.uid
+        ? window.Person.wearing("condom", <Npc>impregnator)
+        : window.Player.wearing("condom"))
     )
       return;
     if (
@@ -560,7 +556,11 @@ Macro.add("checkImpregnation", {
       target.impregnator = impregnator.uid;
     }
     $(document.createElement("span"))
-      .wiki(`<br><br>@@color:yellow;${target.name} might have been impregnated@@`)
+      .wiki(
+        `<br><br>@@color:yellow;${
+          target.uid ? target.name : "You"
+        } might have been impregnated@@`
+      )
       .appendTo(this.output);
   },
 });

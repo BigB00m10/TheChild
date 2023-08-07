@@ -214,17 +214,26 @@ class OnlineStore {
         );
       },
       removed(characterUid) {
-        if (characterUid) return; //Can only be used by the player right now.
         const variables = Variables();
-        window.Player.getWearingInventory(variables).removeByName(this.name);
-        window.Player.removeAchievement("activeContraception");
+        let npc: Npc = null;
+        if (characterUid) {
+          npc = window.Person.get(characterUid);
+          window.Person.getWearingInventory(npc).removeByName(this.name);
+          window.Person.removeAchievement("activeContraception");
+        } else {
+          window.Player.getWearingInventory(variables).removeByName(this.name);
+          window.Player.removeAchievement("activeContraception");
+        }
         if (
           passage() == "npcInteraction" &&
           variables.npcInteractionRoute.split(".").last().includes("cum")
-        )//When the condom is removed after the player cums in an interaction.
+        )
+          //When the condom is removed after the character cums in an interaction between the player and an npc
           window.Player.getInventory().add({
-            name: "Cum filled condom",
-            description: "A used condom with your seed in it",
+            name: `Condom filled with ${
+              npc ? npc.name + "'s(" + characterUid + ")" : "your"
+            } seed`,
+            description: "Cum filled condom",
             tags: new Set(["npc", "used", "impregnation", "garbage"]),
           });
       },

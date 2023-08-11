@@ -122,8 +122,15 @@ Energy:<<if $cheat>>\
                     <</for>>\
                     <<button '<<emoji 🚫>>None'>><<run $player.job = null;Engine.show()>><<dialog "Job changed">>You're now unemployed.<</dialog>><</button>>\
                 </div><div class="one-half column">\
-                    <h3>Lust drop</h3>\
-                    <label>Amount of lust drop after NPC ejaculating: <input type="number" id="lustDecCum" style="width:3em"></label>
+                    <div class="row">\
+                        <h3>Lust drop</h3>\
+                        <label>Amount of lust drop after NPC ejaculating: <input type="number" id="lustDecCum" style="width:3em"></label>
+                    </div><div class="row">\
+                        <h3>Pregnancy duration</h3>\
+                        <label><input type="radio" name="pregnancyOption" value="months">Months: <input type="number" id="pregnancyMonths" value=9 style="width:2em" min=1 max=99></label>
+                        <label><input type="radio" name="pregnancyOption" value="days">Days: <input type="number" id="pregnancyDays" value=9 style="width:2em" min=1 max=99></label>
+                        <label><input type="radio" name="pregnancyOption" value="disabled">Disable impregnation.</label>
+                    </div>\
                 </div>\
             </div><div class="row">\
                 <div class="one-half column">\
@@ -239,6 +246,44 @@ Energy:<<if $cheat>>\
             agingOptions[1].checked = true;
             $settings.agingIgDays = parseFloat(agingOptions[1].value = agingIgDaysInput.val());
         });
+        var pregnancyOptions = $('input[name=pregnancyOption]')
+        var pregnancyMonthsInput = $('#pregnancyMonths')
+        var pregnancyDaysInput = $('#pregnancyDays')
+        switch($settings.pregnancyOption){
+            case undefined:
+            case 'months':
+                pregnancyOptions[0].checked=true
+                if($settings.pregnancyDays)
+                    pregnancyMonthsInput.val(Math.round($settings.pregnancyDays/30))
+                break
+            case 'days':
+                pregnancyOptions[1].checked=true
+                if($settings.pregnancyDays)
+                    pregnancyDaysInput.val($settings.pregnancyDays)
+                break
+            default:
+                pregnancyOptions[2].checked=true
+                break
+        }
+        pregnancyOptions.on('change',function(){
+            $settings.pregnancyOption = $('input[name=pregnancyOption]:checked').val()
+            switch($settings.pregnancyOption){
+                case 'months':
+                    $settings.pregnancyDays = parseInt(pregnancyMonthsInput.val())*30
+                    break
+                case 'days':
+                    $settings.pregnancyDays = parseInt(pregnancyDaysInput.val())
+                    break
+            }
+        })
+        pregnancyMonthsInput.on('input blur',function(){
+            pregnancyOptions[0].checked=true
+            pregnancyOptions.trigger('change')
+        })
+        pregnancyDaysInput.on('input blur',function(){
+            pregnancyOptions[1].checked=true
+            pregnancyOptions.trigger('change')
+        })
         var defaultOffspringAddr = $variables.player.gender != 'male' ? 'mommy' : 'daddy'
         var addrUpdateValue = function(element){
             var addrDefault = $settings.addressing.slave ? $settings.addressing.slave : $variables.player.name

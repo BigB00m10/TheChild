@@ -293,6 +293,19 @@ class OnlineStore {
       This pill will work on any living character, including yourself.`,
       price: 30,
       tags: new Set(["player", "consumable", "medicine", "fertility"]),
+      use(characterUid) {
+        if (characterUid) return;
+        const player = <Player>Variables().player;
+        if (player.impregnationChance > 98)
+          return $.wiki(
+            '<<dialog "Fertility pill">>Your impregnation chances are already at maximum.</dialog>>'
+          );
+        player.impregnationChance += 20;
+        window.Player.removeItem(this.name);
+        $.wiki(
+          '<<dialog "Fertility pill">>You take the pill permanently increasing your chance of getting pregnant by a 20%<</dialog>>'
+        );
+      },
     }), //Female fertility pill
     new Product({
       name: "Male fertility pill",

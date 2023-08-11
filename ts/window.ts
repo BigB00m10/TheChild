@@ -87,7 +87,14 @@ $(document).on(":passageinit", () => {
             variables.player.gender != "male" ? "girl" : "boy";
         //Change to new gender/sex format from a 0.1.8.2 save or older
         //This will now also run when updating from 0.1.14.1 or older to add pregnancy stats
-        window.Player.setSex(variables.player.gender, variables.player);
+        window.Player.setSex(
+          variables.player.sex
+            ? variables.player.sex
+            : variables.player.gender == "boy"
+            ? "male"
+            : "female",
+          variables.player
+        );
       }
       let slaves = variables.slaves as Person[];
       if (slaves && slaves.length) {

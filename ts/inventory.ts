@@ -316,6 +316,7 @@ class OnlineStore {
     }), //Male fertility pill
   ];
   bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
+  purchaseTime: Date; //Time of the first undelivered purchase.
   //Get a product from the store, optionally provide the sugarcube variables object to save computing power.
   get(name: string, variables?: any): Product {
     if (!variables) variables = Variables();
@@ -380,6 +381,7 @@ class OnlineStore {
       if (product.available <= count) product.soldOut = true;
       else product.available -= count;
     }
+    if (!store.purchaseTime) store.purchaseTime = variables.now.date;
     return true;
   }
   //Gets the product or item final destination
@@ -401,30 +403,28 @@ class OnlineStore {
   }
   //Transfer all bought products to the respective destinations.
   receiveBought(): void {
-    let variables = Variables();
-    let store = variables.onlineStore as OnlineStore;
-    let player = variables.player as Player;
-    let basement = variables.basement as Basement;
+    const variables = Variables();
+    const store = <OnlineStore>variables.onlineStore;
     for (let index = 0; index < store.bought.items.length; index++) {
       const item = store.bought.items[index];
       switch ([...item.tags][0]) {
         case "basement":
-          basement.contents = new Inventory(basement.contents);
-          basement.contents.add(item);
+          variables.basement.contents = new Inventory(variables.basement.contents);
+          variables.basement.contents.add(item);
           break;
         default:
-          player.inventory = new Inventory(player.inventory);
-          player.inventory.add(item);
+          variables.player.inventory = new Inventory(variables.player.inventory);
+          variables.player.inventory.add(item);
           break;
       }
     }
     store.bought = new Inventory(store.bought);
     store.bought.clear();
+    store.purchaseTime = null;
   }
   //Checks if there are items pending delivery
   pendingOrder(): boolean {
-    let store = Variables().onlineStore as OnlineStore;
-    return store.bought.items.length > 0;
+    return Variables().onlineStore.bought.items.length > 0;
   }
   //Builds a price string to be displayed
   priceText(product: Product): string {

@@ -22,6 +22,12 @@ function Variables(): any {
 function Temporary(): any {
   return temporary() as any;
 }
+function Wiki(
+  markup: string,
+  output: HTMLElement | DocumentFragment
+): JQuery<HTMLSpanElement> {
+  return $(document.createElement("span")).wiki(markup).appendTo(output);
+}
 class Player extends LivingCharacter {
   gameVersion: string = "0.1.14.2_BETA";
   //Zero UID identifies the player.
@@ -319,3 +325,43 @@ function getUid(variables?: any): Uid {
   variables.lastUid = variables.lastUid ? variables.lastUid + 1 : 1;
   return variables.lastUid;
 }
+Macro.add("unlessEmergency", {
+  tags: [],
+  handler() {
+    const variables = Variables();
+    if (variables.player.energy < 1)
+      return Wiki(
+        "@@color:red;You REALLY need to sleep@@<br><<keyAction 'Go to sleep' 😴>><<sleep>><</keyAction>>",
+        this.output
+      );
+    if (
+      variables.player.job &&
+      !window.Now.isWeekend(variables.now.date) &&
+      !variables.player.workedToday &&
+      window.Now.isEqualOrLaterThan(
+        variables.player.job.enterTime,
+        variables.now.date
+      )
+    )
+      return Wiki(
+        "@@color:red;You need to go to work@@<br><<workOption>>",
+        this.output
+      );
+    if (
+      variables.onlineStore.purchaseTime &&
+      (passage() == "mainRoom" || //Checks that the player is inside the house
+        variables.player.home.spaces.includes(passage())) &&
+      window.Now.isEqualOrLaterThan("7:00 AM")
+    ) {
+      const yesterday = new Date(variables.now.date);
+      yesterday.setDate(yesterday.getDate() - 1);
+      yesterday.setHours(23, 59, 59);
+      if (variables.onlineStore.purchaseTime.getTime() < yesterday.getTime())
+        return Wiki(
+          "Someone is knocking at the front door!!<br>Who might that be?<br><br><<keyOption [[Go check|receivePacket]] 🚪>>",
+          this.output
+        );
+    }
+    Wiki(this.payload[0].contents, this.output);
+  },
+});

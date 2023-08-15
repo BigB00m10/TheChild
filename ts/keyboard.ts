@@ -22,17 +22,14 @@ $(document).on(":passagestart", () => (keyOptionNumber = 1));
 //Example: <<keyOption [[My text|myPassage]] 🎃 btn>>
 Macro.add("keyOption", {
   handler: function () {
-    let $wrapper = $(document.createElement("span"));
     let emoji =
       this.args.length > 1 ? this.args[1] : "'&nbsp;&nbsp;&nbsp;&nbsp;'";
     let widget =
       this.args.length > 2 && this.args[2] == "btn" ? "button" : "link";
-    $wrapper
-      .wiki(
-        `<<${widget} "<<emoji ${emoji}>>(${keyOptionNumber}) ${this.args[0].text}" "${this.args[0].link}">><</${widget}>>`
-      )
-      .attr("id", keyToId[keyOptionNumber] + "Act")
-      .appendTo(this.output);
+    Wiki(
+      `<<${widget} "<<emoji ${emoji}>>(${keyOptionNumber}) ${this.args[0].text}" "${this.args[0].link}">><</${widget}>>`,
+      this.output
+    ).attr("id", keyToId[keyOptionNumber] + "Act");
     keyOptionNumber = (keyOptionNumber + 1) % 10;
   },
 });
@@ -46,17 +43,14 @@ Macro.add("keyOption", {
 Macro.add("keyAction", {
   tags: null,
   handler: function () {
-    let $wrapper = $(document.createElement("span"));
     let emoji =
       this.args.length > 1 ? this.args[1] : "'&nbsp;&nbsp;&nbsp;&nbsp;'";
     let widget =
       this.args.length > 2 && this.args[2] == "btn" ? "button" : "link";
-    $wrapper
-      .wiki(
-        `<<${widget} "<<emoji ${emoji}>>(${keyOptionNumber}) ${this.args[0]}">>${this.payload[0].contents}<</${widget}>>`
-      )
-      .attr("id", keyToId[keyOptionNumber] + "Act")
-      .appendTo(this.output);
+    Wiki(
+      `<<${widget} "<<emoji ${emoji}>>(${keyOptionNumber}) ${this.args[0]}">>${this.payload[0].contents}<</${widget}>>`,
+      this.output
+    ).attr("id", keyToId[keyOptionNumber] + "Act");
     keyOptionNumber = (keyOptionNumber + 1) % 10;
   },
 });
@@ -67,12 +61,9 @@ Macro.add("keyAction", {
 //Example: <<keyDisabled 'My text' 🎃>>
 Macro.add("keyDisabled", {
   handler: function () {
-    let $wrapper = $(document.createElement("span"));
     let emoji =
       this.args.length > 1 ? this.args[1] : "'&nbsp;&nbsp;&nbsp;&nbsp;'";
-    $wrapper
-      .wiki(`<<emoji ${emoji}>>(${keyOptionNumber}) ${this.args[0]}`)
-      .appendTo(this.output);
+    Wiki(`<<emoji ${emoji}>>(${keyOptionNumber}) ${this.args[0]}`, this.output);
     keyOptionNumber = (keyOptionNumber + 1) % 10;
   },
 });

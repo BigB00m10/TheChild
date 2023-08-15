@@ -223,9 +223,10 @@ Macro.add("npcInteraction", {
       }
       options = callOrGetItself(interaction.next);
     }
-    $(document.createElement("span"))
-      .wiki((interaction ? interaction.contents : collection.contents) + "\n")
-      .appendTo(this.output);
+    Wiki(
+      (interaction ? interaction.contents : collection.contents) + "\n",
+      this.output
+    );
     if (interaction && interaction.altOptions)
       options = interaction.altOptions(npc, options);
     let result = "";
@@ -415,7 +416,7 @@ Macro.add("npcInteraction", {
           result += `\n<<keyOption [[${stopOptionText}|$returnPassage]] ${emoji}>>`;
       }
     }
-    $(document.createElement("span")).wiki(result).appendTo(this.output);
+    Wiki(result, this.output);
   },
 });
 //Outputs a text based on the current person uniqueness in $npc or passed as the first parameter
@@ -500,7 +501,7 @@ Macro.add("personUniqueness", {
       if (uniquenessCase.stats)
         Temporary().npcStatModifiers = uniquenessCase.stats;
       output = output.replace(/^say:(.+)/i, `''${person.name}'': "$1"`);
-      $(document.createElement("span")).wiki(output).appendTo(this.output);
+      Wiki(output, this.output);
     };
     for (let ageIndex = table.length - 1; ageIndex > 0; ageIndex--) {
       if (table[ageIndex][0] > person.age) continue;
@@ -534,6 +535,7 @@ Macro.add("npcStimulated", {
 //To indicate that there has been an internal cumshot from the first indicated character to the second and make the second pregnant if applicable.
 Macro.add("checkImpregnation", {
   handler: function () {
+    if (Variables().settings.pregnancyOption == "disabled") return;
     const impregnator: LivingCharacter = this.args[0];
     const target: LivingCharacter = this.args[1];
     if (
@@ -555,12 +557,11 @@ Macro.add("checkImpregnation", {
       target.pregnantDays = 0;
       target.impregnator = impregnator.uid;
     }
-    $(document.createElement("span"))
-      .wiki(
-        `<br><br>@@color:yellow;${
-          target.uid ? target.name : "You"
-        } might have been impregnated@@`
-      )
-      .appendTo(this.output);
+    Wiki(
+      `<br><br>@@color:yellow;${
+        target.uid ? target.name : "You"
+      } might have been impregnated@@`,
+      this.output
+    );
   },
 });

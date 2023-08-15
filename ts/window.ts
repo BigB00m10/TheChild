@@ -239,6 +239,15 @@ $(document).on(":passageinit", () => {
         onlineStore.products[mGlassesIndex] =
           window.OnlineStore.get("Magic sunglasses");
         onlineStore.products[mGlassesIndex].soldOut = mGlassesOut;
+        if (onlineStore.bought.items.length && !onlineStore.purchaseTime)
+          onlineStore.purchaseTime = window.Now.isEqualOrLaterThan(
+            "7:01 AM",
+            variables.now.date
+          )
+            ? variables.now.date
+            : new Date(variables.now.date).setDate(
+                variables.now.date.getDate() - 1
+              );
         onlineStore.version = 4;
       }
       let childGen: PersonGeneration = settings.childGeneration;

@@ -142,8 +142,10 @@ class Now {
         } else slave.obedience = Math.max(0, slave.obedience - 1);
         window.Person.removeAchievement("howAreYou", slave);
         manageAging(slave);
+        if (slave.pregnantDays != undefined) slave.pregnantDays++;
       });
       player.lust = Math.min(100, player.lust + 10);
+      if (player.pregnantDays != undefined) player.pregnantDays++;
     }
   }
   //Same as above but with hours, also to be used with minutes by giving hour fractions.

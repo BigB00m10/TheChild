@@ -21,19 +21,6 @@
         Now.skipTo("7:00 AM")>>
     <<goto bed>>
 <</widget>>
-<<widget unlessEmergency container>>
-    <<if $player.energy lt 1>>
-        @@color:red;You REALLY need to sleep@@<br>
-        <<keyAction 'Go to sleep' 😴>><<sleep>><</keyAction>>
-    <<else>>
-        <<if $player.job && !Now.isWeekend() && !$player.workedToday && Now.isEqualOrLaterThan($player.job.enterTime)>>
-            @@color:red;You need to go to work@@<br>
-            <<workOption>>
-        <<else>>
-            _contents
-        <</if>>
-    <</if>>
-<</widget>>
 <<widget checkNpcVirgin>>
     <<set _fieldName to _args[0] + 'Virgin'>>
     <<if $npc[_fieldName]>>

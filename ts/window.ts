@@ -280,6 +280,15 @@ $(document).on(":passageinit", () => {
               window.Homes[houseKey].spaces.length
           )
             variables.player.home.spaces = window.Homes[houseKey].spaces;
+      if (
+        !variables.player.gameVersion &&
+        !variables.settings.childGeneration.hairStyles.includes("ponytail")
+      )
+        variables.settings.childGeneration.hairStyles.pushUnique(
+          "pig tails",
+          "twin tails",
+          "ponytail"
+        );
     });
   }
 });

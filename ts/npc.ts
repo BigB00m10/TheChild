@@ -38,6 +38,7 @@ abstract class LivingCharacter {
   genitals: AllGenitals; //Description of this character genitals
   inventory: Inventory;
   wearingItems: Inventory; //Wearables that the character is currently wearing
+  abstract giveBirth(): Npc;
 }
 abstract class Npc extends LivingCharacter {
   ageIntroduced: number; //What was the age of the NPC when it was introduced to the game (generated).
@@ -255,15 +256,17 @@ abstract class Npc extends LivingCharacter {
     });
   }
   //Returns an array with all NPCs present in the game. Optionally, a function to filter them can be provided.
-  all(): Npc[];
-  all(filter?: (npc: Npc[]) => Npc[]): Npc[] {
-    let all = Variables().slaves;
+  all(filter?: (npc: Npc) => boolean, variables?: any): Npc[] {
+    if (!variables) variables = Variables();
+    const all = variables.slaves;
     if (filter) return all.filter(filter);
     return all;
   }
   //Get the NPC with the indicated unique ID
-  get(uid: Uid): Npc {
-    return this.all().firstOrDefault((slave: Npc) => slave.uid == uid);
+  get(uid: Uid, variables?: any): Npc {
+    return this.all(null, variables).firstOrDefault(
+      (slave: Npc) => slave.uid == uid
+    );
   }
   //Constructs a sentence indicating the stats requirements and optionally the current values in an NPC.
   getMinRequirementsSentence(
@@ -289,6 +292,9 @@ type RoughSize = "tiny" | "small" | "normal" | "big" | "very big";
 class Animal extends Npc {
   species: AnimalSpecies;
   roughSize?: RoughSize;
+  giveBirth(): Npc {
+    throw new Error("Animal birthing not yet implemented.");
+  }
 }
 const genderList: Gender[] = ["boy", "girl", "nb"];
 class Person extends Npc {
@@ -306,7 +312,13 @@ class Person extends Npc {
   skin: string;
   haveClothes: boolean = true;
   uniqueness: PersonUniqueness;
-  generate(gen?: PersonGeneration): Person {
+  constructor(definition?: Partial<Person>) {
+    super();
+    if (definition) Object.assign(this, definition);
+  }
+  //Generate a new Person based on the person generation configuration provided or the default one.
+  //setting applyUniqueness to false will avoid that the uniqueness is applied to the Person stats
+  generate(gen?: PersonGeneration, applyUniqueness: boolean = true): Person {
     if (gen === undefined) gen = new PersonGeneration();
     let person = new Person();
     person.sex =
@@ -379,16 +391,16 @@ class Person extends Npc {
     person.hairLength =
       person.age == 0
         ? "short"
-        : person.age == 1
+        : person.age == 2
         ? ["short", "medium"].random()
         : ["short", "medium", "long"].random();
-    let hairStyles = gen.hairStyles;
+    let hairStyles = [...gen.hairStyles];
     if (person.gender == "boy")
       hairStyles.delete("pig tails", "twin tails", "ponytail");
     person.hairStyle = hairStyles.random();
     person.eyeColor = gen.eyeColors.random();
     person.uid = getUid();
-    PersonUniqueness.applyRandom(person);
+    PersonUniqueness.applyRandom(person, applyUniqueness);
     return person;
   }
   getWandering(): Person[] {
@@ -468,6 +480,63 @@ class Person extends Npc {
     if (!person) person = Variables().npc;
     return `${person.age} year old ${person.skin} ${person.title} with ${person.hairLength} ${person.hairStyle} ${person.hairColor} hair and ${person.eyeColor} eyes`;
   }
+  //Non static function. Returns a 0 year old person as a child of this person and the impregnator.
+  giveBirth(): Npc {
+    const variables = Variables();
+    //Get child generation settings
+    const gen = new PersonGeneration().load(variables.settings.childGeneration);
+    gen.females.fromAge =
+      gen.females.toAge =
+      gen.males.fromAge =
+      gen.males.toAge =
+      gen.herms.fromAge =
+      gen.herms.toAge =
+        0;
+    gen.hairColors = [
+      "black",
+      "dark brown",
+      "brown",
+      "light brown",
+      "dirty blonde",
+      "blonde",
+      "red",
+      "auburn",
+    ]; //List natural colors and styles only
+    gen.hairStyles = ["curly", "wavey", "straight"];
+    const npc = window.Person.generate(gen, false); //Generate a new NPC with these settings
+    if (this.impregnator) {
+      //The one that impregnated is another NPC
+      const impregnator = <Person>(
+        window.Person.get(this.impregnator, variables)
+      );
+      ["eyeColor", "hairColor", "skin"].forEach((trait) => {
+        npc[trait] = [this[trait], impregnator[trait]].random(); //Inherit one trait from mom or dad at 50% chance
+      });
+      ["curious", "diligent", "energetic", "naughty", "shy"].forEach(
+        (trait) => {
+          npc.uniqueness[trait] = [
+            this.uniqueness[trait], //Random trait
+            impregnator.uniqueness[trait], //Daddy's trait
+            npc.uniqueness[trait], //Mom's trait
+          ].random(); //Chose one at 33% chance each
+        }
+      );
+    } else {
+      //The one that impregnated is the player
+      ["eyeColor", "hairColor", "skin"].forEach((trait) => {
+        if (random(10) < 8) npc[trait] = this[trait]; //70% chance of inherit each trait from mom
+      });
+      ["curious", "diligent", "energetic", "naughty", "shy"].forEach(
+        (trait) => {
+          //70% chance of inherit each trait from mom
+          if (random(10) < 8) npc.uniqueness[trait] = this.uniqueness[trait];
+        }
+      );
+      npc.love = 80; //Big bonus in love for being blood related
+    }
+    this.pregnantDays = this.impregnator = undefined; //Stop pregnancy
+    return npc;
+  }
 }
 interface GenderGeneration {
   fromAge: number;
@@ -522,9 +591,10 @@ class PersonGeneration {
     "blue",
   ];
   skins = ["tan", "brown", "black", "white", "pale", "olive"];
-  load(definition: Object | string) {
+  load(definition: Object | string): PersonGeneration {
     if (typeof definition == "string") definition = JSON.parse(definition);
     Object.assign(this, definition);
+    return this;
   }
 }
 const maleNames: string[] = [

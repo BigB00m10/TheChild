@@ -37,8 +37,35 @@ abstract class LivingCharacter {
   impregnationChance: number; //Percentage chance of this character getting impregnated when receiving sperm internally.
   genitals: AllGenitals; //Description of this character genitals
   inventory: Inventory;
-  wearingItems: Inventory; //Wearables that the character is currently wearing
-  abstract giveBirth(): Npc;
+  equippedItems: Inventory; //Things that the character has equipped or is wearing.
+  giveBirth(): Npc {
+    const variables = Variables();
+    //Get child generation settings
+    const gen = new PersonGeneration().load(variables.settings.childGeneration);
+    gen.females.fromAge =
+      gen.females.toAge =
+      gen.males.fromAge =
+      gen.males.toAge =
+      gen.herms.fromAge =
+      gen.herms.toAge =
+        0;
+    gen.hairColors = [
+      "black",
+      "dark brown",
+      "brown",
+      "light brown",
+      "dirty blonde",
+      "blonde",
+      "red",
+      "auburn",
+    ]; //List natural colors and styles only
+    gen.hairStyles = ["curly", "wavey", "straight"];
+    const npc = window.Person.generate(gen, false); //Generate a new NPC with these settings
+    npc.dad = this.impregnator;
+    npc.mom = this.uid;
+    this.pregnantDays = this.impregnator = undefined; //Stop pregnancy
+    return npc;
+  }
 }
 abstract class Npc extends LivingCharacter {
   ageIntroduced: number; //What was the age of the NPC when it was introduced to the game (generated).
@@ -116,18 +143,22 @@ abstract class Npc extends LivingCharacter {
     }
   }
   getInventory(npc?: Npc, variables?: any): Inventory {
-    if (!variables) variables = Variables();
-    if (!npc) npc = variables.npc;
+    if (!npc) {
+      if (!variables) variables = Variables();
+      npc = variables.npc;
+    }
     return (npc.inventory = new Inventory(npc.inventory));
   }
-  //Gets the NPC inventory object for the currently wearing items from the Sugarcube variables.
-  getWearingInventory(npc?: Npc, variables?: any): Inventory {
-    if (!variables) variables = Variables();
-    if (!npc) npc = variables.npc;
-    return (npc.wearingItems = new Inventory(npc.wearingItems));
+  //Gets the NPC inventory object for the currently equipped/wearing items from the Sugarcube variables.
+  getEquippedInventory(npc?: Npc, variables?: any): Inventory {
+    if (!npc) {
+      if (!variables) variables = Variables();
+      npc = variables.npc;
+    }
+    return (npc.equippedItems = new Inventory(npc.equippedItems));
   }
   wearing(itemName: string, npc?: Npc, variables?: any): boolean {
-    return this.getWearingInventory(variables).has(itemName);
+    return this.getEquippedInventory(variables).has(itemName);
   }
   hasAchievement(achievement: string, npc?: Npc): boolean {
     if (!npc) npc = Variables().npc;
@@ -312,9 +343,9 @@ class Person extends Npc {
   skin: string;
   haveClothes: boolean = true;
   uniqueness: PersonUniqueness;
-  constructor(definition?: Partial<Person>) {
+  constructor(init?: Partial<Person>) {
     super();
-    if (definition) Object.assign(this, definition);
+    Object.assign(this, init);
   }
   //Generate a new Person based on the person generation configuration provided or the default one.
   //setting applyUniqueness to false will avoid that the uniqueness is applied to the Person stats
@@ -482,28 +513,7 @@ class Person extends Npc {
   }
   //Non static function. Returns a 0 year old person as a child of this person and the impregnator.
   giveBirth(): Npc {
-    const variables = Variables();
-    //Get child generation settings
-    const gen = new PersonGeneration().load(variables.settings.childGeneration);
-    gen.females.fromAge =
-      gen.females.toAge =
-      gen.males.fromAge =
-      gen.males.toAge =
-      gen.herms.fromAge =
-      gen.herms.toAge =
-        0;
-    gen.hairColors = [
-      "black",
-      "dark brown",
-      "brown",
-      "light brown",
-      "dirty blonde",
-      "blonde",
-      "red",
-      "auburn",
-    ]; //List natural colors and styles only
-    gen.hairStyles = ["curly", "wavey", "straight"];
-    const npc = window.Person.generate(gen, false); //Generate a new NPC with these settings
+    const npc = <Person>super.giveBirth();
     if (this.impregnator) {
       //The one that impregnated is another NPC
       const impregnator = <Person>(
@@ -521,6 +531,7 @@ class Person extends Npc {
           ].random(); //Chose one at 33% chance each
         }
       );
+      impregnator.children.push(npc.uid);
     } else {
       //The one that impregnated is the player
       ["eyeColor", "hairColor", "skin"].forEach((trait) => {
@@ -533,8 +544,16 @@ class Person extends Npc {
         }
       );
       npc.love = 80; //Big bonus in love for being blood related
+      variables.player.children.push(npc.uid);
     }
-    this.pregnantDays = this.impregnator = undefined; //Stop pregnancy
+    this.getEquippedInventory(this).add(
+      new Item({
+        name: npc.getShortDescription(),
+        description: "Child being hold",
+        tags: new Set(["holding", "child"]),
+        extra: npc,
+      }) //Make the mother hold the newborn for now
+    );
     return npc;
   }
 }

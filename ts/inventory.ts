@@ -40,6 +40,7 @@ class Item {
   description: string;
   count?: number = 1;
   tags: Set<string>; //Keywords related to this item. It will be used to filter the items in a inventory in the future.
+  extra?: object; //Extra item data
   constructor(init?: Item) {
     Object.assign(this, init);
   }
@@ -193,7 +194,7 @@ class OnlineStore {
           ) {
             window.Person.setAchievement("activeContraception");
             inventory.remove(item);
-            window.Person.getWearingInventory(variables).add(item, 1);
+            window.Person.getEquippedInventory(variables).add(item, 1);
             return $.wiki(
               "<<dialog 'Succeed'>>You unwrap one condom and slowly wrap $npc.name's $npc.genitals.male with it.<br>It will be removed after $npc.name ejaculates or when the interaction with $npc.pronoun ends.<</dialog>>"
             );
@@ -208,7 +209,7 @@ class OnlineStore {
           );
         window.Player.setAchievement("activeContraception");
         inventory.remove(item);
-        window.Player.getWearingInventory(variables).add(item, 1);
+        window.Player.getEquippedInventory(variables).add(item, 1);
         $.wiki(
           "<<dialog 'Succeed'>>You unwrap one condom and wrap your cock in it.<br>It will stay until you cum or you take it out from the inventory window. But it cannot be reused.<</dialog>>"
         );
@@ -218,10 +219,10 @@ class OnlineStore {
         let npc: Npc = null;
         if (characterUid) {
           npc = window.Person.get(characterUid);
-          window.Person.getWearingInventory(npc).removeByName(this.name);
+          window.Person.getEquippedInventory(npc).removeByName(this.name);
           window.Person.removeAchievement("activeContraception");
         } else {
-          window.Player.getWearingInventory(variables).removeByName(this.name);
+          window.Player.getEquippedInventory(variables).removeByName(this.name);
           window.Player.removeAchievement("activeContraception");
         }
         if (
@@ -409,11 +410,15 @@ class OnlineStore {
       const item = store.bought.items[index];
       switch ([...item.tags][0]) {
         case "basement":
-          variables.basement.contents = new Inventory(variables.basement.contents);
+          variables.basement.contents = new Inventory(
+            variables.basement.contents
+          );
           variables.basement.contents.add(item);
           break;
         default:
-          variables.player.inventory = new Inventory(variables.player.inventory);
+          variables.player.inventory = new Inventory(
+            variables.player.inventory
+          );
           variables.player.inventory.add(item);
           break;
       }

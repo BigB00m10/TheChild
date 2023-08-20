@@ -9,7 +9,7 @@ $player.name <<link "[Inventory]">><<dialog "Player Inventory">>\
     <<for _item range _items>>\
         <<print OnlineStore.getInventoryLine(_item)>>
     <</for>>\
-    <<set _items = Player.getWearingInventory().items>>\
+    <<set _items = Player.getEquippedInventory().items>>\
     <<if _items.length>><h3>Worn Items:</h3>\
         <<for _item range _items>>\
             <<print OnlineStore.getWornInventoryLine(_item)>>

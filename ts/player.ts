@@ -18,22 +18,25 @@ class Player extends LivingCharacter {
   inventory: Inventory = new Inventory();
   constructor(definition?: Partial<Player>) {
     super();
-    if (definition) Object.assign(this, definition);
+    Object.assign(this, definition);
   }
   //Gets the player inventory object from the Sugarcube variables.
   getInventory(variables?: any): Inventory {
     if (!variables) variables = Variables();
-    return new Inventory(variables.player.inventory);
-  }
-  //Gets the player inventory object for the currently wearing items from the Sugarcube variables.
-  getWearingInventory(variables?: any): Inventory {
-    if (!variables) variables = Variables();
-    return (variables.player.wearingItems = new Inventory(
-      variables.player.wearingItems
+    return (variables.player.inventory = new Inventory(
+      variables.player.inventory
     ));
   }
+  //Gets the player inventory object for the currently equipped/wearing items from the Sugarcube variables.
+  getEquippedInventory(variables?: any): Inventory {
+    if (!variables) variables = Variables();
+    return (variables.player.equippedItems = new Inventory(
+      variables.player.equippedItems
+    ));
+  }
+  //Checks if the player wears or has the specified item (by name) equipped
   wearing(itemName: string, variables?: any): boolean {
-    return this.getWearingInventory(variables).has(itemName);
+    return this.getEquippedInventory(variables).has(itemName);
   }
   //Checks if the player has an item in their inventory.
   has(itemName: string, count: number = 1) {
@@ -205,5 +208,8 @@ class Player extends LivingCharacter {
         parentVariable["to" + propertyBaseName.toUpperFirst()] = value;
       })
       .val(parentVariable["to" + propertyBaseName.toUpperFirst()]);
+  }
+  giveBirth(): Npc {
+    return null; //TODO
   }
 }

@@ -168,16 +168,15 @@ Macro.add("unlessEmergency", {
       let laborCharacter: LivingCharacter = window.Person.all(
         (npc: Npc) => npc.pregnantDays && npc.pregnantDays >= pregnancyDays
       ).first();
-      if(laborCharacter)
-        laborCharacter = new Person(laborCharacter);
-      if (
-        !laborCharacter &&
+      if (laborCharacter) laborCharacter = new Person(laborCharacter);
+      else if (
         variables.player.pregnantDays &&
         variables.player.pregnantDays >= pregnancyDays
       )
         laborCharacter = new Player(variables.player);
       if (laborCharacter) {
-        return Wiki("", this.output);
+        const baby = laborCharacter.giveBirth();
+        //TODO: show dialog so the player can choose the name of the baby (and maybe it's personality)
       }
     }
     Wiki(this.payload[0].contents, this.output);

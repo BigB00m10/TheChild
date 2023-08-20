@@ -1399,7 +1399,7 @@ window.Interactions["slave"] = {
                     var inventory = Player.getInventory();
                     var item = inventory.get('condom');
                     inventory.remove(item);
-                    Player.getWearingInventory().add(item, 1);
+                    Player.getEquippedInventory().add(item, 1);
                   >>
                 <<else>>\
                   You unwrap one condom and slowly wrap $npc.name's $npc.genitals.male with it.<br>It will be removed after $npc.name ejaculates or when the interaction with $npc.pronoun ends.<<run
@@ -1407,7 +1407,7 @@ window.Interactions["slave"] = {
                     var inventory = Player.getInventory();
                     var item = inventory.get('condom');
                     inventory.remove(item);
-                    Person.getWearingInventory().add(item, 1);
+                    Person.getEquippedInventory().add(item, 1);
                   >>
                 <</if>>\
               `,
@@ -1433,7 +1433,7 @@ window.Interactions["slave"] = {
                         var inventory = Player.getInventory();
                         var item = inventory.get('condom');
                         inventory.remove(item);
-                        Player.getWearingInventory().add(item, 1);
+                        Player.getEquippedInventory().add(item, 1);
                       >>`,
                       next: afterStrip,
                       baseRoute: () => "slave.pushDown.strip",
@@ -1445,7 +1445,7 @@ window.Interactions["slave"] = {
                         var inventory = Player.getInventory();
                         var item = inventory.get('condom');
                         inventory.remove(item);
-                        Person.getWearingInventory().add(item, 1);
+                        Person.getEquippedInventory().add(item, 1);
                       >>`,
                       next: afterStrip,
                       baseRoute: () => "slave.pushDown.strip",

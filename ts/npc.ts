@@ -38,8 +38,9 @@ abstract class LivingCharacter {
   genitals: AllGenitals; //Description of this character genitals
   inventory: Inventory;
   equippedItems: Inventory; //Things that the character has equipped or is wearing.
-  giveBirth(): Npc {
-    const variables = Variables();
+  //Non static function. Returns a 0 year old NPC as a child of this character and the impregnator.
+  giveBirth(variables?: any): Npc {
+    if (!variables) variables = Variables();
     //Get child generation settings
     const gen = new PersonGeneration().load(variables.settings.childGeneration);
     gen.females.fromAge =
@@ -63,7 +64,15 @@ abstract class LivingCharacter {
     const npc = window.Person.generate(gen, false); //Generate a new NPC with these settings
     npc.dad = this.impregnator;
     npc.mom = this.uid;
-    this.pregnantDays = this.impregnator = undefined; //Stop pregnancy
+    npc.uniqueness.name = "inherited";
+    npc.uniqueness.appearingChance =
+      npc.uniqueness.homeOtherNpc =
+      npc.uniqueness.homePersons =
+      npc.uniqueness.ageRange =
+      npc.uniqueness.apply =
+      this.pregnantDays =
+      this.impregnator =
+        undefined; //Stop pregnancy
     return npc;
   }
 }
@@ -513,7 +522,8 @@ class Person extends Npc {
   }
   //Non static function. Returns a 0 year old person as a child of this person and the impregnator.
   giveBirth(): Npc {
-    const npc = <Person>super.giveBirth();
+    const variables = Variables();
+    const npc = <Person>super.giveBirth(variables);
     if (this.impregnator) {
       //The one that impregnated is another NPC
       const impregnator = <Person>(
@@ -544,11 +554,10 @@ class Person extends Npc {
         }
       );
       npc.love = 80; //Big bonus in love for being blood related
-      variables.player.children.push(npc.uid);
     }
     this.getEquippedInventory(this).add(
       new Item({
-        name: npc.getShortDescription(),
+        name: npc.getShortDescription(npc, true),
         description: "Child being hold",
         tags: new Set(["holding", "child"]),
         extra: npc,

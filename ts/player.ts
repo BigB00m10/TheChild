@@ -210,6 +210,32 @@ class Player extends LivingCharacter {
       .val(parentVariable["to" + propertyBaseName.toUpperFirst()]);
   }
   giveBirth(): Npc {
-    return null; //TODO
+    const variables = Variables();
+    const npc = <Person>super.giveBirth(variables);
+    npc.love = 80; //Big bonus in love for being blood related
+    if (this.impregnator) {
+      //The one that impregnated is another NPC
+      const impregnator = <Person>(
+        window.Person.get(this.impregnator, variables)
+      );
+      ["eyeColor", "hairColor", "skin"].forEach((trait) => {
+        if (random(10) < 8) npc[trait] = impregnator[trait]; //70% chance of inherit each trait from dad
+      });
+      ["curious", "diligent", "energetic", "naughty", "shy"].forEach(
+        (trait) => {
+          //70% chance of inherit each trait from dad
+          if (random(10) < 8) npc.uniqueness[trait] = impregnator.uniqueness[trait];
+        }
+      );
+    }
+    this.getEquippedInventory(variables).add(
+      new Item({
+        name: npc.getShortDescription(npc, true),
+        description: "Child being hold",
+        tags: new Set(["holding", "child"]),
+        extra: npc,
+      }) //Make the player hold the newborn for now
+    );
+    return npc;
   }
 }

@@ -72,6 +72,7 @@ You are currently standing in the middle of the main room of your house.
     <<keyOption [[Go outside|home]] 🚪>>
     <<keyOption [[The Basement|basement]] 🔒>>
     <<keyOption [[Your Bedroom|bed]] 🛌>>
+    <<keyOption [[Slave room|slaveroom]] 🛌🏼>>
     <<keyOption [[Garden|garden]] 🌺>>
     <<keyOption [[Kitchen|kitchen]] ☕>>
     <<keyOption [[Toilet|wc]] 🚽>>

@@ -2,6 +2,9 @@
 <<scenery playground>>
 <<personHunting>>
 <<keyOption [[Keep searching|playground]] 🔍>>
+<<keyOption [[Go to swing|swing]] 🎡>>
+<<keyOption [[Go to slide|slide]] 🛝>>
+<<keyOption [[Go to toilet|park]] 🚽>>
 <<keyOption [[Return home|home]] 🏠>>
 :: kidnap {"position":"425,500"}
 <<scenery home>>
@@ -40,3 +43,11 @@ You and the $found_kid.age yo enter your house. You and $found_kid.pronoun then 
 As soon as $found_kid.name realizes what's going on $found_kid.genPronoun tries to escape but you quickly grab and chain $found_kid.pronoun to the wall.
 <<run Person.capture($found_kid)>>
 <<keyOption [[Continue|basement]] ▶>>
+
+:: swing {"position":"875,825"}
+<<scenery swing>>
+<<keyOption [[Return park|playground]] ⚽>>
+
+:: slide {"position":"875,825"}
+<<scenery slide>>
+<<keyOption [[Return park|playground]] ⚽>>

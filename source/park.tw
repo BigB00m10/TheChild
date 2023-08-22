@@ -1,0 +1,16 @@
+:: park {"position":"550,500"}
+<<scenery park>>
+<<keyOption [[Go to toilet girl|toiletgirl]] 👧>>
+<<keyOption [[Go to toilet boy|toiletboy]] 👦>>
+<<keyOption [[Return park|playground]] ⚽>>
+
+
+
+:: toiletgirl {"position":"875,825"}
+<<scenery toiletgirl>>
+<<keyOption [[Leaving the toilet|park]] 🚪>>
+
+
+:: toiletboy {"position":"875,825"}
+<<scenery toiletboy>>
+<<keyOption [[Leaving the toilet|park]] 🚪>>

@@ -1,0 +1,9 @@
+:: slaveroom {"position":"400,700"}
+<<scenery slaveroom>>
+
+<<unlessEmergency>>\
+    <<wanderingSlaves>>\
+    <<slaveEvents BedRoom>>
+    <<keyOption [[Leave your room|main]] 🚪>>
+    <<sleepOption>>\
+<</unlessEmergency>>\

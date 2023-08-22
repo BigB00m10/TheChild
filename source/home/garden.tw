@@ -4,6 +4,11 @@ You are currently standing in your garden.
 <<unlessEmergency>>\
     <<wanderingSlaves>>\
     <<keyOption [[Leave your garden|main]] 🚪>>
+    <<keyOption [[Go to child's hut|hut]] 🛖>>
     <<keyAction 'gardening' 🌺>><<addMinutes 30>><<run Engine.show()>><</keyAction>>: 30min
     <<sleepOption>>\
 <</unlessEmergency>>\
+
+:: hut {"position":"875,825"}
+<<scenery hut>>
+<<keyOption [[Retourn garden|garden]] 🌺>>

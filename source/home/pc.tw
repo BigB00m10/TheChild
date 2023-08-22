@@ -6,6 +6,7 @@ welcome to your computer.
     <<keyOption [[Leave computer|bed]] 💻>>
     <<keyOption [[Watch porn|watchPorn]] 💗>>: 30min
     <<keyOption [[Shop online|onlineStore]] 🛒>>
+    <<keyOption [[Read Doujin/Manga|Manga]] 📚>>
     <<keyOption [[Tor Browser|DarkStore]] 🌐>>
     <<keyOption [[change your name|changenames]]  💬>>
 <</unlessEmergency>>\
@@ -52,3 +53,143 @@ What movie do you want to masturbate to?
     <<keyOption [[Do something else|pc]] 🔙>>
     <<sleepOption>>\
 <</unlessEmergency>>\
+
+:: Manga {"position":"875,825"}
+<<scenery pagesprincipal>>
+<<keyOption [[turn the page|pages1]] ➡️>>
+
+:: pages1 {"position":"875,825"}
+<<scenery pages1>>
+<<keyOption [[turn the page|pages2]] ➡️>>
+
+:: pages2 {"position":"875,825"}
+<<scenery pages2>>
+<<keyOption [[turn the page|pages3]] ➡️>>
+
+:: pages3 {"position":"875,825"}
+<<scenery pages3>>
+<<keyOption [[turn the page|pages4]] ➡️>>
+
+:: pages4 {"position":"875,825"}
+<<scenery pages4>>
+<<keyOption [[turn the page|pages5]] ➡️>>
+
+:: pages5 {"position":"875,825"}
+<<scenery pages5>>
+<<keyOption [[turn the page|pages6]] ➡️>>
+
+:: pages6 {"position":"875,825"}
+<<scenery pages6>>
+<<keyOption [[turn the page|pages7]] ➡️>>
+
+:: pages7 {"position":"875,825"}
+<<scenery pages7>>
+<<keyOption [[turn the page|pages8]] ➡️>>
+
+:: pages8 {"position":"875,825"}
+<<scenery pages8>>
+<<keyOption [[turn the page|pages9]] ➡️>>
+
+:: pages9 {"position":"875,825"}
+<<scenery pages9>>
+<<keyOption [[turn the page|pages10]] ➡️>>
+
+:: pages10 {"position":"875,825"}
+<<scenery pages10>>
+<<keyOption [[turn the page|pages11]] ➡️>>
+
+:: pages11 {"position":"875,825"}
+<<scenery pages11>>
+<<keyOption [[turn the page|pages12]] ➡️>>
+
+:: pages12 {"position":"875,825"}
+<<scenery pages12>>
+<<keyOption [[turn the page|pages13]] ➡️>>
+
+:: pages13 {"position":"875,825"}
+<<scenery pages13>>
+<<keyOption [[turn the page|pages14]] ➡️>>
+
+:: pages14 {"position":"875,825"}
+<<scenery pages14>>
+<<keyOption [[turn the page|pages15]] ➡️>>
+
+:: pages15 {"position":"875,825"}
+<<scenery pages15>>
+<<keyOption [[turn the page|pages16]] ➡️>>
+
+:: pages16 {"position":"875,825"}
+<<scenery pages16>>
+<<keyOption [[turn the page|pages17]] ➡️>>
+
+:: pages17 {"position":"875,825"}
+<<scenery pages17>>
+<<keyOption [[turn the page|pages18]] ➡️>>
+
+:: pages18 {"position":"875,825"}
+<<scenery pages18>>
+<<keyOption [[turn the page|pages19]] ➡️>>
+
+:: pages19 {"position":"875,825"}
+<<scenery pages19>>
+<<keyOption [[turn the page|pages20]] ➡️>>
+
+:: pages20 {"position":"875,825"}
+<<scenery pages20>>
+<<keyOption [[turn the page|pages21]] ➡️>>
+
+:: pages21 {"position":"875,825"}
+<<scenery pages21>>
+<<keyOption [[turn the page|pages22]] ➡️>>
+
+:: pages22 {"position":"875,825"}
+<<scenery pages22>>
+<<keyOption [[turn the page|pages23]] ➡️>>
+
+:: pages23 {"position":"875,825"}
+<<scenery pages23>>
+<<keyOption [[turn the page|pages24]] ➡️>>
+
+:: pages24 {"position":"875,825"}
+<<scenery pages24>>
+<<keyOption [[turn the page|pages25]] ➡️>>
+
+:: pages25 {"position":"875,825"}
+<<scenery pages25>>
+<<keyOption [[turn the page|pages26]] ➡️>>
+
+:: pages26 {"position":"875,825"}
+<<scenery pages26>>
+<<keyOption [[turn the page|pages27]] ➡️>>
+
+:: pages27 {"position":"875,825"}
+<<scenery pages27>>
+<<keyOption [[turn the page|pages28]] ➡️>>
+
+:: pages28 {"position":"875,825"}
+<<scenery pages28>>
+<<keyOption [[turn the page|pages29]] ➡️>>
+
+:: pages29 {"position":"875,825"}
+<<scenery pages29>>
+<<keyOption [[turn the page|pages30]] ➡️>>
+
+:: pages30 {"position":"875,825"}
+<<scenery pages30>>
+<<keyOption [[turn the page|pages31]] ➡️>>
+
+:: pages31 {"position":"875,825"}
+<<scenery pages31>>
+<<keyOption [[turn the page|pages32]] ➡️>>
+
+:: pages32 {"position":"875,825"}
+<<scenery pages32>>
+<<keyOption [[turn the page|pages33]] ➡️>>
+
+:: pages33 {"position":"875,825"}
+<<scenery pages33>>
+<<keyOption [[turn the page|pages34]] ➡️>>
+
+:: pages34 {"position":"875,825"}
+<<scenery pages34>>
+<<keyOption [[End of the book|pc]] 🔚>>

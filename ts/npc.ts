@@ -73,7 +73,19 @@ abstract class LivingCharacter {
       this.pregnantDays =
       this.impregnator =
         undefined; //Stop pregnancy
+    this.lactating = true;
+    const player = <Player>variables.player;
+    if (!player.home.family) player.home.family = [];
+    player.home.family.push(npc);
     return npc;
+  }
+  static getPregnancyMonth(char: LivingCharacter, variables?: any): number {
+    if (!char.pregnantDays) return 0;
+    if (!variables) variables = Variables();
+    const pregnancyDays = variables.settings.pregnancyDays;
+    return Math.ceil(
+      char.pregnantDays / (pregnancyDays != undefined ? pregnancyDays / 9 : 30)
+    );
   }
 }
 abstract class Npc extends LivingCharacter {
@@ -259,17 +271,17 @@ abstract class Npc extends LivingCharacter {
       (space: string) => space != "basement" && !space.startsWith("tort")
     );
     const baseSeed = currentDate.getTime() - 1649048400000; //Current date/time minus the start of the game
-    variables.slaves.forEach((slave: Person) => {
-      switch (slave.status) {
+    window.Person.all(null, variables).forEach((npc: Npc) => {
+      switch (npc.status) {
         case "home slave":
         case "lover":
-          slave.location = PseudoRandom.either(
-            PseudoRandom.getSeed(baseSeed, slave.age, slave.name),
+          npc.location = PseudoRandom.either(
+            PseudoRandom.getSeed(baseSeed, npc.age, npc.name),
             homeSpaces
           );
           break;
         case "servant":
-          if (variables.settings.cook.npc != slave.uid) break;
+          if (variables.settings.cook.npc != npc.uid) break;
           let currentDate = window.Now.getCurrentDate();
           for (const feedTimeString of variables.settings.cook.feedTimes) {
             const currentTimeStamp = currentDate.getTime();
@@ -282,13 +294,13 @@ abstract class Npc extends LivingCharacter {
               currentTimeStamp <= feedTimeStamp
             ) {
               currentDate = null;
-              slave.location = "kitchen";
+              npc.location = "kitchen";
               break;
             }
           }
           if (currentDate)
-            slave.location = PseudoRandom.either(
-              PseudoRandom.getSeed(baseSeed, slave.age, slave.name),
+            npc.location = PseudoRandom.either(
+              PseudoRandom.getSeed(baseSeed, npc.age, npc.name),
               homeSpaces.filter((space: string) => space != "kitchen")
             );
           break;
@@ -298,7 +310,9 @@ abstract class Npc extends LivingCharacter {
   //Returns an array with all NPCs present in the game. Optionally, a function to filter them can be provided.
   all(filter?: (npc: Npc) => boolean, variables?: any): Npc[] {
     if (!variables) variables = Variables();
-    const all = variables.slaves;
+    let all = variables.slaves;
+    if (variables.player.home.family)
+      all = all.concat(variables.player.home.family);
     if (filter) return all.filter(filter);
     return all;
   }
@@ -517,8 +531,15 @@ class Person extends Npc {
     }${person.hairColor} hair)`;
   }
   getLongDescription(person?: Person): string {
-    if (!person) person = Variables().npc;
-    return `${person.age} year old ${person.skin} ${person.title} with ${person.hairLength} ${person.hairStyle} ${person.hairColor} hair and ${person.eyeColor} eyes`;
+    let variables: any;
+    if (!person) {
+      variables = Variables();
+      person = variables.npc;
+    }
+    let description = `${person.age} year old ${person.skin} ${person.title} with ${person.hairLength} ${person.hairStyle} ${person.hairColor} hair and ${person.eyeColor} eyes`;
+    if (LivingCharacter.getPregnancyMonth(person, variables) > 5)
+      variables += `.<br>${person.Possessive} belly visibly bulges suggesting a new life growing in ${person.pronoun}`;
+    return description;
   }
   //Non static function. Returns a 0 year old person as a child of this person and the impregnator.
   giveBirth(): Npc {

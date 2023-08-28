@@ -99,50 +99,52 @@ class Now {
     let variables = Variables();
     let player = variables.player as Player;
     player.workedToday = false;
-    let slaves = variables.slaves as Person[];
     let agingIgDays = variables.settings.agingIgDays ?? 365.25;
-    let ageUp = (slave: Person) => {
-      slave.ageProgress = 0;
-      slave.age++;
+    let ageUp = (npc: Npc) => {
+      npc.ageProgress = 0;
+      npc.age++;
       if (!variables.agedUpNpc) variables.agedUpNpc = new Set<number>();
-      (<Set<number>>variables.agedUpNpc).add(slave.uid);
-      window.Person.adjustPubescence(true, slave);
+      (<Set<number>>variables.agedUpNpc).add(npc.uid);
+      window.Person.adjustPubescence(true, npc);
     };
     let manageAging =
       agingIgDays == 365.25
-        ? (slave: Person) => {
-            if (slave.stopAging) return;
+        ? (npc: Npc) => {
+            if (npc.stopAging) return;
             let currentDate = this.getCurrentDate();
             let nextBirthDay = new Date(currentDate); //Date object to calculate next birthday. Starting with current date.
-            nextBirthDay.setDate(nextBirthDay.getDate() - ++slave.ageProgress); //First, increase progress and go to last birthday
+            nextBirthDay.setDate(nextBirthDay.getDate() - ++npc.ageProgress); //First, increase progress and go to last birthday
             nextBirthDay.setFullYear(nextBirthDay.getFullYear() + 1); //Then advance a year
-            if (currentDate >= nextBirthDay) ageUp(slave);
+            if (currentDate >= nextBirthDay) ageUp(npc);
           }
         : agingIgDays > 0
-        ? (slave: Person) => {
-            if (!slave.stopAging && ++slave.ageProgress >= agingIgDays)
-              ageUp(slave);
+        ? (npc: Npc) => {
+            if (!npc.stopAging && ++npc.ageProgress >= agingIgDays) ageUp(npc);
           }
         : () => {};
     for (let index = 0; index < amount; index++) {
-      slaves.forEach((slave) => {
-        slave.aroused = false;
-        slave.lubricatedAss = false;
-        slave.lubricatedPussy = false;
-        slave.fear = Math.max(0, slave.fear - 10);
-        slave.hunger = Math.min(100, slave.hunger + 10);
-        slave.freedomWish = Math.max(0, slave.freedomWish - 5);
-        slave.lust = Math.max(0, slave.lust - 1);
-        if (slave.hunger >= 90)
-          slave.love = Math.max(0, slave.love - (slave.hunger - 80));
-        if (slave.punishments.includes("naked")) {
-          if (slave.obedience < 60)
-            slave.obedience += Math.round((61 - slave.obedience) * 0.25);
-          else slave.punishments.delete("naked");
-        } else slave.obedience = Math.max(0, slave.obedience - 1);
-        window.Person.removeAchievement("howAreYou", slave);
-        manageAging(slave);
-        if (slave.pregnantDays != undefined) slave.pregnantDays++;
+      window.Person.all(null, variables).forEach((npc) => {
+        if (npc.pregnantDays != undefined) npc.pregnantDays++;
+        npc.aroused = false;
+        npc.lubricatedAss = false;
+        npc.lubricatedPussy = false;
+        npc.fear = Math.max(0, npc.fear - 10);
+        npc.hunger = Math.min(
+          100,
+          npc.hunger +
+            (LivingCharacter.getPregnancyMonth(npc, variables) > 3 ? 17 : 10)
+        );
+        npc.freedomWish = Math.max(0, npc.freedomWish - 5);
+        npc.lust = Math.max(0, npc.lust - 1);
+        if (npc.hunger >= 90)
+          npc.love = Math.max(0, npc.love - (npc.hunger - 80));
+        if (npc.punishments.includes("naked")) {
+          if (npc.obedience < 60)
+            npc.obedience += Math.round((61 - npc.obedience) * 0.25);
+          else npc.punishments.delete("naked");
+        } else npc.obedience = Math.max(0, npc.obedience - 1);
+        window.Person.removeAchievement("howAreYou", npc);
+        manageAging(npc);
       });
       player.lust = Math.min(100, player.lust + 10);
       if (player.pregnantDays != undefined) player.pregnantDays++;
@@ -232,13 +234,14 @@ class Now {
     for (let index = 0; index < cook.feedTimes.length; index++)
       if (!cook.lastFeedings[index] || cook.lastFeedings[index] < today)
         if (this.isEqualOrLaterThan(cook.feedTimes[index], currentDate)) {
-          for (let slave of variables.slaves) {
+          for (let npc of window.Person.all(null, variables)) {
+            //TODO: filter out the ones not living at the player's home in the future
             let config =
-              cook.exceptions.firstOrDefault((e: any) => e.npc == slave.uid) ??
+              cook.exceptions.firstOrDefault((e: any) => e.npc == npc.uid) ??
               cook;
             if (!config.feedEnabled) continue;
-            if (slave.hunger >= config.feedAtHunger)
-              slave.hunger -= Math.max(5, slave.hunger - config.feedAtHunger);
+            if (npc.hunger >= config.feedAtHunger)
+              npc.hunger -= Math.max(5, npc.hunger - config.feedAtHunger);
           }
           cook.lastFeedings[index] = today;
         }

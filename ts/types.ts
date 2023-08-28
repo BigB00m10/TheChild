@@ -13,6 +13,7 @@ interface Home {
   rent: number;
   //Spaces that this house have using the names of the main passages on that space
   spaces: string[];
+  family?: Npc[];
 }
 //Returns the SugarCube variables object in Typescript format (variables saved in history).
 function Variables(): any {

@@ -17,7 +17,7 @@ window.Interactions["houseSlave"] = {
           But $npc.possessive resistance is futile and you push $npc.pronoun into the basement and immediately close the door.
         <</if>>\
       <<else>>\
-        $npc.GenPronoun obediently <<thirdPerson "enters" "enter">> the basement by <<- $npc.pronoun>>self as you open the door.
+        $npc.GenPronoun obediently <<thirdPerson "enters" "enter">> the basement by <<- $npc.pronoun>><<thirdPerson 'self' 'selves'>> as you open the door.
       <</if>>`,
       altOptions(npc, current) {
         if (Temporary().askedToStay) return current;

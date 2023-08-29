@@ -5,7 +5,7 @@ You are currently standing in your kitchen.<<if _cook>> _cook.name is in charge 
 <<unlessEmergency>>\
     <<wanderingSlaves>>\
     <<slaveEvents Kitchen>>
-    <<keyOption [[Leave your kitchen|main]] 🚪>>
+    <<keyOption [[Leave the kitchen|main]] 🚪>>
     <<keyAction 'Have a meal' ☕>>
         <<addMinutes 45>>
         <<set $player.energy = ($player.energy + 18).clamp(0, 100)>>

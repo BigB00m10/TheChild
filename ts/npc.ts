@@ -60,7 +60,7 @@ abstract class LivingCharacter {
       "red",
       "auburn",
     ]; //List natural colors and styles only
-    gen.hairStyles = ["curly", "wavey", "straight"];
+    gen.hairStyles = ["curly", "wavy", "straight"];
     const npc = window.Person.generate(gen, false); //Generate a new NPC with these settings
     npc.dad = this.impregnator;
     npc.mom = this.uid;
@@ -538,7 +538,7 @@ class Person extends Npc {
     }
     let description = `${person.age} year old ${person.skin} ${person.title} with ${person.hairLength} ${person.hairStyle} ${person.hairColor} hair and ${person.eyeColor} eyes`;
     if (LivingCharacter.getPregnancyMonth(person, variables) > 5)
-      variables += `.<br>${person.Possessive} belly visibly bulges suggesting a new life growing in ${person.pronoun}`;
+      description += `.\n${person.Possessive} belly visibly bulges suggesting a new life growing in ${person.pronoun}`;
     return description;
   }
   //Non static function. Returns a 0 year old person as a child of this person and the impregnator.
@@ -608,7 +608,7 @@ class PersonGeneration {
   hermPercentage: number = 0;
   hairStyles = [
     "curly",
-    "wavey",
+    "wavy",
     "straight",
     "emo bangs",
     "fauxhawkian",

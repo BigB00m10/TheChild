@@ -231,7 +231,7 @@ Macro.add("npcInteraction", {
       options = interaction.altOptions(npc, options);
     let result = "";
     let npcHungerIncrease = 0;
-    if (interaction && interaction.minutesCost) {
+    if (interaction && (interaction.minutesCost || interaction.altMinutes)) {
       const minutes = interaction.altMinutes
         ? interaction.altMinutes(interaction.minutesCost)
         : interaction.minutesCost;

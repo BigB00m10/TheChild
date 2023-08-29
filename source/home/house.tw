@@ -6,7 +6,7 @@
         <<run State.history.splice(State.history.length - 1, 1)>>/*Let's forget that we entered the bed scene so that the player can still go back in time. Otherwise they would be redirected back to the interaction.*/
         <<openNpcInteraction wakeUpAfterNightTogether _sleepSlave.uid>>
     <</done>><</if>>
-	As the sun reveals the world to a nice <<- Now.getWeekDay()>> morning, you climb out of bed, ready to start a new day. <<- either("The birds chip happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
+	As the sun reveals the world to a nice <<- Now.getWeekDay()>> morning, you climb out of bed, ready to start a new day. <<- either("The birds chirp happily in the morning sun and the trees rustle alive in the early breeze.", "The morning sun shines through your room, illuminating it in a nice warm glow.")>>
 <<else>>\
 	You currently stand in the middle of your cozy small bedroom.
 <</if>><<if $agedUpNpc && $agedUpNpc.size>>

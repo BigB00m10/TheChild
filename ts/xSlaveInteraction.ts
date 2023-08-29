@@ -2012,7 +2012,7 @@ window.Interactions["slave"] = {
       locationRequirements: ["basement"],
       inventoryRequirements: ["Rope", "The Art of Shibari"],
       optionText: "⛓️ Suspend $npc.name from the rafters",
-      altMinutes: () => 30,
+      minutesCost: 30,
       contents: `\
         <<set $scenery='tortRafters'>>
         <<if $npc.lust gt 60>>\
@@ -2100,7 +2100,7 @@ window.Interactions["slave"] = {
     untie: {
       locationRequirements: ["tortRafters"],
       optionText: "⛓️ Untie",
-      altMinutes: () => 30,
+      minutesCost: 30,
       contents: `You untie the end of the rope and gently lower $npc.name to the ground.\
         You untie $npc.possessive body and help $npc.pronoun to $npc.possessive feet.\
         You examine the rope marks, tracing them gently with your hands: $npc.possessive chest and belly,\
@@ -2112,16 +2112,11 @@ window.Interactions["slave"] = {
         <<if $npc.love gt 60>>\
           $npc.GenPronoun <<thirdPerson "gives" "give">> you a hug.
         <</if>>\
-        <<set _item = {
-          name: "Rope",
-          description: "A strong sturdy rope",
-          count:1,
-          tags: ["player", "sex", "toy"],
-          };
-          Player.getInventory().add(_item);>>
-        (_item.description added to your inventory)
-        <<set $npc.location = "basement">>\
-        `,
+        <<set
+          OnlineStore.get('rope').transferTo(Player.getInventory())
+          $npc.location='basement'
+        >>\
+        (Rope added back to your inventory)`,
       npcStats: ["fear-10", "love+5%"],
       next: {
         toBasement: {

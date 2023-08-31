@@ -2127,6 +2127,16 @@ window.Interactions["slave"] = {
       },
       stopOption: false,
     },
+    pregnancyTest: {
+      canBeShown() {
+        const slave = <Person>Variables().npc;
+        if (!slave.impregnationChance) return false;
+        return !slave.vaginaVirgin || (!slave.hasPussy && !slave.analVirgin);
+      },
+      optionText: "🤰 Check if $npc.name is pregnant",
+      minutesCost: 5,
+      contents: '',//TODO
+    },
   },
   timeIncreaseNpcHunger: true,
   beforeStop: '<<run OnlineStore.getBase("condom").removed($npc.uid)>>',

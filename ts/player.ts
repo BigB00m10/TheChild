@@ -224,7 +224,8 @@ class Player extends LivingCharacter {
       ["curious", "diligent", "energetic", "naughty", "shy"].forEach(
         (trait) => {
           //70% chance of inherit each trait from dad
-          if (random(10) < 8) npc.uniqueness[trait] = impregnator.uniqueness[trait];
+          if (random(10) < 8)
+            npc.uniqueness[trait] = impregnator.uniqueness[trait];
         }
       );
     }
@@ -237,5 +238,13 @@ class Player extends LivingCharacter {
       }) //Make the player hold the newborn for now
     );
     return npc;
+  }
+  //Checks if the player is home inside
+  isHome(variables?: any): boolean {
+    if (!variables) variables = Variables();
+    return (
+      variables.scenery == "mainRoom" ||
+      variables.player.home.spaces.includes(variables.scenery)
+    );
   }
 }

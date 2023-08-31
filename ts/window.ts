@@ -184,6 +184,7 @@ $(document).on(":passageinit", () => {
             );
             slave.ageIntroduced = slave.age;
           }
+          if (slave.hairStyle == "wavey") slave.hairStyle = "wavy";
         });
         if (addSlaveUniqueness) {
           Dialog.setup("Slave personalities");
@@ -280,15 +281,18 @@ $(document).on(":passageinit", () => {
               window.Homes[houseKey].spaces.length
           )
             variables.player.home.spaces = window.Homes[houseKey].spaces;
-      if (
-        !variables.player.gameVersion &&
-        !variables.settings.childGeneration.hairStyles.includes("ponytail")
-      )
-        variables.settings.childGeneration.hairStyles.pushUnique(
-          "pig tails",
-          "twin tails",
-          "ponytail"
-        );
+      if (!variables.player.gameVersion) {
+        if (!variables.settings.childGeneration.hairStyles.includes("ponytail"))
+          variables.settings.childGeneration.hairStyles.pushUnique(
+            "pig tails",
+            "twin tails",
+            "ponytail"
+          );
+        const waveyIndex =
+          variables.settings.childGeneration.hairStyles.indexOf("wavey");
+        if (waveyIndex != -1)
+          variables.settings.childGeneration.hairStyles[waveyIndex] = "wavy";
+      }
     });
   }
 });

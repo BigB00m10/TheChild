@@ -315,6 +315,53 @@ class OnlineStore {
       price: 30,
       tags: new Set(["player", "consumable", "medicine", "fertility"]),
     }), //Male fertility pill
+    new Product({
+      name: "Pregnancy test",
+      description: `High fidelity device to check if someone (another person or yourself) is currently pregnant by peeing on it.
+      This type will not work on animals.`,
+      price: 5,
+      tags: new Set(["player", "pregnancy", "fertility"]),
+      use(characterUid) {
+        if (characterUid) return;
+        const variables = Variables();
+        const player = <Player>variables.player;
+        if (!player.impregnationChance)
+          return $.wiki(
+            "<<dialog 'Pregnancy test'>>There's no need for you to use it. You cannot get pregnant.<</dialog>>"
+          );
+        if (window.Player.hasAchievement("noticedSelfPregnancy"))
+          return $.wiki(
+            "<<dialog 'Pregnancy test'>>You already know that you're currently " +
+              player.pregnantDays +
+              " days pregnant.\nThere's no need for you to take the test<</dialog>>"
+          );
+        if (SugarCube.State.passage == "npcInteraction")
+          return $.wiki(
+            "<<dialog 'Pregnancy test'>>You can't use this while on an interaction with an NPC<</dialog>>"
+          );
+        window.Player.removeItem(this.name);
+        window.Now.addMinutes(5);
+        let dialogText =
+          "You discretely go into a corner making sure nobody sees you";
+        if (window.Player.isHome(variables)) {
+          SugarCube.Engine.play("wc"); //Go to the WC
+          dialogText = "You go to the WC";
+        }
+        dialogText +=
+          " and pee on the device's absorbent tip.\nAfter 5 minutes you look at the result:\n\n";
+        if (player.pregnantDays != undefined) {
+          window.Player.setAchievement("noticedSelfPregnancy");
+          dialogText +=
+            "''@@color:green;POSITIVE@@: You're " +
+            player.pregnantDays +
+            " days pregnant!!''";
+        } else
+          dialogText += "''@@color:red;NEGATIVE@@: You're NOT pregnant.''";
+        return $.wiki(
+          "<<dialog 'Pregnancy test'>>" + dialogText + "<</dialog>>"
+        );
+      },
+    }), //Pregnancy test
   ];
   bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
   purchaseTime: Date; //Time of the first undelivered purchase.

@@ -146,8 +146,7 @@ Macro.add("unlessEmergency", {
       );
     if (
       variables.onlineStore.purchaseTime &&
-      (variables.scenery == "mainRoom" || //Checks that the player is inside the house
-        variables.player.home.spaces.includes(variables.scenery)) &&
+      window.Player.isHome(variables) &&
       window.Now.isEqualOrLaterThan("7:00 AM")
     ) {
       const yesterday = new Date(variables.now.date);

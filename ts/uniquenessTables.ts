@@ -338,4 +338,29 @@ class UniquenessTables {
       },
     ],
   ];
+  static pregnancyTest = [
+    ['obedience10', 'obedience30'],
+    [
+      0,
+      {
+        default:"You make $npc.name's pee in a clean glass and dip the device in it"
+      }
+    ],
+    [
+      5,
+      {
+        default:`You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.GenPronoun <<thirdPerson "don't" "doesn't">> seems confused about it but $npc.genPronoun <<thirdPerson obey obeys>>.`,
+      },
+      {//obedience10
+        default:"<<set _refused=1>>You ask $npc.name to<<emoji 💦>>pee in the device but $npc.genPronoun refuses to do so.\nWhat do you want to do?"
+      },
+    ],
+    [
+      8,
+      {
+        default:"<<set _refused=1>>You ask $npc.name to<<emoji 💦>>pee in the device but $npc.genPronoun refuses to do so.\nWhat do you want to do?",
+        diligent:`You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.GenPronoun `
+      }
+    ]
+  ]
 }

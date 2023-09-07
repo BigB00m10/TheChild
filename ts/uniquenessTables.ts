@@ -1,5 +1,5 @@
 interface UniquenessCase {
-  //
+  //When this case is used the specified stat modifiers are added to the interaction
   stats: any;
   //default option, when it doesn't match any other characteristic
   default: string;
@@ -126,8 +126,7 @@ class UniquenessTables {
       },
       {
         //fear40
-        default:
-          `You open your arms to embrace $npc.name in a hug, $npc.genPronoun <<thirdPerson "takes" "take">> a fearful step back but <<thirdPerson "doesn't" "don't">> attempt to move away from you. You embrace $npc.pronoun in a hug. You can tell $npc.genPronoun <<thirdPerson "is" "are">> a bit uneasy.`,
+        default: `You open your arms to embrace $npc.name in a hug, $npc.genPronoun <<thirdPerson "takes" "take">> a fearful step back but <<thirdPerson "doesn't" "don't">> attempt to move away from you. You embrace $npc.pronoun in a hug. You can tell $npc.genPronoun <<thirdPerson "is" "are">> a bit uneasy.`,
         stats: ["fear-5"],
       },
       {
@@ -151,14 +150,12 @@ class UniquenessTables {
       },
       {
         //fear60
-        default:
-          `You open your arms to embrace $npc.name in a hug, but $npc.genPronoun <<thirdPerson "pushes" "push">> against you trying to stop the embrace. You can feel $npc.pronoun trembling with fear within your arms.`,
+        default: `You open your arms to embrace $npc.name in a hug, but $npc.genPronoun <<thirdPerson "pushes" "push">> against you trying to stop the embrace. You can feel $npc.pronoun trembling with fear within your arms.`,
         stats: ["fear-1"],
       },
       {
         //fear80
-        default:
-          `You open your arms to embrace $npc.name in a hug, but $npc.GenPronoun <<thirdPerson "is" "are">> so terrified of you $npc.genPronoun immediately <<thirdPerson "starts" "start">> crying and backing away, looking for an escape. You enclose $npc.pronoun in your embrace anyway, trying to make $npc.pronoun feel loved. $npc.GenPronoun <<thirdPerson "squirms" "squirm">> and <<thirdPerson "yells" "yell">> in a desperate attempt to escape your hold, pushing and pressing every which way trying to escape; tears run down $npc.possessive face as $npc.genPronoun <<thirdPerson "cries" "cry">>.`,
+        default: `You open your arms to embrace $npc.name in a hug, but $npc.GenPronoun <<thirdPerson "is" "are">> so terrified of you $npc.genPronoun immediately <<thirdPerson "starts" "start">> crying and backing away, looking for an escape. You enclose $npc.pronoun in your embrace anyway, trying to make $npc.pronoun feel loved. $npc.GenPronoun <<thirdPerson "squirms" "squirm">> and <<thirdPerson "yells" "yell">> in a desperate attempt to escape your hold, pushing and pressing every which way trying to escape; tears run down $npc.possessive face as $npc.genPronoun <<thirdPerson "cries" "cry">>.`,
         stats: ["freedomWish+10"],
       },
     ],
@@ -252,8 +249,7 @@ class UniquenessTables {
         shy: `$npc.name takes a peek behind and notices your pervy gaze. $npc.GenPronoun <<thirdPerson "stops" "stop">> what $npc.genPronoun<<thirdPerson "'s" "'re">> doing while looking down and blushing heavily.`,
         naughty:
           "$npc.name notices you and suddenly spreads $npc.possessive legs without stopping $npc.possessive cooking making it easier for you to admire $npc.possessive privates.",
-        default:
-          `$npc.name noticed you looking but $npc.genPronoun <<thirdPerson "doesn't" "don't">> seem to mind your gaze and $npc.genPronoun <<thirdPerson "continues" "continue">> with what $npc.genPronoun<<thirdPerson "'s" "'re">> doing.`,
+        default: `$npc.name noticed you looking but $npc.genPronoun <<thirdPerson "doesn't" "don't">> seem to mind your gaze and $npc.genPronoun <<thirdPerson "continues" "continue">> with what $npc.genPronoun<<thirdPerson "'s" "'re">> doing.`,
       },
       {
         default: "=naughty",
@@ -339,28 +335,55 @@ class UniquenessTables {
     ],
   ];
   static pregnancyTest = [
-    ['obedience10', 'obedience30'],
+    ["obedience<=10", "obedience30"],
     [
-      0,
+      0, //Up to 4yo case group
       {
-        default:"You make $npc.name's pee in a clean glass and dip the device in it"
-      }
-    ],
-    [
-      5,
-      {
-        default:`You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.GenPronoun <<thirdPerson "don't" "doesn't">> seems confused about it but $npc.genPronoun <<thirdPerson obey obeys>>.`,
-      },
-      {//obedience10
-        default:"<<set _refused=1>>You ask $npc.name to<<emoji 💦>>pee in the device but $npc.genPronoun refuses to do so.\nWhat do you want to do?"
+        default:
+          "You make $npc.name's pee in a clean glass and dip the device in it",
       },
     ],
     [
-      8,
+      5, //From 5yo to 7yo case group
       {
-        default:"<<set _refused=1>>You ask $npc.name to<<emoji 💦>>pee in the device but $npc.genPronoun refuses to do so.\nWhat do you want to do?",
-        diligent:`You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.GenPronoun `
-      }
-    ]
-  ]
+        //Default case when other cases do not apply
+        default: `You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.GenPronoun <<thirdPerson "don't" "doesn't">> seems confused about it but $npc.genPronoun <<thirdPerson obey obeys>>.`,
+      },
+      {
+        //When obedience is 10 or less
+        default:
+          "<<set _refused=1>>You ask $npc.name to<<emoji 💦>>pee in the device but $npc.genPronoun <<thirdPerson refuses refuse>> to do so.\nWhat do you want to do?",
+      },
+    ],
+    [
+      8, //From 8yo to 10yo case group
+      {
+        //Default case when other cases do not apply
+        default:
+          "<<set _refused=1>>You ask $npc.name to<<emoji 💦>>pee in the device but $npc.genPronoun <<thirdPerson refuses refuse>> to do so.\nWhat do you want to do?",
+        diligentAndShy:
+        "You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.GenPronoun<<emoji 😳>><<thirdPerson blushes blush>> in front of you and obeys immediately.",
+        diligent:
+        "You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.GenPronoun <<thirdPerson looks look>> a little concerned and <<thirdPerson obeys obey>> immediately.",
+      },
+      {
+        //When obedience is 10 or less
+        default: "=default", //Everything according to the default case
+      },
+      {
+        //When obedience is 30 or more
+        default:
+          "You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.genPronoun <<thirdPerson looks look>> a little confused but obeys.",
+        shy: "You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.genPronoun <<thirdPerson looks look>> a little embarrassed but obeys.",
+      },
+    ],
+    [
+      11, //From 11yo onwards case group
+      {
+        //Default case when other cases do not apply
+        default: "=8yo 1 diligent", //Use the diligent code on the first case of the 8yo group
+        shy: "=8yo 1 diligentAndShy", //Use the diligentAndShy code on the first case of the 8yo group
+      },
+    ],
+  ];
 }

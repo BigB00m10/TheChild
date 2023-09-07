@@ -61,6 +61,7 @@ You lay down the pizza<<if Player.has("pizza", 2)>>s<</if>> and all the slaves g
     hungrySlaves.forEach(function(slave) {
         slave.hunger = Math.max(0, slave.hunger - hungerDepletedPerSlave);
         slave.freedomWish = Math.max(0, slave.freedomWish - 5);
+        slave.love = Math.min(100, slave.love + 1);
     });
     inventory.removeByName("pizza", pizzaCount);
 >>\

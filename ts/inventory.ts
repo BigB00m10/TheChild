@@ -18,7 +18,7 @@ class Product {
   available?: number; //How many times this product can be purchased. This value will decrease after each purchase and set soldOut to true when it reaches zero.
   soldOut?: boolean = false; //If set to true it will not appear available for purchasing.
   tags: Set<string>; //Keywords related to the product. The first keyword indicates where the item go after receiving it. It will be used to filter the products in the future.
-  use?: (characterUid?: Uid) => void; //Action executed when this item is used from an inventory (not through an interaction) by the player or another character indicated by the Uid
+  use?: (characterUid?: Uid) => any; //Action executed when this item is used from an inventory (not through an interaction) by the player or another character indicated by the Uid
   removed?: (characterUid?: Uid) => void; //Event to fire when the item is removed through an interaction or the player pressing the inventory button.
   remove?: (characterUid?: Uid) => void; //Action executed when the remove button is pressed from a list of worn items (not through an interaction) by the player or another character indicated by the Uid
   constructor(init?: Product) {
@@ -322,8 +322,19 @@ class OnlineStore {
       price: 5,
       tags: new Set(["player", "pregnancy", "fertility"]),
       use(characterUid) {
-        if (characterUid) return;
         const variables = Variables();
+        if (characterUid) {
+          const npc: Npc = window.Person.get(characterUid, variables);
+          let output = "After 5 minutes you look at the result:\n\n";
+          if (npc.pregnantDays != undefined) {
+            window.Person.setAchievement("playerNoticedPregnancy", npc);
+            output +=
+              "''@@color:green;POSITIVE@@: " +
+              npc.pregnantDays +
+              " days pregnant!!''";
+          } else output += "''@@color:red;NEGATIVE@@: NOT pregnant.''";
+          return output;
+        }
         const player = <Player>variables.player;
         if (!player.impregnationChance)
           return $.wiki(
@@ -341,24 +352,23 @@ class OnlineStore {
           );
         window.Player.removeItem(this.name);
         window.Now.addMinutes(5);
-        let dialogText =
+        let output =
           "You discretely go into a corner making sure nobody sees you";
         if (window.Player.isHome(variables)) {
           SugarCube.Engine.play("wc"); //Go to the WC
-          dialogText = "You go to the WC";
+          output = "You go to the WC";
         }
-        dialogText +=
+        output +=
           " and pee on the device's absorbent tip.\nAfter 5 minutes you look at the result:\n\n";
         if (player.pregnantDays != undefined) {
           window.Player.setAchievement("noticedSelfPregnancy");
-          dialogText +=
+          output +=
             "''@@color:green;POSITIVE@@: You're " +
             player.pregnantDays +
             " days pregnant!!''";
-        } else
-          dialogText += "''@@color:red;NEGATIVE@@: You're NOT pregnant.''";
+        } else output += "''@@color:red;NEGATIVE@@: You're NOT pregnant.''";
         return $.wiki(
-          "<<dialog 'Pregnancy test'>>" + dialogText + "<</dialog>>"
+          "<<dialog 'Pregnancy test'>>" + output + "<</dialog>>"
         );
       },
     }), //Pregnancy test

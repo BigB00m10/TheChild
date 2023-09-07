@@ -1744,7 +1744,9 @@ window.Interactions["slave"] = {
                   $npc.GenPronoun <<thirdPerson "does" "do">> not seem to appreciate your sperm very much and quickly <<if $npc.location == "tortRafters">><<thirdPerson "pulls" "pull">> $npc.possessive head away<<else>><<thirdPerson "retreats" "retreat">><</if>> while coughing and spitting.
                 <</if>>`,
                 npcStats: (npc) =>
-                  npc.hunger >= 50 || npc.lust >= 80 ? ["hunger-5"] : null,
+                  npc.hunger >= 50 || npc.lust >= 80
+                    ? ["hunger-5", "mouthTraining+10"]
+                    : null,
                 next: () => afterStrip(),
               },
               ...cumOutsideOptions,
@@ -2128,14 +2130,35 @@ window.Interactions["slave"] = {
       stopOption: false,
     },
     pregnancyTest: {
+      inventoryRequirements: ["pregnancy test"],
       canBeShown() {
         const slave = <Person>Variables().npc;
+        if (window.Person.hasAchievement("playerNoticedPregnancy", slave))
+          return false;
         if (!slave.impregnationChance) return false;
         return !slave.vaginaVirgin || (!slave.hasPussy && !slave.analVirgin);
       },
       optionText: "🤰 Check if $npc.name is pregnant",
       minutesCost: 5,
-      contents: '',//TODO
+      contents: `<<personUniqueness pregnancyTest>><<if !_refused>>
+      <<print OnlineStore.getBase('pregnancy test').use($npc.uid)>><</if>>`,
+      next() {
+        if (!Temporary().refused) return baseInteractionOptions();
+        return <NpcInteractionOptions>{
+          force: {
+            optionText: "🤬 Force $npc.pronoun",
+            minutesCost: 5,
+            npcStats: ["fear+20", "freedomWish+10"],
+            contents: `<<print OnlineStore.getBase('pregnancy test').use($npc.uid)>>`,
+          },
+          forget: {
+            optionText: "🔙 Forget it",
+            action: true,
+            contents:
+              '<<openNpcInteraction $npcInteractionRoute.split(".")[0]>>',
+          },
+        };
+      },
     },
   },
   timeIncreaseNpcHunger: true,

@@ -13,4 +13,9 @@
 
 :: toiletboy {"position":"875,825"}
 <<scenery toiletboy>>
+
+<<keyAction 'Go to the toilet' 🚽>><<addMinutes 5>><<run Engine.show()>><</keyAction>>: 5min
+    <<if Player.getInventory().items.firstOrDefault(function(item){return item.name.startsWith('Used clothes')}) != null>>\
+        <<keyOption [[Masturbate using stolen slave underwear|pantiescum]] 💦>>: 30min
+    <</if>>\
 <<keyOption [[Leaving the toilet|park]] 🚪>>

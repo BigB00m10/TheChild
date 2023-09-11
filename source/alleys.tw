@@ -1,0 +1,11 @@
+:: alleys {"position":"550,500"}
+<<scenery alleys>>
+
+<<keyOption [[Leave alleys|home]] 🏙️>>
+<<keyOption [[Prostitute your slaves|alleys]] 👯‍♂️>>
+<<keyOption [[Talk to the dealer|dealer]] 🕴️>>
+
+
+:: dealer
+<<scenery Dealer>>
+Dealer:  Que souhaitez-vous acheter ?

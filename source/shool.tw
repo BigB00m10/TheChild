@@ -1,5 +1,115 @@
 :: shool {"position":"550,375"}
-<<scenery shool>>
-<<personHunting>>
-<<keyOption [[Keep searching|shool]] 🔍>>
+<<scenery Baseshool>>
+
 <<keyOption [[Return home|home]] 🏠>>
+<<keyOption [[Enter the school|Eshool]] 🏫>> 
+<<keyOption [[Go to the playground|Playgrounds]] 🪅>>
+
+
+:: Playgrounds
+<<scenery shool>>
+
+<<personHunting>>
+<<keyOption [[Keep searching|Playgrounds]] 🔍>>
+<<keyOption [[Return school|shool]] 🏫>>
+
+
+:: Eshool
+<<scenery Eshool>>
+
+<<keyOption [[Go the Classroom|Classroom]] 🧑‍🏫>>
+<<keyOption [[Teacher's room|Teacher]] 📙>>
+<<keyOption [[Director's office|Director]] 👨‍💼>>
+<<keyOption [[Go the Canteen|Canteen]] 👨‍💼>>
+<<keyOption [[Go to toilet girl|toilettegirl]] 👧>>
+<<keyOption [[Go to toilet boy|toiletteboy]] 👦>>
+<<keyOption [[Go back|shool]] 🏫>>
+
+:: Classroom
+<<scenery Classroom>>
+
+<<keyOption [[Leaving the classroom|Eshool]] 🚪>>
+
+:: Teacher
+<<scenery Teacheroom>>
+
+<<keyOption [[Leaving the teacher's room|Eshool]] 🚪>>
+
+:: Director 
+<<scenery Directoroom>>
+
+
+<<keyOption [[Apply for the job Teacher |JobsTeacher]] 📋>>
+<<keyOption [[Leaving the director's office|Eshool]] 🚪>>
+
+:: Canteen
+<<scenery Canteen>>
+
+<<keyAction 'Have a meal' ☕>>
+        <<addMinutes 45>>
+        <<set $player.energy = ($player.energy + 18).clamp(0, 100)>>
+        <<run Engine.show()>>
+    <</keyAction>>: 45min + 6 Energy
+<<keyOption [[Leaving the canteen|Eshool]] 🚪>>
+
+
+:: toilettegirl {"position":"875,825"}
+<<scenery toiletgirl>>
+<<keyOption [[Leaving the toilet|Eshool]] 🚪>>
+
+
+:: toiletteboy {"position":"875,825"}
+<<scenery toiletboy>>
+
+<<keyAction 'Go to the toilet' 🚽>><<addMinutes 5>><<run Engine.show()>><</keyAction>>: 5min
+    <<if Player.getInventory().items.firstOrDefault(function(item){return item.name.startsWith('Used clothes')}) != null>>\
+        <<keyOption [[Masturbate using stolen slave underwear|pantiescum]] 💦>>: 30min
+    <</if>>\
+<<keyOption [[Leaving the toilet|Eshool]] 🚪>>
+
+:: JobsTeacher
+<<scenery Directoroom>>
+You are sitting in the office of the school principal, Mr. Smith. He looks at you with interest and says:
+
+M. Smith : Hello, $player.name. Thank you for coming today for this interview.
+We have received your application for the position of professor and we are delighted to meet you.
+
+
+$player.name: Hello, Mr. Smith. It's a pleasure to be here.
+Mr. Smith: Okay, let's talk about your experience and qualifications.
+
+
+[Discussion continues...]
+
+Finally, after extensive discussion, Mr. Smith said:
+
+M. Smith : $player.name, we are impressed by your experience and passion for teaching.
+We would like to offer you the position of teacher at our school.
+
+
+
+<<keyOption [[Accept the offer|acceptJobs]] ✅>>
+<<keyOption [[Refuse the offer|refuseJobs]] ❌>>
+
+
+:: acceptJobs
+<<scenery Directoroom>>
+
+<<set $job = "teacher">>
+
+<<for _jobKey, _job range Jobs>>
+    <<set $player.job = _job>> // Définit le travail du joueur sur l'emploi sélectionné
+    <<dialog "Changement de poste">>
+        Votre poste est maintenant : <<print _job.name.toUpperFirst()>>.
+    <</dialog>>
+    <<goto "Eshool">> // Redirigez le joueur vers le passage approprié
+<</for>>
+
+
+:: refuseJobs
+<<scenery Directoroom>>
+
+You thank the manager for the opportunity, but you decide not to take the job.
+you left the principal's office.
+
+<<keyOption [[Leave the principal's office|Eshool]] 🚪>>

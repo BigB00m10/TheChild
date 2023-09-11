@@ -8,6 +8,7 @@ You spend $player.job.hours hours working on your job as $player.job.name
 You currently own ¤<<- $player.cash.toFixed(2)>>
 
 <<keyOption [[Return home|home]] 🏠>>
+
 <<if $slaves.length gt 1 >>
     <<set
         _hungryBasementSlaveCount = Basement.getHungrySlaves().length;
@@ -38,4 +39,86 @@ You are currently in front of your home.
     <<include workOption>>\
     <<keyOption [[Go to the park|playground]] ⚽>>
     <<keyOption [[Go to the school|shool]] 🏫>>
+    <<keyOption [[Go to alleys|alleys]] 🏙️>>
 <</unlessEmergency>>\
+
+
+
+
+:: centralPlaza
+<<scenery Plaza>>
+
+You head down the road a little ways, and think you can see the Towns Plaza dead ahead. <<addMinutes 7>> 
+It takes you about 7 minutes to reach the Plaza and once you arrive you are rather surprised to see that the Plaza
+isn't bustling as much as you thought it would be... Everyone must be in the other parts of town. You
+look around for a map of some sort. But the closest thing you can find is a Signpost that says
+Welcome to Honeycross, please enjoy your stay! It is clearly meant for tourists not the locals.
+Underneath the welcome sign there are four arrows one pointing towards each District Of Honeycross.
+
+
+Where would you like to go?
+
+<<keyOption [[Went North|North]] ⬆️>>
+<<keyOption [[Went South|South]] ⬇️>>
+<<keyOption [[Went West|West]] ⬅️>>
+<<keyOption [[Went East|East]] ➡️>>
+<<keyOption [[Go Back|home]] 🔙>>
+
+
+
+:: North
+<<scenery Plaza>>
+
+<<keyOption [[Enter the restaurant|restaurant]] 🍴>>
+<<keyOption [[Enter the movie theater|movie]] 🎥>>
+<<keyOption [[Go back|centralPlaza]] 🔙>>
+
+:: restaurant
+<<scenery restaurant>>
+
+<<keyAction 'Have a meal' ☕>>
+        <<addMinutes 60>>
+        <<set $player.energy = ($player.energy + 18).clamp(0, 100)>>
+        <<run Engine.show()>>
+    <</keyAction>>: 60min + 6 Energy
+<<keyOption [[Go back|North]] 🔙>>
+
+:: movie 
+<<scenery movie>>
+
+<<keyOption [[Go back|North]] 🔙>>
+
+:: South
+<<scenery Plaza>>
+
+<<keyOption [[Enter the SuperMarket|Market]] 🛒>>
+<<keyOption [[Go back|centralPlaza]] 🔙>>
+
+
+:: Market
+<<scenery Market>>
+
+
+<<keyOption [[Go back|South]] 🔙>>
+
+
+:: West
+<<scenery Plaza>>
+
+<<keyOption [[Enter the sex shop|sexshop]] 🔞>>
+<<keyOption [[Go back|centralPlaza]] 🔙>>
+
+:: sexshop
+<<scenery sexshop>>
+
+<<keyOption [[Go back|West]] 🔙>>
+
+:: East
+<<scenery Plaza>>
+
+<<keyOption [[Enter the pet store|Petstore]] 🐾>>
+
+<<keyOption [[Go back|centralPlaza]] 🔙>>
+
+
+:: Petstore 

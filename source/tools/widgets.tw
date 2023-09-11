@@ -394,7 +394,10 @@
         });
     >><</done>>
 <</widget>>
+
 :: workOption {"position":"875,0"}
 <<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>
 <</if>>\
+
+

@@ -355,4 +355,3 @@ Energy:<<if $cheat>>\
 <<else>>
     (none)<br>
 <</if>>
-<<link "📱 Phone">><<include phone>><</link>>

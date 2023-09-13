@@ -80,3 +80,7 @@ sugarcube-2:
       name: dialogclose
     storeProductList:
       name: storeProductList
+    consumePlayerItem:
+      name: consumePlayerItem
+    magicSunglasses:
+      name: magicSunglasses

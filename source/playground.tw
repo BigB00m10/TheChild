@@ -7,9 +7,9 @@
 <<scenery home>>
 <<addMinutes 30>>\
 You start stalking the $found_kid.age year old kid waiting for the right moment.
-<<run Player.removeItem("chloroform")>>
+
 A while later you see the kid standing all alone in a corner. You look around making sure no one sees you and quickly use the chloroform \
-on $found_kid.possessive mouth. (<<- Player.has('chloroform') ? Player.getInventory().get('chloroform').count : 'No'>> doses left)
+on $found_kid.possessive mouth. <<consumePlayerItem chloroform doses>>
 
 Surprised, the kid takes a deep breath on the chloroform soaked handkerchief. You feel $found_kid.possessive strength quickly running out and \
 $found_kid.possessive cute limbs falling right in your arms.
@@ -23,14 +23,13 @@ You cover $found_kid.possessive body in a blanket and sneak up back to your home
 <<addMinutes 3>>\
 You sit on the park bench with a candy bar and wait for the $found_kid.age year old $found_kid.title to approach you. It takes a few minutes. But $found_kid.genPronoun finally approaches you.
 
-<<run Player.removeItem("Candy")>>\
 "Hi, my name's $found_kid.name and I was wondering if perhaps I can have that candy bar?"
 
 You smile and say, "Unfortunately $found_kid.name, this is all I have on me. BUT, you see that house down the road?" You turn and point to your house.
 
 "Yeah?" says the $found_kid.age yo $found_kid.title.
 
-"Well, that's my house and I have a 30 lb. bag of candy downstairs. If you follow me back. You can help yourself." (<<- Player.has('Candy') ? Player.getInventory().get('Candy').count : 'No'>> pieces left)
+"Well, that's my house and I have a 30 lb. bag of candy downstairs. If you follow me back. You can help yourself."<<consumePlayerItem candy pieces>>
 
 "OK!" says the $found_kid.title with SURPRISING Enthusiasm.
 

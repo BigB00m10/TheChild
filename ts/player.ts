@@ -239,7 +239,7 @@ class Player extends LivingCharacter {
     );
     return npc;
   }
-  //Checks if the player is home inside
+  //Checks if the player is inside home
   isHome(variables?: any): boolean {
     if (!variables) variables = Variables();
     return (
@@ -248,3 +248,15 @@ class Player extends LivingCharacter {
     );
   }
 }
+//Removes a unit of the specified item (by name) from the player's inventory and shows a message indicating the amount of units left in the inventory
+Macro.add("consumePlayerItem", {
+  handler(this) {
+    const itemName: string = this.args[0];
+    const itemCountName: string = this.args[1];
+    const itemLeft: number = window.Player.removeItem(itemName);
+    Wiki(
+      `\r\n(${itemLeft || "No"} ${itemCountName || itemName + "s"} left)`,
+      this.output
+    );
+  },
+});

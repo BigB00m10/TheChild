@@ -44,9 +44,9 @@ Energy:<<if $cheat>>\
         <div class="row" @style="_dialogWidth">\
             <div class="eight columns" id="stats"><br></div>\
             <div class="four columns">\
-                <<for _slave range $slaves>>\
-                    <<set _action to "<<replace '#stats'>><<personProperties " + _slave.uid + ">><</replace>>">>\
-                    <<printPersonLink _slave _action>><<unset _action>>
+                <<for _npc range Person.all()>>\
+                    <<set _action to "<<replace '#stats'>><<personProperties " + _npc.uid + ">><</replace>>">>\
+                    <<printPersonLink _npc _action>><<unset _action>>
                 <</for>>\
             </div>\
         </div>\
@@ -214,7 +214,7 @@ Energy:<<if $cheat>>\
             <<set _cheatButtonText = ($cheat ? "Disable" : "Enable") + " Cheats">>\
             <span id='cheatsButton'><<button _cheatButtonText>>\
                 <<run
-                    $cheat = ~$cheat;/*Inverse $cheat value. Anything but true becomes true and true becomes false*/
+                    $cheat ^= 1;/*Xor inverse $cheat value. Undefined or 0 becomes 1 (true) and 1 becomes 0*/
                     Engine.show();
                     $('#cheatsButton button').text(($cheat ? "Disable" : "Enable") + " Cheats");
                 >>

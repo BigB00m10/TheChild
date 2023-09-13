@@ -12,24 +12,16 @@ let cumOutsideOptions: NpcInteractionOptions = {
   cumBody: {
     optionText: "💦 Cum on $npc.possessive body.",
     contents: `Right when you're about to cum you pull your dick out from $npc.pronoun and shoot all your hot sperm all over $npc.possessive body.
-    <<set 
-      Player.manageEnergy(1);
-      $npc.bodySpermAmount++;
-      $player.lust = 0;
-    >>\
-    Your sperm drips around $npc.name's body, impregnating $npc.possessive skin.`,
+    <<set $npc.bodySpermAmount++>>\
+    Your sperm drips around $npc.name's body, impregnating $npc.possessive skin.<<playerCum>>`,
     next: () => afterStrip(),
   },
   cumFace: {
     optionText: "🌚 Cum on $npc.possessive face.",
     contents: `You take out your penis and quickly point it towards $npc.possessive face.
-    <<set
-      Player.manageEnergy(1);
-      $npc.faceSpermAmount++;
-      $player.lust = 0;
-    >>
+    <<set $npc.faceSpermAmount++>>
     $npc.name closes $npc.possessive eyes when the first cumshot lands on $npc.possessive face.
-    You splatter a full load on $npc.pronoun while you hold $npc.name's chin.`,
+    You splatter a full load on $npc.pronoun while you hold $npc.name's chin.<<playerCum>>`,
     next: () => afterStrip(),
   },
 };
@@ -503,7 +495,7 @@ window.Interactions["slave"] = {
                         if(!Player.wearing('condom'))$npc.pussySpermAmount++;
                         $player.lust = 0;
                       >>\
-                      After shooting all your load you pull out your dick <<if Player.wearing('condom')>>and remove the cum filled condom<<run OnlineStore.getBase('condom').removed()>><<else>>leaving $npc.pronoun with your present inside<<checkImpregnation $player $npc>><</if>>.`,
+                      After shooting all your load you pull out your dick <<if Player.wearing('condom')>>and remove the cum filled condom<<else>>leaving $npc.pronoun with your present inside<<checkImpregnation $player $npc>><</if>>.<<playerCum>>`,
                       next: () => afterStrip(),
                     },
                     ...cumOutsideOptions,
@@ -692,7 +684,7 @@ window.Interactions["slave"] = {
                         if(!Player.wearing('condom'))$npc.assSpermAmount++;
                         $player.lust = 0;
                       >>\
-                      After shooting all your load you pull out your dick <<if Player.wearing('condom')>>and remove the cum filled condom<<run OnlineStore.getBase('condom').removed()>><<else>>leaving $npc.pronoun with your present inside<<if !$npc.hasPussy>><<checkImpregnation $player $npc>><</if>><</if>>.`,
+                      After shooting all your load you pull out your dick <<if Player.wearing('condom')>>and remove the cum filled condom<<else>>leaving $npc.pronoun with your present inside<<if !$npc.hasPussy>><<checkImpregnation $player $npc>><</if>><</if>>.<<playerCum>>`,
                       next: () => afterStrip(),
                     },
                     ...cumOutsideOptions,
@@ -1341,7 +1333,7 @@ window.Interactions["slave"] = {
                   contents: `<<if $npc.age lt 14>>\
                       You feel $npc.name shaking while $npc.genPronoun <<thirdPerson "has" "have">> a nice dry cum.
                     <<else>>\
-                      You feel $npc.possessive dick shooting $npc.possessive seed in your bowels.
+                      You feel $npc.possessive dick shooting $npc.possessive seed in your bowels.<<if !$player.hasPussy>><<checkImpregnation $npc $player>><</if>>
                     <</if>><<npcCum>>`,
                   npcStats: ["love+10", "freedomWish-10", "hunger+10"],
                   playerStats: ["lust-10"],
@@ -1887,8 +1879,8 @@ window.Interactions["slave"] = {
           inventoryRequirements: ["Aging stop pill"],
           npcRequirements: ["!stopAging"],
           optionText: "⏱ Give $npc.pronoun an aging stop pill.",
-          contents: `You give $npc.name an aging stop pill.<<run Player.removeItem('Aging stop pill')>>
-          From now on, $npc.genPronoun will not age anymore and $npc.genPronoun'll stay like this forever.`,
+          contents: `You give $npc.name an aging stop pill.
+          From now on, $npc.genPronoun will not age anymore and $npc.genPronoun'll stay like this forever.<<consumePlayerItem 'aging stop pill' 'pills'>>`,
           npcStats: ["+stopAging"],
           next: baseInteractionOptions,
         },
@@ -1896,9 +1888,8 @@ window.Interactions["slave"] = {
           inventoryRequirements: ["Female fertility pill"],
           npcRequirements: ["impregnationChance<100"],
           optionText: "♀ Give $npc.pronoun a female fertility pill",
-          contents: `You give $npc.name a female fertility pill.<<run Player.removeItem("Female fertility pill")>>
-          The chance of $npc.pronoun getting pregnant is increased.
-          (<<- Player.has('Female fertility pill') ? Player.getInventory().get('Female fertility pill').count : 'No'>> pills left)`,
+          contents: `You give $npc.name a female fertility pill.
+          The chance of $npc.pronoun getting pregnant is increased.<<consumePlayerItem 'female fertility pill' 'pills'>>`,
           npcStats: ["impregnationChance+20"],
           showNpcStats: false,
           next: {
@@ -1927,9 +1918,7 @@ window.Interactions["slave"] = {
           inventoryRequirements: ["Male fertility pill"],
           npcRequirements: ["hasPenis", "!producesSperm"],
           optionText: "🤍 Give $npc.pronoun a male fertility pill",
-          contents: `You give $npc.name a male fertility pill.<<run Player.removeItem("Male fertility pill")>>
-          From now on $npc.possessive balls will start producing sperm.
-          (<<- Player.has('Male fertility pill') ? Player.getInventory().get('Male fertility pill').count : 'No'>> pills left)`,
+          contents: `You give $npc.name a male fertility pill.<<consumePlayerItem 'male fertility pill' 'pills'>>`,
           npcStats: ["+producesSperm"],
           next: baseInteractionOptions,
         },

@@ -62,10 +62,13 @@ class Inventory {
     }
   }
   //Removes one item from the inventory, the count indicated, or all of them if the specified count is zero.
-  remove(item: Item, count: number = 1): void {
+  //Returns the number of items left
+  remove(item: Item, count: number = 1): number {
     if (!item) return;
-    if (!count || count >= item.count) this.items.delete(item);
-    else item.count -= count;
+    if (!count || count >= item.count) {
+      this.items.delete(item);
+      return 0;
+    } else return (item.count -= count);
   }
   //Get the item with the specified name or starting with the specified word ignoring case.
   get(name: string): Item {
@@ -79,8 +82,8 @@ class Inventory {
     return found;
   }
   //Same as the remove action but selecting the item by name or starting with the specified word ignoring case.
-  removeByName(name: string, count: number = 1): void {
-    this.remove(this.get(name), count);
+  removeByName(name: string, count: number = 1): number {
+    return this.remove(this.get(name), count);
   }
   //Check if the inventory contains at least the specified count of items selected by name or, if count not specified, at least one.
   has(itemName: string, count: number = 0): boolean {
@@ -225,18 +228,26 @@ class OnlineStore {
           window.Player.getEquippedInventory(variables).removeByName(this.name);
           window.Player.removeAchievement("activeContraception");
         }
-        if (
-          passage() == "npcInteraction" &&
-          variables.npcInteractionRoute.split(".").last().includes("cum")
-        )
-          //When the condom is removed after the character cums in an interaction between the player and an npc
-          window.Player.getInventory().add({
-            name: `Condom filled with ${
-              npc ? npc.name + "'s(" + characterUid + ")" : "your"
-            } seed`,
-            description: "Cum filled condom",
-            tags: new Set(["npc", "used", "impregnation", "garbage"]),
-          });
+
+        if (passage() == "npcInteraction") {
+          const interactionName = variables.npcInteractionRoute
+            .split(".")
+            .last();
+          if (interactionName.includes("cum") && interactionName != "cumOn")
+            //When the condom is removed after the character cums in an interaction between the player and an npc
+            window.Player.getInventory().add({
+              name: `Condom filled with ${
+                npc ? npc.name + "'s(" + characterUid + ")" : "your"
+              } seed`,
+              description: "Cum filled condom",
+              tags: new Set([
+                "npcInteraction",
+                "used",
+                "impregnation",
+                "garbage",
+              ]),
+            });
+        }
       },
       remove(characterUid) {
         if (characterUid) return; //Can only be used by the player right now.
@@ -333,7 +344,10 @@ class OnlineStore {
               npc.pregnantDays +
               " days pregnant!!''";
           } else output += "''@@color:red;NEGATIVE@@: NOT pregnant.''";
-          return output;
+          return (
+            output +
+            `\r\n(${window.Player.removeItem(this.name) || "No"} tests left)`
+          );
         }
         const player = <Player>variables.player;
         if (!player.impregnationChance)
@@ -367,9 +381,7 @@ class OnlineStore {
             player.pregnantDays +
             " days pregnant!!''";
         } else output += "''@@color:red;NEGATIVE@@: You're NOT pregnant.''";
-        return $.wiki(
-          "<<dialog 'Pregnancy test'>>" + output + "<</dialog>>"
-        );
+        return $.wiki("<<dialog 'Pregnancy test'>>" + output + "<</dialog>>");
       },
     }), //Pregnancy test
   ];

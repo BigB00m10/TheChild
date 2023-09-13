@@ -473,6 +473,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
     penAss: {
       playerRequirements: ["hasPenis"],
       npcRequirements: ["anusTraining>=40"],
+      settingsRequirements: ["anal"],
       showDisabled: "Anus Training 40",
       optionText: "🍑🍆 Penetrate $npc.possessive ass.",
       minutesCost: 10,
@@ -483,22 +484,22 @@ window.Interactions["okSleepWithPlayerDemand"] = {
         cumOn: {
           optionText: "💦 Cum on $npc.pronoun (end).",
           minutesCost: 1,
-          contents: `You pull out your dick and spread all your cum on $npc.possessive ass. (Bedsheets are completely dirty)<<run Player.manageEnergy(3);$npc.bodySpermAmount++>>
+          contents: `You pull out your dick and spread all your cum on $npc.possessive ass. (Bedsheets are completely dirty)<<set $npc.bodySpermAmount++>><<playerCum>>
             You are too tired to do anything and you sleep after that.`,
           next: WakeUpMorning.options,
         },
         cumIn: {
           optionText: "💦 Cum in $npc.possessive ass (end).",
           minutesCost: 1,
-          contents: `You bring $npc.pronoun closer to you and hug $npc.pronoun tightly as you unload all of your cum inside $npc.possessive ass. (Bedsheets are a little dirty)<<run Player.manageEnergy(3);$npc.assSpermAmount++>>
+          contents: `You bring $npc.pronoun closer to you and hug $npc.pronoun tightly as you unload all of your cum inside <<if Player.wearing('condom')>>the condom.<<else>>$npc.possessive ass. (Bedsheets are a little dirty)<</if>><<if !npc.hasPussy>><<checkImpregnation $player $npc>><</if>><<set $npc.assSpermAmount++>><<playerCum>>
             You are too tired to do anything and you sleep after that.`,
           next: WakeUpMorning.options,
         },
         drink: {
           optionText: "🥛 Tell $npc.pronoun to drink your cum (end).",
           minutesCost: 1,
-          contents: `You pull your dick out and place your hand on $npc.possessive waist as you rotate $npc.pronoun towards you and you tell $npc.pronoun to put $npc.possessive mouth on your dick and drink your cum.
-          $npc.GenPronoun happily <<thirdPerson "drinks" "drink">> your cum.<<run Player.manageEnergy(3)>>
+          contents: `You pull your dick out<<if Player.wearing('condom')>>, remove the condom<</if>> and place your hand on $npc.possessive waist as you rotate $npc.pronoun towards you and you tell $npc.pronoun to put $npc.possessive mouth on your dick and drink your cum.
+          $npc.GenPronoun happily <<thirdPerson "drinks" "drink">> your cum.<<playerCum>>
           You are too tired to do anything and you sleep after that.`,
           npcStats: ["hunger-5"],
           next: WakeUpMorning.options,
@@ -529,8 +530,8 @@ window.Interactions["okSleepWithPlayerDemand"] = {
           next: {
             cumIn: {
               optionText: "💦 Cum inside (end).",
-              contents: `While your dick touches $npc.possessive deepest part you release your semen inside $npc.pronoun and cumming inside $npc.possessive undeveloped cervix.
-              You are too tired to do anything and you sleep after that.<<run Player.manageEnergy(3);$npc.pussySpermAmount++>>`,
+              contents: `While your dick touches $npc.possessive deepest part you release your semen inside $npc.pronoun and cumming inside <<if Player.wearing('condom')>>the condom<<else>>$npc.possessive undeveloped cervix<</if>>.
+              You are too tired to do anything and you sleep after that.<<checkImpregnation $player $npc>><<run Player.manageEnergy(3);$npc.pussySpermAmount++>>`,
               next: WakeUpMorning.options,
             },
             back: {

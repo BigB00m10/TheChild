@@ -71,6 +71,9 @@ document.addEventListener("keypress", (evt) => {
   } else if (typed.endsWith("letsee")) {
     Variables().settings.hideScenery = false;
     Engine.show();
+  } else if (typed.endsWith("cheat")) {
+    Variables().cheat ^= 1;
+    Engine.show();
   }
 });
 $(document).on(":passageinit", () => {

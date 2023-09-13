@@ -179,7 +179,7 @@ abstract class Npc extends LivingCharacter {
     return (npc.equippedItems = new Inventory(npc.equippedItems));
   }
   wearing(itemName: string, npc?: Npc, variables?: any): boolean {
-    return this.getEquippedInventory(variables).has(itemName);
+    return this.getEquippedInventory(npc, variables).has(itemName);
   }
   hasAchievement(achievement: string, npc?: Npc): boolean {
     if (!npc) npc = Variables().npc;

@@ -12,9 +12,13 @@ const keyToId: Record<string, string> = {
   " ": "space",
   Escape: "esc",
 }; //These are the keys that do not have the same text as the names of the key trigger classes.
-let keyOptionNumber: number;
-$(document).on(":passagestart", () => (keyOptionNumber = 1));
+let keyOptionNumber: number, keyOptionShiftKey: boolean;
+$(document).on(
+  ":passagestart",
+  () => ((keyOptionNumber = 1), (keyOptionShiftKey = false))
+);
 //Adds an option that leads to a passage that can be selected by pressing a number. The number is assigned automatically.
+//After the 0, the sequence will be shift + 1, shift + 2, ...
 //Parameters:
 //1. SugarCube link. Example: [[text|passageName]]
 //2. (optional) emoji or emojis that will appear at the start if emojis are enabled in the settings.
@@ -22,15 +26,20 @@ $(document).on(":passagestart", () => (keyOptionNumber = 1));
 //Example: <<keyOption [[My text|myPassage]] 🎃 btn>>
 Macro.add("keyOption", {
   handler: function () {
-    let emoji =
+    const emoji =
       this.args.length > 1 ? this.args[1] : "'&nbsp;&nbsp;&nbsp;&nbsp;'";
-    let widget =
+    const widget =
       this.args.length > 2 && this.args[2] == "btn" ? "button" : "link";
+    let idStart = keyToId[keyOptionNumber];
+    if (keyOptionShiftKey) idStart = "shift" + idStart.toUpperFirst();
     Wiki(
-      `<<${widget} "<<emoji ${emoji}>>(${keyOptionNumber}) ${this.args[0].text}" "${this.args[0].link}">><</${widget}>>`,
+      `<<${widget} "<<emoji ${emoji}>>(${
+        keyOptionShiftKey ? "Shift + " : "" + keyOptionNumber
+      }) ${this.args[0].text}" "${this.args[0].link}">><</${widget}>>`,
       this.output
-    ).attr("id", keyToId[keyOptionNumber] + "Act");
+    ).attr("id", idStart + "Act");
     keyOptionNumber = (keyOptionNumber + 1) % 10;
+    if (keyOptionNumber == 1) keyOptionShiftKey = true;
   },
 });
 //Adds an option that executes a sugarcube markup when selected and can be selected by pressing a number. The number is assigned automatically.
@@ -77,6 +86,8 @@ $(document).on("keyup", (evt) => {
     //To avoid executing options while writing into a dialog, only enter, esc and space are triggered when a dialog is opened.
     return;
   let className = keyToId[evt.key] || evt.key.toLowerCase();
+  if (evt.shiftKey && className != "shift")
+    className = "shift" + className.toUpperFirst();
   if (className.length == 1) className = className + "Key";
   $(`#${className}Act a`).trigger("click");
   $(`#${className}Act button`).trigger("click");

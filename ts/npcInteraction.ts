@@ -513,13 +513,27 @@ Macro.add("personUniqueness", {
 //To use in an interaction to indicate NPC ejaculating
 Macro.add("npcCum", {
   handler: function () {
-    const $npc: Npc = Variables().npc;
-    const lustDecCum = Variables().settings.lustDecCum;
+    const variables = Variables();
+    const $npc: Npc = variables.npc;
+    const lustDecCum = variables.settings.lustDecCum;
+    if (window.Person.wearing("condom", $npc))
+      window.OnlineStore.getBase("condom").removed($npc.uid);
     if (!lustDecCum && $npc.hasPussy) return;
-    if (!Temporary().npcStatModifiers) Temporary().npcStatModifiers = [];
-    const _npcStatModifiers = Temporary().npcStatModifiers;
+    const temporary = Temporary();
+    if (!temporary.npcStatModifiers) temporary.npcStatModifiers = [];
+    const _npcStatModifiers = temporary.npcStatModifiers;
     if (lustDecCum) _npcStatModifiers.push("lust-" + lustDecCum); //decrease as much lust as said in the settings
     if (!$npc.hasPussy) _npcStatModifiers.push("-aroused");
+  },
+});
+//To use anywhere to indicate the player ejaculating
+Macro.add("playerCum", {
+  handler() {
+    const variables = Variables();
+    if (window.Player.wearing("condom", variables))
+      window.OnlineStore.getBase("condom").removed();
+    (<Player>variables.player).lust -= 60;
+    window.Player.manageEnergy(3); //Remove 3 hours of energy
   },
 });
 //To use in an interaction to indicate NPC is stimulated.

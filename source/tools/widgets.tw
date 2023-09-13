@@ -155,6 +155,7 @@
             <</for>>
         <</dialog>><</button>><br>
         Characteristics: <<- Person.getPersonalityDescription($npc.uniqueness)>>
+        <br>Impregnation chance:<input type=number min=0 max=100 style="width:3em" id=impregnationChance>%
         <br><label class="toggle-button">
             <input id="toggleAging" type="checkbox" class="macro-checkbox"><span>Stop aging</span>
         </label>
@@ -171,9 +172,11 @@
                     <<dialogclose>>
                 <</button>></span>
             <</dialog>>
-        <</button>>
+        <</button>><<if _npc.pregnantDays != undefined>>Pregnant<<button 'Give birth right now'>>/*TODO*/
+        <</button>><</if>>
         <<done>><<run
             Player.bindSettingDom('toggleAging', _npc, 'stopAging');
+            Player.bindSettingDom('impregnationChance', _npc, 'impregnationChance');
         >><</done>>\
     <</if>>
 <</widget>>
@@ -224,19 +227,7 @@
 <<widget personHunting>>
     <<set $found_kid = Person.generate($settings.childGeneration)>>
     You found a <<- Person.getLongDescription($found_kid)>> named $found_kid.name<br><br>
-    <<if Player.has('magic sunglasses')>>
-        <label style="cursor:pointer"><<checkbox '$settings.usingMagicSunglasses' false true autocheck>> Put on magic sunglasses.<<emoji 😎>></label><br>
-        <<set _npcStatsStyle = $settings.usingMagicSunglasses ? '' : 'display:none'>>
-        <span id='npcStats' @style='_npcStatsStyle'>
-            <<npcStats $found_kid>>
-            Traits: <<- Person.getPersonalityDescription($found_kid.uniqueness)>><br>
-        </span><br>
-        <script>
-            $('#checkbox-settingsusingmagicsunglasses').on('change', function() {
-                $('#npcStats').toggle(this.checked)
-            })
-        </script>
-    <</if>>
+    <<magicSunglasses $found_kid>>
     <<set
         _hasChloroform = Player.has('chloroform');
         _hasCandy = Player.has('Candy');
@@ -252,6 +243,21 @@
         <<if _hasChloroform>>
             <<keyOption [[Kidnap $found_kid.pronoun|kidnap]] 🖐>>: 30min<br>
         <</if>>
+    <</if>>
+<</widget>>
+<<widget magicSunglasses>>
+    <<if Player.has('magic sunglasses')>>
+        <label style="cursor:pointer"><<checkbox '$settings.usingMagicSunglasses' false true autocheck>> Put on magic sunglasses.<<emoji 😎>></label><br>
+        <<set _npcStatsStyle = $settings.usingMagicSunglasses ? '' : 'display:none'>>
+        <span id='npcStats' @style='_npcStatsStyle'>
+            <<if passage()!='npcInteraction'>><<npcStats _args[0]>><</if>>
+            Traits: <<- Person.getPersonalityDescription(_args[0].uniqueness)>><br>
+        </span><br>
+        <script>
+            $('#checkbox-settingsusingmagicsunglasses').on('change', function() {
+                $('#npcStats').toggle(this.checked)
+            })
+        </script>
     <</if>>
 <</widget>>
 <<widget sleepOption>>

@@ -335,7 +335,7 @@ class UniquenessTables {
     ],
   ];
   static pregnancyTest = [
-    ["obedience<=10", "obedience30"],
+    ["obedience<=20", "obedience30"],
     [
       0, //Up to 4yo case group
       {
@@ -347,42 +347,43 @@ class UniquenessTables {
       5, //From 5yo to 7yo case group
       {
         //Default case when other cases do not apply
-        default: `You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.GenPronoun <<thirdPerson "don't" "doesn't">> seems confused about it but $npc.genPronoun <<thirdPerson obey obeys>>.`,
+        default: `You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.GenPronoun <<thirdPerson seems seem>> confused about it but $npc.genPronoun <<thirdPerson obeys obey>>.`,
       },
       {
-        //When obedience is 10 or less
+        //When obedience is 20 or less
         default:
-          "<<set _refused=1>>You ask $npc.name to<<emoji 💦>>pee in the device but $npc.genPronoun <<thirdPerson refuses refuse>> to do so.\nWhat do you want to do?",
+          "<<set _refused=1>>You ask $npc.name to<<emoji 💦>>pee in the device but $npc.genPronoun<<emoji ⛔>><<thirdPerson refuses refuse>> to do so.\nWhat do you want to do?",
       },
+      { default: "=default" }, //When obedience is 30 or more use the default case
     ],
     [
       8, //From 8yo to 10yo case group
       {
         //Default case when other cases do not apply
         default:
-          "<<set _refused=1>>You ask $npc.name to<<emoji 💦>>pee in the device but $npc.genPronoun <<thirdPerson refuses refuse>> to do so.\nWhat do you want to do?",
+          "<<set _refused=1>>You ask $npc.name to<<emoji 💦>>pee in the device but $npc.genPronoun<<emoji ⛔>><<thirdPerson refuses refuse>> to do so.\nWhat do you want to do?",
         diligentAndShy:
-        "You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.GenPronoun<<emoji 😳>><<thirdPerson blushes blush>> in front of you and obeys immediately.",
+          "You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.GenPronoun<<emoji 😳>><<thirdPerson blushes blush>> in front of you and <<thirdPerson obeys obey>> immediately.",
         diligent:
-        "You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.GenPronoun <<thirdPerson looks look>> a little concerned and <<thirdPerson obeys obey>> immediately.",
+          "You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.GenPronoun <<thirdPerson looks look>> a little concerned and <<thirdPerson obeys obey>> immediately.",
       },
       {
-        //When obedience is 10 or less
+        //When obedience is 20 or less
         default: "=default", //Everything according to the default case
       },
       {
         //When obedience is 30 or more
         default:
-          "You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.genPronoun <<thirdPerson looks look>> a little confused but obeys.",
-        shy: "You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.genPronoun <<thirdPerson looks look>> a little embarrassed but obeys.",
+          "You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.genPronoun <<thirdPerson looks look>> a little confused but <<thirdPerson obeys obey>>.",
+        shy: "You ask $npc.name to<<emoji 💦>>pee in the device.\n$npc.genPronoun <<thirdPerson looks look>> a little embarrassed but <<thirdPerson obeys obey>>.",
       },
     ],
     [
       11, //From 11yo onwards case group
       {
         //Default case when other cases do not apply
-        default: "=8yo 1 diligent", //Use the diligent code on the first case of the 8yo group
-        shy: "=8yo 1 diligentAndShy", //Use the diligentAndShy code on the first case of the 8yo group
+        default: "=age8 1 diligent", //Use the diligent code on the first case of the 8yo group
+        shy: "=age8 1 diligentAndShy", //Use the diligentAndShy code on the first case of the 8yo group
       },
     ],
   ];

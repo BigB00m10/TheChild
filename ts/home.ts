@@ -80,8 +80,12 @@ class Basement extends HomeSpace {
     super();
     window.OnlineStore.get("Mattress").transferTo(this.contents);
   }
+  getContents(variables?: any): Inventory {
+    if (!variables) variables = Variables();
+    return new Inventory(variables.basement.contents);
+  }
   has(itemName: string, count: number = 1): boolean {
-    return new Inventory(Variables().basement.contents).has(itemName, count);
+    return this.getContents().has(itemName, count);
   }
   availableBeds(): number {
     let variables = Variables();
@@ -109,7 +113,7 @@ class TortRafters extends HomeSpace {
   passageName: string = "tortRafters";
   getSlaves(): Person[] {
     return Variables().slaves.filter(
-      (slave: Person) => (slave.location == "tortRafters")
+      (slave: Person) => slave.location == "tortRafters"
     );
   }
 }

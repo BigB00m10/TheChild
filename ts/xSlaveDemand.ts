@@ -484,7 +484,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
         cumOn: {
           optionText: "💦 Cum on $npc.pronoun (end).",
           minutesCost: 1,
-          contents: `You pull out your dick and spread all your cum on $npc.possessive ass. (Bedsheets are completely dirty)<<set $npc.bodySpermAmount++>><<playerCum>>
+          contents: `You pull out your dick<<if Player.wearing('condom')>>, remove the condom<</if>> and spread all your cum on $npc.possessive ass. (Bedsheets are completely dirty)<<set $npc.bodySpermAmount++>><<playerCum>>
             You are too tired to do anything and you sleep after that.`,
           next: WakeUpMorning.options,
         },
@@ -531,7 +531,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
             cumIn: {
               optionText: "💦 Cum inside (end).",
               contents: `While your dick touches $npc.possessive deepest part you release your semen inside $npc.pronoun and cumming inside <<if Player.wearing('condom')>>the condom<<else>>$npc.possessive undeveloped cervix<</if>>.
-              You are too tired to do anything and you sleep after that.<<checkImpregnation $player $npc>><<run Player.manageEnergy(3);$npc.pussySpermAmount++>>`,
+              You are too tired to do anything and you sleep after that.<<checkImpregnation $player $npc>><<set $npc.pussySpermAmount++>><<playerCum>>`,
               next: WakeUpMorning.options,
             },
             back: {

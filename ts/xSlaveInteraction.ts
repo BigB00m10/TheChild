@@ -1379,7 +1379,20 @@ window.Interactions["slave"] = {
             condom: {
               inventoryRequirements: ["condom"],
               showIfEmpty: false,
-              optionText: "🌂 Use a condom",
+              optionText() {
+                const variables = Variables();
+                const canPlayer =
+                  variables.player.hasPenis &&
+                  !window.Player.wearing("condom", variables);
+                const canNpc =
+                  variables.npc.hasPenis &&
+                  variables.npc.aroused &&
+                  !window.Person.wearing("condom", variables.npc);
+                const optionText = "🌂 Use a condom";
+                if (canPlayer && canNpc) return optionText;
+                if (canPlayer) return optionText + " on myself";
+                if (canNpc) return optionText + " on $npc.name";
+              },
               contents: `<<set
                   _canPlayer = $player.hasPenis && !Player.wearing('condom');
                   _canNpc = $npc.hasPenis && $npc.aroused && !Person.wearing('condom');
@@ -1419,7 +1432,7 @@ window.Interactions["slave"] = {
                 if (canPlayer && canNpc)
                   return {
                     player: {
-                      optionText: "On myself",
+                      optionText: "☝ On myself",
                       contents: `You unwrap one condom and wrap your cock in it.<br>It will stay until you cum or you take it out from the inventory window. But it cannot be reused.<<run
                         Player.setAchievement("activeContraception");
                         var inventory = Player.getInventory();
@@ -1431,7 +1444,7 @@ window.Interactions["slave"] = {
                       baseRoute: () => "slave.pushDown.strip",
                     },
                     npc: {
-                      optionText: "On $npc.name",
+                      optionText: "🍆 On $npc.name",
                       contents: `You unwrap one condom and slowly wrap $npc.name's $npc.genitals.male with it.<br>It will be removed after $npc.name ejaculates or when the interaction with $npc.pronoun ends.<<run
                         Person.setAchievement("activeContraception");
                         var inventory = Player.getInventory();
@@ -2131,22 +2144,26 @@ window.Interactions["slave"] = {
       minutesCost: 5,
       contents: `<<personUniqueness pregnancyTest>><<if !_refused>>
       <<print OnlineStore.getBase('pregnancy test').use($npc.uid)>><</if>>`,
-      next() {
-        if (!Temporary().refused) return baseInteractionOptions();
-        return <NpcInteractionOptions>{
-          force: {
-            optionText: "🤬 Force $npc.pronoun",
-            minutesCost: 5,
-            npcStats: ["fear+20", "freedomWish+10"],
-            contents: `<<print OnlineStore.getBase('pregnancy test').use($npc.uid)>>`,
-          },
-          forget: {
-            optionText: "🔙 Forget it",
-            action: true,
-            contents:
-              '<<openNpcInteraction $npcInteractionRoute.split(".")[0]>>',
-          },
-        };
+      next: {
+        force: {
+          optionText: "🤬 Force $npc.pronoun",
+          minutesCost: 5,
+          npcStats: ["fear+20", "freedomWish+10"],
+          contents: `<<print OnlineStore.getBase('pregnancy test').use($npc.uid)>>`, //TODO: write testing procedure before result
+          next: () => baseInteractionOptions(),
+        },
+        forget: {
+          optionText: "🔙 Forget it",
+          action: true,
+          contents: '<<openNpcInteraction $npcInteractionRoute.split(".")[0]>>',
+        },
+      },
+      altOptions: (npc, current) =>
+        Temporary().refused ? current : baseInteractionOptions(),
+      baseRoute() {
+        let route = baseInteractionRoute();
+        if (Temporary().refused) route += ".pregnancyTest";
+        return route;
       },
     },
   },

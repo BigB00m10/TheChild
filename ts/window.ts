@@ -74,6 +74,47 @@ document.addEventListener("keypress", (evt) => {
   } else if (typed.endsWith("cheat")) {
     Variables().cheat ^= 1;
     Engine.show();
+  } else if (typed.endsWith("teststartkit")) {
+    const basementContents = window.Basement.getContents();
+    const mattressCount = basementContents.get("mattress").count;
+    if (mattressCount < 10)
+      window.OnlineStore.get("mattress").transferTo(
+        basementContents,
+        10 - mattressCount
+      );
+    const inventory = window.Player.getInventory();
+    if (!inventory.has("chloroform", 10))
+      window.OnlineStore.get("chloroform").transferTo(inventory);
+    ["lactation pills", "rope", "aging stop pill"].forEach((productName) => {
+      if (!inventory.has(productName))
+        window.OnlineStore.get(productName).transferTo(inventory);
+    });
+    [
+      "lube",
+      "dildo",
+      "magic sunglasses",
+      "cooking apron",
+      "the art of shibari",
+    ].forEach((productName) => {
+      const product = window.OnlineStore.get(productName);
+      if (product.soldOut) return;
+      product.transferTo(inventory);
+      product.soldOut = true;
+    });
+    [
+      "male fertility pill",
+      "female fertility pill",
+      "pregnancy test",
+      "condom",
+    ].forEach((productName) => {
+      const itemCount = inventory.get(productName)?.count || 0;
+      if (itemCount < 15)
+        window.OnlineStore.get(productName).transferTo(
+          inventory,
+          15 - itemCount
+        );
+    });
+    Engine.show();
   }
 });
 $(document).on(":passageinit", () => {

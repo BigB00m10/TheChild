@@ -30,7 +30,7 @@ interface NpcInteraction {
   //The text in the option (before selecting the option).
   //if an emoji followed by a space is prepended it will be used as the emoji parameter in the keyOption or keyAction macro.
   //Sugarcube markup can be written on it.
-  optionText: string;
+  optionText: string | (() => string);
   //The contents that will be shown as a passage once the option is selected.
   //The scenery of the last location will be shown.
   //Sugarcube markup can be written on it and it will be processed first (before any npc stat change)
@@ -377,7 +377,7 @@ Macro.add("npcInteraction", {
             }
           if (empty) continue;
         }
-        let optionText = option.optionText
+        let optionText = callOrGetItself(option.optionText)
           .replace(/'/g, "\\'")
           .replace(/"/g, "&quot;");
         let emoji = "";
@@ -484,12 +484,15 @@ Macro.add("personUniqueness", {
         setOutput(defaultCase);
         return;
       } else if (output.startsWith("=age")) {
-        processAgeRow(
-          table
-            .firstOrDefault<any[]>((row: any[]) => row[0] == output.slice(4))
-            .slice(1)
+        const ageParams = output.slice(4).split(" ");
+        const ageGroup = table.firstOrDefault<any[]>(
+          (row: any[]) => row[0] == ageParams[0]
         );
-        return;
+        if (ageParams.length == 1) {
+          processAgeRow(ageGroup.slice(1));
+          return;
+        }
+        output = ageGroup[ageParams[1]][ageParams[2]];
       } else if (output[0] == "=") {
         let fieldName = output.substring(1);
         output = uniquenessCase[fieldName];

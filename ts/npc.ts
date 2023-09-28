@@ -526,9 +526,14 @@ class Person extends Npc {
   getShortDescription(person?: Person, addTitle?: boolean): string {
     if (!person) person = Variables().npc;
     if (typeof person == "number") person = <Person>window.Person.get(person);
-    return `${person.name} (${person.age} y.o. ${
-      addTitle ? person.title + " " : ""
-    }${person.hairColor} hair)`;
+    return (
+      `${person.name} (${person.age} y.o. ${
+        addTitle ? person.title + " " : ""
+      }${person.hairColor} hair)` +
+      (this.hasAchievement("playerNoticedPregnancy", person)
+        ? "<<emoji 🤰>>"
+        : "")
+    );
   }
   getLongDescription(person?: Person): string {
     let variables: any;
@@ -537,8 +542,19 @@ class Person extends Npc {
       person = variables.npc;
     }
     let description = `${person.age} year old ${person.skin} ${person.title} with ${person.hairLength} ${person.hairStyle} ${person.hairColor} hair and ${person.eyeColor} eyes`;
-    if (LivingCharacter.getPregnancyMonth(person, variables) > 5)
-      description += `.\n${person.Possessive} belly visibly bulges suggesting a new life growing in ${person.pronoun}`;
+    if (LivingCharacter.getPregnancyMonth(person, variables) > 5) {
+      const playerNoticedPregnancy = this.hasAchievement(
+        "playerNoticedPregnancy",
+        person
+      );
+      description += `.\n@@color:deeppink;${
+        (playerNoticedPregnancy ? "" : "''") + person.Possessive
+      } belly visibly bulges suggesting a new life growing in ${
+        person.pronoun
+      }${playerNoticedPregnancy ? "" : "!!''"}@@<<emoji 🤰>>`;
+      this.setAchievement("playerNoticedPregnancy", person);
+    } else if (this.hasAchievement("playerNoticedPregnancy", person))
+      description += `.\n@@color:deeppink;${person.GenPronoun}<<thirdPerson "'s" "'re">> pregnant@@<<emoji 🤰>>`;
     return description;
   }
   //Non static function. Returns a 0 year old person as a child of this person and the impregnator.

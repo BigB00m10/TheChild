@@ -4,7 +4,7 @@
     <<npcInteraction>>
 <</unlessEmergency>>
 :: slaveApproach {"position":"1000,0"}
-$npc.name is a <<- Person.getLongDescription()>>.
+$npc.name is a <<print Person.getLongDescription()>>.
 You approach $npc.pronoun.
 <<npcStats>>
 <<if $npc.fear gt 90>>\  /*&& $npc.location != "tortRafters">>\*/

@@ -378,7 +378,7 @@ window.Interactions["slave"] = {
                     return stats;
                   },
                   next: () => afterStrip().pushDickVag.next,
-                  altOptions: (npc, current) => {
+                  altOptions: (_npc, current) => {
                     if (Temporary().cockEntered) {
                       Variables().npcInteractionRoute =
                         "slave.pushDown.strip.pushDickVag.ram";
@@ -577,7 +577,7 @@ window.Interactions["slave"] = {
                     return stats;
                   },
                   next: () => afterStrip().pushDickAnus.next,
-                  altOptions: (npc, current) => {
+                  altOptions: (_npc, current) => {
                     if (Temporary().cockEntered) {
                       Variables().npcInteractionRoute =
                         "slave.pushDown.strip.pushDickAnus.ram";
@@ -784,7 +784,7 @@ window.Interactions["slave"] = {
                         return stats;
                       },
                       next: () => afterStrip().useDildo.next.dildoVag.next,
-                      altOptions: (npc, current) => {
+                      altOptions: (_npc, current) => {
                         if (Temporary().cockEntered) {
                           Variables().npcInteractionRoute =
                             "slave.pushDown.strip.useDildo.dildoVag.ram";
@@ -982,7 +982,7 @@ window.Interactions["slave"] = {
                         return stats;
                       },
                       next: () => afterStrip().useDildo.next.dildoAnus.next,
-                      altOptions: (npc, current) => {
+                      altOptions: (_npc, current) => {
                         if (Temporary().cockEntered) {
                           Variables().npcInteractionRoute =
                             "slave.pushDown.strip.useDildo.dildoAnus.ram";
@@ -2082,7 +2082,7 @@ window.Interactions["slave"] = {
         <</if>>\
         as $npc.genPronoun slightly <<thirdPerson "rotates" "rotate">> back and forth on the end of the rope.
         <<set $npc.location = "tortRafters">>`,
-      npcStats: (npc) => {
+      npcStats: (_npc) => {
         switch (Temporary().reaction) {
           case "lust":
             return ["lust+10%"];
@@ -2149,7 +2149,7 @@ window.Interactions["slave"] = {
           optionText: "🤬 Force $npc.pronoun",
           minutesCost: 5,
           npcStats: ["fear+20", "freedomWish+10"],
-          contents: `<<print OnlineStore.getBase('pregnancy test').use($npc.uid)>>`, //TODO: write testing procedure before result
+          contents: `You forcibly<<if $npc.haveClothes>> pull down $npc.possessive clothes, <</if>>pull $npc.possessive leg and force $npc.pronoun to<<emoji 💦>>pee in the device.\n<<print OnlineStore.getBase('pregnancy test').use($npc.uid)>>`,
           next: () => baseInteractionOptions(),
         },
         forget: {
@@ -2158,7 +2158,7 @@ window.Interactions["slave"] = {
           contents: '<<openNpcInteraction $npcInteractionRoute.split(".")[0]>>',
         },
       },
-      altOptions: (npc, current) =>
+      altOptions: (_npc, current) =>
         Temporary().refused ? current : baseInteractionOptions(),
       baseRoute() {
         let route = baseInteractionRoute();

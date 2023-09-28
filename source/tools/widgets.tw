@@ -172,7 +172,7 @@
                     <<dialogclose>>
                 <</button>></span>
             <</dialog>>
-        <</button>><<if _npc.pregnantDays != undefined>>Pregnant<<button 'Give birth right now'>>/*TODO*/
+        <</button>><br><<if _npc.pregnantDays != undefined>>_npc.pregnantDays days pregnant. <<button 'Give birth right now'>>/*TODO*/
         <</button>><</if>>
         <<done>><<run
             Player.bindSettingDom('toggleAging', _npc, 'stopAging');

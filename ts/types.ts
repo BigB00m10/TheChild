@@ -165,17 +165,20 @@ Macro.add("unlessEmergency", {
       const pregnancyDays = variables.settings.pregnancyDays
         ? variables.settings.pregnancyDays
         : 9 * 30;
-      let laborCharacter: LivingCharacter = window.Person.all(
-        (npc: Npc) => npc.pregnantDays && npc.pregnantDays >= pregnancyDays
+      let baby: Npc;
+      let laborNpc = window.Person.all(
+        (npc: Npc) => npc.pregnantDays && npc.pregnantDays > pregnancyDays
       ).first();
-      if (laborCharacter) laborCharacter = new Person(laborCharacter);
-      else if (
+      if (laborNpc) {
+        //Right now all NPCs are persons so it's assumed the NPC is a person.
+        baby = window.Person.giveBirth(<Person>laborNpc, variables);
+      } else if (
         variables.player.pregnantDays &&
         variables.player.pregnantDays >= pregnancyDays
-      )
-        laborCharacter = new Player(variables.player);
-      if (laborCharacter) {
-        const baby = laborCharacter.giveBirth();
+      ) {
+        baby = window.Player.giveBirth(variables);
+      }
+      if (baby) {
         //TODO: show dialog so the player can choose the name of the baby (and maybe it's personality)
       }
     }

@@ -209,35 +209,32 @@ class Player extends LivingCharacter {
       })
       .val(parentVariable["to" + propertyBaseName.toUpperFirst()]);
   }
-  giveBirth(): Npc {
-    const variables = Variables();
-    const npc = <Person>super.giveBirth(variables);
-    npc.love = 80; //Big bonus in love for being blood related
-    if (this.impregnator) {
+  giveBirth(variables?: any): Npc {
+    if (!variables) variables = Variables();
+    const baby = <Person>LivingCharacter.giveBirth(variables);
+    baby.love = 75; //Big bonus in love for being blood related
+    if (variables.player.impregnator) {
       //The one that impregnated is another NPC
-      const impregnator = <Person>(
-        window.Person.get(this.impregnator, variables)
-      );
+      const dad = <Person>window.Person.get(baby.dad, variables);
       ["eyeColor", "hairColor", "skin"].forEach((trait) => {
-        if (random(10) < 8) npc[trait] = impregnator[trait]; //70% chance of inherit each trait from dad
+        if (random(10) < 8) baby[trait] = dad[trait]; //70% chance of inherit each trait from dad
       });
       ["curious", "diligent", "energetic", "naughty", "shy"].forEach(
         (trait) => {
           //70% chance of inherit each trait from dad
-          if (random(10) < 8)
-            npc.uniqueness[trait] = impregnator.uniqueness[trait];
+          if (random(10) < 8) baby.uniqueness[trait] = dad.uniqueness[trait];
         }
       );
     }
     this.getEquippedInventory(variables).add(
       new Item({
-        name: npc.getShortDescription(npc, true),
+        name: baby.getShortDescription(baby, true),
         description: "Child being hold",
         tags: new Set(["holding", "child"]),
-        extra: npc,
+        extra: baby,
       }) //Make the player hold the newborn for now
     );
-    return npc;
+    return baby;
   }
   //Checks if the player is inside home
   isHome(variables?: any): boolean {

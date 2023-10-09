@@ -38,8 +38,8 @@ abstract class LivingCharacter {
   genitals: AllGenitals; //Description of this character genitals
   inventory: Inventory;
   equippedItems: Inventory; //Things that the character has equipped or is wearing.
-  //Non static function. Returns a 0 year old NPC as a child of this character and the impregnator.
-  giveBirth(variables?: any): Npc {
+  //General static function for common operations when giving birth with any character
+  static giveBirth(mom: LivingCharacter, variables?: any): Npc {
     if (!variables) variables = Variables();
     //Get child generation settings
     const gen = new PersonGeneration().load(variables.settings.childGeneration);
@@ -61,23 +61,23 @@ abstract class LivingCharacter {
       "auburn",
     ]; //List natural colors and styles only
     gen.hairStyles = ["curly", "wavy", "straight"];
-    const npc = window.Person.generate(gen, false); //Generate a new NPC with these settings
-    npc.dad = this.impregnator;
-    npc.mom = this.uid;
-    npc.uniqueness.name = "inherited";
-    npc.uniqueness.appearingChance =
-      npc.uniqueness.homeOtherNpc =
-      npc.uniqueness.homePersons =
-      npc.uniqueness.ageRange =
-      npc.uniqueness.apply =
-      this.pregnantDays =
-      this.impregnator =
+    const baby = window.Person.generate(gen, false); //Generate a new NPC with these settings
+    baby.dad = mom.impregnator;
+    baby.mom = mom.uid;
+    baby.uniqueness.name = "inherited";
+    baby.uniqueness.appearingChance =
+      baby.uniqueness.homeOtherNpc =
+      baby.uniqueness.homePersons =
+      baby.uniqueness.ageRange =
+      baby.uniqueness.apply =
+      mom.pregnantDays =
+      mom.impregnator =
         undefined; //Stop pregnancy
-    this.lactating = true;
+    mom.lactating = true;
     const player = <Player>variables.player;
     if (!player.home.family) player.home.family = [];
-    player.home.family.push(npc);
-    return npc;
+    player.home.family.push(baby);
+    return baby;
   }
   static getPregnancyMonth(char: LivingCharacter, variables?: any): number {
     if (!char.pregnantDays) return 0;
@@ -557,50 +557,53 @@ class Person extends Npc {
       description += `.\n@@color:deeppink;${person.GenPronoun}<<thirdPerson "'s" "'re">> pregnant@@<<emoji 🤰>>`;
     return description;
   }
-  //Non static function. Returns a 0 year old person as a child of this person and the impregnator.
-  giveBirth(): Npc {
-    const variables = Variables();
-    const npc = <Person>super.giveBirth(variables);
-    if (this.impregnator) {
+  //Returns a 0 year old person as a child of the specified person and the impregnator of that person.
+  giveBirth(mom: Person, variables?: any): Npc {
+    if (!variables) variables = Variables();
+    const baby = <Person>LivingCharacter.giveBirth(mom, variables);
+    if (mom.impregnator) {
       //The one that impregnated is another NPC
-      const impregnator = <Person>(
-        window.Person.get(this.impregnator, variables)
-      );
+      const dad = <Person>window.Person.get(baby.dad, variables);
       ["eyeColor", "hairColor", "skin"].forEach((trait) => {
-        npc[trait] = [this[trait], impregnator[trait]].random(); //Inherit one trait from mom or dad at 50% chance
+        baby[trait] = [mom[trait], dad[trait]].random(); //Inherit one trait from mom or dad at 50% chance
       });
       ["curious", "diligent", "energetic", "naughty", "shy"].forEach(
         (trait) => {
-          npc.uniqueness[trait] = [
-            this.uniqueness[trait], //Random trait
-            impregnator.uniqueness[trait], //Daddy's trait
-            npc.uniqueness[trait], //Mom's trait
+          baby.uniqueness[trait] = [
+            mom.uniqueness[trait], //Mom's trait
+            dad.uniqueness[trait], //Daddy's trait
+            baby.uniqueness[trait], //Random trait
           ].random(); //Chose one at 33% chance each
         }
       );
-      impregnator.children.push(npc.uid);
+      dad.children.push(baby.uid);
     } else {
       //The one that impregnated is the player
       ["eyeColor", "hairColor", "skin"].forEach((trait) => {
-        if (random(10) < 8) npc[trait] = this[trait]; //70% chance of inherit each trait from mom
+        if (random(10) < 8) baby[trait] = mom[trait]; //70% chance of inherit each trait from mom
       });
       ["curious", "diligent", "energetic", "naughty", "shy"].forEach(
         (trait) => {
           //70% chance of inherit each trait from mom
-          if (random(10) < 8) npc.uniqueness[trait] = this.uniqueness[trait];
+          if (random(10) < 8) baby.uniqueness[trait] = mom.uniqueness[trait];
         }
       );
-      npc.love = 80; //Big bonus in love for being blood related
+      baby.love = 75; //Big bonus in love for being blood related
     }
-    this.getEquippedInventory(this).add(
+    mom.children.push(baby.uid);
+    (mom.age < 2 //Make someone hold the baby (The mother if they're old enough or the player)
+      ? window.Player.getEquippedInventory(variables)
+      : this.getEquippedInventory(mom, variables)
+    ).add(
       new Item({
-        name: npc.getShortDescription(npc, true),
+        name: baby.getShortDescription(baby, true),
         description: "Child being hold",
         tags: new Set(["holding", "child"]),
-        extra: npc,
-      }) //Make the mother hold the newborn for now
+        extra: baby,
+      })
     );
-    return npc;
+    window.Person.removeAchievement("playerNoticedPregnancy", mom);
+    return baby;
   }
 }
 interface GenderGeneration {
@@ -1132,7 +1135,7 @@ class PersonUniqueness {
       if (randomNumber < preset.appearingChance) {
         person.uniqueness = preset;
         if (apply) preset.apply(person);
-        console.info(preset);
+        console.log(preset);
         return;
       }
       randomNumber -= preset.appearingChance;

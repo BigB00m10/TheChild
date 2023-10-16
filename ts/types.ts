@@ -179,7 +179,33 @@ Macro.add("unlessEmergency", {
         baby = window.Player.giveBirth(variables);
       }
       if (baby) {
-        //TODO: show dialog so the player can choose the name of the baby (and maybe it's personality)
+        SugarCube.State.temporary.baby = baby;
+        const playerCarryBabySentence = `You're currently carrying the baby, go to the inventory to interact with ${
+          (<Person>baby).pronoun
+        }`;
+        $.wiki(`<<dialog 'baby was born'>>${
+          laborNpc ? laborNpc.name + "'s" : "Yours"
+        } and ${baby.dad ? window.Person.get(baby.dad) : "yours"} baby ${
+          (<Person>baby).title
+        }<<emoji 👶>>have just been born at your home!!<<emoji ❤>><br>
+        The baby is a ${window.Person.getLongDescription(<Person>baby)}.<br>
+          ${
+            laborNpc
+              ? laborNpc.age < 2
+                ? playerCarryBabySentence
+                : `${laborNpc.name}  is currently carrying the baby, approach ${
+                    (<Person>laborNpc).pronoun
+                  } to interact with the baby`
+              : playerCarryBabySentence
+          }.<br>
+          How do you want to name ${(<Person>baby).pronoun}?
+          <label>Newborn name:<input type=text id=babyName /></label>
+        <</dialog>>`);
+        const $babyName = $("#babyName");
+        console.log($babyName[0]);
+        $babyName
+          .val(baby.name)
+          .on("change", () => (baby.name = <string>$babyName.val()));
       }
     }
     Wiki(this.payload[0].contents, this.output);

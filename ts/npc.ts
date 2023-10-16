@@ -50,17 +50,8 @@ abstract class LivingCharacter {
       gen.herms.fromAge =
       gen.herms.toAge =
         0;
-    gen.hairColors = [
-      "black",
-      "dark brown",
-      "brown",
-      "light brown",
-      "dirty blonde",
-      "blonde",
-      "red",
-      "auburn",
-    ]; //List natural colors and styles only
-    gen.hairStyles = ["curly", "wavy", "straight"];
+    gen.hairColors = PersonGeneration.naturalHairColors;
+    gen.hairStyles = PersonGeneration.naturalHairStyles;
     const baby = window.Person.generate(gen, false); //Generate a new NPC with these settings
     baby.dad = mom.impregnator;
     baby.mom = mom.uid;
@@ -366,6 +357,7 @@ class Person extends Npc {
   skin: string;
   haveClothes: boolean = true;
   uniqueness: PersonUniqueness;
+  naturalHairColor?: string;
   constructor(init?: Partial<Person>) {
     super();
     Object.assign(this, init);
@@ -561,9 +553,11 @@ class Person extends Npc {
   giveBirth(mom: Person, variables?: any): Npc {
     if (!variables) variables = Variables();
     const baby = <Person>LivingCharacter.giveBirth(mom, variables);
-    if (mom.impregnator) {
-      //The one that impregnated is another NPC
-      const dad = <Person>window.Person.get(baby.dad, variables);
+    const naturalHairColor = baby.hairColor;
+    let dad: Person;
+    if (baby.dad) {
+      //Baby's dad is another NPC
+      dad = <Person>window.Person.get(baby.dad, variables);
       ["eyeColor", "hairColor", "skin"].forEach((trait) => {
         baby[trait] = [mom[trait], dad[trait]].random(); //Inherit one trait from mom or dad at 50% chance
       });
@@ -578,7 +572,7 @@ class Person extends Npc {
       );
       dad.children.push(baby.uid);
     } else {
-      //The one that impregnated is the player
+      //Baby's dad is the player
       ["eyeColor", "hairColor", "skin"].forEach((trait) => {
         if (random(10) < 8) baby[trait] = mom[trait]; //70% chance of inherit each trait from mom
       });
@@ -589,6 +583,16 @@ class Person extends Npc {
         }
       );
       baby.love = 75; //Big bonus in love for being blood related
+    }
+    if (
+      !variables.settings.allowBornUnnaturalHairColor &&
+      !PersonGeneration.naturalHairColors.includes(baby.hairColor)
+    ) {
+      if (!PersonGeneration.naturalHairColors.includes(mom.hairColor))
+        mom.naturalHairColor = naturalHairColor;
+      if (dad && !PersonGeneration.naturalHairColors.includes(dad.hairColor))
+        dad.naturalHairColor = naturalHairColor;
+      baby.hairColor = naturalHairColor;
     }
     mom.children.push(baby.uid);
     (mom.age < 2 //Make someone hold the baby (The mother if they're old enough or the player)
@@ -625,10 +629,9 @@ class PersonGeneration {
   };
   femalePercentage: number = 50;
   hermPercentage: number = 0;
+  static naturalHairStyles = ["curly", "wavy", "straight"];
   hairStyles = [
-    "curly",
-    "wavy",
-    "straight",
+    ...PersonGeneration.naturalHairStyles,
     "emo bangs",
     "fauxhawkian",
     "front spikes",
@@ -639,7 +642,7 @@ class PersonGeneration {
     "pig tails",
   ];
   eyeColors = ["green", "blue", "brown", "hazel"];
-  hairColors = [
+  static naturalHairColors = [
     "black",
     "dark brown",
     "brown",
@@ -648,6 +651,9 @@ class PersonGeneration {
     "blonde",
     "red",
     "auburn",
+  ];
+  hairColors = [
+    ...PersonGeneration.naturalHairColors,
     "midnight blue",
     "rainbow",
     "pale pink",

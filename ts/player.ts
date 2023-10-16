@@ -216,9 +216,12 @@ class Player extends LivingCharacter {
     if (variables.player.impregnator) {
       //The one that impregnated is another NPC
       const dad = <Person>window.Person.get(baby.dad, variables);
+      const naturalHairColor = baby.hairColor;
       ["eyeColor", "hairColor", "skin"].forEach((trait) => {
         if (random(10) < 8) baby[trait] = dad[trait]; //70% chance of inherit each trait from dad
       });
+      if (!PersonGeneration.naturalHairColors.includes(baby.hairColor))
+        dad.naturalHairColor = baby.hairColor = naturalHairColor;
       ["curious", "diligent", "energetic", "naughty", "shy"].forEach(
         (trait) => {
           //70% chance of inherit each trait from dad

@@ -119,6 +119,16 @@ class Inventory {
   constructor(init?: Partial<Inventory>) {
     Object.assign(this, init);
   }
+  addNpc(npc: Npc, ...extraTags: string[]): void {
+    let item = new Item({
+      name: `NPC id ${npc.uid}`,
+      description: "NPC",
+      tags: new Set(["npc"]),
+      extra: npc,
+    });
+    for (let tag of extraTags) item.tags.add(tag);
+    this.add(item);
+  }
 }
 //The only store available right now, if more are created maybe a parent abstract class should be created.
 class OnlineStore {

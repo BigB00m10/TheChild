@@ -598,14 +598,7 @@ class Person extends Npc {
     (mom.age < 2 //Make someone hold the baby (The mother if they're old enough or the player)
       ? window.Player.getEquippedInventory(variables)
       : this.getEquippedInventory(mom, variables)
-    ).add(
-      new Item({
-        name: baby.getShortDescription(baby, true),
-        description: "Child being hold",
-        tags: new Set(["holding", "child"]),
-        extra: baby,
-      })
-    );
+    ).addNpc(baby, "holding", "child");
     window.Person.removeAchievement("playerNoticedPregnancy", mom);
     return baby;
   }
@@ -1139,7 +1132,7 @@ class PersonUniqueness {
     );
     for (const preset of personUniquenessPresets) {
       if (randomNumber < preset.appearingChance) {
-        person.uniqueness = preset;
+        person.uniqueness = new PersonUniqueness(preset);
         if (apply) preset.apply(person);
         console.log(preset);
         return;

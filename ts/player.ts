@@ -220,7 +220,10 @@ class Player extends LivingCharacter {
       ["eyeColor", "hairColor", "skin"].forEach((trait) => {
         if (random(10) < 8) baby[trait] = dad[trait]; //70% chance of inherit each trait from dad
       });
-      if (!PersonGeneration.naturalHairColors.includes(baby.hairColor))
+      if (
+        !variables.settings.allowBornUnnaturalHairColor &&
+        !PersonGeneration.naturalHairColors.includes(baby.hairColor)
+      )
         dad.naturalHairColor = baby.hairColor = naturalHairColor;
       ["curious", "diligent", "energetic", "naughty", "shy"].forEach(
         (trait) => {
@@ -229,14 +232,7 @@ class Player extends LivingCharacter {
         }
       );
     }
-    this.getEquippedInventory(variables).add(
-      new Item({
-        name: baby.getShortDescription(baby, true),
-        description: "Child being hold",
-        tags: new Set(["holding", "child"]),
-        extra: baby,
-      }) //Make the player hold the newborn for now
-    );
+    this.getEquippedInventory(variables).addNpc(baby, "holding", "child"); //Make the player hold the newborn for now
     return baby;
   }
   //Checks if the player is inside home

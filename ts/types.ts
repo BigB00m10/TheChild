@@ -179,7 +179,7 @@ Macro.add("unlessEmergency", {
         baby = window.Player.giveBirth(variables);
       }
       if (baby) {
-        SugarCube.State.temporary.baby = baby;
+        Temporary().baby = baby;
         const playerCarryBabySentence = `You're currently carrying the baby, go to the inventory to interact with ${
           (<Person>baby).pronoun
         }`;
@@ -199,13 +199,12 @@ Macro.add("unlessEmergency", {
               : playerCarryBabySentence
           }.<br>
           How do you want to name ${(<Person>baby).pronoun}?
-          <label>Newborn name:<input type=text id=babyName /></label>
+          <label>Newborn name:<input type=text id=babyName /></label><<button OK>><<dialogclose>><</button>>
         <</dialog>>`);
         const $babyName = $("#babyName");
-        console.log($babyName[0]);
         $babyName
           .val(baby.name)
-          .on("change", () => (baby.name = <string>$babyName.val()));
+          .on("change", () => (Temporary().baby.name = <string>$babyName.val()));
       }
     }
     Wiki(this.payload[0].contents, this.output);

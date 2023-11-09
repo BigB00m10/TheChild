@@ -136,7 +136,14 @@
         _npc = _args[0] || $npc;
         if(typeof _npc == 'number')
             _npc = Person.get(_npc);
-        _passage = _npc.location == "mainRoom" ? "main" : _npc.location;
+        _location = _npc.location;
+        if(_location == 'unknown'){
+            if(Person.getEquippedInventory(_npc.mom).hasNpc(_npc))
+                _location = Person.get(_npc.mom).location;
+            else if(Player.getEquippedInventory().hasNpc(_npc))
+                _location = passage();
+        }
+        _passage = _location == 'mainRoom' ? 'main' : _location;
         Meter.del('ageProgress');Meter.add('ageProgress',{
             label:'Aging Progress',
             height:'20px',
@@ -144,7 +151,7 @@
             empty:'#777'
         }, _npc.ageProgress / ($settings.agingIgDays ? $settings.agingIgDays : 365.25));
     >>
-    Location: <<- _npc.location.beautifyStat()>> <<button "Go there" _passage>><<dialogclose>><</button>><br>
+    Location: <<- _location.beautifyStat()>> <<button "Go there" _passage>><<dialogclose>><</button>><br>
     <<showmeter ageProgress>>
     <<if $cheat>>\
         Personality preset: $npc.uniqueness.name <<button change>><<set _dialogTitle = "Personality for " + _npc.name>><<dialog _dialogTitle>>

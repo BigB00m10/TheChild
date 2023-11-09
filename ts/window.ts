@@ -21,6 +21,8 @@ interface Window {
   Interactions: Record<string, NpcInteractionCollection>;
   PersonUniquenessPresets: PersonUniqueness[];
   PornMovie: PornMovie;
+  Temporary: () => any;
+  Variables: () => any;
 }
 window.Now = new Now();
 window.Homes = Homes;
@@ -39,6 +41,8 @@ window.Garden = new Garden();
 window.PersonGeneration = new PersonGeneration();
 window.PersonUniquenessPresets = personUniquenessPresets;
 window.PornMovie = new PornMovie();
+window.Temporary = Temporary;
+window.Variables = Variables;
 //Interactions will be populated in the next files.
 //Typescript files are processed in alphabetical order, that's why letters are prepended to the file names.
 window.Interactions = {};

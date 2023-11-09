@@ -1,4 +1,7 @@
 interface Array<T> {
+  /*
+   *Array extension to return the first item that makes the predicate return true or null
+   */
   firstOrDefault<T>(predicate: Function): T;
 }
 //Array extension to return the first item that makes the predicate return true or null
@@ -128,6 +131,21 @@ class Inventory {
     });
     for (let tag of extraTags) item.tags.add(tag);
     this.add(item);
+  }
+  //Get the items in this inventory that have the provided description case-insensitive or null
+  withDescription(description: string): Item[] {
+    description = description.toLowerCase();
+    return this.items.filter(
+      (item: Item) => item.description.toLowerCase() == description
+    );
+  }
+  //Checks if this inventory contains the NPC with the indicated UID
+  hasNpc(npc: Npc): boolean {
+    return (
+      this.withDescription("NPC").firstOrDefault(
+        (item: Item) => (<Npc>item.extra).uid == npc.uid
+      ) != null
+    );
   }
 }
 //The only store available right now, if more are created maybe a parent abstract class should be created.

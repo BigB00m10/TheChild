@@ -159,6 +159,7 @@ abstract class Npc extends LivingCharacter {
       if (!variables) variables = Variables();
       npc = variables.npc;
     }
+    if (typeof npc == "number") npc = this.get(npc, variables);
     return (npc.inventory = new Inventory(npc.inventory));
   }
   //Gets the NPC inventory object for the currently equipped/wearing items from the Sugarcube variables.
@@ -167,6 +168,7 @@ abstract class Npc extends LivingCharacter {
       if (!variables) variables = Variables();
       npc = variables.npc;
     }
+    if (typeof npc == "number") npc = this.get(npc, variables);
     return (npc.equippedItems = new Inventory(npc.equippedItems));
   }
   wearing(itemName: string, npc?: Npc, variables?: any): boolean {

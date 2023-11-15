@@ -2126,6 +2126,42 @@ window.Interactions["slave"] = {
         return route;
       },
     },
+    checkCarryingChild: {
+      canBeShown() {
+        const temp = Temporary();
+        temp.carriedNpcs =
+          window.Person.getEquippedInventory().withDescription("npc");
+        return temp.carriedNpcs.length > 0;
+      },
+      optionText() {
+        const temp = Temporary();
+        return `Check on ${
+          temp.carriedNpcs.length == 1
+            ? temp.carriedNpcs[0].extra.name
+            : Variables().npc.name + "'s carried children"
+        }`;
+      },
+      contents: `<<set _carriedNpcs=window.Person.getEquippedInventory().withDescription("npc")>>\
+      <<if _carriedNpcs.length==1>><<done>>\
+        <<openNpcInteraction slave _carriedNpcs[0].extra.uid>>\
+      <</done>><<else>>\
+        Which one?
+      <</if>>`,
+      next() {
+        const options: NpcInteractionOptions = {};
+        const npcItems =
+          window.Person.getEquippedInventory().withDescription("npc");
+        for (const item of npcItems) {
+          const npc = <Person>item.extra;
+          options[npc.name + npc.uid] = {
+            optionText: window.Person.getShortDescription(npc),
+            contents: `<<openNpcInteraction slave ${npc.uid}>>`,
+            action: true,
+          };
+        }
+        return options;
+      },
+    },
   },
   timeIncreaseNpcHunger: true,
   beforeStop: '<<run OnlineStore.getBase("condom").removed($npc.uid)>>',

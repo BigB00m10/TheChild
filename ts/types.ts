@@ -178,34 +178,7 @@ Macro.add("unlessEmergency", {
       ) {
         baby = window.Player.giveBirth(variables);
       }
-      if (baby) {
-        Temporary().baby = baby;
-        const playerCarryBabySentence = `You're currently carrying the baby, go to the inventory to interact with ${
-          (<Person>baby).pronoun
-        }`;
-        $.wiki(`<<dialog 'baby was born'>>${
-          laborNpc ? laborNpc.name + "'s" : "Yours"
-        } and ${baby.dad ? window.Person.get(baby.dad) : "yours"} baby ${
-          (<Person>baby).title
-        }<<emoji 👶>>have just been born at your home!!<<emoji ❤>><br>
-        The baby is a ${window.Person.getLongDescription(<Person>baby)}.<br>
-          ${
-            laborNpc
-              ? laborNpc.age < 2
-                ? playerCarryBabySentence
-                : `${laborNpc.name}  is currently carrying the baby, approach ${
-                    (<Person>laborNpc).pronoun
-                  } to interact with the baby`
-              : playerCarryBabySentence
-          }.<br>
-          How do you want to name ${(<Person>baby).pronoun}?
-          <label>Newborn name:<input type=text id=babyName /></label><<button OK>><<dialogclose>><</button>>
-        <</dialog>>`);
-        const $babyName = $("#babyName");
-        $babyName
-          .val(baby.name)
-          .on("change", () => (Temporary().baby.name = <string>$babyName.val()));
-      }
+      if (baby) window.Person.showBirthMessage(baby, laborNpc);
     }
     Wiki(this.payload[0].contents, this.output);
   },

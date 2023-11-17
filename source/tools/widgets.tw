@@ -131,7 +131,6 @@
     <<unset _npc>>
 <</widget>>
 <<widget personProperties>>
-    <<npcStats _args[0]>>
     <<set 
         _npc = _args[0] || $npc;
         if(typeof _npc == 'number')
@@ -151,10 +150,11 @@
             empty:'#777'
         }, _npc.ageProgress / ($settings.agingIgDays ? $settings.agingIgDays : 365.25));
     >>
+    <<npcStats _npc>>
     Location: <<- _location.beautifyStat()>> <<button "Go there" _passage>><<dialogclose>><</button>><br>
     <<showmeter ageProgress>>
     <<if $cheat>>\
-        Personality preset: $npc.uniqueness.name <<button change>><<set _dialogTitle = "Personality for " + _npc.name>><<dialog _dialogTitle>>
+        Personality preset: _npc.uniqueness.name <<button change>><<set _dialogTitle = "Personality for " + _npc.name>><<dialog _dialogTitle>>
             <<for _presetIndex = 0; _presetIndex lt PersonUniquenessPresets.length; _presetIndex++>>
                 <<set _preset = PersonUniquenessPresets[_presetIndex]>>
                 <<print '<<button "_preset.name (' + Person.getPersonalityDescription(_preset) + ')">><<set _npc.uniqueness = PersonUniquenessPresets[' + _presetIndex + '];Dialog.close()>><</button>>'>>
@@ -172,7 +172,10 @@
                 Are you sure you want to age up _npc.name?
                 This action cannot be reversed in the future.
                 <br><span id="spaceAct"><<button "✅ (Space) Yes">>
-                    <<set _npc.age++>>
+                    <<set
+                        _npc.age++;
+                        Person.adjustPubescence(true, _npc);
+                    >>
                     <<dialogclose>>
                 <</button>></span>
                 <span id="escAct"><<button "❌ (Esc) Cancel">>
@@ -241,7 +244,7 @@
         _hasCandy = Player.has('Candy');
     >>
     <<if !_hasChloroform and !_hasCandy>>
-        (You don't have anything at your disposal to obtain kids)<br>
+        (You don't have anything at your disposal to obtain kids. Try the online store on the PC)<br>
     <<elseif Basement.availableBeds() lte 0>>
         (Not enough space for a new kid back at home)<br>
     <<else>>
@@ -255,11 +258,12 @@
 <</widget>>
 <<widget magicSunglasses>>
     <<if Player.has('magic sunglasses')>>
+        <<set _npc to _args[0] || $npc>>
         <label style="cursor:pointer"><<checkbox '$settings.usingMagicSunglasses' false true autocheck>> Put on magic sunglasses.<<emoji 😎>></label><br>
         <<set _npcStatsStyle = $settings.usingMagicSunglasses ? '' : 'display:none'>>
         <span id='npcStats' @style='_npcStatsStyle'>
-            <<if passage()!='npcInteraction'>><<npcStats _args[0]>><</if>>
-            Traits: <<- Person.getPersonalityDescription(_args[0].uniqueness)>><br>
+            <<if passage()!='npcInteraction'>><<npcStats _npc>><</if>>
+            Traits: <<- Person.getPersonalityDescription(_npc.uniqueness)>><br>
         </span><br>
         <script>
             $('#checkbox-settingsusingmagicsunglasses').on('change', function() {
@@ -285,7 +289,7 @@
         <</if>><br>
     <</if>>
 <</widget>>
-<<widget thirdPerson>><<if $npc.gender != 'nb'>>$args[0]<<else>>$args[1]<</if>><</widget>>
+<<widget thirdPerson>><<set _npc = Person.get($args[2])||$npc>><<if _npc.gender != 'nb'>>$args[0]<<else>>$args[1]<</if>><</widget>>
 <<widget slaveEvents>>
     <<set _eventSlaves = window[_args[0]].getEventSlaves()>>
     <<set _eventIndex to 0>>

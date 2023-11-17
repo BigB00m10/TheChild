@@ -213,6 +213,7 @@ class Player extends LivingCharacter {
     if (!variables) variables = Variables();
     const baby = <Person>LivingCharacter.giveBirth(variables);
     baby.love = 75; //Big bonus in love for being blood related
+    baby.status = "home slave";
     if (variables.player.impregnator) {
       //The one that impregnated is another NPC
       const dad = <Person>window.Person.get(baby.dad, variables);

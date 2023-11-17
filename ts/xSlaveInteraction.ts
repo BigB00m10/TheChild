@@ -2135,14 +2135,16 @@ window.Interactions["slave"] = {
       },
       optionText() {
         const temp = Temporary();
-        return `Check on ${
+        const first: Person = temp.carriedNpcs[0].extra;
+        return `👶 Check on ${
           temp.carriedNpcs.length == 1
-            ? temp.carriedNpcs[0].extra.name
-            : Variables().npc.name + "'s carried children"
+            ? `${first.name} (${first.GenPronoun}<<thirdPerson '\'s' '\'re' ${first.uid}>> in $npc.name's arms)`
+            : "$npc.name's carried children"
         }`;
       },
       contents: `<<set _carriedNpcs=window.Person.getEquippedInventory().withDescription("npc")>>\
       <<if _carriedNpcs.length==1>><<done>>\
+        <<run State.history.splice(State.history.length - 1, 1)>>\
         <<openNpcInteraction slave _carriedNpcs[0].extra.uid>>\
       <</done>><<else>>\
         Which one?
@@ -2154,13 +2156,15 @@ window.Interactions["slave"] = {
         for (const item of npcItems) {
           const npc = <Person>item.extra;
           options[npc.name + npc.uid] = {
-            optionText: window.Person.getShortDescription(npc),
+            optionText: "👶 " + window.Person.getShortDescription(npc),
             contents: `<<openNpcInteraction slave ${npc.uid}>>`,
             action: true,
           };
         }
+        options.back = goBackToBeginningOption;
         return options;
       },
+      stopOption: '✋ Leave them alone',
     },
   },
   timeIncreaseNpcHunger: true,

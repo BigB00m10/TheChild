@@ -625,10 +625,15 @@ class Person extends Npc {
       baby.hairColor = naturalHairColor;
     }
     mom.children.push(baby.uid);
-    (mom.age < 2 //Make someone hold the baby (The mother if they're old enough or the player)
-      ? window.Player.getEquippedInventory(variables)
-      : this.getEquippedInventory(mom, variables)
-    ).addNpc(baby, "holding", "child");
+    let holderInventory: Inventory;
+    if (mom.age < 2) {//Make someone hold the baby (The mother if they're old enough or the player)
+      holderInventory = window.Player.getEquippedInventory(variables);
+      baby.status = "home slave";
+    } else {
+      holderInventory = this.getEquippedInventory(mom, variables);
+      console.info(baby.status = mom.status);
+    }
+    holderInventory.addNpc(baby, "holding", "child");
     window.Person.removeAchievement("playerNoticedPregnancy", mom);
     return baby;
   }

@@ -89,10 +89,13 @@ class Basement extends HomeSpace {
   }
   availableBeds(): number {
     let variables = Variables();
-    var contents = new Inventory(variables.basement.contents);
+    var contents = this.getContents(variables);
     var oldItem = contents.get("Matress");
     if (oldItem) oldItem.name = "Mattress";
-    return contents.get("Mattress").count - variables.slaves.length;
+    return (
+      contents.get("Mattress").count -
+      window.Person.all((p) => p.status != "citizen").length
+    );
   } //TODO: do not count slaves in player's bed
   getHungrySlaves(): Person[] {
     return Variables().slaves.filter((slave: Person) => slave.hunger > 25);

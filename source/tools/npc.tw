@@ -7,6 +7,7 @@
 $npc.name is a <<print Person.getLongDescription()>>.
 You approach $npc.pronoun.
 <<npcStats>>
+<<magicSunglasses>>
 <<if $npc.fear gt 90>>\  /*&& $npc.location != "tortRafters">>\*/
     $npc.GenPronoun <<thirdPerson "walks" "walk">> back scared and wodering what you will do to $npc.pronoun.
 <<elseif $npc.hasPenis && ($npc.lust gte 80 || ($npc.uniqueness.naughty && $npc.lust gte 30)) && $npc.fear lt 25>>\

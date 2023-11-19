@@ -85,7 +85,7 @@ abstract class LivingCharacter {
     }`;
     $.wiki(`<<dialog 'baby was born'>>${
       laborNpc ? laborNpc.name + "'s" : "Yours"
-    } and ${baby.dad ? window.Person.get(baby.dad) : "yours"} baby ${
+    } and ${baby.dad ? window.Person.get(baby.dad).name : "yours"} baby ${
       (<Person>baby).title
     }<<emoji 👶>>have just been born at your home!!<<emoji ❤>><br>
     The baby is a ${window.Person.getLongDescription(<Person>baby)}.<br>

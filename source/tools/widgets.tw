@@ -55,10 +55,11 @@
 <</widget>>
 <<widget npcAddressPlayer>><<- Player.getAddressing(_args[0] || $npc)>><</widget>>
 <<widget npcStats>>
-    <<set _npc to _args[0] || $npc>>
-    <<if typeof _npc == 'number'>>
-        <<set _npc to Person.get(_npc)>>
-    <</if>>
+    <<set 
+        _npc = _args[0] ? _args[0] : $npc;
+        if(typeof _npc == 'number')
+            _npc = Person.get(_npc);
+    >>
     <<run
         ['love', 'obedience', 'lust', 'pussyTraining', 'anusTraining', 'mouthTraining'].forEach(function(name) {
             Meter.del(name);
@@ -128,7 +129,6 @@
             </div>
         <</if>>
     </div>
-    <<unset _npc>>
 <</widget>>
 <<widget personProperties>>
     <<set 
@@ -136,11 +136,15 @@
         if(typeof _npc == 'number')
             _npc = Person.get(_npc);
         _location = _npc.location;
-        if(_location == 'unknown'){
-            if(Person.getEquippedInventory(_npc.mom).hasNpc(_npc))
-                _location = Person.get(_npc.mom).location;
-            else if(Player.getEquippedInventory().hasNpc(_npc))
+        if(_location == 'unknown') {
+            if(Person.getEquippedInventory(_npc.mom).hasNpc(_npc)) {
+                var mom = Person.get(_npc.mom);
+                _location = mom.location;
+                _extraLocationInfo = `(On ${mom.name}'s arms)`;
+            } else if(Player.getEquippedInventory().hasNpc(_npc)) {
                 _location = passage();
+                _extraLocationInfo = '(Held by the player)';
+            }
         }
         _passage = _location == 'mainRoom' ? 'main' : _location;
         Meter.del('ageProgress');Meter.add('ageProgress',{
@@ -151,7 +155,7 @@
         }, _npc.ageProgress / ($settings.agingIgDays ? $settings.agingIgDays : 365.25));
     >>
     <<npcStats _npc>>
-    Location: <<- _location.beautifyStat()>> <<button "Go there" _passage>><<dialogclose>><</button>><br>
+    Location: <<- _location.beautifyStat()>><<if _extraLocationInfo>> _extraLocationInfo<</if>> <<button "Go there" _passage>><<dialogclose>><</button>><br>
     <<showmeter ageProgress>>
     <<if $cheat>>\
         Personality preset: _npc.uniqueness.name <<button change>><<set _dialogTitle = "Personality for " + _npc.name>><<dialog _dialogTitle>>
@@ -190,6 +194,8 @@
             Player.bindSettingDom('impregnationChance', _npc, 'impregnationChance');
         >><</done>>\
     <</if>>
+    <<unset _location>>
+    <<unset _extraLocationInfo>>
 <</widget>>
 <<widget npcGenderSymbol>>
     <<set _genderSymbol = _args[0].sex == 'male' ? '♂' : _args[0].sex == 'female' ? '♀' : '⚤'>>
@@ -289,7 +295,7 @@
         <</if>><br>
     <</if>>
 <</widget>>
-<<widget thirdPerson>><<set _npc = Person.get($args[2])||$npc>><<if _npc.gender != 'nb'>>$args[0]<<else>>$args[1]<</if>><</widget>>
+<<widget thirdPerson>><<set _npc = _args[2] ? Person.get(_args[2]) : $npc>><<if _npc.gender != 'nb'>>_args[0]<<else>>_args[1]<</if>><</widget>>
 <<widget slaveEvents>>
     <<set _eventSlaves = window[_args[0]].getEventSlaves()>>
     <<set _eventIndex to 0>>

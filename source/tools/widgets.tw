@@ -142,7 +142,7 @@
                 _location = mom.location;
                 _extraLocationInfo = `(On ${mom.name}'s arms)`;
             } else if(Player.getEquippedInventory().hasNpc(_npc)) {
-                _location = passage();
+                _location = $scenery;
                 _extraLocationInfo = '(Held by the player)';
             }
         }

@@ -266,8 +266,15 @@ abstract class Npc extends LivingCharacter {
     return value;
   }
   //Changes the NPC social status and triggers the necessary actions or events
-  setStatus(status: NpcStatus, npc?: Npc): void {
-    if (!npc) npc = Variables().npc;
+  setStatus(
+    status: NpcStatus,
+    target?: Npc | Uid,
+    forceLocation?: string
+  ): void {
+    let npc: Npc;
+    if (!target) npc = Variables().npc;
+    else if (typeof target == "number") npc = window.Person.get(target);
+    else npc = target;
     switch (status) {
       case "slave":
         npc.location = "basement";
@@ -276,6 +283,7 @@ abstract class Npc extends LivingCharacter {
         npc.location = "mainRoom";
         break;
     }
+    if (forceLocation) npc.location = forceLocation;
     npc.status = status;
   }
   //Turns the NPC into a slave of the child trainer
@@ -626,12 +634,13 @@ class Person extends Npc {
     }
     mom.children.push(baby.uid);
     let holderInventory: Inventory;
-    if (mom.age < 2) {//Make someone hold the baby (The mother if they're old enough or the player)
+    if (mom.age < 2) {
+      //Make someone hold the baby (The mother if they're old enough or the player)
       holderInventory = window.Player.getEquippedInventory(variables);
       baby.status = "home slave";
     } else {
       holderInventory = this.getEquippedInventory(mom, variables);
-      console.info(baby.status = mom.status);
+      console.info((baby.status = mom.status));
     }
     holderInventory.addNpc(baby, "holding", "child");
     window.Person.removeAchievement("playerNoticedPregnancy", mom);

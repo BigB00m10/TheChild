@@ -16,7 +16,7 @@
             <<if _slaves.length > 0>>\
                 Approach slave:
                 <<set _charcode = 97>>\
-                <<for _slave range _slaves>><<if _slave.location == 'basement'>>\
+                <<for _slave range _slaves>>\
                     <<set 
                         if(_charcode == 104) _charcode += 2; 
                         _char = String.fromCharCode(_charcode++);
@@ -27,7 +27,7 @@
                     <span @id="_keyId">\
                         <<printPersonLink _slave _action _prefix>>
                     </span>\
-                <</if>><</for>>\
+                <</for>>\
             <</if>>\
         </div>\
         <div class="one-half column">\

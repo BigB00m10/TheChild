@@ -9,11 +9,45 @@ $player.name <<link "[Inventory]">><<dialog "Player Inventory">>\
     <<for _item range _items>>\
         <<print OnlineStore.getInventoryLine(_item)>>
     <</for>>\
-    <<set _items = Player.getEquippedInventory().items>>\
+    <<set _items = Player.getEquippedInventory().withoutDescription('npc')>>\
     <<if _items.length>><h3>Worn Items:</h3>\
         <<for _item range _items>>\
             <<print OnlineStore.getWornInventoryLine(_item)>>
         <</for>>\
+    <</if>>\
+    <<set _items = Player.getEquippedInventory().withDescription('npc')>>
+    <<if _items.length>><h3>Holding NPCs:</h3>\
+        <<for _item range _items>><<capture _item>>\
+            <<- Person.getShortDescription(_item.extra)>><<button interact>>\
+                <<openNpcInteraction slave _item.extra.uid>>\
+                <<dialogclose>>\
+            <</button>><<button 'put down'>>\
+                <<if !Player.isHome()>>\
+                    <<dialog 'Put NPC down'>>\
+                        You need to be home to be able to put an NPC down.
+                        <<button OK>><<dialogclose>><</button>>
+                    <</dialog>>\
+                <<elseif $scenery == 'basement'>>\
+                    <<dialog 'Put NPC down'>>\
+                        You put _item.extra.name down into the basement.
+                        <<button OK>><<dialogclose>><</button>>
+                    <</dialog>><<run
+                        Person.setStatus('slave', _item.extra.uid);
+                        Player.getEquippedInventory().remove(_item);
+                        Engine.show();
+                    >>\
+                <<else>>\
+                    <<dialog 'Put NPC down'>>\
+                        You let _item.extra.name down. Now _item.extra.genPronoun<<thirdPerson "'s" "'re" _item.extra.uid>> free to roam around the house.
+                        <<button OK>><<dialogclose>><</button>>
+                    <</dialog>><<run
+                        Person.setStatus('home slave', _item.extra.uid, $scenery);
+                        Player.getEquippedInventory().remove(_item);
+                        Engine.show();
+                    >>\
+                <</if>>
+            <</button>>
+        <</capture>><</for>>\
     <</if>><<unset _items>>\
 <</dialog>><</link>>
 <<if $cheat>>\

@@ -139,13 +139,26 @@ class Inventory {
       (item: Item) => item.description.toLowerCase() == description
     );
   }
-  //Checks if this inventory contains the NPC with the indicated UID
-  hasNpc(npc: Npc): boolean {
-    return (
-      this.withDescription("NPC").firstOrDefault(
-        (item: Item) => (<Npc>item.extra).uid == npc.uid
-      ) != null
+  //Get the items in this inventory that do NOT have the provided description case-insensitive or null
+  withoutDescription(description: string): Item[] {
+    description = description.toLowerCase();
+    return this.items.filter(
+      (item: Item) => item.description.toLowerCase() != description
     );
+  }
+  //Gets the indicated NPC if present in this inventory or null
+  getNpc(npc: Npc): Item {
+    return this.withDescription("NPC").firstOrDefault(
+      (item: Item) => (<Npc>item.extra).uid == npc.uid
+    );
+  }
+  //Checks if this inventory contains the indicated NPC
+  hasNpc(npc: Npc): boolean {
+    return this.getNpc(npc) != null;
+  }
+  //Remove the indicated NPC from this inventory if present
+  removeNpc(npc: Npc): void {
+    this.items.delete(this.getNpc(npc));
   }
 }
 //The only store available right now, if more are created maybe a parent abstract class should be created.

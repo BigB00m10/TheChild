@@ -98,11 +98,17 @@ class Basement extends HomeSpace {
     );
   } //TODO: do not count slaves in player's bed
   getHungrySlaves(): Person[] {
-    return Variables().slaves.filter((slave: Person) => slave.hunger > 25);
+    return <Person[]>(
+      window.Person.all(
+        (npc: Npc) => npc.status == "slave" && npc.location == "basement" && npc.hunger > 25
+      )
+    );
   }
   getSlaves(): Person[] {
-    return Variables().slaves.filter(
-      (slave: Person) => slave.location == "basement"
+    return <Person[]>(
+      window.Person.all(
+        (npc: Npc) => npc.status == "slave" && npc.location == "basement"
+      )
     );
   }
   deleteSlave(slave: Person) {
@@ -115,8 +121,10 @@ class TortRafters extends HomeSpace {
   muffleBase: number = 90;
   passageName: string = "tortRafters";
   getSlaves(): Person[] {
-    return Variables().slaves.filter(
-      (slave: Person) => slave.location == "tortRafters"
+    return <Person[]>(
+      window.Person.all(
+        (npc: Npc) => npc.status == "slave" && npc.location == "tortRafters"
+      )
     );
   }
 }

@@ -150,7 +150,11 @@ abstract class Npc extends LivingCharacter {
   punishments: string[] = [];
   //Where this NPC is located in the house or in the world, try to match up with the scenery name.
   location: string = "unknown";
-  adjustPubescence(agedUp: boolean = false, npc: Npc = undefined): void {
+  getMonthsSinceLastBirthDay(npc?: Npc) {
+    if (!npc) npc = this;
+    return 12 * npc.ageProgress / (Variables().settings.agingIgDays || 365.25);
+  }
+  adjustPubescence(agedUp: boolean = false, npc?: Npc): void {
     if (!npc) npc = this;
     if ((agedUp && npc.age == 13) || npc.age > 12)
       //Pubescent for the first time
@@ -300,7 +304,10 @@ abstract class Npc extends LivingCharacter {
       (space: string) => space != "basement" && !space.startsWith("tort")
     );
     const baseSeed = currentDate.getTime() - 1649048400000; //Current date/time minus the start of the game
-    window.Person.all(null, variables).forEach((npc: Npc) => {
+    window.Person.all(
+      (npc) => npc.age > 0 || window.Person.getMonthsSinceLastBirthDay(npc) > 5,
+      variables
+    ).forEach((npc: Npc) => {
       switch (npc.status) {
         case "home slave":
         case "lover":
@@ -368,6 +375,15 @@ abstract class Npc extends LivingCharacter {
             requirements[requirement]
         );
     return entries.join(", ");
+  }
+  getWandering(): Npc[] {
+    const variables = Variables();
+    return <Person[]>(
+      window.Person.all(
+        (npc: Npc) => npc.location == variables.scenery,
+        variables
+      )
+    );
   }
 }
 type AnimalSpecies = "dog" | "cat" | "rabbit" | "horse" | "pig" | "cow";
@@ -487,12 +503,6 @@ class Person extends Npc {
     PersonUniqueness.applyRandom(person, applyUniqueness);
     return person;
   }
-  getWandering(): Person[] {
-    let variables = Variables();
-    return variables.slaves.filter(
-      (slave: Person) => slave.location == variables.scenery
-    );
-  }
   getPersonalityDescription(uniqueness: PersonUniqueness): string {
     return Object.keys(uniqueness)
       .filter((keyName) => typeof uniqueness[keyName] == "boolean")
@@ -571,7 +581,16 @@ class Person extends Npc {
       variables = Variables();
       person = variables.npc;
     }
-    let description = `${person.age} year old ${person.skin} ${person.title} with ${person.hairLength} ${person.hairStyle} ${person.hairColor} hair and ${person.eyeColor} eyes`;
+    const months = this.getMonthsSinceLastBirthDay(person);
+    let description = `${
+      person.age < 1
+        ? months < 1
+          ? "newborn"
+          : months + " month old"
+        : person.age + " year old"
+    } ${person.skin} ${person.title} with ${person.hairLength} ${
+      person.hairStyle
+    } ${person.hairColor} hair and ${person.eyeColor} eyes`;
     if (LivingCharacter.getPregnancyMonth(person, variables) > 5) {
       const playerNoticedPregnancy = this.hasAchievement(
         "playerNoticedPregnancy",

@@ -32,7 +32,9 @@ abstract class HomeSpace {
   abstract passageName: string;
   getEventSlaves(): Person[] {
     const variables = Variables();
-    const slaves = variables.slaves as Person[];
+    const slaves = <Person[]>(
+      window.Person.all((npc) => npc.status != "citizen")
+    );
     let candidates: Person[] = [];
     for (let slaveIndex = 0; slaveIndex < slaves.length; slaveIndex++) {
       const slave = slaves[slaveIndex];
@@ -100,7 +102,8 @@ class Basement extends HomeSpace {
   getHungrySlaves(): Person[] {
     return <Person[]>(
       window.Person.all(
-        (npc: Npc) => npc.status == "slave" && npc.location == "basement" && npc.hunger > 25
+        (npc: Npc) =>
+          npc.status == "slave" && npc.location == "basement" && npc.hunger > 25
       )
     );
   }

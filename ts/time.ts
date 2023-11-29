@@ -145,6 +145,14 @@ class Now {
         } else npc.obedience = Math.max(0, npc.obedience - 1);
         window.Person.removeAchievement("howAreYou", npc);
         manageAging(npc);
+        const equipped = window.Person.getEquippedInventory(npc, variables);
+        equipped.withDescription("npc").forEach((npcItem) => {
+          const heldNpc = window.Person.get((<Npc>npcItem.extra).uid, variables);
+          if (heldNpc.age > 2) {
+            window.Person.setStatus(npc.status, heldNpc, npc.location);
+            equipped.remove(npcItem);
+          }
+        });
       });
       player.lust = Math.min(100, player.lust + 10);
       if (player.pregnantDays != undefined) player.pregnantDays++;

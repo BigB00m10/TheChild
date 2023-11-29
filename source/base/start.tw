@@ -2,11 +2,11 @@
 <<set _sexOptions = ["man", "woman", "futanari"]>>\
 <<set _genderOptions = ["him", "her", "them"]>>
 Your name is <<textbox "$player.name" "David">>, a young <<listbox '_sex' autoselect>><<optionsfrom _sexOptions>><</listbox>>
- living by <<listbox '_gender' autoselect>><<optionsfrom _genderOptions>><</listbox>>self in a small home. To the outside world, you’re the definition of an average person, but behind closed doors, you're anything but normal.
+ living by <<listbox '_gender' autoselect>><<optionsfrom _genderOptions>><</listbox>>self in a quiet home. On the outside you’re just a regular person going about their everyday life, but in reality you’re nothing like that.
 
-If anyone where to know what type of person you really were, you’d probably find yourself under heavy surveillance in a prison cell. Let’s just say that your tastes in life, are a bit too exotic for most people.
+If your true self were to be revealed, the entirety of your freedom would cease to exist. Safe to say that your exotic kinks should probably be kept to yourself, unless you want to attract unwanted attention.
 
-It's currently a nice Monday morning and the start of a new life. For too long have your desires been only satisfied by dreams. Today was the day that you started to make those dreams a reality. Today, you would go down the path of enslaving and training children to sate your sexual depravity.
+Today is a beautiful Monday morning, the start of your new life. For too long your desires could only be mere fantasies to feed your urges. Today those fantasies will become reality, they will become everything you desired and more. Today marks the day of your life as a child slave trainer, training any kid to do your bidding, as well as satisfy your urges that have long been rejected…
 
 <<keyAction Start ▶️ btn>>
   <<set

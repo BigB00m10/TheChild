@@ -43,7 +43,7 @@ class Item {
   description: string;
   count?: number = 1;
   tags: Set<string>; //Keywords related to this item. It will be used to filter the items in a inventory in the future.
-  extra?: object; //Extra item data
+  extra?: any; //Extra item data
   constructor(init?: Item) {
     Object.assign(this, init);
   }
@@ -127,7 +127,7 @@ class Inventory {
       name: `NPC id ${npc.uid}`,
       description: "NPC",
       tags: new Set(["npc"]),
-      extra: npc,
+      extra: npc.uid,
     });
     for (let tag of extraTags) item.tags.add(tag);
     this.add(item);
@@ -148,8 +148,9 @@ class Inventory {
   }
   //Gets the indicated NPC if present in this inventory or null
   getNpc(npc: Npc): Item {
-    return this.withDescription("NPC").firstOrDefault(
-      (item: Item) => (<Npc>item.extra).uid == npc.uid
+    const uid = typeof npc == 'number' ? npc : npc.uid;
+    return this.withDescription("npc").firstOrDefault(
+      (item: Item) => item.extra == uid
     );
   }
   //Checks if this inventory contains the indicated NPC

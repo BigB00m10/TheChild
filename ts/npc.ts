@@ -152,7 +152,9 @@ abstract class Npc extends LivingCharacter {
   location: string = "unknown";
   getMonthsSinceLastBirthDay(npc?: Npc) {
     if (!npc) npc = this;
-    return 12 * npc.ageProgress / (Variables().settings.agingIgDays || 365.25);
+    return (
+      (12 * npc.ageProgress) / (Variables().settings.agingIgDays || 365.25)
+    );
   }
   adjustPubescence(agedUp: boolean = false, npc?: Npc): void {
     if (!npc) npc = this;
@@ -564,10 +566,21 @@ class Person extends Npc {
     return word.includes("boy") ? "male" : "female";
   }
   getShortDescription(person?: Person, addTitle?: boolean): string {
-    if (!person) person = Variables().npc;
-    if (typeof person == "number") person = <Person>window.Person.get(person);
+    let variables: any;
+    if (!person) {
+      variables = Variables();
+      person = variables.npc;
+    } else if (typeof person == "number")
+      person = <Person>window.Person.get(person);
+    const months = this.getMonthsSinceLastBirthDay(person);
     return (
-      `${person.name} (${person.age} y.o. ${
+      `${person.name} (${
+        person.age < 1
+          ? months < 1
+            ? "newborn"
+            : months + " m.o."
+          : person.age + " y.o."
+      } ${
         addTitle ? person.title + " " : ""
       }${person.hairColor} hair)` +
       (this.hasAchievement("playerNoticedPregnancy", person)
@@ -580,7 +593,8 @@ class Person extends Npc {
     if (!person) {
       variables = Variables();
       person = variables.npc;
-    }
+    } else if (typeof person == "number")
+      person = <Person>window.Person.get(person);
     const months = this.getMonthsSinceLastBirthDay(person);
     let description = `${
       person.age < 1
@@ -659,7 +673,7 @@ class Person extends Npc {
       baby.status = "home slave";
     } else {
       holderInventory = this.getEquippedInventory(mom, variables);
-      console.info((baby.status = mom.status));
+      baby.status = mom.status;
     }
     holderInventory.addNpc(baby, "holding", "child");
     window.Person.removeAchievement("playerNoticedPregnancy", mom);

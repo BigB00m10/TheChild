@@ -17,6 +17,21 @@ $(document).on(
   ":passagestart",
   () => ((keyOptionNumber = 1), (keyOptionShiftKey = false))
 );
+function keyOptionParameters(
+  args: TwineSugarCube.MacroArgsArray
+): [string, string, string, string] {
+  const emoji =
+    args.length > 1 ? args[1] : "'&nbsp;&nbsp;&nbsp;&nbsp;'";
+  const widget =
+    args.length > 2 && args[2] == "btn" ? "button" : "link";
+  let idStart = keyToId[keyOptionNumber];
+  let displayOptionNumber = keyOptionNumber.toString();
+  if (keyOptionShiftKey) {
+    idStart = "shift" + idStart.toUpperFirst();
+    displayOptionNumber = "Shift + " + displayOptionNumber;
+  }
+  return [emoji, widget, idStart, displayOptionNumber];
+}
 //Adds an option that leads to a passage that can be selected by pressing a number. The number is assigned automatically.
 //After the 0, the sequence will be shift + 1, shift + 2, ...
 //Parameters:
@@ -26,16 +41,10 @@ $(document).on(
 //Example: <<keyOption [[My text|myPassage]] 🎃 btn>>
 Macro.add("keyOption", {
   handler: function () {
-    const emoji =
-      this.args.length > 1 ? this.args[1] : "'&nbsp;&nbsp;&nbsp;&nbsp;'";
-    const widget =
-      this.args.length > 2 && this.args[2] == "btn" ? "button" : "link";
-    let idStart = keyToId[keyOptionNumber];
-    if (keyOptionShiftKey) idStart = "shift" + idStart.toUpperFirst();
+    const [emoji, widget, idStart, displayOptionNumber] =
+      keyOptionParameters(this.args);
     Wiki(
-      `<<${widget} "<<emoji ${emoji}>>(${
-        keyOptionShiftKey ? "Shift + " : "" + keyOptionNumber
-      }) ${this.args[0].text}" "${this.args[0].link}">><</${widget}>>`,
+      `<<${widget} "<<emoji ${emoji}>>(${displayOptionNumber}) ${this.args[0].text}" "${this.args[0].link}">><</${widget}>>`,
       this.output
     ).attr("id", idStart + "Act");
     keyOptionNumber = (keyOptionNumber + 1) % 10;
@@ -52,15 +61,14 @@ Macro.add("keyOption", {
 Macro.add("keyAction", {
   tags: null,
   handler: function () {
-    let emoji =
-      this.args.length > 1 ? this.args[1] : "'&nbsp;&nbsp;&nbsp;&nbsp;'";
-    let widget =
-      this.args.length > 2 && this.args[2] == "btn" ? "button" : "link";
+    const [emoji, widget, idStart, displayOptionNumber] =
+      keyOptionParameters(this.args);
     Wiki(
-      `<<${widget} "<<emoji ${emoji}>>(${keyOptionNumber}) ${this.args[0]}">>${this.payload[0].contents}<</${widget}>>`,
+      `<<${widget} "<<emoji ${emoji}>>(${displayOptionNumber}) ${this.args[0]}">>${this.payload[0].contents}<</${widget}>>`,
       this.output
-    ).attr("id", keyToId[keyOptionNumber] + "Act");
+    ).attr("id", idStart + "Act");
     keyOptionNumber = (keyOptionNumber + 1) % 10;
+    if (keyOptionNumber == 1) keyOptionShiftKey = true;
   },
 });
 //Adds a text similar imitating a keyOption that cannot be selected. A non working key number is assigned automatically.
@@ -74,9 +82,10 @@ Macro.add("keyDisabled", {
       this.args.length > 1 ? this.args[1] : "'&nbsp;&nbsp;&nbsp;&nbsp;'";
     Wiki(`<<emoji ${emoji}>>(${keyOptionNumber}) ${this.args[0]}`, this.output);
     keyOptionNumber = (keyOptionNumber + 1) % 10;
+    if (keyOptionNumber == 1) keyOptionShiftKey = true;
   },
 });
-$(document).on("keyup", (evt) => {
+$(document).on("keydown", (evt) => {
   if (
     evt.key != "Enter" &&
     evt.key != "Escape" &&
@@ -85,7 +94,11 @@ $(document).on("keyup", (evt) => {
   )
     //To avoid executing options while writing into a dialog, only enter, esc and space are triggered when a dialog is opened.
     return;
-  let className = keyToId[evt.key] || evt.key.toLowerCase();
+  const keyName =
+    evt.keyCode < 58 && evt.keyCode > 47
+      ? (evt.keyCode - 48).toString()
+      : evt.key;
+  let className = keyToId[keyName] || keyName.toLowerCase();
   if (evt.shiftKey && className != "shift")
     className = "shift" + className.toUpperFirst();
   if (className.length == 1) className = className + "Key";

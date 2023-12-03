@@ -2135,17 +2135,17 @@ window.Interactions["slave"] = {
       },
       optionText() {
         const temp = Temporary();
-        const first: Person = temp.carriedNpcs[0].extra;
+        const first = <Person>window.Person.get(temp.carriedNpcs[0].extra);
         return `👶 Check on ${
           temp.carriedNpcs.length == 1
-            ? `${first.name} (${first.GenPronoun}<<thirdPerson '\'s' '\'re' ${first.uid}>> in $npc.name's arms)`
+            ? `${first.name} (${first.GenPronoun}'<<thirdPerson s re ${first.uid}>> in $npc.name's arms)`
             : "$npc.name's carried children"
         }`;
       },
       contents: `<<set _carriedNpcs=window.Person.getEquippedInventory().withDescription("npc")>>\
       <<if _carriedNpcs.length==1>><<done>>\
         <<run State.history.splice(State.history.length - 1, 1)>>\
-        <<openNpcInteraction slave _carriedNpcs[0].extra.uid>>\
+        <<openNpcInteraction slave _carriedNpcs[0].extra>>\
       <</done>><<else>>\
         Which one?
       <</if>>`,
@@ -2154,7 +2154,7 @@ window.Interactions["slave"] = {
         const npcItems =
           window.Person.getEquippedInventory().withDescription("npc");
         for (const item of npcItems) {
-          const npc = <Person>item.extra;
+          const npc = <Person>window.Person.get(item.extra);
           options[npc.name + npc.uid] = {
             optionText: "👶 " + window.Person.getShortDescription(npc),
             contents: `<<openNpcInteraction slave ${npc.uid}>>`,
@@ -2164,7 +2164,32 @@ window.Interactions["slave"] = {
         options.back = goBackToBeginningOption;
         return options;
       },
-      stopOption: '✋ Leave them alone',
+      stopOption: "✋ Leave them alone",
+    },
+    pickup: {
+      canBeShown() {
+        const npc = Variables().npc;
+        if (npc.age > 6) return false;
+        const playerHeldNpcs =
+          window.Player.getEquippedInventory().withDescription("npc");
+        return (
+          playerHeldNpcs.length < 2 &&
+          !playerHeldNpcs.firstOrDefault((ni: Item) => ni.extra == npc.uid)
+        );
+      },
+      optionText: "👐 Pick $npc.name in your arms",
+      contents: `<<run
+        if($npc.mom) {
+          var inventory = Person.getEquippedInventory(Person.get($npc.mom));
+          var npcItem = inventory.withDescription('npc').firstOrDefault(i=>i.extra==$npc.uid);
+          if(npcItem)
+            inventory.remove(npcItem);
+          $npc.location='unknown';
+          Player.getEquippedInventory().addNpc($npc);
+        }
+      >> You pick up $npc.name in your arms.
+      You can now bring $npc.pronoun with you and interact with $npc.pronoun through your inventory at any time.`,
+      next: baseInteractionOptions,
     },
   },
   timeIncreaseNpcHunger: true,

@@ -19,7 +19,7 @@ $player.name <<link "[Inventory]">><<dialog "Player Inventory">>\
     <<if _items.length>><h3>Holding NPCs:</h3>\
         <<for _item range _items>><<capture _item>>\
             <<- Person.getShortDescription(_item.extra)>><<button interact>>\
-                <<openNpcInteraction slave _item.extra.uid>>\
+                <<openNpcInteraction slave _item.extra>>\
                 <<dialogclose>>\
             <</button>><<button 'put down'>>\
                 <<if !Player.isHome()>>\
@@ -32,7 +32,7 @@ $player.name <<link "[Inventory]">><<dialog "Player Inventory">>\
                         You put _item.extra.name down into the basement.
                         <<button OK>><<dialogclose>><</button>>
                     <</dialog>><<run
-                        Person.setStatus('slave', _item.extra.uid);
+                        Person.setStatus('slave', _item.extra);
                         Player.getEquippedInventory().remove(_item);
                         Engine.show();
                     >>\
@@ -41,7 +41,7 @@ $player.name <<link "[Inventory]">><<dialog "Player Inventory">>\
                         You let _item.extra.name down. Now _item.extra.genPronoun<<thirdPerson "'s" "'re" _item.extra.uid>> free to roam around the house.
                         <<button OK>><<dialogclose>><</button>>
                     <</dialog>><<run
-                        Person.setStatus('home slave', _item.extra.uid, $scenery);
+                        Person.setStatus('home slave', _item.extra, $scenery);
                         Player.getEquippedInventory().remove(_item);
                         Engine.show();
                     >>\

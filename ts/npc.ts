@@ -387,6 +387,16 @@ abstract class Npc extends LivingCharacter {
       )
     );
   }
+  isBeingHeld(npc?: Npc, variables?: any) {
+    if (!variables) variables = Variables();
+    if (typeof npc == "number") this.get(npc, variables);
+    else if (!npc) npc = variables.npc;
+    if (window.Player.getEquippedInventory().hasNpc(npc)) return true;
+    return (
+      npc.mom &&
+      this.getEquippedInventory(this.get(npc.mom), variables).hasNpc(npc)
+    );
+  }
 }
 type AnimalSpecies = "dog" | "cat" | "rabbit" | "horse" | "pig" | "cow";
 type RoughSize = "tiny" | "small" | "normal" | "big" | "very big";
@@ -580,9 +590,7 @@ class Person extends Npc {
             ? "newborn"
             : months + " m.o."
           : person.age + " y.o."
-      } ${
-        addTitle ? person.title + " " : ""
-      }${person.hairColor} hair)` +
+      } ${addTitle ? person.title + " " : ""}${person.hairColor} hair)` +
       (this.hasAchievement("playerNoticedPregnancy", person)
         ? "<<emoji 🤰>>"
         : "")

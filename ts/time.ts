@@ -147,7 +147,7 @@ class Now {
         manageAging(npc);
         const equipped = window.Person.getEquippedInventory(npc, variables);
         equipped.withDescription("npc").forEach((npcItem) => {
-          const heldNpc = window.Person.get((<Npc>npcItem.extra).uid, variables);
+          const heldNpc = window.Person.get(npcItem.extra, variables);
           if (heldNpc.age > 2) {
             window.Person.setStatus(npc.status, heldNpc, npc.location);
             equipped.remove(npcItem);

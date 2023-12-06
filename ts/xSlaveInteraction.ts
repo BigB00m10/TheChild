@@ -1948,6 +1948,7 @@ window.Interactions["slave"] = {
       locationRequirements: ["basement"],
       showDisabled: "status=slave=>Freedom Wish $npc.freedomWish/25",
       npcRequirements: ["freedomWish<=25"],
+      canBeShown: () => !window.Person.isBeingHeld(), //TODO: do not show disabled if this is the req that it doesn't comply
       optionText: "🚪 Let $npc.name roam the house.",
       altMinutes: () => 2,
       contents: `You carefully open the door letting only $npc.name out of the basement.
@@ -1975,6 +1976,9 @@ window.Interactions["slave"] = {
     tieUp: {
       locationRequirements: ["basement"],
       inventoryRequirements: ["Rope", "The Art of Shibari"],
+      canBeShown: () =>
+        !window.Person.isBeingHeld() &&
+        !window.Person.getEquippedInventory().withDescription("npc").length,
       optionText: "⛓️ Suspend $npc.name from the rafters",
       minutesCost: 30,
       contents: `\
@@ -2170,6 +2174,8 @@ window.Interactions["slave"] = {
       canBeShown() {
         const npc = Variables().npc;
         if (npc.age > 6) return false;
+        if (window.Person.getEquippedInventory().withDescription("npc").length)
+          return false;
         const playerHeldNpcs =
           window.Player.getEquippedInventory().withDescription("npc");
         return (

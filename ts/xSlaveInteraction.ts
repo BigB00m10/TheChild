@@ -1948,7 +1948,7 @@ window.Interactions["slave"] = {
       locationRequirements: ["basement"],
       showDisabled: "status=slave=>Freedom Wish $npc.freedomWish/25",
       npcRequirements: ["freedomWish<=25"],
-      canBeShown: () => !window.Person.isBeingHeld(), //TODO: do not show disabled if this is the req that it doesn't comply
+      canBeShown: () => !window.Person.isBeingHeld(),
       optionText: "🚪 Let $npc.name roam the house.",
       altMinutes: () => 2,
       contents: `You carefully open the door letting only $npc.name out of the basement.

@@ -200,24 +200,28 @@ const checkCanBeShown = (option: NpcInteraction) => {
     canBeShown = complexCanBeShown;
   }
   if (!canBeShown) return false;
-  if (option.canBeShown) canBeShown = option.canBeShown();
+  if (option.canBeShown) {
+    Temporary().checkedGenericCanBeShown = true;
+    canBeShown = option.canBeShown();
+  }
   return canBeShown;
 };
 //Outputs the current interaction indicated by the route $npcInteractionRoute and directed to the Npc in $npc
 //Not recommended to use it directly unless you know exactly what are you doing, use openNpcInteraction macro instead.
 Macro.add("npcInteraction", {
   handler: function () {
-    let vars = variables() as any;
-    vars.npc = window.Person.get(vars.npc.uid);
-    const npc: Npc = vars.npc;
-    const steps: string[] = vars.npcInteractionRoute.split(".");
+    const variables = Variables();
+    const temporary = Temporary();
+    variables.npc = window.Person.get(variables.npc.uid);
+    const npc: Npc = variables.npc;
+    const steps: string[] = variables.npcInteractionRoute.split(".");
     const collection = window.Interactions[steps[0]];
     let options = callOrGetItself(collection.options);
     let interaction: NpcInteraction;
     for (let stepIndex = 1; stepIndex < steps.length; stepIndex++) {
       interaction = options[steps[stepIndex]];
       if (interaction == undefined) {
-        console.error(vars.npcInteractionRoute);
+        console.error(variables.npcInteractionRoute);
         console.error(options);
         console.error(steps[stepIndex]);
       }
@@ -245,7 +249,7 @@ Macro.add("npcInteraction", {
         npcHungerIncrease = Math.max(1, Math.round((minutes / 8) * 0.46));
     }
     let showNpcStats = interaction ? interaction.showNpcStats : undefined;
-    const extraNpcStats = Temporary().npcStatModifiers;
+    const extraNpcStats = temporary.npcStatModifiers;
     if ((interaction && interaction.npcStats) || extraNpcStats) {
       const npcStats = [];
       if (interaction && interaction.npcStats) {
@@ -287,14 +291,14 @@ Macro.add("npcInteraction", {
             case "+":
             case "-":
               varName = change.slice(1);
-              varPath = "variables().npc." + varName;
+              varPath = "variables.npc." + varName;
               result += change[0] + varName.beautifyStat();
               value = change[0] != "-" ? "true" : "false";
               break;
             default:
               let match = /(\w+)(%?)([+-])(\d+)(%?)/.exec(change);
               varName = match[1];
-              varPath = "variables().npc." + varName;
+              varPath = "variables.npc." + varName;
               value = eval(varPath) as number;
               if (match[2] == "%") {
                 try {
@@ -335,8 +339,8 @@ Macro.add("npcInteraction", {
     let baseRoute =
       interaction && interaction.baseRoute
         ? interaction.baseRoute(npc)
-        : vars.npcInteractionRoute;
-    if (vars.player.energy <= 0)
+        : variables.npcInteractionRoute;
+    if (variables.player.energy <= 0)
       result += `@@color:red;You REALLY need to sleep@@<br>
       <<keyAction Sleep 😴>><<sleep>><</keyAction>>`;
     else {
@@ -344,7 +348,7 @@ Macro.add("npcInteraction", {
         let option = options[name];
         let canBeShown = checkCanBeShown(option);
         if (!canBeShown) {
-          if (option.showDisabled) {
+          if (option.showDisabled && !temporary.checkedGenericCanBeShown) {
             let disabledText = option.showDisabled;
             if (disabledText.includes("=>")) {
               let components = disabledText.split("=>");

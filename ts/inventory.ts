@@ -352,7 +352,7 @@ class OnlineStore {
         const player = <Player>Variables().player;
         if (player.impregnationChance > 98)
           return $.wiki(
-            '<<dialog "Fertility pill">>Your impregnation chances are already at maximum.</dialog>>'
+            '<<dialog "Fertility pill">>Your impregnation chances are already at maximum.<</dialog>>'
           );
         player.impregnationChance += 20;
         window.Player.removeItem(this.name);

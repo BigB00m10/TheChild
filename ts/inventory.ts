@@ -148,7 +148,7 @@ class Inventory {
   }
   //Gets the indicated NPC if present in this inventory or null
   getNpc(npc: Npc): Item {
-    const uid = typeof npc == 'number' ? npc : npc.uid;
+    const uid = typeof npc == "number" ? npc : npc.uid;
     return this.withDescription("npc").firstOrDefault(
       (item: Item) => item.extra == uid
     );
@@ -426,6 +426,22 @@ class OnlineStore {
         return $.wiki("<<dialog 'Pregnancy test'>>" + output + "<</dialog>>");
       },
     }), //Pregnancy test
+    new Product({
+      name: "Infant formula",
+      itemName: "Infant formula feedings",
+      description:
+        "Nutritious formula to feed babies under 1 year old as a replacement for breast milk. If you have a cook, they will use it to feed babies that are not carried by milk producers.\nEach can contains enough to make enough milk for 15 days (15 feedings).",
+      price: 60,
+      tags: new Set([
+        "kitchen",
+        "baby",
+        "birth",
+        "pregnancy",
+        "food",
+        "consumable",
+      ]),
+      packQuantity: 15,
+    }), //Baby formula
   ];
   bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
   purchaseTime: Date; //Time of the first undelivered purchase.
@@ -498,16 +514,10 @@ class OnlineStore {
   }
   //Gets the product or item final destination
   destination(product: Product | Item): Inventory {
-    switch ([...product.tags][0]) {
-      case "basement":
-        let basement = Variables().basement as Basement;
-        basement.contents = new Inventory(basement.contents);
-        return basement.contents;
-      default:
-        let player = Variables().player as Player;
-        player.inventory = new Inventory(player.inventory);
-        return player.inventory;
-    }
+    const destinationName = [...product.tags][0].toUpperFirst();
+    if(window[destinationName]?.getContents)
+      return window[destinationName].getContents();
+    return window.Player.getInventory();
   }
   //Check if an item it's bought and has a pending delivery
   isBought(itemName: string): boolean {
@@ -517,24 +527,8 @@ class OnlineStore {
   receiveBought(): void {
     const variables = Variables();
     const store = <OnlineStore>variables.onlineStore;
-    for (let index = 0; index < store.bought.items.length; index++) {
-      const item = store.bought.items[index];
-      switch ([...item.tags][0]) {
-        case "basement":
-          variables.basement.contents = new Inventory(
-            variables.basement.contents
-          );
-          variables.basement.contents.add(item);
-          break;
-        default:
-          variables.player.inventory = new Inventory(
-            variables.player.inventory
-          );
-          variables.player.inventory.add(item);
-          break;
-      }
-    }
     store.bought = new Inventory(store.bought);
+    store.bought.items.forEach((item) => this.destination(item).add(item));
     store.bought.clear();
     store.purchaseTime = null;
   }

@@ -189,20 +189,12 @@ abstract class Npc extends LivingCharacter {
     }
   }
   getInventory(npc?: Npc, variables?: any): Inventory {
-    if (!npc) {
-      if (!variables) variables = Variables();
-      npc = variables.npc;
-    }
-    if (typeof npc == "number") npc = this.get(npc, variables);
+    [npc, variables] = Npc.obtain(npc, variables);
     return (npc.inventory = new Inventory(npc.inventory));
   }
   //Gets the NPC inventory object for the currently equipped/wearing items from the Sugarcube variables.
   getEquippedInventory(npc?: Npc, variables?: any): Inventory {
-    if (!npc) {
-      if (!variables) variables = Variables();
-      npc = variables.npc;
-    }
-    if (typeof npc == "number") npc = this.get(npc, variables);
+    [npc, variables] = Npc.obtain(npc, variables);
     return (npc.equippedItems = new Inventory(npc.equippedItems));
   }
   wearing(itemName: string, npc?: Npc, variables?: any): boolean {
@@ -272,15 +264,8 @@ abstract class Npc extends LivingCharacter {
     return value;
   }
   //Changes the NPC social status and triggers the necessary actions or events
-  setStatus(
-    status: NpcStatus,
-    target?: Npc | Uid,
-    forceLocation?: string
-  ): void {
-    let npc: Npc;
-    if (!target) npc = Variables().npc;
-    else if (typeof target == "number") npc = window.Person.get(target);
-    else npc = target;
+  setStatus(status: NpcStatus, npc?: Npc, forceLocation?: string): void {
+    npc = Npc.obtain(npc, variables)[0];
     switch (status) {
       case "slave":
         npc.location = "basement";
@@ -360,6 +345,13 @@ abstract class Npc extends LivingCharacter {
       (slave: Npc) => slave.uid == uid
     );
   }
+  //Obtain NPC and variables from available data. If it's a number, returns the NPC with that UID. If it's null it returns currently selected NPC
+  static obtain(npc?: Npc, variables?: any): [Npc, any] {
+    if (!variables) variables = Variables();
+    if (typeof npc == "number") npc = window.Person.get(npc, variables);
+    else if (!npc) npc = variables.npc;
+    return [npc, variables];
+  }
   //Constructs a sentence indicating the stats requirements and optionally the current values in an NPC.
   getMinRequirementsSentence(
     requirements: Record<string, number>,
@@ -387,15 +379,18 @@ abstract class Npc extends LivingCharacter {
       )
     );
   }
-  isBeingHeld(npc?: Npc, variables?: any) {
-    if (!variables) variables = Variables();
-    if (typeof npc == "number") this.get(npc, variables);
-    else if (!npc) npc = variables.npc;
-    if (window.Player.getEquippedInventory().hasNpc(npc)) return true;
-    return (
-      npc.mom &&
-      this.getEquippedInventory(this.get(npc.mom), variables).hasNpc(npc)
+  //Get the character that is holding the specified NPC
+  getHolder(npc?: Npc, variables?: any, npcList?: Npc[]): LivingCharacter {
+    [npc, variables] = Npc.obtain(npc, variables);
+    if (window.Player.getEquippedInventory().hasNpc(npc))
+      return variables.player;
+    if (!npcList) npcList = window.Person.all(null, variables);
+    return npcList.firstOrDefault((npc: Npc) =>
+      window.Person.getInventory(npc, variables).hasNpc(npc)
     );
+  }
+  isBeingHeld(npc?: Npc, variables?: any, npcList?: Npc[]): boolean {
+    return !!this.getHolder(npc, variables, npcList);
   }
 }
 type AnimalSpecies = "dog" | "cat" | "rabbit" | "horse" | "pig" | "cow";
@@ -576,12 +571,7 @@ class Person extends Npc {
     return word.includes("boy") ? "male" : "female";
   }
   getShortDescription(person?: Person, addTitle?: boolean): string {
-    let variables: any;
-    if (!person) {
-      variables = Variables();
-      person = variables.npc;
-    } else if (typeof person == "number")
-      person = <Person>window.Person.get(person);
+    person = <Person>Npc.obtain(person)[0];
     const months = this.getMonthsSinceLastBirthDay(person);
     return (
       `${person.name} (${
@@ -598,11 +588,7 @@ class Person extends Npc {
   }
   getLongDescription(person?: Person): string {
     let variables: any;
-    if (!person) {
-      variables = Variables();
-      person = variables.npc;
-    } else if (typeof person == "number")
-      person = <Person>window.Person.get(person);
+    [person, variables] = <[Person, any]>Npc.obtain(person, null);
     const months = this.getMonthsSinceLastBirthDay(person);
     let description = `${
       person.age < 1

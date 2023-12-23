@@ -1,5 +1,5 @@
 class Player extends LivingCharacter {
-  gameVersion: string = "0.1.14.4_BETA";
+  gameVersion: string = "0.1.14.5_BETA";
   //Zero UID identifies the player.
   uid: Uid = 0;
   //The name of the hole where the player can be fucked by default (not sure if this will be used)

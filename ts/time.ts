@@ -122,18 +122,21 @@ class Now {
             if (!npc.stopAging && ++npc.ageProgress >= agingIgDays) ageUp(npc);
           }
         : () => {};
+    var allNpc = window.Person.all(null, variables);
     for (let index = 0; index < amount; index++) {
-      window.Person.all(null, variables).forEach((npc) => {
+      allNpc.forEach((npc) => {
         if (npc.pregnantDays != undefined) npc.pregnantDays++;
         npc.aroused = false;
         npc.lubricatedAss = false;
         npc.lubricatedPussy = false;
         npc.fear = Math.max(0, npc.fear - 10);
-        npc.hunger = Math.min(
-          100,
-          npc.hunger +
-            (LivingCharacter.getPregnancyMonth(npc, variables) > 3 ? 17 : 10)
-        );
+        const holder = window.Person.getHolder(npc, variables, allNpc);
+        if (!holder?.lactating)
+          npc.hunger = Math.min(
+            100,
+            npc.hunger +
+              (LivingCharacter.getPregnancyMonth(npc, variables) > 3 ? 17 : 10)
+          );
         npc.freedomWish = Math.max(0, npc.freedomWish - 5);
         npc.lust = Math.max(0, npc.lust - 1);
         if (npc.hunger >= 90)
@@ -145,14 +148,13 @@ class Now {
         } else npc.obedience = Math.max(0, npc.obedience - 1);
         window.Person.removeAchievement("howAreYou", npc);
         manageAging(npc);
-        const equipped = window.Person.getEquippedInventory(npc, variables);
-        equipped.withDescription("npc").forEach((npcItem) => {
-          const heldNpc = window.Person.get(npcItem.extra, variables);
-          if (heldNpc.age > 2) {
-            window.Person.setStatus(npc.status, heldNpc, npc.location);
-            equipped.remove(npcItem);
-          }
-        });
+        if (holder?.uid != 0 && npc.age == 2 && !npc.ageProgress) {
+          const holderNpc = <Npc>holder;
+          window.Person.setStatus(holderNpc.status, npc, holderNpc.location);
+          window.Person.getEquippedInventory(holderNpc, variables).removeNpc(
+            npc
+          );
+        }
       });
       player.lust = Math.min(100, player.lust + 10);
       if (player.pregnantDays != undefined) player.pregnantDays++;

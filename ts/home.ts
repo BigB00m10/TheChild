@@ -30,6 +30,15 @@ abstract class HomeSpace {
   npcEvents: NpcEvent[] = [];
   //The main passage associated with this room
   abstract passageName: string;
+  getContents(variables?: any): Inventory {
+    if (!variables) variables = Variables();
+    return (variables[this.passageName].contents = new Inventory(
+      variables[this.passageName].contents
+    ));
+  }
+  has(itemName: string, count: number = 1): boolean {
+    return this.getContents().has(itemName, count);
+  }
   getEventSlaves(): Person[] {
     const variables = Variables();
     const slaves = <Person[]>(
@@ -81,13 +90,6 @@ class Basement extends HomeSpace {
   constructor() {
     super();
     window.OnlineStore.get("Mattress").transferTo(this.contents);
-  }
-  getContents(variables?: any): Inventory {
-    if (!variables) variables = Variables();
-    return new Inventory(variables.basement.contents);
-  }
-  has(itemName: string, count: number = 1): boolean {
-    return this.getContents().has(itemName, count);
   }
   availableBeds(): number {
     let variables = Variables();

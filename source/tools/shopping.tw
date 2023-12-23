@@ -58,9 +58,20 @@ $buyProduct.description
     </div>
 </div>
 <<done>><<run
+    var alignImagesVertically = function(){
+        setTimeout(function(){$('.shopProduct').each(function(i,slot) {
+            var jSlot = $(slot);
+            var img = jSlot.find('img')[0];
+            if(!img)return;
+            var availableHeight = slot.clientHeight - jSlot.find('div')[0].clientHeight - 9;
+            if(img.clientHeight < availableHeight)
+                img.style.marginTop = ((availableHeight - img.clientHeight) / 2 + 9) + 'px';
+        })}, 5);
+    };
     var nav = $('#nav').pagination({
         onPageClick: function(pageNumber) {
-            $('#productList>div').html('').wiki('<<storeProductList $onlineStore ' + (pageNumber-1) + '>>')
+            $('#productList>div').html('').wiki('<<storeProductList $onlineStore ' + (pageNumber-1) + '>>');
+            alignImagesVertically();
         }
     });
     var resizeTimeout;
@@ -73,6 +84,7 @@ $buyProduct.description
                 nav.show().pagination('updateItems', _pageCount);
             else
                 nav.hide();
+            alignImagesVertically();
         }, 50)};
     $(window).on('resize', resizeEvent);
     $(document).one(':passageinit ', function(){ $(window).off('resize', resizeEvent) });

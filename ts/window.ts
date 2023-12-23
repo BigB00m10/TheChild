@@ -341,6 +341,8 @@ $(document).on(":passageinit", () => {
         if (waveyIndex != -1)
           variables.settings.childGeneration.hairStyles[waveyIndex] = "wavy";
       }
+      if(!variables.kitchen)
+        variables.kitchen = new Kitchen();
     });
   }
 });

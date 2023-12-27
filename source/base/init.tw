@@ -19,6 +19,7 @@ The Child Trainer
     };
     $onlineStore = OnlineStore;
     $basement = Basement;
+    $kitchen = Kitchen;
     $slaves = [];
     $achievements = [];
 >>

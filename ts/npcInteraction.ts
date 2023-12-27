@@ -117,7 +117,7 @@ Macro.add("openNpcInteraction", {
     if (SugarCube.State.passage != "npcInteraction")
       variables.returnPassage = SugarCube.State.passage;
     variables.npcInteractionRoute = this.args[0];
-    if (this.args[1]) variables.npc = window.Person.get(this.args[1]);
+    if (this.args[1]) variables.npc = Npc.obtain(this.args[1], variables)[0];
     (<any>SugarCube.State).display("npcInteraction");
   },
 });

@@ -132,7 +132,7 @@ window.Interactions["slave"] = {
     },
     hug: {
       locationExclusions: ["tortRafters"],
-      optionText: "🤗 give a hug to $npc.name.",
+      optionText: "🤗 Give a hug to $npc.name.",
       minutesCost: 2,
       contents: `<<personUniqueness hug>>`,
       next: baseInteractionOptions,
@@ -2185,14 +2185,10 @@ window.Interactions["slave"] = {
       },
       optionText: "👐 Pick $npc.name in your arms",
       contents: `<<run
-        if($npc.mom) {
-          var inventory = Person.getEquippedInventory(Person.get($npc.mom));
-          var npcItem = inventory.withDescription('npc').firstOrDefault(i=>i.extra==$npc.uid);
-          if(npcItem)
-            inventory.remove(npcItem);
-          $npc.location='unknown';
-          Player.getEquippedInventory().addNpc($npc);
-        }
+        var holder = Person.getHolder($npc);
+        if(holder)
+          Person.getEquippedInventory(holder).removeNpc($npc);
+        Player.getEquippedInventory().addNpc($npc);
       >> You pick up $npc.name in your arms.
       You can now bring $npc.pronoun with you and interact with $npc.pronoun through your inventory at any time.`,
       next: baseInteractionOptions,

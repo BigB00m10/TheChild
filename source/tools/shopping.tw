@@ -101,6 +101,9 @@ You received: <<- $onlineStore.bought.items.map(function(item){return item.count
     ''Delivery man'': "Do you need help you carrying the Mattress?<<emoji 🙂>>"
     ''$player.name'': "NO!!.. No thanks, I can do it myself.<<emoji 😅>>"
 
+<</if>><<if OnlineStore.isBought("infant formula")>>\
+    ''You store the infant formula in the kitchen cabinet.''
+
 <</if>>\
 <<unlessEmergency>>\
     <<keyOption [[Go back inside|main]] 🔙>>

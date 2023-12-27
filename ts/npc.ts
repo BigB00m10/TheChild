@@ -265,7 +265,7 @@ abstract class Npc extends LivingCharacter {
   }
   //Changes the NPC social status and triggers the necessary actions or events
   setStatus(status: NpcStatus, npc?: Npc, forceLocation?: string): void {
-    npc = Npc.obtain(npc, variables)[0];
+    npc = Npc.obtain(npc)[0];
     switch (status) {
       case "slave":
         npc.location = "basement";

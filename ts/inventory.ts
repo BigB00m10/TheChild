@@ -75,12 +75,13 @@ class Inventory {
   }
   //Get the item with the specified name or starting with the specified word ignoring case.
   get(name: string): Item {
+    name = name.toLowerCase();
     let found: Item = this.items.firstOrDefault(
-      (i: Item) => i.name.toLowerCase() == name.toLowerCase()
+      (i: Item) => i.name.toLowerCase() == name
     );
     if (!found)
-      found = this.items.firstOrDefault(
-        (i: Item) => i.name.split(" ")[0].toLowerCase() == name.toLowerCase()
+      found = this.items.firstOrDefault((i: Item) =>
+        i.name.toLowerCase().split(" ").includesAll(name.split(" "))
       );
     return found;
   }
@@ -131,6 +132,7 @@ class Inventory {
     });
     for (let tag of extraTags) item.tags.add(tag);
     this.add(item);
+    npc.location = "unknown";
   }
   //Get the items in this inventory that have the provided description case-insensitive or null
   withDescription(description: string): Item[] {
@@ -515,7 +517,7 @@ class OnlineStore {
   //Gets the product or item final destination
   destination(product: Product | Item): Inventory {
     const destinationName = [...product.tags][0].toUpperFirst();
-    if(window[destinationName]?.getContents)
+    if (window[destinationName]?.getContents)
       return window[destinationName].getContents();
     return window.Player.getInventory();
   }

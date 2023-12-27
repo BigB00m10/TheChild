@@ -12,6 +12,9 @@
 <</if>><<if $agedUpNpc && $agedUpNpc.size>>
     @@color:yellow;''<<- Array.from($agedUpNpc).map(uid=>Person.getShortDescription(uid)).getSentence() + ' aged up!'>>''@@
     <<unset $agedUpNpc>>
+<</if>><<if $wakeUpMessages>><<for _wakeUpMessage range $wakeUpMessages>>\
+        @@color:yellow;''_wakeUpMessage''@@
+    <</for>><<unset $wakeUpMessages>>
 <</if>>\
 <<unlessEmergency>>\
     <<wanderingSlaves>>\

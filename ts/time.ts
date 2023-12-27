@@ -96,18 +96,18 @@ class Now {
   //This action is used like an event. Every time a day or more passes this action should be called.
   daysPassed(amount: number): void {
     if (amount < 1) return;
-    let variables = Variables();
-    let player = variables.player as Player;
+    const variables = Variables();
+    const player = variables.player as Player;
     player.workedToday = false;
-    let agingIgDays = variables.settings.agingIgDays ?? 365.25;
-    let ageUp = (npc: Npc) => {
+    const agingIgDays = variables.settings.agingIgDays ?? 365.25;
+    const ageUp = (npc: Npc) => {
       npc.ageProgress = 0;
       npc.age++;
       if (!variables.agedUpNpc) variables.agedUpNpc = new Set<number>();
       (<Set<number>>variables.agedUpNpc).add(npc.uid);
       window.Person.adjustPubescence(true, npc);
     };
-    let manageAging =
+    const manageAging =
       agingIgDays == 365.25
         ? (npc: Npc) => {
             if (npc.stopAging) return;
@@ -122,7 +122,8 @@ class Now {
             if (!npc.stopAging && ++npc.ageProgress >= agingIgDays) ageUp(npc);
           }
         : () => {};
-    var allNpc = window.Person.all(null, variables);
+    const allNpc = window.Person.all(null, variables);
+    const kitchenContents = window.Kitchen.getContents();
     for (let index = 0; index < amount; index++) {
       allNpc.forEach((npc) => {
         if (npc.pregnantDays != undefined) npc.pregnantDays++;
@@ -131,7 +132,20 @@ class Now {
         npc.lubricatedPussy = false;
         npc.fear = Math.max(0, npc.fear - 10);
         const holder = window.Person.getHolder(npc, variables, allNpc);
-        if (!holder?.lactating)
+        if (holder?.lactating) npc.hunger = 100;
+        else if (
+          npc.age < 1 &&
+          variables.settings.cook &&
+          variables.settings.cook.feedEnabled &&
+          kitchenContents.has("infant formula")
+        ) {
+          npc.hunger = 100;
+          if (!kitchenContents.removeByName("infant formula")) {
+            if (!variables.wakeUpMessages)
+              variables.wakeUpMessages = new Set<string>();
+            variables.wakeUpMessages.add("You're out of infant formula!");
+          }
+        } else
           npc.hunger = Math.min(
             100,
             npc.hunger +

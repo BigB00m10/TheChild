@@ -124,6 +124,26 @@ class Now {
         : () => {};
     const allNpc = window.Person.all(null, variables);
     const kitchenContents = window.Kitchen.getContents();
+    const infantFormulaItem = kitchenContents.get("infant formula");
+    const cookSettings: CookSettings = variables.settings.cook;
+    let manageCook =
+      cookSettings && cookSettings.feedEnabled && infantFormulaItem
+        ? (npc: Npc) => {
+            if (npc.age != 0) return;
+            const exception: CookSettingsCase =
+              cookSettings.exceptions.firstOrDefault(
+                (ex: CookSettingsCase) => ex.npc == npc.uid
+              );
+            if (exception && !exception.feedEnabled) return false;
+            npc.hunger = 100;
+            if (!kitchenContents.remove(infantFormulaItem)) {
+              if (!variables.wakeUpMessages)
+                variables.wakeUpMessages = new Set<string>();
+              variables.wakeUpMessages.add("You're out of infant formula!");
+              manageCook = () => false;
+            }
+          }
+        : () => false;
     for (let index = 0; index < amount; index++) {
       allNpc.forEach((npc) => {
         if (npc.pregnantDays != undefined) npc.pregnantDays++;
@@ -133,19 +153,7 @@ class Now {
         npc.fear = Math.max(0, npc.fear - 10);
         const holder = window.Person.getHolder(npc, variables, allNpc);
         if (holder?.lactating) npc.hunger = 100;
-        else if (
-          npc.age < 1 &&
-          variables.settings.cook &&
-          variables.settings.cook.feedEnabled &&
-          kitchenContents.has("infant formula")
-        ) {
-          npc.hunger = 100;
-          if (!kitchenContents.removeByName("infant formula")) {
-            if (!variables.wakeUpMessages)
-              variables.wakeUpMessages = new Set<string>();
-            variables.wakeUpMessages.add("You're out of infant formula!");
-          }
-        } else
+        else if (!manageCook(npc))
           npc.hunger = Math.min(
             100,
             npc.hunger +
@@ -159,7 +167,8 @@ class Now {
           if (npc.obedience < 60)
             npc.obedience += Math.round((61 - npc.obedience) * 0.25);
           else npc.punishments.delete("naked");
-        } else npc.obedience = Math.max(0, npc.obedience - 1);
+        } else if (npc.obedience != 100)
+          npc.obedience = Math.max(0, npc.obedience - 1);
         window.Person.removeAchievement("howAreYou", npc);
         manageAging(npc);
         if (holder?.uid != 0 && npc.age == 2 && !npc.ageProgress) {
@@ -168,6 +177,7 @@ class Now {
           window.Person.getEquippedInventory(holderNpc, variables).removeNpc(
             npc
           );
+          window.Person.lactationTimeout(holder, variables);
         }
       });
       player.lust = Math.min(100, player.lust + 10);
@@ -258,7 +268,7 @@ class Now {
     for (let index = 0; index < cook.feedTimes.length; index++)
       if (!cook.lastFeedings[index] || cook.lastFeedings[index] < today)
         if (this.isEqualOrLaterThan(cook.feedTimes[index], currentDate)) {
-          for (let npc of window.Person.all(null, variables)) {
+          for (let npc of window.Person.all((npc) => npc.age != 0, variables)) {
             //TODO: filter out the ones not living at the player's home in the future
             let config =
               cook.exceptions.firstOrDefault((e: any) => e.npc == npc.uid) ??

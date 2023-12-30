@@ -1842,8 +1842,11 @@ window.Interactions["slave"] = {
           inventoryRequirements: ["Lactation pills"],
           npcRequirements: ["hasBoobs", "!lactating"],
           optionText: "🍼 Give $npc.pronoun a lactation pill.",
-          contents: `You give $npc.name a lactation pill.
-          <<run Player.removeItem("Lactation pills")>>
+          contents: `You give $npc.name a lactation pill.<<consumePlayerItem 'lactation pills' 'pills'>>
+          <<run
+            $npc.lactating=true;
+            Person.lactationTimeout();
+          >>
           `,
           npcStats: ["+lactating"],
           next: baseInteractionOptions,
@@ -2172,8 +2175,14 @@ window.Interactions["slave"] = {
     },
     pickup: {
       canBeShown() {
-        const npc = Variables().npc;
+        const variables = Variables();
+        const npc = variables.npc;
         if (npc.age > 6) return false;
+        if (
+          variables.scenery == "kitchen" &&
+          (<CookSettings>variables.settings.cook).npc == npc.uid
+        )
+          return false;
         if (window.Person.getEquippedInventory().withDescription("npc").length)
           return false;
         const playerHeldNpcs =
@@ -2186,9 +2195,12 @@ window.Interactions["slave"] = {
       optionText: "👐 Pick $npc.name in your arms",
       contents: `<<run
         var holder = Person.getHolder($npc);
-        if(holder)
+        if(holder) {
           Person.getEquippedInventory(holder).removeNpc($npc);
+          Person.lactationTimeout(holder);
+        }
         Player.getEquippedInventory().addNpc($npc);
+        Player.lactationTimeout($player);
       >> You pick up $npc.name in your arms.
       You can now bring $npc.pronoun with you and interact with $npc.pronoun through your inventory at any time.`,
       next: baseInteractionOptions,

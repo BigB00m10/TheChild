@@ -30,14 +30,23 @@ $player.name <<link "[Inventory]">><<dialog "Player Inventory">>\
                         <<button OK>><<dialogclose>><</button>>
                     <</dialog>>\
                 <<elseif $scenery == 'basement'>>\
-                    <<dialog 'Put NPC down'>>\
-                        You put _npc.name down into the basement.
-                        <<button OK>><<dialogclose>><</button>>
-                    <</dialog>><<run
-                        Person.setStatus('slave', _npc);
-                        Player.getEquippedInventory().removeNpc(_npc);
-                        Engine.show();
-                    >>\
+                    <<if _npc.status == 'servant'>>\
+                        <<dialog 'Put NPC down'>>\
+                            $npc.name is your servant so you cannot put $npc.pronoun down in the basement.
+                            $npc.GenPronoun will not be able to serve you while locked in the basement.
+                            <<button OK>><<dialogclose>><</button>>
+                        <</dialog>>\
+                    <<else>>\
+                        <<dialog 'Put NPC down'>>\
+                            You put _npc.name down into the basement.
+                            <<button OK>><<dialogclose>><</button>>
+                        <</dialog>><<run
+                            Person.setStatus('slave', _npc);
+                            Player.getEquippedInventory().removeNpc(_npc);
+                            Player.lactationTimeout($player);
+                            Engine.show();
+                        >>\
+                    <</if>>\
                 <<else>>\
                     <<dialog 'Put NPC down'>>\
                         You let _npc.name down. Now _npc.genPronoun<<thirdPerson "'s" "'re" _npc.uid>> free to roam around the house.
@@ -45,6 +54,7 @@ $player.name <<link "[Inventory]">><<dialog "Player Inventory">>\
                     <</dialog>><<run
                         Person.setStatus('home slave', _npc, $scenery);
                         Player.getEquippedInventory().removeNpc(_npc);
+                        Player.lactationTimeout($player);
                         Engine.show();
                     >>\
                 <</if>>

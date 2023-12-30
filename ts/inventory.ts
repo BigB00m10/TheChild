@@ -213,6 +213,23 @@ class OnlineStore {
         "Got milk? Induces lactation (breasts required)<<emoji 🥛>>.",
       price: 30,
       tags: new Set(["player", "consumable", "medicine"]),
+      use(characterUid) {
+        if (characterUid) return; //This method will only be used in the player
+        const variables = Variables();
+        const player = <Player>variables.player;
+        if (player.lactating)
+          $.wiki(`<<dialog 'Lactation pill'>>\
+        You take a lactation pill even though you were already lactating.
+        You will stop lactating in 5 days unless you breastfeed or take another pill.<<consumePlayerItem 'lactation pills' 'pills'>>\
+        <</dialog>>`);
+        else
+          $.wiki(`<<dialog 'Lactation pill'>>\
+        You take a lactation pill and your body immediately starts producing milk.
+        You will stop lactating in 5 days unless you breastfeed or take another pill.<<consumePlayerItem 'lactation pills' 'pills'>>\
+        <</dialog>>`);
+        player.lactating = true;
+        window.Person.lactationTimeout(variables.player, variables);
+      },
     }), //Lactation pills
     new Product({
       name: "Dildo",

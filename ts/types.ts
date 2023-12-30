@@ -183,3 +183,13 @@ Macro.add("unlessEmergency", {
     Wiki(this.payload[0].contents, this.output);
   },
 });
+interface CookSettingsCase {
+  npc: Uid;
+  feedEnabled: boolean;
+  feedAtHunger: number;
+}
+interface CookSettings extends CookSettingsCase {
+  feedTimes: string[];
+  lastFeedings: number[];
+  exceptions: CookSettingsCase[];
+}

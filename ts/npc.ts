@@ -106,6 +106,42 @@ abstract class LivingCharacter {
       .val(baby.name)
       .on("change", () => (Temporary().baby.name = <string>$babyName.val()));
   }
+  lactationTimeout(
+    character?: LivingCharacter,
+    variables?: any,
+    holdsNpc?: boolean
+  ) {
+    [character, variables] = Npc.obtain(<Npc>character, variables);
+    if (typeof character == "number")
+      character = character
+        ? window.Person.get(character, variables)
+        : variables.player;
+    if (!character.lactating) return;
+    if (holdsNpc == undefined)
+      holdsNpc = <boolean>(
+        (<unknown>(
+          (character.uid
+            ? window.Person.getEquippedInventory(<Npc>character, variables)
+            : window.Player.getEquippedInventory(variables)
+          ).withDescription("npc").length
+        ))
+      );
+    if (holdsNpc) window.Now.removeTimedEvent("stopLactation" + character.uid);
+    else {
+      if (character.uid)
+        window.Now.addTimedEvent(
+          24 * 5,
+          `window.Person.get(${character.uid}).lactating=false`,
+          "stopLactation" + character.uid
+        );
+      else
+        window.Now.addTimedEvent(
+          24 * 5,
+          "Variables().player.lactating=false",
+          "stopLactation0"
+        );
+    }
+  }
 }
 abstract class Npc extends LivingCharacter {
   ageIntroduced: number; //What was the age of the NPC when it was introduced to the game (generated).
@@ -295,13 +331,15 @@ abstract class Npc extends LivingCharacter {
       (npc) => npc.age > 0 || window.Person.getMonthsSinceLastBirthDay(npc) > 5,
       variables
     ).forEach((npc: Npc) => {
+      const holder = window.Person.getHolder(npc, variables);
       switch (npc.status) {
         case "home slave":
         case "lover":
-          npc.location = PseudoRandom.either(
-            PseudoRandom.getSeed(baseSeed, npc.age, npc.name),
-            homeSpaces
-          );
+          if (!holder)
+            npc.location = PseudoRandom.either(
+              PseudoRandom.getSeed(baseSeed, npc.age, npc.name),
+              homeSpaces
+            );
           break;
         case "servant":
           if (variables.settings.cook.npc != npc.uid) break;
@@ -318,10 +356,15 @@ abstract class Npc extends LivingCharacter {
             ) {
               currentDate = null;
               npc.location = "kitchen";
+              if (holder) {
+                if (holder.uid) throw Error("Servant held by another NPC");
+                window.Player.getEquippedInventory(variables).removeNpc(npc);
+                window.Player.lactationTimeout(variables.player, variables);
+              }
               break;
             }
           }
-          if (currentDate)
+          if (currentDate && !holder)
             npc.location = PseudoRandom.either(
               PseudoRandom.getSeed(baseSeed, npc.age, npc.name),
               homeSpaces.filter((space: string) => space != "kitchen")
@@ -665,11 +708,13 @@ class Person extends Npc {
       //Make someone hold the baby (The mother if they're old enough or the player)
       holderInventory = window.Player.getEquippedInventory(variables);
       baby.status = "home slave";
+      window.Person.lactationTimeout(variables.player, variables, true);
     } else {
       holderInventory = this.getEquippedInventory(mom, variables);
       baby.status = mom.status;
     }
     holderInventory.addNpc(baby, "holding", "child");
+    window.Person.lactationTimeout(mom, variables);
     window.Person.removeAchievement("playerNoticedPregnancy", mom);
     return baby;
   }

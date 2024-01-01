@@ -2205,6 +2205,22 @@ window.Interactions["slave"] = {
       You can now bring $npc.pronoun with you and interact with $npc.pronoun through your inventory at any time.`,
       next: baseInteractionOptions,
     },
+    babyFeed: {
+      npcRequirements: ["hunger>0", "age<1"],
+      canBeShown: () =>
+        Variables().player.lactating || window.Kitchen.has("infant formula"),
+      optionText() {
+        if (Variables().player.lactating) return "🤱 Breastfeed $npc.name";
+        return "🍼 Feed $npc.name with infant formula";
+      },
+      minutesCost: 10,
+      contents: `<<if $player.lactating>>You get the baby close to you and $mpc.genPronoun instinctively goes for your nipple. You feel $npc.possessive breath as $npc.genPronoun mouth opens to nom on it. $npc.Possessive wet mouth wraps your nipple and starts to suck the nutritious milk produced by your body.
+      
+      You feel a strong connection to $npc.name while doing this.<<else>>You prepare a feed of infant formula in a baby bottle, grab $npc.name in your arms and put the baby bottle in $npc.possessive mouth.
+      
+      $npc.GenPronoun immediately starts sucking on it while $npc.genPronoun looks at you with $npc.possessive $npc.eyeColor eyes.<<consumePlayerItem 'infant formula' 'feed' Kitchen>><</if>>`,
+      npcStats: ["hunger-100", "love+10%"],
+    },
   },
   timeIncreaseNpcHunger: true,
   beforeStop: '<<run OnlineStore.getBase("condom").removed($npc.uid)>>',

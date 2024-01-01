@@ -78,6 +78,14 @@ abstract class LivingCharacter {
       char.pregnantDays / (pregnancyDays != undefined ? pregnancyDays / 9 : 30)
     );
   }
+  static obtain(
+    character: LivingCharacter,
+    variables?: any
+  ): [LivingCharacter, any] {
+    if (typeof character == "number" && character == 0)
+      character = variables.player;
+    return Npc.obtain(<Npc>character, variables);
+  }
   showBirthMessage(baby: Npc, laborNpc?: Npc) {
     Temporary().baby = baby;
     const playerCarryBabySentence = `You're currently carrying the baby, go to the inventory to interact with ${
@@ -131,7 +139,7 @@ abstract class LivingCharacter {
       if (character.uid)
         window.Now.addTimedEvent(
           24 * 5,
-          `window.Person.get(${character.uid}).lactating=false`,
+          `var lc=window.Person.get(${character.uid});lc.lactating=false;if(lc.age<10)lc.hasBoobs=false`,
           "stopLactation" + character.uid
         );
       else
@@ -141,6 +149,15 @@ abstract class LivingCharacter {
           "stopLactation0"
         );
     }
+  }
+  impregnate(
+    target?: LivingCharacter,
+    impregnatorUid?: Uid,
+    variables?: any
+  ) {
+    target = LivingCharacter.obtain(target, variables)[0];
+    target.pregnantDays = 0;
+    target.impregnator = impregnatorUid;
   }
 }
 abstract class Npc extends LivingCharacter {

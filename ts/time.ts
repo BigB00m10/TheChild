@@ -135,7 +135,7 @@ class Now {
                 (ex: CookSettingsCase) => ex.npc == npc.uid
               );
             if (exception && !exception.feedEnabled) return false;
-            npc.hunger = 100;
+            npc.hunger = 0;
             if (!kitchenContents.remove(infantFormulaItem)) {
               if (!variables.wakeUpMessages)
                 variables.wakeUpMessages = new Set<string>();
@@ -146,13 +146,16 @@ class Now {
         : () => false;
     for (let index = 0; index < amount; index++) {
       allNpc.forEach((npc) => {
-        if (npc.pregnantDays != undefined) npc.pregnantDays++;
+        if (npc.pregnantDays != undefined) {
+          npc.pregnantDays++;
+          if (Npc.getPregnancyMonth(npc, variables) > 5) npc.hasBoobs = true;
+        }
         npc.aroused = false;
         npc.lubricatedAss = false;
         npc.lubricatedPussy = false;
         npc.fear = Math.max(0, npc.fear - 10);
         const holder = window.Person.getHolder(npc, variables, allNpc);
-        if (holder?.lactating) npc.hunger = 100;
+        if (holder?.lactating) npc.hunger = 0;
         else if (!manageCook(npc))
           npc.hunger = Math.min(
             100,

@@ -556,7 +556,8 @@ Macro.add("npcStimulated", {
 //To indicate that there has been an internal cumshot from the first indicated character to the second and make the second pregnant if applicable.
 Macro.add("checkImpregnation", {
   handler: function () {
-    if (Variables().settings.pregnancyOption == "disabled") return;
+    const variables = Variables();
+    if (variables.settings.pregnancyOption == "disabled") return;
     const impregnator: LivingCharacter = this.args[0];
     const target: LivingCharacter = this.args[1];
     if (
@@ -573,11 +574,8 @@ Macro.add("checkImpregnation", {
       PseudoRandom.getInt(
         PseudoRandom.getSeed(target.name, target.uid, turns())
       ) < target.impregnationChance
-    ) {
-      //Target got impregnated
-      target.pregnantDays = 0;
-      target.impregnator = impregnator.uid;
-    }
+    )
+      window.Person.impregnate(target, impregnator.uid, variables);
     Wiki(
       `<br><br>@@color:yellow;${
         target.uid ? target.name : "You"

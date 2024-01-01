@@ -250,7 +250,12 @@ Macro.add("consumePlayerItem", {
   handler(this) {
     const itemName: string = this.args[0];
     const itemCountName: string = this.args[1];
-    const itemLeft: number = window.Player.removeItem(itemName);
+    const source: Inventory | Player = this.args[2]
+      ? (<HomeSpace>window[<string>this.args[2]]).getContents()
+      : window.Player;
+    const itemLeft: number = (<Player>source).removeItem
+      ? (<Player>source).removeItem(itemName)
+      : (<Inventory>source).removeByName(itemName);
     Wiki(
       `\r\n(${itemLeft || "No"} ${itemCountName || itemName + "s"} left)`,
       this.output

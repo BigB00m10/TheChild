@@ -1,5 +1,5 @@
 class Player extends LivingCharacter {
-  gameVersion: string = "0.1.14.5_BETA";
+  gameVersion: string = "0.2.0.0";
   //Zero UID identifies the player.
   uid: Uid = 0;
   //The name of the hole where the player can be fucked by default (not sure if this will be used)
@@ -249,7 +249,7 @@ class Player extends LivingCharacter {
 Macro.add("consumePlayerItem", {
   handler(this) {
     const itemName: string = this.args[0];
-    const itemCountName: string = this.args[1];
+    const itemCountName: string = this.args[1] || itemName;
     const source: Inventory | Player = this.args[2]
       ? (<HomeSpace>window[<string>this.args[2]]).getContents()
       : window.Player;
@@ -257,7 +257,10 @@ Macro.add("consumePlayerItem", {
       ? (<Player>source).removeItem(itemName)
       : (<Inventory>source).removeByName(itemName);
     Wiki(
-      `\r\n(${itemLeft || "No"} ${itemCountName || itemName + "s"} left)`,
+      `\r\n(${itemLeft || "No"} ${
+        itemCountName +
+        (itemLeft == 1 || itemCountName.endsWith("s") ? "" : "s")
+      } left)`,
       this.output
     );
   },

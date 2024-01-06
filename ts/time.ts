@@ -142,6 +142,7 @@ class Now {
               variables.wakeUpMessages.add("You're out of infant formula!");
               manageCook = () => false;
             }
+            return true;
           }
         : () => false;
     for (let index = 0; index < amount; index++) {
@@ -160,7 +161,11 @@ class Now {
           npc.hunger = Math.min(
             100,
             npc.hunger +
-              (LivingCharacter.getPregnancyMonth(npc, variables) > 3 ? 17 : 10)
+              (npc.age < 1
+                ? 34
+                : LivingCharacter.getPregnancyMonth(npc, variables) > 3
+                ? 17
+                : 10)
           );
         npc.freedomWish = Math.max(0, npc.freedomWish - 5);
         npc.lust = Math.max(0, npc.lust - 1);
@@ -174,9 +179,15 @@ class Now {
           npc.obedience = Math.max(0, npc.obedience - 1);
         window.Person.removeAchievement("howAreYou", npc);
         manageAging(npc);
-        if (holder?.uid != 0 && npc.age == 2 && !npc.ageProgress) {
+        if (holder && holder.uid != 0 && npc.age > 1 && !npc.ageProgress) {
           const holderNpc = <Npc>holder;
-          window.Person.setStatus(holderNpc.status, npc, holderNpc.location);
+          window.Person.setStatus(
+            holderNpc.status != "servant" ? holderNpc.status : "home slave",
+            npc,
+            holderNpc.location
+          );
+          if(npc.location != 'basement')
+            window.Person.setAchievement('beenOnHomeMain', npc);
           window.Person.getEquippedInventory(holderNpc, variables).removeNpc(
             npc
           );

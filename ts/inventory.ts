@@ -294,7 +294,10 @@ class OnlineStore {
           const interactionName = variables.npcInteractionRoute
             .split(".")
             .last();
-          if (interactionName.includes("cum") && interactionName != "cumOn")
+          if (
+            interactionName.includes("cum") &&
+            !["cumOn", "cumBody", "cumFace"].includes(interactionName)
+          )
             //When the condom is removed after the character cums in an interaction between the player and an npc
             window.Player.getInventory().add({
               name: `Condom filled with ${

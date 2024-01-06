@@ -6,7 +6,7 @@ $buyProduct.description
     _max to (!$buyProduct.available || ($buyProduct.available * $buyProduct.price gt $player.cash)) ?
         Math.floor($player.cash / $buyProduct.price) :
         $buyProduct.available;
-    _countName to $buyProduct.itemName ? $buyProduct.itemName.replace(SugarCube.State.variables.buyProduct.name.toLowerCase(), "") : "";
+    _countName to $buyProduct.itemName ? ' '+$buyProduct.itemName.replace(SugarCube.State.variables.buyProduct.name.toLowerCase(), "") : "";
 >>\
 <<if _own>>\
     You currently own _own.count<<- _countName>>.

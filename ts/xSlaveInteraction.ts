@@ -1290,10 +1290,14 @@ window.Interactions["slave"] = {
                 },
                 cum: {
                   optionText: "👍 Let $npc.pronoun cum.",
-                  contents: `<<if $npc.age lt 14>>\
-                      You feel $npc.name shaking while $npc.genPronoun <<thirdPerson "has" "have">> a nice dry cum.
+                  contents: `<<if $npc.producesSperm>>\
+                      <<if Person.wearing('condom')>>\
+                        $npc.name fills up the condom with cum while inside of you. Then you slowly pull yourself out and remove the cum filled condom from $npc.possessive $npc.genitals.male.<<run OnlineStore.getBase('condom').removed($npc.uid)>>
+                      <<else>>\
+                        You feel $npc.possessive dick shooting $npc.possessive seed in your bowels.<<if !$player.hasPussy>><<checkImpregnation $npc $player>><</if>>
+                      <</if>>\
                     <<else>>\
-                      You feel $npc.possessive dick shooting $npc.possessive seed in your bowels.<<if !$player.hasPussy>><<checkImpregnation $npc $player>><</if>>
+                      You feel $npc.name shaking while $npc.genPronoun <<thirdPerson "has" "have">> a nice dry cum.
                     <</if>><<npcCum>>`,
                   npcStats: ["love+10", "freedomWish-10", "hunger+10"],
                   playerStats: ["lust-10"],
@@ -1698,21 +1702,23 @@ window.Interactions["slave"] = {
               cumInside: {
                 canBeShown: () => Temporary().okBj && Temporary().sucking,
                 optionText: "⛽ Cum inside $npc.possessive mouth.",
-                contents: `You reach your climax and release your seed inside $npc.name's mouth.
-                <<set
-                  Player.manageEnergy(1);
-                  $player.lust = 0;
-                >>\
-                <<if $npc.hunger gte 50 || $npc.lust gte 80>>\
-                  $npc.GenPronoun <<thirdPerson "gulps" "gulp">> all of your load directly after each spurt.
+                contents: `You reach your climax and release your seed inside <<if Player.wearing('condom')>>the condom, making it grow with cum inside <</if>>$npc.name's mouth.
+                <<if Player.wearing('condom')>>\
+                  You slowly slid out your dick followed by the cum filled end of the condom that looks like a white ballon coming out of $npc.possessive mouth.
+
+                  After that, you remove the cum filled condom from your penis.
                 <<else>>\
-                  $npc.GenPronoun <<thirdPerson "does" "do">> not seem to appreciate your sperm very much and quickly <<if $npc.location == "tortRafters">><<thirdPerson "pulls" "pull">> $npc.possessive head away<<else>><<thirdPerson "retreats" "retreat">><</if>> while coughing and spitting.
-                <</if>>`,
+                  <<if $npc.hunger gte 50 || $npc.lust gte 80>>\
+                    $npc.GenPronoun <<thirdPerson "gulps" "gulp">> all of your load directly after each spurt.
+                  <<else>>\
+                    $npc.GenPronoun <<thirdPerson "does" "do">> not seem to appreciate your sperm very much and quickly <<if $npc.location == "tortRafters">><<thirdPerson "pulls" "pull">> $npc.possessive head away<<else>><<thirdPerson "retreats" "retreat">><</if>> while coughing and spitting.
+                  <</if>>
+                <</if>><<playerCum>>`,
                 npcStats: (npc) =>
                   npc.hunger >= 50 || npc.lust >= 80
                     ? ["hunger-5", "mouthTraining+10"]
                     : null,
-                next: () => afterStrip(),
+                next: baseInteractionOptions,
               },
               ...cumOutsideOptions,
             } as NpcInteractionOptions;
@@ -1948,7 +1954,7 @@ window.Interactions["slave"] = {
       next: baseInteractionOptions,
     },
     bringUpstairs: {
-      locationRequirements: ["basement"],
+      locationRequirements: ["basement", "age>0"],
       showDisabled: "status=slave=>Freedom Wish $npc.freedomWish/25",
       npcRequirements: ["freedomWish<=25"],
       canBeShown: () => !window.Person.isBeingHeld(),
@@ -2117,7 +2123,7 @@ window.Interactions["slave"] = {
           minutesCost: 5,
           npcStats: ["fear+20", "freedomWish+10"],
           contents: `You forcibly<<if $npc.haveClothes>> pull down $npc.possessive clothes, <</if>>pull $npc.possessive leg and force $npc.pronoun to<<emoji 💦>>pee in the device.\n<<print OnlineStore.getBase('pregnancy test').use($npc.uid)>>`,
-          next: () => baseInteractionOptions(),
+          next: baseInteractionOptions,
         },
         forget: {
           optionText: "🔙 Forget it",
@@ -2177,10 +2183,12 @@ window.Interactions["slave"] = {
       canBeShown() {
         const variables = Variables();
         const npc = variables.npc;
+        const cookSettings: CookSettings = variables.settings.cook;
         if (npc.age > 6) return false;
         if (
           variables.scenery == "kitchen" &&
-          (<CookSettings>variables.settings.cook).npc == npc.uid
+          cookSettings &&
+          cookSettings.npc == npc.uid
         )
           return false;
         if (window.Person.getEquippedInventory().withDescription("npc").length)
@@ -2214,12 +2222,13 @@ window.Interactions["slave"] = {
         return "🍼 Feed $npc.name with infant formula";
       },
       minutesCost: 10,
-      contents: `<<if $player.lactating>>You get the baby close to you and $mpc.genPronoun instinctively goes for your nipple. You feel $npc.possessive breath as $npc.genPronoun mouth opens to nom on it. $npc.Possessive wet mouth wraps your nipple and starts to suck the nutritious milk produced by your body.
+      contents: `<<if $player.lactating>>You get the baby close to you and $npc.genPronoun instinctively <<thirdPerson goes go>> for your nipple. You feel $npc.possessive breath as $npc.genPronoun mouth opens to nom on it. $npc.Possessive wet mouth wraps your nipple and starts to suck the nutritious milk produced by your body.
       
       You feel a strong connection to $npc.name while doing this.<<else>>You prepare a feed of infant formula in a baby bottle, grab $npc.name in your arms and put the baby bottle in $npc.possessive mouth.
       
-      $npc.GenPronoun immediately starts sucking on it while $npc.genPronoun looks at you with $npc.possessive $npc.eyeColor eyes.<<consumePlayerItem 'infant formula' 'feed' Kitchen>><</if>>`,
+      $npc.GenPronoun immediately starts sucking on it while $npc.genPronoun <<thirdPerson looks look>> at you with $npc.possessive $npc.eyeColor eyes.<<consumePlayerItem 'infant formula' 'feeding' Kitchen>><</if>>`,
       npcStats: ["hunger-100", "love+10%"],
+      next: baseInteractionOptions,
     },
   },
   timeIncreaseNpcHunger: true,

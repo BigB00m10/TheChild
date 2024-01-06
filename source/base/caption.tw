@@ -18,13 +18,18 @@ $player.name <<link "[Inventory]">><<dialog "Player Inventory">>\
     <<set _items = Player.getEquippedInventory().withDescription('npc')>>
     <<if _items.length>><h3>Holding NPCs:</h3>\
         <<for _item range _items>>\
-            <<set _npc = Person.get(_item.extra)>>
+            <<set _npc = Person.get(_item.extra)>><<capture _npc>>
             <<- Person.getShortDescription(_npc)>><<button interact>>\
                 <<run console.info(_npc)>>
                 <<openNpcInteraction slave _npc>>\
                 <<dialogclose>>\
             <</button>><<button 'put down'>>\
-                <<if !Player.isHome()>>\
+                <<if passage() == 'npcInteraction'>>
+                    <<dialog 'Put NPC down'>>\
+                        You cannot put an NPC down during an interaction.
+                        <<button OK>><<dialogclose>><</button>>
+                    <</dialog>>\
+                <<elseif !Player.isHome()>>\
                     <<dialog 'Put NPC down'>>\
                         You need to be home to be able to put an NPC down.
                         <<button OK>><<dialogclose>><</button>>
@@ -48,18 +53,31 @@ $player.name <<link "[Inventory]">><<dialog "Player Inventory">>\
                         >>\
                     <</if>>\
                 <<else>>\
-                    <<dialog 'Put NPC down'>>\
-                        You let _npc.name down. Now _npc.genPronoun<<thirdPerson "'s" "'re" _npc.uid>> free to roam around the house.
-                        <<button OK>><<dialogclose>><</button>>
-                    <</dialog>><<run
-                        Person.setStatus('home slave', _npc, $scenery);
-                        Player.getEquippedInventory().removeNpc(_npc);
-                        Player.lactationTimeout($player);
-                        Engine.show();
-                    >>\
+                    <<if _npc.freedomWish gt 25 && !Person.hasAchievement('beenOnHomeMain', _npc)>>\
+                        <<dialog 'Put NPC down'>>\
+                            You cannot let _npc.name free outside of the basement because _npc.possessive freedom wish is _npc.freedomWish and cannot be higher than 25.
+                            <<button OK>><<dialogclose>><</button>>
+                        <</dialog>>\
+                    <<else>>\
+                        <<dialog 'Put NPC down'>>\
+                            You let _npc.name down. Now _npc.genPronoun<<thirdPerson "'s" "'re" _npc.uid>> free to roam around the house.
+                            <<if $npc.love lt 60 && $npc.age gte 1 && !Person.hasAchievement('beenOnHomeMain', _npc)>>\
+                                The taste of a little more freedom makes _npc.name wanting it even more.
+                            <</if>>\
+                            <<button OK>><<dialogclose>><</button>>
+                        <</dialog>><<run
+                            Person.setAchievement('beenOnHomeMain', _npc);
+                            Person.setStatus('home slave', _npc, $scenery);
+                            if(_npc.love < 60 && _npc.age > 1 && !Person.hasAchievement('beenOnHomeMain', _npc))
+                                _npc.freedomWish += Math.floor(Math.min((_npc.age * 25) / 6, 25))
+                            Player.getEquippedInventory().removeNpc(_npc);
+                            Player.lactationTimeout($player);
+                            Engine.show();
+                        >>\
+                    <</if>>\
                 <</if>>
             <</button>>
-        <</for>>\
+        <</capture>><</for>>\
     <</if>><<unset _items>>\
 <</dialog>><</link>>
 <<if $cheat>>\
@@ -185,7 +203,7 @@ Energy:<<if $cheat>>\
                     Slaves: <input type="text" class="addressing" data-target="slave">
                     Servants: <input type="text" class="addressing" data-target="servant">(Cook)
                     Lovers: <input type="text" class="addressing" data-target="lover">(Unused for now)
-                    Your Sons/Daughters: <input type="text" class="addressing" data-target="offspring">(Coming soon)
+                    Your Sons/Daughters: <input type="text" class="addressing" data-target="offspring">
                 </div><div class="one-half column">\
                     <h3>NPC Aging</h3>\
                     How much time do characters need to age up.

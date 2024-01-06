@@ -11,14 +11,14 @@ let afterPenToMouth = () =>
 let cumOutsideOptions: NpcInteractionOptions = {
   cumBody: {
     optionText: "💦 Cum on $npc.possessive body.",
-    contents: `Right when you're about to cum you pull your dick out from $npc.pronoun and shoot all your hot sperm all over $npc.possessive body.
+    contents: `Right when you're about to cum you pull your dick out from $npc.pronoun<<if Player.wearing('condom')>> remove the condom from it,<</if>> and shoot all your hot sperm all over $npc.possessive body.
     <<set $npc.bodySpermAmount++>>\
     Your sperm drips around $npc.name's body, impregnating $npc.possessive skin.<<playerCum>>`,
     next: () => afterStrip(),
   },
   cumFace: {
     optionText: "🌚 Cum on $npc.possessive face.",
-    contents: `You take out your penis and quickly point it towards $npc.possessive face.
+    contents: `You take out your penis<<if Player.wearing('condom')>> remove the condom from it,<</if>> and quickly point it towards $npc.possessive face.
     <<set $npc.faceSpermAmount++>>
     $npc.name closes $npc.possessive eyes when the first cumshot lands on $npc.possessive face.
     You splatter a full load on $npc.pronoun while you hold $npc.name's chin.<<playerCum>>`,

@@ -2,7 +2,8 @@ window.Interactions["houseSlave"] = {
   contents: "<<include slaveApproach>>",
   options: {
     putInBasement: {
-      npcRequirements: ['status!=servant'],
+      canBeShown: () => !window.Person.isBeingHeld(Variables().npc),
+      npcRequirements: ["status!=servant", "age>0"],
       optionText: "🔒 Put $npc.name back into the basement.",
       minutesCost: 10,
       contents: `You grab $npc.name's arm and head over to the basement.

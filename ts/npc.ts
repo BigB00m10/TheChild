@@ -65,6 +65,7 @@ abstract class LivingCharacter {
       mom.impregnator =
         undefined; //Stop pregnancy
     mom.lactating = true;
+    baby.fear = 0;
     const player = <Player>variables.player;
     if (!player.home.family) player.home.family = [];
     player.home.family.push(baby);
@@ -82,8 +83,10 @@ abstract class LivingCharacter {
     character: LivingCharacter,
     variables?: any
   ): [LivingCharacter, any] {
-    if (typeof character == "number" && character == 0)
+    if (typeof character == "number" && character == 0) {
+      if (!variables) variables = Variables();
       character = variables.player;
+    }
     return Npc.obtain(<Npc>character, variables);
   }
   showBirthMessage(baby: Npc, laborNpc?: Npc) {
@@ -150,11 +153,7 @@ abstract class LivingCharacter {
         );
     }
   }
-  impregnate(
-    target?: LivingCharacter,
-    impregnatorUid?: Uid,
-    variables?: any
-  ) {
+  impregnate(target?: LivingCharacter, impregnatorUid?: Uid, variables?: any) {
     target = LivingCharacter.obtain(target, variables)[0];
     target.pregnantDays = 0;
     target.impregnator = impregnatorUid;
@@ -445,8 +444,8 @@ abstract class Npc extends LivingCharacter {
     if (window.Player.getEquippedInventory().hasNpc(npc))
       return variables.player;
     if (!npcList) npcList = window.Person.all(null, variables);
-    return npcList.firstOrDefault((npc: Npc) =>
-      window.Person.getInventory(npc, variables).hasNpc(npc)
+    return npcList.firstOrDefault((candidate: Npc) =>
+      window.Person.getEquippedInventory(candidate, variables).hasNpc(npc)
     );
   }
   isBeingHeld(npc?: Npc, variables?: any, npcList?: Npc[]): boolean {
@@ -719,17 +718,14 @@ class Person extends Npc {
         dad.naturalHairColor = naturalHairColor;
       baby.hairColor = naturalHairColor;
     }
+    baby.status = "home slave";
     mom.children.push(baby.uid);
     let holderInventory: Inventory;
     if (mom.age < 2) {
       //Make someone hold the baby (The mother if they're old enough or the player)
       holderInventory = window.Player.getEquippedInventory(variables);
-      baby.status = "home slave";
       window.Person.lactationTimeout(variables.player, variables, true);
-    } else {
-      holderInventory = this.getEquippedInventory(mom, variables);
-      baby.status = mom.status;
-    }
+    } else holderInventory = this.getEquippedInventory(mom, variables);
     holderInventory.addNpc(baby, "holding", "child");
     window.Person.lactationTimeout(mom, variables);
     window.Person.removeAchievement("playerNoticedPregnancy", mom);

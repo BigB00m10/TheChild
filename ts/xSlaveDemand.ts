@@ -708,7 +708,7 @@ window.Interactions["slaveEventCook"] = {
       npcStats: ["love+5%"],
       contents: `You silently approach $npc.pronoun from behind and slowly press your lips on $npc.possessive neck while you grab $npc.possessive waist and gently press it towards you.
       <<personUniqueness surpriseNeckKiss>>`,
-      next: () => baseInteractionOptions(),
+      next: baseInteractionOptions,
     },
     pullDownClothes: {
       canBeShown: () => !Temporary().pulledDownClothes,
@@ -716,7 +716,7 @@ window.Interactions["slaveEventCook"] = {
       optionText: "👇 Pull $npc.possessive clothes down",
       contents:
         "You pull down $npc.possessive clothes exposing $npc.possessive naked butt.<<set _pulledDownClothes=true>>",
-      next: () => baseInteractionOptions(),
+      next: baseInteractionOptions,
     },
     lookLow: {
       canBeShown: () =>
@@ -1205,7 +1205,7 @@ window.Interactions["slaveEventCook"] = {
       contents: `You grab and squish $npc.possessive ass cheek. The squishiness feels amazing on your hand.
       <<personUniqueness assGrabbed>>`,
       npcStats: ["lust+5%"],
-      next: () => baseInteractionOptions(),
+      next: baseInteractionOptions,
     },
     giveApron: {
       inventoryRequirements: ["cooking apron"],

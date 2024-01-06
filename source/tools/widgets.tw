@@ -136,14 +136,14 @@
         if(typeof _npc == 'number')
             _npc = Person.get(_npc);
         _location = _npc.location;
-        if(_location == 'unknown') {
-            if(Person.getEquippedInventory(_npc.mom).hasNpc(_npc)) {
-                var mom = Person.get(_npc.mom);
-                _location = mom.location;
-                _extraLocationInfo = `(On ${mom.name}'s arms)`;
-            } else if(Player.getEquippedInventory().hasNpc(_npc)) {
+        var holder = Person.getHolder(_npc);
+        if(holder){
+            if(holder.uid==0){
                 _location = $scenery;
                 _extraLocationInfo = '(Held by the player)';
+            }else{
+                _location = holder.location;
+                _extraLocationInfo = `(On ${holder.name}'s arms)`;
             }
         }
         _passage = _location == 'mainRoom' ? 'main' : _location;
@@ -324,7 +324,7 @@
                 var exceptionSlaveSelect = $('#exceptionSlaveSelect').select2({
                     placeholder:"Select slave...",
                     dropdownParent:exceptionEditor,
-                    data:$slaves.filter(function(slave) {
+                    data:Person.all(function(slave) {
                         return !$settings.cook.exceptions.find(function(ex){ return ex.npc == slave.uid; });
                     }).map(function(slave){return {
                         id: slave.uid,

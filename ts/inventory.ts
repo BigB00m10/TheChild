@@ -283,20 +283,26 @@ class OnlineStore {
         let npc: Npc = null;
         if (characterUid) {
           npc = window.Person.get(characterUid);
-          window.Person.getEquippedInventory(npc).removeByName(this.name);
+          let inventory = window.Person.getEquippedInventory(npc);
+          let item = inventory.get(this.name);
+          if (!item) return;
+          inventory.remove(item);
           window.Person.removeAchievement("activeContraception");
         } else {
-          window.Player.getEquippedInventory(variables).removeByName(this.name);
+          let inventory = window.Player.getEquippedInventory(npc);
+          let item = inventory.get(this.name);
+          if (!item) return;
+          inventory.remove(item);
           window.Player.removeAchievement("activeContraception");
         }
-
         if (passage() == "npcInteraction") {
           const interactionName = variables.npcInteractionRoute
             .split(".")
             .last();
           if (
             interactionName.includes("cum") &&
-            !["cumOn", "cumBody", "cumFace"].includes(interactionName)
+            !["cumOn", "cumBody", "cumFace"].includes(interactionName) &&
+            (!npc || npc.producesSperm)
           )
             //When the condom is removed after the character cums in an interaction between the player and an npc
             window.Player.getInventory().add({
@@ -497,6 +503,8 @@ class OnlineStore {
   }
   getInventoryLine(item: Item, characterUid: Uid = 0): string {
     let [index, result] = this.internalInventoryLine(item);
+    if (item.tags.has("garbage"))
+      result += ` <<button 'throw away'>><<dialog 'Items removed'>><<run Player.getInventory().removeByName('${item.name}', 0)>>${result} were thrown away\n<<button "OK">><<dialogclose>><</button>><</dialog>><</button>>`;
     if (index == -1 || !this.products[index].use) return result;
     return (
       result +

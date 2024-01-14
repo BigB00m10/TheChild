@@ -341,8 +341,10 @@ $(document).on(":passageinit", () => {
         if (waveyIndex != -1)
           variables.settings.childGeneration.hairStyles[waveyIndex] = "wavy";
       }
-      if(!variables.kitchen)
-        variables.kitchen = new Kitchen();
+      if (!variables.kitchen) variables.kitchen = new Kitchen();
+      variables.player.inventory.items.forEach((item: Item) => {
+        if (Array.isArray(item.tags)) item.tags = new Set(item.tags);
+      });
     });
   }
 });

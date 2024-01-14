@@ -138,6 +138,8 @@ const checkCondition = (objectName: string, condition: string): boolean => {
   );
 };
 const checkCanBeShown = (option: NpcInteraction) => {
+  let temp = Temporary();
+  temp.checkedGenericCanBeShown = false;
   let canBeShown = true;
   if (option.playerRequirements)
     option.playerRequirements.forEach(
@@ -201,7 +203,7 @@ const checkCanBeShown = (option: NpcInteraction) => {
   }
   if (!canBeShown) return false;
   if (option.canBeShown) {
-    Temporary().checkedGenericCanBeShown = true;
+    temp.checkedGenericCanBeShown = true;
     canBeShown = option.canBeShown();
   }
   return canBeShown;

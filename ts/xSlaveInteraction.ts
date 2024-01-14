@@ -824,7 +824,7 @@ window.Interactions["slave"] = {
                           contents: `You thrust the dildo into $npc.name's $npc.genitals.female, making $npc.pronoun bounce with a fast piston movement.
                           <<run Player.manageEnergy(1)>>\
                           <<if $npc.pussyTraining lt 40>>\
-                            $npc.GenPronoun <<if $npc.age gt 0 || $npc.location!="tortRafters"*/>><<thirdPerson "pushes" "push">> you while crying<<else>><<thirdPerson "cries" "cry">><</if>> desperately.<<emoji 😭>>
+                            $npc.GenPronoun <<if $npc.age gt 0 || $npc.location!="tortRafters">><<thirdPerson "pushes" "push">> you while crying<<else>><<thirdPerson "cries" "cry">><</if>> desperately.<<emoji 😭>>
                           <<elseif $npc.pussyTraining lt 60>>\
                             $npc.name seems to have a hard time taking your thrusts while squinting $npc.possessive eyes<<emoji 😣>> while you dildo fuck $npc.pronoun.
                           <<elseif $npc.lust lt 60>>\
@@ -1954,10 +1954,10 @@ window.Interactions["slave"] = {
       next: baseInteractionOptions,
     },
     bringUpstairs: {
-      locationRequirements: ["basement", "age>0"],
+      locationRequirements: ["basement"],
       showDisabled: "status=slave=>Freedom Wish $npc.freedomWish/25",
       npcRequirements: ["freedomWish<=25"],
-      canBeShown: () => !window.Person.isBeingHeld(),
+      canBeShown: () => !window.Person.isBeingHeld() && Variables().npc.age > 0,
       optionText: "🚪 Let $npc.name roam the house.",
       altMinutes: () => 2,
       contents: `You carefully open the door letting only $npc.name out of the basement.

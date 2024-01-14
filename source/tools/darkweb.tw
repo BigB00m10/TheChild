@@ -15,7 +15,7 @@
 Choose slave to sell:
 <<set
     _charcode = 97;
-    _slaves = $slaves.filter((slave) => slave.status!="servant");
+    _slaves = Person.all((npc) => npc.status!="servant");
 >>\
 <<for _slave range _slaves>>\
     <<set _value = Person.getValue(_slave)>>\
@@ -55,7 +55,7 @@ Choose slave to sell:
                                 You won't see _slave.pronoun ever again!!
                                 <<button "✅ Yes, sell _slave.name">>\
                                     <<cash _value.total>>\
-                                    <<run Basement.deleteSlave(_slave);Dialog.close()>>\
+                                    <<run Person.delete(_slave);Dialog.close()>>\
                                     <<goto DarkStore>>\
                                 <</button>>\
                                 <span id="escAct">\

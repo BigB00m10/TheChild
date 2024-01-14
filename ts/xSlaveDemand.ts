@@ -13,15 +13,7 @@ const punishment: NpcInteraction = {
       <<else>>\
         $npc.name covers $npc.possessive genitals with both hands: "Nooo!, give it baaack!!<<emoji 😳>>"
       <</if>>\
-      <<set _item = {
-        name:'Used clothes(' + $npc.age + ' y.o.)',
-        description:'Used clothes from a ' + $npc.age + ' year old',
-        count: 1,
-        tags:["person","clothes","used"]
-      };
-      Player.getInventory().add(_item);
-      $npc.punishments.push("naked");>>
-      (_item.description added to your inventory)`,
+      <<set $npc.punishments.push("naked");>><<takeClothes>>`,
       npcStats: (npc) => {
         let stats = ["obedience+10", "-haveClothes"];
         if (npc.lust >= 60) stats.push("lust+10%");
@@ -491,7 +483,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
         cumIn: {
           optionText: "💦 Cum in $npc.possessive ass (end).",
           minutesCost: 1,
-          contents: `You bring $npc.pronoun closer to you and hug $npc.pronoun tightly as you unload all of your cum inside <<if Player.wearing('condom')>>the condom.<<else>>$npc.possessive ass. (Bedsheets are a little dirty)<</if>><<if !npc.hasPussy>><<checkImpregnation $player $npc>><</if>><<set $npc.assSpermAmount++>><<playerCum>>
+          contents: `You bring $npc.pronoun closer to you and hug $npc.pronoun tightly as you unload all of your cum inside <<if Player.wearing('condom')>>the condom.<<else>>$npc.possessive ass. (Bedsheets are a little dirty)<</if>><<if !$npc.hasPussy>><<checkImpregnation $player $npc>><</if>><<set $npc.assSpermAmount++>><<playerCum>>
             You are too tired to do anything and you sleep after that.`,
           next: WakeUpMorning.options,
         },

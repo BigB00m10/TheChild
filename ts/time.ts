@@ -179,20 +179,7 @@ class Now {
           npc.obedience = Math.max(0, npc.obedience - 1);
         window.Person.removeAchievement("howAreYou", npc);
         manageAging(npc);
-        if (holder && holder.uid != 0 && npc.age > 1 && !npc.ageProgress) {
-          const holderNpc = <Npc>holder;
-          window.Person.setStatus(
-            holderNpc.status != "servant" ? holderNpc.status : "home slave",
-            npc,
-            holderNpc.location
-          );
-          if(npc.location != 'basement')
-            window.Person.setAchievement('beenOnHomeMain', npc);
-          window.Person.getEquippedInventory(holderNpc, variables).removeNpc(
-            npc
-          );
-          window.Person.lactationTimeout(holder, variables);
-        }
+        window.Person.manageHolder(npc, holder);
       });
       player.lust = Math.min(100, player.lust + 10);
       if (player.pregnantDays != undefined) player.pregnantDays++;

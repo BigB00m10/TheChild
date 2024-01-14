@@ -121,7 +121,6 @@ function getUid(variables?: any): Uid {
   variables.lastUid = variables.lastUid ? variables.lastUid + 1 : 1;
   return variables.lastUid;
 }
-let lastBirthCheck: Date;
 Macro.add("unlessEmergency", {
   tags: [],
   handler() {
@@ -158,28 +157,23 @@ Macro.add("unlessEmergency", {
           this.output
         );
     }
-    if (
-      !lastBirthCheck ||
-      variables.now.date.getTime() - lastBirthCheck.getTime() > 216e3 //Check every 6 hours
+    const pregnancyDays = variables.settings.pregnancyDays
+      ? variables.settings.pregnancyDays
+      : 9 * 30;
+    let baby: Npc;
+    let laborNpc = window.Person.all(
+      (npc: Npc) => npc.pregnantDays && npc.pregnantDays > pregnancyDays
+    ).first();
+    if (laborNpc) {
+      //Right now all NPCs are persons so it's assumed the NPC is a person.
+      baby = window.Person.giveBirth(<Person>laborNpc, variables);
+    } else if (
+      variables.player.pregnantDays &&
+      variables.player.pregnantDays >= pregnancyDays
     ) {
-      const pregnancyDays = variables.settings.pregnancyDays
-        ? variables.settings.pregnancyDays
-        : 9 * 30;
-      let baby: Npc;
-      let laborNpc = window.Person.all(
-        (npc: Npc) => npc.pregnantDays && npc.pregnantDays > pregnancyDays
-      ).first();
-      if (laborNpc) {
-        //Right now all NPCs are persons so it's assumed the NPC is a person.
-        baby = window.Person.giveBirth(<Person>laborNpc, variables);
-      } else if (
-        variables.player.pregnantDays &&
-        variables.player.pregnantDays >= pregnancyDays
-      ) {
-        baby = window.Player.giveBirth(variables);
-      }
-      if (baby) window.Person.showBirthMessage(baby, laborNpc);
+      baby = window.Player.giveBirth(variables);
     }
+    if (baby) window.Person.showBirthMessage(baby, laborNpc);
     Wiki(this.payload[0].contents, this.output);
   },
 });

@@ -398,6 +398,11 @@ abstract class Npc extends LivingCharacter {
     if (filter) return all.filter(filter);
     return all;
   }
+  //Returns the first NPC that complies with the provided condition or null
+  firstOrNull(condition: (npc: Npc) => boolean, variables?: any): Npc {
+    const candidates = this.all(condition, variables);
+    return candidates.length ? candidates[0] : null;
+  }
   //Get the NPC with the indicated unique ID
   get(uid: Uid, variables?: any): Npc {
     return this.all(null, variables).firstOrDefault(
@@ -450,6 +455,41 @@ abstract class Npc extends LivingCharacter {
   }
   isBeingHeld(npc?: Npc, variables?: any, npcList?: Npc[]): boolean {
     return !!this.getHolder(npc, variables, npcList);
+  }
+  //Removes an NPC from the game and returns an array with the deleted NPC
+  delete(npc?: Npc, variables?: any): Npc[] {
+    [npc, variables] = Npc.obtain(npc, variables);
+    let holder = this.getHolder(npc, variables);
+    if (holder) {
+      if (holder.uid == 0)
+        window.Player.getEquippedInventory(variables).removeNpc(npc);
+      else this.getEquippedInventory(<Npc>holder, variables).removeNpc(npc);
+    }
+    var index = (<Npc[]>variables.slaves).findIndex(
+      (slave) => slave.uid == npc.uid
+    );
+    if (index > -1) return (<Npc[]>variables.slaves).deleteAt(index);
+    if (!variables.player.home.family) return;
+    index = (<Npc[]>variables.player.home.family).findIndex(
+      (slave) => slave.uid == npc.uid
+    );
+    if (index > -1)
+      return (<Npc[]>variables.player.home.family).deleteAt(index);
+  }
+  //Checks if this NPC should be released by the holder and does so in that case
+  manageHolder(npc: Npc, holder: LivingCharacter): void {
+    if (holder && holder.uid != 0 && npc.age > 1 && !npc.ageProgress) {
+      const holderNpc = <Npc>holder;
+      window.Person.setStatus(
+        holderNpc.status != "servant" ? holderNpc.status : "home slave",
+        npc,
+        holderNpc.location
+      );
+      if (npc.location != "basement")
+        window.Person.setAchievement("beenOnHomeMain", npc);
+      window.Person.getEquippedInventory(holderNpc, variables).removeNpc(npc);
+      window.Person.lactationTimeout(holder, variables);
+    }
   }
 }
 type AnimalSpecies = "dog" | "cat" | "rabbit" | "horse" | "pig" | "cow";

@@ -178,7 +178,9 @@
                 <br><span id="spaceAct"><<button "✅ (Space) Yes">>
                     <<set
                         _npc.age++;
+                        _npc.ageProgress = 0;
                         Person.adjustPubescence(true, _npc);
+                        Person.manageHolder(_npc, Person.getHolder(_npc));
                     >>
                     <<dialogclose>>
                 <</button>></span>
@@ -281,7 +283,7 @@
 <<widget sleepOption>>
     <<if !$player.job or $player.workedToday or Now.isWeekend() or Now.isBetween('12:00 AM', '06:59 AM')>>
         <<set 
-            _sleepSlave = $slaves.firstOrDefault(function(slave){return Person.hasAchievement('okSleepWithPlayer', slave)});
+            _sleepSlave = Person.firstOrNull(function(npc){return Person.hasAchievement('okSleepWithPlayer', npc)});
             _sleepSentence = $scenery != 'bed' ? "Go sleep" : 'Sleep';
         >>
         <<if _sleepSlave>>
@@ -351,7 +353,7 @@
         name:'Used clothes(' + $npc.age + ' y.o.)',
         description:'Used clothes from a ' + $npc.age + ' year old',
         count:1,
-        tags:["person","clothes","used"]
+        tags:new Set(["person","clothes","used"])
         };
         $npc.haveClothes = false;
         Player.getInventory().add(_item);>>

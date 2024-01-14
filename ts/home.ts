@@ -116,11 +116,6 @@ class Basement extends HomeSpace {
       )
     );
   }
-  deleteSlave(slave: Person) {
-    let slaves: Person[] = Variables().slaves;
-    let index = slaves.indexOf(slave);
-    if (index != -1) slaves.splice(index, 1);
-  }
 }
 class TortRafters extends HomeSpace {
   muffleBase: number = 90;

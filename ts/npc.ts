@@ -94,9 +94,15 @@ abstract class LivingCharacter {
     const playerCarryBabySentence = `You're currently carrying the baby, go to the inventory to interact with ${
       (<Person>baby).pronoun
     }`;
-    $.wiki(`<<dialog 'baby was born'>>${
-      laborNpc ? laborNpc.name + "'s" : "Yours"
-    } and ${baby.dad ? window.Person.get(baby.dad).name : "yours"} baby ${
+    const dad = window.Person.get(baby.dad);
+    let ownSentence: string;
+    if (laborNpc) ownSentence = laborNpc.name + "'s";
+    else if (!dad || !baby.dad)
+      ownSentence = "Your"; //!baby.dad == The dad is the player
+    else ownSentence = "Yours";
+    if (dad) ownSentence += " and " + dad.name;
+    else if (!baby.dad) ownSentence += " and yours";
+    $.wiki(`<<dialog 'baby was born'>>${ownSentence} baby ${
       (<Person>baby).title
     }<<emoji 👶>>have just been born at your home!!<<emoji ❤>><br>
     The baby is a ${window.Person.getLongDescription(<Person>baby)}.<br>
@@ -465,6 +471,15 @@ abstract class Npc extends LivingCharacter {
         window.Player.getEquippedInventory(variables).removeNpc(npc);
       else this.getEquippedInventory(<Npc>holder, variables).removeNpc(npc);
     }
+    if (
+      npc.dad ||
+      npc.mom ||
+      npc.children.length ||
+      window.Person.firstOrNull((n) => n.impregnator == npc.uid)
+    ) {
+      if (!variables.removedNpcs) variables.removedNpcs = [];
+      variables.removedNpcs.push(npc);
+    }
     var index = (<Npc[]>variables.slaves).findIndex(
       (slave) => slave.uid == npc.uid
     );
@@ -718,10 +733,9 @@ class Person extends Npc {
     if (!variables) variables = Variables();
     const baby = <Person>LivingCharacter.giveBirth(mom, variables);
     const naturalHairColor = baby.hairColor;
-    let dad: Person;
-    if (baby.dad) {
-      //Baby's dad is another NPC
-      dad = <Person>window.Person.get(baby.dad, variables);
+    const dad = <Person>window.Person.get(baby.dad, variables);
+    if (dad) {
+      //Baby's dad is another NPC and that NPC exists.
       ["eyeColor", "hairColor", "skin"].forEach((trait) => {
         baby[trait] = [mom[trait], dad[trait]].random(); //Inherit one trait from mom or dad at 50% chance
       });
@@ -735,7 +749,7 @@ class Person extends Npc {
         }
       );
       dad.children.push(baby.uid);
-    } else {
+    } else if (!baby.dad) {
       //Baby's dad is the player
       ["eyeColor", "hairColor", "skin"].forEach((trait) => {
         if (random(10) < 8) baby[trait] = mom[trait]; //70% chance of inherit each trait from mom

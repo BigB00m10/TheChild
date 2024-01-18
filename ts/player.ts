@@ -1,5 +1,5 @@
 class Player extends LivingCharacter {
-  gameVersion: string = "0.2.0.3";
+  gameVersion: string = "0.2.0.4";
   //Zero UID identifies the player.
   uid: Uid = 0;
   //The name of the hole where the player can be fucked by default (not sure if this will be used)
@@ -214,9 +214,8 @@ class Player extends LivingCharacter {
     const baby = <Person>LivingCharacter.giveBirth(variables.player, variables);
     baby.love = 75; //Big bonus in love for being blood related
     baby.status = "home slave";
-    if (variables.player.impregnator) {
-      //The one that impregnated is another NPC
-      const dad = <Person>window.Person.get(baby.dad, variables);
+    const dad = <Person>window.Person.get(baby.dad, variables);
+    if (dad) {
       const naturalHairColor = baby.hairColor;
       ["eyeColor", "hairColor", "skin"].forEach((trait) => {
         if (random(10) < 8) baby[trait] = dad[trait]; //70% chance of inherit each trait from dad

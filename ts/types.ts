@@ -161,9 +161,9 @@ Macro.add("unlessEmergency", {
       ? variables.settings.pregnancyDays
       : 9 * 30;
     let baby: Npc;
-    let laborNpc = window.Person.all(
+    let laborNpc = window.Person.firstOrNull(
       (npc: Npc) => npc.pregnantDays && npc.pregnantDays > pregnancyDays
-    ).first();
+    );
     if (laborNpc) {
       //Right now all NPCs are persons so it's assumed the NPC is a person.
       baby = window.Person.giveBirth(<Person>laborNpc, variables);

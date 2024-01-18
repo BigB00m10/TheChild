@@ -475,6 +475,7 @@ abstract class Npc extends LivingCharacter {
       npc.dad ||
       npc.mom ||
       npc.children.length ||
+      variables.player.impregnator == npc.uid ||
       window.Person.firstOrNull((n) => n.impregnator == npc.uid)
     ) {
       if (!variables.removedNpcs) variables.removedNpcs = [];

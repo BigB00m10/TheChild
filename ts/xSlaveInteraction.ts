@@ -155,7 +155,7 @@ window.Interactions["slave"] = {
       next: {
         strip: {
           optionText: "👌 Strip $npc.pronoun naked.",
-          contents: `You take all off $npc.possessive clothes leaving $npc.name completely naked in front of you.
+          contents: `You take off all $npc.possessive clothes leaving $npc.name completely naked in front of you.
               <<if $npc.aroused>>\
                 You notice that \
 /*            */<<if $npc.hasPussy && $npc.hasPenis>>\

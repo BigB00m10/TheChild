@@ -345,7 +345,7 @@ window.Interactions["slaveEventHunger"] = {
         <<if $npc.uniqueness.naughty || $npc.lust gt 60>>$npc.Possessive hand plays with your other boob.<</if>>\
         You run your hand through $npc.possessive $npc.hairColor $npc.hairStyle hair as you feed $npc.pronoun.\
         <<if $npc.uniqueness.energetic || $npc.hunger gt 40 >>$npc.GenPronoun vigorously <<thirdPerson "sucks" "suck">> down your milk.<</if>>\
-        <<if _willing>>$npc.GenPronoun <<thirdPerson "hums" "hum" contentedly>> and <<thirdPerson "relaxes" "relax">> in your arms.<</if>>
+        <<if _willing>>$npc.GenPronoun <<thirdPerson "hums" "hum">> contentedly and <<thirdPerson "relaxes" "relax">> in your arms.<</if>>
       <</if>>
       `,
       altMinutes: (minutes) => (Temporary().denied ? 0 : minutes),

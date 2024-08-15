@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "command": "npx babel -w -x .ts -o dynamic.js gameAssetTool.ts",
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "label": "build dynamic"
+    },
+    {
+      "type": "shell",
+      "command": "npx babel -x ts,js -o fixed.js --presets @babel/preset-typescript,@babel/preset-env adaptedTctClasses/* binarySerialization.ts katz.ts base92.min.js lodash.min.js zip.min.js",
+      "isBackground": true,
+      "group": "build",
+      "label": "build fixed"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Game Asset Tool</title>
+<link rel="stylesheet" href="gameAssetTool.css" />
+<div id="fileDrop">
+  <p>Drop file or files here or press to browse</p>
+</div>
+<input id="hiddenUpload" type="file" style="display: none" />
+By default, assume
+<input id="assetType" value="character" style="width: 6em" /> asset type.<br />
+Status: <span id="status">Waiting for asset file or files</span>.<br>
+<div id="previewControls">
+  <canvas id="preview" style="float:left"></canvas>
+  Age: <input id="age" type="range" max="16" value="12"><br>
+  Sex: <label><input type="radio" name="sex" checked>female</label><label><input type="radio"
+      name="sex">male</label><label><input type="radio" name="sex">herm</label><br>
+  <div>Hair Length:</div>
+  <div><input id="hairLength" type="range" list="hairLengthList" max="2" value="1">
+    <datalist id="hairLengthList">
+      <option value="0" label="short"></option>
+      <option value="1" label="medium"></option>
+      <option value="2" label="long"></option>
+    </datalist>
+  </div><br>
+  <div>Hair Style:</div>
+  <div><input id="hairStyle" type="range" list="hairStyleList" max="2" value="0">
+    <datalist id="hairStyleList">
+      <option value="0" label="straight"></option>
+      <option value="1" label="shoulder"></option>
+      <option value="2" label="twin tails"></option>
+    </datalist>
+  </div><br>
+  Pregnant: <input id="pregnant" type="range" max="9" value="0"><br>
+  <div>Tits:</div>
+  <div><input id="tits" type="range" list="titSize" max="4" value="0">
+    <datalist id="titSize">
+      <option value="0" label="flat"></option>
+      <option value="1" label="budding"></option>
+      <option value="2" label="small"></option>
+      <option value="3" label="modest"></option>
+      <option value="4" label="large"></option>
+    </datalist>
+  </div><br>
+</div>
+<script src="fixed.js"></script>
+<script src="dynamic.js"></script>

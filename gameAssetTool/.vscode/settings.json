@@ -1,0 +1,27 @@
+{
+    "cSpell.words": [
+        "Aiden",
+        "BSON",
+        "camelcase",
+        "coprime",
+        "deeppink",
+        "endregion",
+        "fauxhawkian",
+        "herms",
+        "Initializable",
+        "Jayden",
+        "Katz",
+        "significand",
+        "Sugarcube",
+        "twintail",
+        "twintails"
+    ],
+    "liveSassCompile.settings.formats": [
+        {
+            "format": "compressed",
+            "extensionName": ".css",
+            "savePath": null,
+            "savePathReplacementPairs": null
+        }
+    ]
+}

@@ -2,3 +2,8 @@
 /*.zip
 /releases/*.html
 /source/script-compiled.js
+/gameAssetTool/node_modules
+/gameAssetTool/gameAssetTool.css.map
+/gameAssetTool/dynamic.js
+/gameAssetTool/fixed.js
+/gameAssetTool/gameAssetTool.css

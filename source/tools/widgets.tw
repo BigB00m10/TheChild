@@ -252,7 +252,7 @@
         _hasCandy = Player.has('Candy');
     >>
     <<if !_hasChloroform and !_hasCandy>>
-        (You don't have anything at your disposal to obtain kids. Try the online store on the conputer in your room)<br>
+        (You don't have anything at your disposal to obtain kids. Try the online store on the computer in your room)<br>
     <<elseif Basement.availableBeds() lte 0>>
         (Not enough space for a new kid back at home)<br>
     <<else>>

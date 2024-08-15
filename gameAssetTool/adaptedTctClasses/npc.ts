@@ -39,130 +39,12 @@ abstract class LivingCharacter {
   inventory: Inventory;
   equippedItems: Inventory; //Things that the character has equipped or is wearing.
   //General static function for common operations when giving birth with any character
-  static giveBirth(mom: LivingCharacter, variables?: any): Npc {
-    if (!variables) variables = Variables();
-    //Get child generation settings
-    const gen = new PersonGeneration().load(variables.settings.childGeneration);
-    gen.females.fromAge =
-      gen.females.toAge =
-      gen.males.fromAge =
-      gen.males.toAge =
-      gen.herms.fromAge =
-      gen.herms.toAge =
-        0;
-    gen.hairColors = PersonGeneration.naturalHairColors;
-    gen.hairStyles = PersonGeneration.naturalHairStyles;
-    const baby = window.Person.generate(gen, false); //Generate a new NPC with these settings
-    baby.dad = mom.impregnator;
-    baby.mom = mom.uid;
-    baby.uniqueness.name = "inherited";
-    baby.uniqueness.appearingChance =
-      baby.uniqueness.homeOtherNpc =
-      baby.uniqueness.homePersons =
-      baby.uniqueness.ageRange =
-      baby.uniqueness.apply =
-      mom.pregnantDays =
-      mom.impregnator =
-        undefined; //Stop pregnancy
-    mom.lactating = true;
-    baby.fear = 0;
-    const player = <Player>variables.player;
-    if (!player.home.family) player.home.family = [];
-    player.home.family.push(baby);
-    return baby;
-  }
   static getPregnancyMonth(char: LivingCharacter, variables?: any): number {
     if (!char.pregnantDays) return 0;
-    if (!variables) variables = Variables();
-    const pregnancyDays = variables.settings.pregnancyDays;
+    const pregnancyDays = 9;
     return Math.ceil(
       char.pregnantDays / (pregnancyDays != undefined ? pregnancyDays / 9 : 30)
     );
-  }
-  static obtain(
-    character: LivingCharacter,
-    variables?: any
-  ): [LivingCharacter, any] {
-    if (typeof character == "number" && character == 0) {
-      if (!variables) variables = Variables();
-      character = variables.player;
-    }
-    return Npc.obtain(<Npc>character, variables);
-  }
-  showBirthMessage(baby: Npc, laborNpc?: Npc) {
-    Temporary().baby = baby;
-    const playerCarryBabySentence = `You're currently carrying the baby, go to the inventory to interact with ${
-      (<Person>baby).pronoun
-    }`;
-    const dad = window.Person.get(baby.dad);
-    let ownSentence: string;
-    if (laborNpc) ownSentence = laborNpc.name + "'s";
-    else if (!dad || !baby.dad)
-      ownSentence = "Your"; //!baby.dad == The dad is the player
-    else ownSentence = "Yours";
-    if (dad) ownSentence += " and " + dad.name;
-    else if (!baby.dad) ownSentence += " and yours";
-    $.wiki(`<<dialog 'baby was born'>>${ownSentence} baby ${
-      (<Person>baby).title
-    }<<emoji 👶>>have just been born at your home!!<<emoji ❤>><br>
-    The baby is a ${window.Person.getLongDescription(<Person>baby)}.<br>
-      ${
-        laborNpc
-          ? laborNpc.age < 2
-            ? playerCarryBabySentence
-            : `${laborNpc.name}  is currently carrying the baby, approach ${
-                (<Person>laborNpc).pronoun
-              } to interact with the baby`
-          : playerCarryBabySentence
-      }.<br>
-      How do you want to name ${(<Person>baby).pronoun}?
-      <label>Newborn name:<input type=text id=babyName /></label><<button OK>><<dialogclose>><</button>>
-    <</dialog>>`);
-    const $babyName = $("#babyName");
-    $babyName
-      .val(baby.name)
-      .on("change", () => (Temporary().baby.name = <string>$babyName.val()));
-  }
-  lactationTimeout(
-    character?: LivingCharacter,
-    variables?: any,
-    holdsNpc?: boolean
-  ) {
-    [character, variables] = Npc.obtain(<Npc>character, variables);
-    if (typeof character == "number")
-      character = character
-        ? window.Person.get(character, variables)
-        : variables.player;
-    if (!character.lactating) return;
-    if (holdsNpc == undefined)
-      holdsNpc = <boolean>(
-        (<unknown>(
-          (character.uid
-            ? window.Person.getEquippedInventory(<Npc>character, variables)
-            : window.Player.getEquippedInventory(variables)
-          ).withDescription("npc").length
-        ))
-      );
-    if (holdsNpc) window.Now.removeTimedEvent("stopLactation" + character.uid);
-    else {
-      if (character.uid)
-        window.Now.addTimedEvent(
-          24 * 5,
-          `var lc=window.Person.get(${character.uid});lc.lactating=false;if(lc.age<10)lc.hasBoobs=false`,
-          "stopLactation" + character.uid
-        );
-      else
-        window.Now.addTimedEvent(
-          24 * 5,
-          "Variables().player.lactating=false",
-          "stopLactation0"
-        );
-    }
-  }
-  impregnate(target?: LivingCharacter, impregnatorUid?: Uid, variables?: any) {
-    target = LivingCharacter.obtain(target, variables)[0];
-    target.pregnantDays = 0;
-    target.impregnator = impregnatorUid;
   }
 }
 abstract class Npc extends LivingCharacter {
@@ -210,9 +92,7 @@ abstract class Npc extends LivingCharacter {
   location: string = "unknown";
   getMonthsSinceLastBirthDay(npc?: Npc) {
     if (!npc) npc = this;
-    return (
-      (12 * npc.ageProgress) / (Variables().settings.agingIgDays || 365.25)
-    );
+    return (12 * npc.ageProgress) / (12 || 365.25);
   }
   adjustPubescence(agedUp: boolean = false, npc?: Npc): void {
     if (!npc) npc = this;
@@ -246,42 +126,34 @@ abstract class Npc extends LivingCharacter {
       return;
     }
   }
-  getInventory(npc?: Npc, variables?: any): Inventory {
-    [npc, variables] = Npc.obtain(npc, variables);
+  getInventory(npc?: Npc): Inventory {
     return (npc.inventory = new Inventory(npc.inventory));
   }
   //Gets the NPC inventory object for the currently equipped/wearing items from the Sugarcube variables.
   getEquippedInventory(npc?: Npc, variables?: any): Inventory {
-    [npc, variables] = Npc.obtain(npc, variables);
     return (npc.equippedItems = new Inventory(npc.equippedItems));
   }
   wearing(itemName: string, npc?: Npc, variables?: any): boolean {
     return this.getEquippedInventory(npc, variables).has(itemName);
   }
   hasAchievement(achievement: string, npc?: Npc): boolean {
-    if (!npc) npc = Variables().npc;
     return npc.achievements.includes(achievement);
   }
   hasAnyAchievement(achievements: string[], npc?: Npc) {
-    if (!npc) npc = Variables().npc;
     return npc.achievements.includesAny(achievements);
   }
   hasAllAchievements(achievements: string[], npc?: Npc) {
-    if (!npc) npc = Variables().npc;
     return npc.achievements.includesAll(achievements);
   }
   setAchievement(achievement: string, npc?: Npc): void {
-    if (!npc) npc = Variables().npc;
     if (!this.hasAchievement(achievement, npc))
       npc.achievements.push(achievement);
   }
   removeAchievement(achievement: string, npc?: Npc): void {
-    if (!npc) npc = Variables().npc;
     npc.achievements.delete(achievement);
   }
   //Gets the NPC's current disaggregated selling value.
   getValue(npc?: Npc): NpcValue {
-    if (!npc) npc = Variables().npc;
     const maxNonVirgin = 1500;
     const maxFwPenalty = -0.75; //Maximum freedom wish penalty 75%
     let calcValue = (stat: number, ratio: number) =>
@@ -323,7 +195,6 @@ abstract class Npc extends LivingCharacter {
   }
   //Changes the NPC social status and triggers the necessary actions or events
   setStatus(status: NpcStatus, npc?: Npc, forceLocation?: string): void {
-    npc = Npc.obtain(npc)[0];
     switch (status) {
       case "slave":
         npc.location = "basement";
@@ -335,99 +206,12 @@ abstract class Npc extends LivingCharacter {
     if (forceLocation) npc.location = forceLocation;
     npc.status = status;
   }
-  //Turns the NPC into a slave of the child trainer
-  capture(npc: Npc): void {
-    this.setStatus("slave", npc);
-    Variables().slaves.push(npc);
-  }
-  //Updates the locations of all Npc according to the provided date/time.
-  static updateLocations(currentDate: Date): void {
-    const variables = Variables();
-    if (!currentDate) currentDate = variables.now.date;
-    //const sleepTime = window.Now.isBetween("10:00 PM", "7:00 AM", currentDate);
-    const homeSpaces = variables.player.home.spaces.filter(
-      (space: string) => space != "basement" && !space.startsWith("tort")
-    );
-    const baseSeed = currentDate.getTime() - 1649048400000; //Current date/time minus the start of the game
-    window.Person.all(
-      (npc) => npc.age > 0 || window.Person.getMonthsSinceLastBirthDay(npc) > 5,
-      variables
-    ).forEach((npc: Npc) => {
-      const holder = window.Person.getHolder(npc, variables);
-      switch (npc.status) {
-        case "home slave":
-        case "lover":
-          if (!holder)
-            npc.location = PseudoRandom.either(
-              PseudoRandom.getSeed(baseSeed, npc.age, npc.name),
-              homeSpaces
-            );
-          break;
-        case "servant":
-          if (variables.settings.cook.npc != npc.uid) break;
-          for (const feedTimeString of variables.settings.cook.feedTimes) {
-            const currentTimeStamp = currentDate.getTime();
-            const feedTimeStamp = window.Now.dateFromTimeString(
-              feedTimeString,
-              currentDate
-            ).getTime();
-            if (
-              currentTimeStamp >= feedTimeStamp - 60 * 60 * 1000 &&
-              currentTimeStamp <= feedTimeStamp
-            ) {
-              currentDate = null;
-              npc.location = "kitchen";
-              if (holder) {
-                if (holder.uid) throw Error("Servant held by another NPC");
-                window.Player.getEquippedInventory(variables).removeNpc(npc);
-                window.Player.lactationTimeout(variables.player, variables);
-              }
-              break;
-            }
-          }
-          if (currentDate && !holder)
-            npc.location = PseudoRandom.either(
-              PseudoRandom.getSeed(baseSeed, npc.age, npc.name),
-              homeSpaces.filter((space: string) => space != "kitchen")
-            );
-          break;
-      }
-    });
-  }
-  //Returns an array with all NPCs present in the game. Optionally, a function to filter them can be provided.
-  all(filter?: (npc: Npc) => boolean, variables?: any): Npc[] {
-    if (!variables) variables = Variables();
-    let all = variables.slaves;
-    if (variables.player.home.family)
-      all = all.concat(variables.player.home.family);
-    if (filter) return all.filter(filter);
-    return all;
-  }
-  //Returns the first NPC that complies with the provided condition or null
-  firstOrNull(condition: (npc: Npc) => boolean, variables?: any): Npc {
-    const candidates = this.all(condition, variables);
-    return candidates.length ? candidates[0] : null;
-  }
-  //Get the NPC with the indicated unique ID
-  get(uid: Uid, variables?: any): Npc {
-    return this.all(null, variables).firstOrDefault(
-      (slave: Npc) => slave.uid == uid
-    );
-  }
-  //Obtain NPC and variables from available data. If it's a number, returns the NPC with that UID. If it's null it returns currently selected NPC
-  static obtain(npc?: Npc, variables?: any): [Npc, any] {
-    if (!variables) variables = Variables();
-    if (typeof npc == "number") npc = window.Person.get(npc, variables);
-    else if (!npc) npc = variables.npc;
-    return [npc, variables];
-  }
   //Constructs a sentence indicating the stats requirements and optionally the current values in an NPC.
   getMinRequirementsSentence(
     requirements: Record<string, number>,
     npc?: Npc,
     showCurrent?: boolean
   ): string {
-    if (!npc) npc = Variables().npc;
     let entries = [];
     for (let requirement in requirements)
       if (npc[requirement] < requirements[requirement])
@@ -439,76 +223,10 @@ abstract class Npc extends LivingCharacter {
         );
     return entries.join(", ");
   }
-  getWandering(): Npc[] {
-    const variables = Variables();
-    return <Person[]>(
-      window.Person.all(
-        (npc: Npc) => npc.location == variables.scenery,
-        variables
-      )
-    );
-  }
-  //Get the character that is holding the specified NPC
-  getHolder(npc?: Npc, variables?: any, npcList?: Npc[]): LivingCharacter {
-    [npc, variables] = Npc.obtain(npc, variables);
-    if (window.Player.getEquippedInventory().hasNpc(npc))
-      return variables.player;
-    if (!npcList) npcList = window.Person.all(null, variables);
-    return npcList.firstOrDefault((candidate: Npc) =>
-      window.Person.getEquippedInventory(candidate, variables).hasNpc(npc)
-    );
-  }
-  isBeingHeld(npc?: Npc, variables?: any, npcList?: Npc[]): boolean {
-    return !!this.getHolder(npc, variables, npcList);
-  }
-  //Removes an NPC from the game and returns an array with the deleted NPC
-  delete(npc?: Npc, variables?: any): Npc[] {
-    [npc, variables] = Npc.obtain(npc, variables);
-    let holder = this.getHolder(npc, variables);
-    if (holder) {
-      if (holder.uid == 0)
-        window.Player.getEquippedInventory(variables).removeNpc(npc);
-      else this.getEquippedInventory(<Npc>holder, variables).removeNpc(npc);
-    }
-    if (
-      npc.dad ||
-      npc.mom ||
-      npc.children.length ||
-      variables.player.impregnator == npc.uid ||
-      window.Person.firstOrNull((n) => n.impregnator == npc.uid)
-    ) {
-      if (!variables.removedNpcs) variables.removedNpcs = [];
-      variables.removedNpcs.push(npc);
-    }
-    var index = (<Npc[]>variables.slaves).findIndex(
-      (slave) => slave.uid == npc.uid
-    );
-    if (index > -1) return (<Npc[]>variables.slaves).deleteAt(index);
-    if (!variables.player.home.family) return;
-    index = (<Npc[]>variables.player.home.family).findIndex(
-      (slave) => slave.uid == npc.uid
-    );
-    if (index > -1)
-      return (<Npc[]>variables.player.home.family).deleteAt(index);
-  }
-  //Checks if this NPC should be released by the holder and does so in that case
-  manageHolder(npc: Npc, holder: LivingCharacter): void {
-    if (holder && holder.uid != 0 && npc.age > 1 && !npc.ageProgress) {
-      const holderNpc = <Npc>holder;
-      window.Person.setStatus(
-        holderNpc.status != "servant" ? holderNpc.status : "home slave",
-        npc,
-        holderNpc.location
-      );
-      if (npc.location != "basement")
-        window.Person.setAchievement("beenOnHomeMain", npc);
-      window.Person.getEquippedInventory(holderNpc, variables).removeNpc(npc);
-      window.Person.lactationTimeout(holder, variables);
-    }
-  }
 }
 type AnimalSpecies = "dog" | "cat" | "rabbit" | "horse" | "pig" | "cow";
 type RoughSize = "tiny" | "small" | "normal" | "big" | "very big";
+type TitSize = "flat" | "budding" | "small" | "modest" | "large";
 class Animal extends Npc {
   species: AnimalSpecies;
   roughSize?: RoughSize;
@@ -533,6 +251,7 @@ class Person extends Npc {
   haveClothes: boolean = true;
   uniqueness: PersonUniqueness;
   naturalHairColor?: string;
+  titSize: TitSize;
   constructor(init?: Partial<Person>) {
     super();
     Object.assign(this, init);
@@ -630,7 +349,6 @@ class Person extends Npc {
       .join(", ");
   }
   getHomePersonName(word: string, npc?: Npc): string {
-    if (!npc) npc = Variables().npc;
     if (word == "sibling") word = npc.sex == "male" ? "bro" : "sis";
     if (npc.age < 5) {
       switch (word) {
@@ -685,7 +403,6 @@ class Person extends Npc {
     return word.includes("boy") ? "male" : "female";
   }
   getShortDescription(person?: Person, addTitle?: boolean): string {
-    person = <Person>Npc.obtain(person)[0];
     const months = this.getMonthsSinceLastBirthDay(person);
     return (
       `${person.name} (${
@@ -702,7 +419,6 @@ class Person extends Npc {
   }
   getLongDescription(person?: Person): string {
     let variables: any;
-    [person, variables] = <[Person, any]>Npc.obtain(person, null);
     const months = this.getMonthsSinceLastBirthDay(person);
     let description = `${
       person.age < 1
@@ -727,63 +443,6 @@ class Person extends Npc {
     } else if (this.hasAchievement("playerNoticedPregnancy", person))
       description += `.\n@@color:deeppink;${person.GenPronoun}<<thirdPerson "'s" "'re">> pregnant@@<<emoji 🤰>>`;
     return description;
-  }
-  //Returns a 0 year old person as a child of the specified person and the impregnator of that person.
-  giveBirth(mom: Person, variables?: any): Npc {
-    if (!variables) variables = Variables();
-    const baby = <Person>LivingCharacter.giveBirth(mom, variables);
-    const naturalHairColor = baby.hairColor;
-    const dad = <Person>window.Person.get(baby.dad, variables);
-    if (dad) {
-      //Baby's dad is another NPC and that NPC exists.
-      ["eyeColor", "hairColor", "skin"].forEach((trait) => {
-        baby[trait] = [mom[trait], dad[trait]].random(); //Inherit one trait from mom or dad at 50% chance
-      });
-      ["curious", "diligent", "energetic", "naughty", "shy"].forEach(
-        (trait) => {
-          baby.uniqueness[trait] = [
-            mom.uniqueness[trait], //Mom's trait
-            dad.uniqueness[trait], //Daddy's trait
-            baby.uniqueness[trait], //Random trait
-          ].random(); //Chose one at 33% chance each
-        }
-      );
-      dad.children.push(baby.uid);
-    } else if (!baby.dad) {
-      //Baby's dad is the player
-      ["eyeColor", "hairColor", "skin"].forEach((trait) => {
-        if (random(10) < 8) baby[trait] = mom[trait]; //70% chance of inherit each trait from mom
-      });
-      ["curious", "diligent", "energetic", "naughty", "shy"].forEach(
-        (trait) => {
-          //70% chance of inherit each trait from mom
-          if (random(10) < 8) baby.uniqueness[trait] = mom.uniqueness[trait];
-        }
-      );
-      baby.love = 75; //Big bonus in love for being blood related
-    }
-    if (
-      !variables.settings.allowBornUnnaturalHairColor &&
-      !PersonGeneration.naturalHairColors.includes(baby.hairColor)
-    ) {
-      if (!PersonGeneration.naturalHairColors.includes(mom.hairColor))
-        mom.naturalHairColor = naturalHairColor;
-      if (dad && !PersonGeneration.naturalHairColors.includes(dad.hairColor))
-        dad.naturalHairColor = naturalHairColor;
-      baby.hairColor = naturalHairColor;
-    }
-    baby.status = "home slave";
-    mom.children.push(baby.uid);
-    let holderInventory: Inventory;
-    if (mom.age < 2) {
-      //Make someone hold the baby (The mother if they're old enough or the player)
-      holderInventory = window.Player.getEquippedInventory(variables);
-      window.Person.lactationTimeout(variables.player, variables, true);
-    } else holderInventory = this.getEquippedInventory(mom, variables);
-    holderInventory.addNpc(baby, "holding", "child");
-    window.Person.lactationTimeout(mom, variables);
-    window.Person.removeAchievement("playerNoticedPregnancy", mom);
-    return baby;
   }
 }
 interface GenderGeneration {

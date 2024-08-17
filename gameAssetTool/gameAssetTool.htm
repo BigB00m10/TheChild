@@ -42,6 +42,14 @@ Status: <span id="status">Waiting for asset file or files</span>.<br>
       <option value="4" label="large"></option>
     </datalist>
   </div><br>
-</div>
+</div><br>
+Color shift on layer: <select id="colorShiftLayer"></select><br>
+<label class="hsvInput">Hue:<br><input id="hueInput" type="range" max="255" min="-255" value="0" style="width: 25em"><span
+        id="hueValue">0</span></label><br>
+<label class="hsvInput">Saturation:<br><input id="saturationInput" type="range" max="255" min="-255" value="0" style="width: 25em"><span
+        id="saturationValue">0</span></label><br>
+<label class="hsvInput">Brightness:<br><input id="brightnessInput" type="range" max="255" min="-255" value="0" style="width: 25em"><span
+        id="brightnessValue">0</span></label><br>
+<button id="btnReset">Reset</button><br>
 <script src="fixed.js"></script>
 <script src="dynamic.js"></script>

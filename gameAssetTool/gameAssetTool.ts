@@ -103,6 +103,13 @@ let previewControls = {
 };
 let $preview = <HTMLCanvasElement>geId("preview");
 let previewContext = $preview.getContext("2d");
+let $hueInput = <HTMLInputElement>geId("hueInput"),
+  $saturationInput = <HTMLInputElement>geId("saturationInput"),
+  $brightnessInput = <HTMLInputElement>geId("brightnessInput"),
+  $colorShiftLayer = <HTMLSelectElement>geId("colorShiftLayer");
+let $hueValue = <HTMLSpanElement>geId("hueValue"),
+  $saturationValue = <HTMLSpanElement>geId("saturationValue"),
+  $brightnessValue = <HTMLSpanElement>geId("brightnessValue");
 $fileDrop.ondragover = (event) => {
   event.preventDefault();
   $fileDrop.style.borderColor = "yellow";
@@ -110,11 +117,20 @@ $fileDrop.ondragover = (event) => {
 $fileDrop.ondragleave = () => ($fileDrop.style.borderColor = "#ff4d4d");
 let previewControlOnChange = function () {
   window.testPerson.age = parseInt(previewControls.age.value);
-  window.testPerson.sex = <Sex>(<HTMLInputElement>document.querySelector("input[name=sex]:checked")).labels[0].innerText;
-  window.testPerson.hairLength = (<HTMLDataListElement>previewControls.hairLength.list).options[previewControls.hairLength.value].label;
-  window.testPerson.hairStyle = (<HTMLDataListElement>previewControls.hairStyle.list).options[previewControls.hairStyle.value].label;
+  window.testPerson.sex = <Sex>(
+    (<HTMLInputElement>document.querySelector("input[name=sex]:checked"))
+      .labels[0].innerText
+  );
+  window.testPerson.hairLength = (<HTMLDataListElement>(
+    previewControls.hairLength.list
+  )).options[previewControls.hairLength.value].label;
+  window.testPerson.hairStyle = (<HTMLDataListElement>(
+    previewControls.hairStyle.list
+  )).options[previewControls.hairStyle.value].label;
   window.testPerson.pregnantDays = parseInt(previewControls.pregnant.value);
-  window.testPerson.titSize = (<HTMLDataListElement>previewControls.tits.list).options[previewControls.tits.value].label;
+  window.testPerson.titSize = (<HTMLDataListElement>(
+    previewControls.tits.list
+  )).options[previewControls.tits.value].label;
   redrawPreview();
 };
 document
@@ -133,7 +149,7 @@ function blob2img(blob: Blob): Promise<HTMLImageElement> {
 function redrawPreview(pose: string = "idle") {
   let $c = window.testPerson;
   let middle = $preview.width / 2;
-  let bottom = $preview.height;
+  let bottom = $preview.height; //Middle-bottom is the point of origin. The sprites are drawn relative to this point.
   previewContext.clearRect(0, 0, $preview.width, $preview.height);
   characterPoses[pose].paintOrder.forEach((layerName) => {
     if (!AssetPack.character[layerName]) return;
@@ -167,13 +183,92 @@ function redrawPreview(pose: string = "idle") {
     });
     if (!spriteCollection) return;
     let sprite = spriteCollection.sprites[pose];
-    var spriteCanvas = document.createElement("canvas");
+    let spriteCanvas = document.createElement("canvas"); //Canvas used to convert the pixel values into an image ready to draw
     spriteCanvas.width = spriteCollection.sprites[pose].width;
     spriteCanvas.height = spriteCollection.sprites[pose].height;
-    //TODO: replace colors if necessary;
-    var spriteContext = spriteCanvas.getContext("2d");
+    let pixels = sprite.pixels;
+    if (layerName == $colorShiftLayer.value) {
+      //#region color shift
+      //Array to hold the shifted colors without altering the original array
+      pixels = new Uint8ClampedArray(sprite.pixels.length);
+      for (
+        let colorByteIndex = 0;
+        colorByteIndex < pixels.length;
+        colorByteIndex += 4 //4 bytes per pixel red, green, blue and transparency
+      ) {
+        if (sprite.pixels[colorByteIndex + 3] == 0) continue; //Completely transparent pixel, so no need to shift or copy any color (Array is already initialized to 0)
+        pixels[colorByteIndex + 3] = sprite.pixels[colorByteIndex + 3]; //Copy the transparency value as it is
+        let red = sprite.pixels[colorByteIndex],
+          green = sprite.pixels[colorByteIndex + 1],
+          blue = sprite.pixels[colorByteIndex + 2],
+          max = Math.max(red, green, blue),
+          min = Math.min(red, green, blue),
+          d = max - min,
+          hue: number,
+          saturation = max === 0 ? 0 : d / max,
+          brightness = max / 255;
+        switch (max) {
+          case min:
+            hue = 0;
+            break;
+          case red:
+            hue = green - blue + d * (green < blue ? 6 : 0);
+            hue /= 6 * d;
+            break;
+          case green:
+            hue = blue - red + d * 2;
+            hue /= 6 * d;
+            break;
+          case blue:
+            hue = red - green + d * 4;
+            hue /= 6 * d;
+            break;
+        }
+        //rgb values are converted to normalized hsb so now the actual color shift can be done
+        hue = Math.min(1, Math.max(0, hue + +$hueValue.innerText));
+        saturation = Math.min(
+          1,
+          Math.max(0, saturation + +$saturationValue.innerText)
+        );
+        brightness = Math.min(
+          1,
+          Math.max(0, brightness + +$brightnessValue.innerText)
+        );
+        //Color shift done, time to convert back to rgb
+        let i = Math.floor(hue * 6),
+          f = hue * 6 - i,
+          p = brightness * (1 - saturation),
+          q = brightness * (1 - f * saturation),
+          t = brightness * (1 - (1 - f) * saturation);
+        switch (i % 6) {
+          case 0:
+            (red = brightness), (green = t), (blue = p);
+            break;
+          case 1:
+            (red = q), (green = brightness), (blue = p);
+            break;
+          case 2:
+            (red = p), (green = brightness), (blue = t);
+            break;
+          case 3:
+            (red = p), (green = q), (blue = brightness);
+            break;
+          case 4:
+            (red = t), (green = p), (blue = brightness);
+            break;
+          case 5:
+            (red = brightness), (green = p), (blue = q);
+            break;
+        }
+        pixels[colorByteIndex] = Math.round(red * 255);
+        pixels[colorByteIndex + 1] = Math.round(green * 255);
+        pixels[colorByteIndex + 2] = Math.round(blue * 255);
+      }
+      //#endregion
+    }
+    let spriteContext = spriteCanvas.getContext("2d");
     spriteContext.putImageData(
-      new ImageData(sprite.pixels, sprite.width, sprite.height, {
+      new ImageData(pixels, sprite.width, sprite.height, {
         colorSpace: "display-p3",
       }),
       0,
@@ -523,3 +618,40 @@ $hiddenUpload.onchange = () => filesUpload([...$hiddenUpload.files]);
 window.PersonGeneration.females.fromAge =
   window.PersonGeneration.males.fromAge = 12;
 window.testPerson = window.Person.generate(window.PersonGeneration);
+characterPoses.idle.paintOrder.forEach((layerName) => {
+  let option = document.createElement("option");
+  option.innerText = layerName;
+  $colorShiftLayer.add(option);
+});
+const hsbPrecision = 1000;
+$hueInput.oninput = () => {
+  $hueValue.innerText =
+    "" + Math.round((+$hueInput.value / 255) * hsbPrecision) / hsbPrecision;
+  previewControlOnChange();
+};
+$saturationInput.oninput = () => {
+  $saturationValue.innerText =
+    "" +
+    Math.round((+$saturationInput.value / 255) * hsbPrecision) / hsbPrecision;
+  previewControlOnChange();
+};
+$brightnessInput.oninput = () => {
+  $brightnessValue.innerText =
+    "" +
+    Math.round((+$brightnessInput.value / 255) * hsbPrecision) / hsbPrecision;
+  previewControlOnChange();
+};
+$hueInput.ondragstart =
+  $saturationInput.ondragstart =
+  $brightnessInput.ondragstart =
+    function (ev) {
+      ev.preventDefault();
+    };
+let resetHsb = () => {
+  $hueInput.value = $saturationInput.value = $brightnessInput.value = "0";
+  $hueInput.oninput(null);
+  $saturationInput.oninput(null);
+  $brightnessInput.oninput(null);
+};
+resetHsb();
+document.getElementById("btnReset").onclick = resetHsb;

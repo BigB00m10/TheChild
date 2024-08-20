@@ -69,16 +69,19 @@ let characterPoses: Record<string, CharacterPose> = {
 let colorShifts: Record<string, ColorShift> = {
   brunette: {
     match: "hairColor",
-    shifts: {
-      blonde: { h: 0, s: 0, b: 0 },
-      black: { h: 0, s: 0, b: 0 },
-    },
+    shifts: {},
   },
   skin: {
     match: "skin",
     shifts: {
-      pale: { h: 0, s: 0, b: 0 },
-      tan: { h: 0, s: 0, b: 0 },
+      black: { h: -0.05, s: 0.27, b: -0.56 },
+      white: { h: -0.07, s: 0.11, b: 0 },
+    },
+  },
+  eyes: {
+    match: "eyeColor",
+    shifts: {
+      brown: { h: -0.38, s: 0, b: 0 },
     },
   },
 };
@@ -103,6 +106,7 @@ let previewControls = {
 };
 let $preview = <HTMLCanvasElement>geId("preview");
 let previewContext = $preview.getContext("2d");
+let previewPosition = { x: $preview.offsetLeft, y: $preview.offsetTop };
 let $hueInput = <HTMLInputElement>geId("hueInput"),
   $saturationInput = <HTMLInputElement>geId("saturationInput"),
   $brightnessInput = <HTMLInputElement>geId("brightnessInput"),
@@ -110,6 +114,8 @@ let $hueInput = <HTMLInputElement>geId("hueInput"),
 let $hueValue = <HTMLSpanElement>geId("hueValue"),
   $saturationValue = <HTMLSpanElement>geId("saturationValue"),
   $brightnessValue = <HTMLSpanElement>geId("brightnessValue");
+let $fromColor = <HTMLInputElement>geId("fromColor"),
+  $toColor = <HTMLInputElement>geId("toColor");
 $fileDrop.ondragover = (event) => {
   event.preventDefault();
   $fileDrop.style.borderColor = "yellow";
@@ -145,6 +151,73 @@ function blob2img(blob: Blob): Promise<HTMLImageElement> {
     image.onload = () => resolve(image);
     image.src = URL.createObjectURL(blob);
   });
+}
+function rgb2hsb(
+  red: number,
+  green: number,
+  blue: number
+): [number, number, number] {
+  let max = Math.max(red, green, blue),
+    min = Math.min(red, green, blue),
+    d = max - min,
+    hue: number;
+  switch (max) {
+    case min:
+      hue = 0;
+      break;
+    case red:
+      hue = green - blue + d * (green < blue ? 6 : 0);
+      hue /= 6 * d;
+      break;
+    case green:
+      hue = blue - red + d * 2;
+      hue /= 6 * d;
+      break;
+    case blue:
+      hue = red - green + d * 4;
+      hue /= 6 * d;
+      break;
+  }
+  return [hue, max === 0 ? 0 : d / max, max / 255];
+}
+function hsb2rgb(
+  hue: number,
+  saturation: number,
+  brightness: number,
+  destination: Uint8ClampedArray,
+  index: number
+): void {
+  let i = Math.floor(hue * 6),
+    f = hue * 6 - i,
+    p = brightness * (1 - saturation),
+    q = brightness * (1 - f * saturation),
+    t = brightness * (1 - (1 - f) * saturation),
+    red: number,
+    green: number,
+    blue: number;
+  switch (i % 6) {
+    case 0:
+      (red = brightness), (green = t), (blue = p);
+      break;
+    case 1:
+      (red = q), (green = brightness), (blue = p);
+      break;
+    case 2:
+      (red = p), (green = brightness), (blue = t);
+      break;
+    case 3:
+      (red = p), (green = q), (blue = brightness);
+      break;
+    case 4:
+      (red = t), (green = p), (blue = brightness);
+      break;
+    case 5:
+      (red = brightness), (green = p), (blue = q);
+      break;
+  }
+  destination[index] = Math.round(red * 255);
+  destination[index + 1] = Math.round(green * 255);
+  destination[index + 2] = Math.round(blue * 255);
 }
 function redrawPreview(pose: string = "idle") {
   let $c = window.testPerson;
@@ -198,32 +271,11 @@ function redrawPreview(pose: string = "idle") {
       ) {
         if (sprite.pixels[colorByteIndex + 3] == 0) continue; //Completely transparent pixel, so no need to shift or copy any color (Array is already initialized to 0)
         pixels[colorByteIndex + 3] = sprite.pixels[colorByteIndex + 3]; //Copy the transparency value as it is
-        let red = sprite.pixels[colorByteIndex],
-          green = sprite.pixels[colorByteIndex + 1],
-          blue = sprite.pixels[colorByteIndex + 2],
-          max = Math.max(red, green, blue),
-          min = Math.min(red, green, blue),
-          d = max - min,
-          hue: number,
-          saturation = max === 0 ? 0 : d / max,
-          brightness = max / 255;
-        switch (max) {
-          case min:
-            hue = 0;
-            break;
-          case red:
-            hue = green - blue + d * (green < blue ? 6 : 0);
-            hue /= 6 * d;
-            break;
-          case green:
-            hue = blue - red + d * 2;
-            hue /= 6 * d;
-            break;
-          case blue:
-            hue = red - green + d * 4;
-            hue /= 6 * d;
-            break;
-        }
+        let [hue, saturation, brightness] = rgb2hsb(
+          sprite.pixels[colorByteIndex],
+          sprite.pixels[colorByteIndex + 1],
+          sprite.pixels[colorByteIndex + 2]
+        );
         //rgb values are converted to normalized hsb so now the actual color shift can be done
         hue = Math.min(1, Math.max(0, hue + +$hueValue.innerText));
         saturation = Math.min(
@@ -235,34 +287,7 @@ function redrawPreview(pose: string = "idle") {
           Math.max(0, brightness + +$brightnessValue.innerText)
         );
         //Color shift done, time to convert back to rgb
-        let i = Math.floor(hue * 6),
-          f = hue * 6 - i,
-          p = brightness * (1 - saturation),
-          q = brightness * (1 - f * saturation),
-          t = brightness * (1 - (1 - f) * saturation);
-        switch (i % 6) {
-          case 0:
-            (red = brightness), (green = t), (blue = p);
-            break;
-          case 1:
-            (red = q), (green = brightness), (blue = p);
-            break;
-          case 2:
-            (red = p), (green = brightness), (blue = t);
-            break;
-          case 3:
-            (red = p), (green = q), (blue = brightness);
-            break;
-          case 4:
-            (red = t), (green = p), (blue = brightness);
-            break;
-          case 5:
-            (red = brightness), (green = p), (blue = q);
-            break;
-        }
-        pixels[colorByteIndex] = Math.round(red * 255);
-        pixels[colorByteIndex + 1] = Math.round(green * 255);
-        pixels[colorByteIndex + 2] = Math.round(blue * 255);
+        hsb2rgb(hue, saturation, brightness, pixels, colorByteIndex);
       }
       //#endregion
     }
@@ -283,10 +308,10 @@ function redrawPreview(pose: string = "idle") {
 }
 let keywordToName = {
   sandels: "sandals",
-  sandels_gladiator: "gladiator sandals",
+  "sandels gladiator": "gladiator sandals",
   catears: "cat ears",
   "short heart": "heart t-shirt",
-  full_latex: "full latex suit",
+  "full latex": "full latex suit",
   summer: "summer dress",
   twintails: "twin tails",
   //Set to use in the parsing in a specific set
@@ -647,11 +672,43 @@ $hueInput.ondragstart =
     function (ev) {
       ev.preventDefault();
     };
-let resetHsb = () => {
-  $hueInput.value = $saturationInput.value = $brightnessInput.value = "0";
+let updateHsb = () => {
   $hueInput.oninput(null);
   $saturationInput.oninput(null);
   $brightnessInput.oninput(null);
 };
+let resetHsb = () => {
+  $hueInput.value = $saturationInput.value = $brightnessInput.value = "0";
+  updateHsb();
+};
 resetHsb();
-document.getElementById("btnReset").onclick = resetHsb;
+geId("btnReset").onclick = resetHsb;
+$preview.onclick = (mouseEvent: MouseEvent) => {
+  let pixelBytes = previewContext.getImageData(
+    mouseEvent.pageX - $preview.offsetLeft,
+    mouseEvent.pageY - $preview.offsetTop,
+    1,
+    1
+  ).data;
+  $fromColor.value = (
+    (pixelBytes[0] << 16) |
+    (pixelBytes[1] << 8) |
+    pixelBytes[2]
+  )
+    .toString(16)
+    .toUpperCase()
+    .padStart(6, "0");
+};
+let rgb = (input: HTMLInputElement) => <[number, number, number]>input.value
+    .slice(-6)
+    .padStart(6, "0")
+    .match(/../g)
+    .map((h) => parseInt(h, 16));
+geId("colorShiftApply").onclick = () => {
+  let fromHsb = rgb2hsb(...rgb($fromColor));
+  let toHsb = rgb2hsb(...rgb($toColor));
+  $hueInput.value = "" + (toHsb[0] - fromHsb[0]) * 255;
+  $saturationInput.value = "" + (toHsb[1] - fromHsb[1]) * 255;
+  $brightnessInput.value = "" + (toHsb[2] - fromHsb[2]) * 255;
+  updateHsb();
+};

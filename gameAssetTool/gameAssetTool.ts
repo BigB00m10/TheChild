@@ -3,7 +3,7 @@ interface HsbColor {
   s: number; //Saturation
   b: number; //Brightness
 }
-interface ColorShift {
+interface ColorShiftCollection {
   match: string; //Which property name to match the value with the shift name. If match="skin" amd character = {skin:"tan"} will use the shift named "tan"
   shifts: Record<string, HsbColor>; //List of color shifts keyed by name
 }
@@ -66,22 +66,66 @@ let characterPoses: Record<string, CharacterPose> = {
     animationCache: "mouth",
   },
 };
-let colorShifts: Record<string, ColorShift> = {
+let colorShifts: Record<string, ColorShiftCollection> = {
   brunette: {
     match: "hairColor",
-    shifts: {},
+    shifts: {
+      black: { h: 0.66, s: -0.44, b: -0.44 },
+      "light brown": { h: -0.02, s: -0.37, b: 0.06 },
+      "dark brown": { h: -0.04, s: -0.18, b: -0.38 },
+      "dirty blonde": { h: 0.02, s: -0.48, b: 0.04 },
+      blonde: { h: 0.02, s: 0.05, b: 0.31 },
+      red: { h: -0.07, s: 0.13, b: 0.11 },
+      auburn: { h: -0.11, s: 0.03, b: -0.04 },
+      "midnight blue": { h: 0.56, s: 0.06, b: -0.14 },
+      "pale pink": { h: 0.88, s: -0.59, b: 0.3 },
+      "hot pink": { h: 0.81, s: -0.13, b: 0.32 },
+      burgundy: { h: 0.86, s: 0.28, b: -0.18 },
+      "royal purple": { h: 0.64, s: -0.19, b: -0.02 },
+      violet: { h: 0.65, s: 0.28, b: 0.32 },
+      indigo: { h: 0.46, s: 0.28, b: -0.15 },
+      blue: { h: 0.55, s: -0.18, b: 0.19 },
+    },
+  },
+  blonde: {
+    match: "hairColor",
+    shifts: {
+      black: { h: 0.64, s: -0.49, b: -0.73 },
+      "light brown": { h: -0.04, s: -0.41, b: -0.26 },
+      brown: { h: -0.02, s: -0.05, b: -0.31 },
+      "dark brown": { h: -0.06, s: -0.22, b: -0.66 },
+      "dirty blonde": { h: 0, s: -0.52, b: -0.21 },
+      red: { h: -0.08, s: 0.09, b: -0.16 },
+      auburn: { h: -0.12, s: -0.02, b: -0.35 },
+      "midnight blue": { h: 0.54, s: 0.01, b: -0.37 },
+      "pale pink": { h: 0.86, s: -0.64, b: -0.02 },
+      "hot pink": { h: 0.8, s: -0.18, b: 0 },
+      burgundy: { h: 0.84, s: 0.24, b: -0.49 },
+      "royal purple": { h: 0.62, s: -0.24, b: -0.33 },
+      violet: { h: 0.63, s: 0.24, b: 0 },
+      indigo: { h: 0.44, s: 0.24, b: -0.52 },
+      blue: { h: 0.53, s: -0.22, b: -0.13 },
+    },
   },
   skin: {
     match: "skin",
     shifts: {
       black: { h: -0.05, s: 0.27, b: -0.56 },
-      white: { h: -0.07, s: 0.11, b: 0 },
+      //white: { h: -0.07, s: 0.11, b: 0 },
+      pale: { h: -0.03, s: -0.08, b: 0 },
+      tan: { h: -0.3, s: 0.35, b: -0.25 },
+      brown: { h: -0.05, s: 0.45, b: -0.26 },
+      olive: { h: -0.04, s: 0.27, b: -0.17 },
     },
   },
   eyes: {
     match: "eyeColor",
     shifts: {
+      //Sprite has teal color
       brown: { h: -0.38, s: 0, b: 0 },
+      green: { h: -0.29, s: -0.63, b: -0.05 },
+      blue: { h: 0.18, s: -0.73, b: 0.14 },
+      hazel: { h: -0.37, s: 0, b: 0.19 },
     },
   },
 };
@@ -225,43 +269,62 @@ function redrawPreview(pose: string = "idle") {
   let bottom = $preview.height; //Middle-bottom is the point of origin. The sprites are drawn relative to this point.
   previewContext.clearRect(0, 0, $preview.width, $preview.height);
   characterPoses[pose].paintOrder.forEach((layerName) => {
-    if (!AssetPack.character[layerName]) return;
-    let spriteCollection: SpritePoseCollection = AssetPack.character[
-      layerName
-    ].spriteCollections.firstOrDefault((collection: SpritePoseCollection) => {
-      for (let key in collection.match) {
-        let result = false;
-        let matchValue = collection.match[key];
-        let $v: any = key.includes("$c")
-          ? eval(key)
-          : key.includes(".")
-          ? eval(`${key}($c)`)
-          : $c[key];
-        if (typeof matchValue == "string" && matchValue.includes("$v"))
-          result = eval(matchValue);
-        else if (
-          typeof $v == "number" &&
-          typeof matchValue == "string" &&
-          matchValue.indexOf("-") > 0
-        ) {
-          let range = matchValue.split("-").map(parseFloat);
-          result = $v >= range[0] && $v <= range[1];
-        } else if (typeof matchValue == "string" && matchValue.indexOf("|") > 0)
-          for (let value of matchValue.split("|")) result ||= $v == value;
-        else if (typeof matchValue == "boolean") result = !!$v == matchValue;
-        else result = $v == matchValue;
-        if (!result) return false;
-      }
-      return true;
-    });
+    let layer = AssetPack.character[layerName];
+    if (!layer) return;
+    let spriteCollection: SpritePoseCollection =
+      layer.spriteCollections.firstOrDefault(
+        (collection: SpritePoseCollection) => {
+          for (let key in collection.match) {
+            let result = false;
+            let matchValue = collection.match[key];
+            let $v: any = key.includes("$c")
+              ? eval(key)
+              : key.includes(".")
+              ? eval(`${key}($c)`)
+              : $c[key];
+            if (typeof matchValue == "string" && matchValue.includes("$v"))
+              result = eval(matchValue);
+            else if (
+              typeof $v == "number" &&
+              typeof matchValue == "string" &&
+              matchValue.indexOf("-") > 0
+            ) {
+              let range = matchValue.split("-").map(parseFloat);
+              result = $v >= range[0] && $v <= range[1];
+            } else if (
+              typeof matchValue == "string" &&
+              matchValue.indexOf("|") > 0
+            )
+              for (let value of matchValue.split("|")) result ||= $v == value;
+            else if (typeof matchValue == "boolean")
+              result = !!$v == matchValue;
+            else result = $v == matchValue;
+            if (!result) return false;
+          }
+          return true;
+        }
+      );
     if (!spriteCollection) return;
     let sprite = spriteCollection.sprites[pose];
     let spriteCanvas = document.createElement("canvas"); //Canvas used to convert the pixel values into an image ready to draw
-    spriteCanvas.width = spriteCollection.sprites[pose].width;
-    spriteCanvas.height = spriteCollection.sprites[pose].height;
+    spriteCanvas.width = sprite.width;
+    spriteCanvas.height = sprite.height;
     let pixels = sprite.pixels;
-    if (layerName == $colorShiftLayer.value) {
-      //#region color shift
+    //#region color shift
+    let colorShiftName =
+      sprite.colorShift || spriteCollection.colorShift || layer.colorShift;
+    let colorShift: HsbColor;
+    if (layerName == $colorShiftLayer.value)
+      colorShift = {
+        h: +$hueValue.innerText,
+        s: +$saturationValue.innerText,
+        b: +$brightnessValue.innerText,
+      };
+    else if (colorShiftName) {
+      let collection = colorShifts[colorShiftName];
+      colorShift = collection.shifts[$c[collection.match]];
+    }
+    if (colorShift) {
       //Array to hold the shifted colors without altering the original array
       pixels = new Uint8ClampedArray(sprite.pixels.length);
       for (
@@ -277,20 +340,14 @@ function redrawPreview(pose: string = "idle") {
           sprite.pixels[colorByteIndex + 2]
         );
         //rgb values are converted to normalized hsb so now the actual color shift can be done
-        hue = Math.min(1, Math.max(0, hue + +$hueValue.innerText));
-        saturation = Math.min(
-          1,
-          Math.max(0, saturation + +$saturationValue.innerText)
-        );
-        brightness = Math.min(
-          1,
-          Math.max(0, brightness + +$brightnessValue.innerText)
-        );
+        hue = Math.min(1, Math.max(0, hue + colorShift.h));
+        saturation = Math.min(1, Math.max(0, saturation + colorShift.s));
+        brightness = Math.min(1, Math.max(0, brightness + colorShift.b));
         //Color shift done, time to convert back to rgb
         hsb2rgb(hue, saturation, brightness, pixels, colorByteIndex);
       }
-      //#endregion
     }
+    //#endregion
     let spriteContext = spriteCanvas.getContext("2d");
     spriteContext.putImageData(
       new ImageData(pixels, sprite.width, sprite.height, {
@@ -600,15 +657,26 @@ async function filesUpload(files: File[]) {
   $hiddenUpload.value = null;
   await Promise.all(promises);
   let previewSize = { width: 0, height: 0 };
-  for (let type in AssetPack.character)
-    AssetPack.character[type].spriteCollections.forEach((poseCollection) => {
-      let sprite = poseCollection.sprites.idle;
-      previewSize.width = Math.max(
-        previewSize.width,
-        Math.max(Math.abs(sprite.x), Math.abs(sprite.x + sprite.width)) * 2
-      );
-      previewSize.height = Math.max(previewSize.height, Math.abs(sprite.y));
-    });
+  for (let layerName in AssetPack.character)
+    AssetPack.character[layerName].spriteCollections.forEach(
+      (poseCollection) => {
+        let sprite = poseCollection.sprites.idle;
+        previewSize.width = Math.max(
+          previewSize.width,
+          Math.max(Math.abs(sprite.x), Math.abs(sprite.x + sprite.width)) * 2
+        );
+        previewSize.height = Math.max(previewSize.height, Math.abs(sprite.y));
+      }
+    );
+  //#region specific character set code
+  ["body", "genitals", "belly", "tits"].forEach((layerName) => {
+    AssetPack.character[layerName].colorShift = "skin";
+  });
+  ["hairBack", "hair"].forEach((layerName) => {
+    AssetPack.character[layerName].colorShift = "brunette";
+  });
+  AssetPack.character["eyes"].colorShift = "eyes";
+  //#endregion
   $preview.width = previewSize.width;
   $preview.height = previewSize.height;
   $status.innerText = "Done. Waiting for more files, if any.";

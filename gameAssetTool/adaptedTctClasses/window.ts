@@ -7,6 +7,7 @@ interface Window {
   PersonGeneration: PersonGeneration;
   PersonUniquenessPresets: PersonUniqueness[];
   testPerson: Person;
+  Base92: any;
 }
 window.Person = new Person();
 window.PersonGeneration = new PersonGeneration();

@@ -34,6 +34,7 @@ let FileType = {
   unknown: 0,
   zip: 1,
   image: 2,
+  assetPack: 3,
 };
 let characterPoses: Record<string, CharacterPose> = {
   idle: {
@@ -130,9 +131,6 @@ let colorShifts: Record<string, ColorShiftCollection> = {
   },
 };
 let AssetPack = {
-  scenery: <Record<string, Uint8Array>>{},
-  item: <Record<string, Uint8Array>>{},
-  movie: <Record<string, Uint8Array>>{},
   character: <Record<string, CharacterGraphicLayer>>{},
 };
 let geId = (id: string): HTMLElement => document.getElementById(id);
@@ -588,6 +586,8 @@ let readZip = (blobReader: zip.BlobReader) =>
       Promise.all(promises).then(() => resolve());
     });
   });
+let unpack = (packed: string): any =>
+  window.deserialize(window.Katz.inflate(window.Base92.decode(packed)));
 async function readFile(file: File) {
   let blobReader = new zip.BlobReader(file);
   let fileBytes = await blobReader.readUint8Array(0, file.size);
@@ -635,6 +635,23 @@ async function readFile(file: File) {
       )
         fileType = FileType.image;
       break;
+    case 119:
+      if (
+        fileBytes[1] == 105 &&
+        fileBytes[2] == 110 &&
+        fileBytes[3] == 100 &&
+        fileBytes[4] == 111 &&
+        fileBytes[5] == 119 &&
+        fileBytes[6] == 46 &&
+        fileBytes[7] == 65 &&
+        fileBytes[8] == 115 &&
+        fileBytes[9] == 115 &&
+        fileBytes[10] == 101 &&
+        fileBytes[11] == 116 &&
+        fileBytes[12] == 115
+      )
+        fileType = FileType.assetPack;
+      break;
   }
   switch (fileType) {
     case FileType.zip:
@@ -645,6 +662,11 @@ async function readFile(file: File) {
         file.name.replace(/\.[^/.]+$/, ""),
         $assetType.value
       );
+    case FileType.assetPack:
+      eval(await file.text());
+      AssetPack = (<any>window).Assets;
+      delete (<any>window).Assets;
+      break;
     default:
       throw new Error("Unknown file type");
   }
@@ -716,6 +738,7 @@ characterPoses.idle.paintOrder.forEach((layerName) => {
   option.innerText = layerName;
   $colorShiftLayer.add(option);
 });
+$colorShiftLayer.selectedIndex = $colorShiftLayer.childNodes.length - 1;
 const hsbPrecision = 1000;
 $hueInput.oninput = () => {
   $hueValue.innerText =
@@ -779,4 +802,19 @@ geId("colorShiftApply").onclick = () => {
   $saturationInput.value = "" + (toHsb[1] - fromHsb[1]) * 255;
   $brightnessInput.value = "" + (toHsb[2] - fromHsb[2]) * 255;
   updateHsb();
+};
+geId("export").onclick = () => {
+  let anchor = document.createElement("a");
+  anchor.download = "assets.ts";
+  anchor.href = URL.createObjectURL(
+    new Blob(
+      [
+        `window.Assets = unpack("${window.Base92.encode(
+          window.Katz.deflate(window.serialize(AssetPack))
+        )}");`,
+      ],
+      { type: "text/plain" }
+    )
+  );
+  anchor.click();
 };

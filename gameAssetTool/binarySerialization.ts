@@ -49,7 +49,7 @@ interface Window {
       bytes.push(shiftBytesRight(value, byteIndex) & 255);
   }
   function writeTypeLength(
-    type: BinSerialType,
+    type: number,
     length: number,
     bytes: number[]
   ): void {
@@ -156,7 +156,8 @@ interface Window {
             value.length,
             bytes
           );
-          bytes.push(...value);
+          for (let byteIndex = 0; byteIndex < value.length; byteIndex += 32766)
+            bytes.push(...value.slice(byteIndex, byteIndex + 32766));
         } else {
           let keys = Object.keys(value);
           writeTypeLength(BinSerialType.object, keys.length, bytes);
@@ -225,7 +226,7 @@ interface Window {
   const readString = (source: Uint8Array, start: number, end: number): string =>
     textDecoder.decode(source.slice(start, end));
   function readFrom(serialized: Uint8Array, offset: number = 0): [any, number] {
-    let type: BinSerialType = serialized[offset] & 31;
+    let type = serialized[offset] & 31;
     switch (type) {
       case BinSerialType.undefined:
         return [undefined, ++offset];

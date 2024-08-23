@@ -1,5 +1,5 @@
 interface Window {
-  Katz: object;
+  Katz: any;
 }
 (function () {
   var S = Uint8Array,

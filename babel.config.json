@@ -1,4 +1,5 @@
 {
   "presets": ["@babel/preset-typescript", ["minify", { "builtIns": false }]],
-  "comments": false
+  "comments": false,
+  "targets": "since 2017"
 }

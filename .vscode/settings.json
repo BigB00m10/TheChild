@@ -53,8 +53,6 @@
   "twee3LanguageTools.passage.list": true,
   "twee3LanguageTools.passage.group": "Folder",
   "twee3LanguageTools.passageCounter.openStoryMapWithoutConfirmation": true,
-  "explicitFolding.wildcardExclusions": [
-    "twee3-sc2"
-  ],
+  "explicitFolding.wildcardExclusions": ["twee3-sc2"],
   "explicitFolding.rules": null
 }

@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "babel --extensions .ts ./ts --out-file source/script-compiled.js"
+    "build": "babel -x .ts,.js -o source/script-compiled.js ts"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",

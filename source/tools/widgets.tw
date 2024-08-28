@@ -420,6 +420,19 @@
         });
     >><</done>>
 <</widget>>
+<<widget itemImage>>/*Max size: 212x183*/
+  <<set _url = Assets.item[_args[0]]>>
+  <<if _url>>
+    <img @src="_url"><<unset _url>>
+  <</if>>
+<</widget>>
+<<widget scenery>>\
+    <<set $scenery = _args[0];_url = Assets.scenery[$scenery]>>
+    <<if _url && !$settings.hideScenery>>\
+        <img class="centerHouse" @src="_url"><<unset _url>>
+        <hr>
+    <</if>>\
+<</widget>>\
 :: workOption {"position":"875,0"}
 <<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>

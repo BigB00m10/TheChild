@@ -208,6 +208,10 @@ abstract class Npc extends LivingCharacter {
   punishments: string[] = [];
   //Where this NPC is located in the house or in the world, try to match up with the scenery name.
   location: string = "unknown";
+  //URL to the pre-rendered NPC base image, the part which has less changes (without clothes)
+  baseImageCache: string;
+  //URL to the pre-rendered NPC image without facial expression or any layer over it.
+  offscreenImageCache: string;
   getMonthsSinceLastBirthDay(npc?: Npc) {
     if (!npc) npc = this;
     return (

@@ -51,7 +51,7 @@ interface Window {
     BnKatz = new S([
       16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15,
     ]),
-    MrKatz = function (r: S, n: number) {
+    MrKatz = function (r: Uint8Array, n: number) {
       for (var t = new kKatz(31), e = 0; e < 31; ++e) t[e] = n += 1 << r[e - 1];
       for (var i = new ZnKatz(t[30]), e = 1; e < 30; ++e)
         for (var a = t[e]; a < t[e + 1]; ++a) i[a] = ((a - t[e]) << 5) | e;
@@ -75,7 +75,7 @@ interface Window {
       (EnKatz[OKatz] = (((enKatz & 65280) >> 8) | ((enKatz & 255) << 8)) >> 1);
   }
   for (
-    var QKatz = function (r: S, n: number, t: number) {
+    var QKatz = function (r: Uint8Array, n: number, t: number) {
         for (var e = r.length, i = 0, a = new kKatz(n); i < e; ++i)
           r[i] && ++a[r[i] - 1];
         var o = new kKatz(n);
@@ -130,7 +130,7 @@ interface Window {
     },
     setMemory: (e: number, t: number) =>
       (unpacker.buffer[(0 | e) >>> 0] = 255 & (0 | t)),
-    decode128bitsChars: (chars: S) => {
+    decode128bitsChars: (chars: Uint8Array) => {
       (chars[0] = 255 & unpacker.mapping[0 | chars[0]]),
         (chars[1] = 255 & unpacker.mapping[0 | chars[1]]),
         (chars[2] = 255 & unpacker.mapping[0 | chars[2]]),
@@ -148,7 +148,7 @@ interface Window {
         (chars[14] = 255 & unpacker.mapping[0 | chars[14]]),
         (chars[15] = 255 & unpacker.mapping[0 | chars[15]]);
     },
-    decode128bitsString: (buffer: S, str: string, offset: number) => (
+    decode128bitsString: (buffer: Uint8Array, str: string, offset: number) => (
       (buffer[0] = 255 & str.charCodeAt(0 | offset)),
       (buffer[1] = 255 & str.charCodeAt((offset + 1) | 0)),
       (buffer[2] = 255 & str.charCodeAt((offset + 2) | 0)),
@@ -174,13 +174,13 @@ interface Window {
         0 | (e = (0 | e) >>> 0),
         0 | (t = (0 | t) >>> 0)
       ),
-    V: (r: S, n: number, t: number) => {
+    V: (r: Uint8Array, n: number, t: number) => {
       let e = (n / 8) | 0;
       return ((r[e] | (r[e + 1] << 8)) >> (n & 7)) & t;
     },
     Tr: QKatz(tnKatz, 9, 1),
     Ir: QKatz(wnKatz, 5, 1),
-    Nn: (r: S) => {
+    Nn: (r: Uint8Array) => {
       for (var n = r[0], t = 1; t < r.length; ++t) r[t] > n && (n = r[t]);
       return n;
     },
@@ -188,24 +188,24 @@ interface Window {
       throw new Error(n || "");
     },
     mn: (r: number) => ((r + 7) / 8) | 0,
-    Rn: (r: S, n: number) => {
+    Rn: (r: Uint8Array, n: number) => {
       var t = (n / 8) | 0;
       return (r[t] | (r[t + 1] << 8) | (r[t + 2] << 16)) >> (n & 7);
     },
-    X: (r: S, n: number, t: number) => (
+    X: (r: Uint8Array, n: number, t: number) => (
       (n == null || n < 0) && (n = 0),
       (t == null || t > r.length) && (t = r.length),
       new S(r.subarray(n, t))
     ),
   };
-  function readUInt(source: S, offset: number, length: number): number {
+  function readUInt(source: Uint8Array, offset: number, length: number): number {
     let result = source[offset];
     for (let byteIndex = offset + 1; byteIndex < offset + length; byteIndex++)
       result += shiftBytesLeft(source[byteIndex], byteIndex - offset);
     return result;
   }
   function readSize(
-    source: S,
+    source: Uint8Array,
     offset: number,
     noType: boolean = false
   ): [number, number] {
@@ -229,9 +229,9 @@ interface Window {
     if (!noType) size = size * Math.pow(2, 3) + (source[offset] >> 5);
     return [size, nextIndex];
   }
-  const readString = (source: S, start: number, end: number): string =>
+  const readString = (source: Uint8Array, start: number, end: number): string =>
     unpacker.decoder.decode(source.slice(start, end));
-  function readFrom(serialized: S, offset: number = 0): [any, number] {
+  function readFrom(serialized: Uint8Array, offset: number = 0): [any, number] {
     let type = serialized[offset] & 31;
     switch (type) {
       case BinSerialType.undefined:
@@ -357,7 +357,7 @@ interface Window {
       return S.of(126);
     if ((0 | b92len) < 2) return S.of();
     var db92 = unpacker.setMemory.bind(unpacker);
-    function yb92(e: S) {
+    function yb92(e: Uint8Array) {
       Eb92(e, 0),
         Eb92(e, 2),
         Eb92(e, 4),
@@ -367,7 +367,7 @@ interface Window {
         Eb92(e, 12),
         Eb92(e, 14);
     }
-    function Eb92(buffer: S, offset: number) {
+    function Eb92(buffer: Uint8Array, offset: number) {
       for (
         ob92 =
           (ob92 << 13) |

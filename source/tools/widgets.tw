@@ -244,7 +244,17 @@
     <<unset _npc>>
 <</widget>>
 <<widget personHunting>>
-    <<set $found_kid = Person.generate($settings.childGeneration)>>
+    <div class="characterImage">
+        <div id="characterImageFixed">
+            <img id="characterImageAnim">
+        </div>
+    </div>
+    <<set 
+        $found_kid = Person.generate($settings.childGeneration);
+        $found_kid.expression = 'smile';
+        personImage($found_kid).then(url => document.getElementById('characterImageFixed').style.backgroundImage = `url(${url})`);
+        personImage($found_kid, 'animation').then(url => document.getElementById('characterImageAnim').src = url);
+    >>
     You found a <<- Person.getLongDescription($found_kid)>> named $found_kid.name<br><br>
     <<magicSunglasses $found_kid>>
     <<set

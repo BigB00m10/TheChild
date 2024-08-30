@@ -94,3 +94,15 @@ label.toggle-button {
     display: none;
   }
 }
+.characterImage {
+  float: left;
+  animation: breathe 2s steps(9) infinite alternate steps(12);
+  > div {
+    height: 239px;
+  }
+}
+@keyframes breathe {
+  to {
+    transform:scale(0.97, 0.99) translateY(0.7%)
+  }
+}

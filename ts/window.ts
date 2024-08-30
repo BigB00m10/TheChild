@@ -1,3 +1,7 @@
+interface Assets {
+  character: Record<string, CharacterGraphicLayer>;
+  icon: Record<string, string>;
+}
 //This interface uses the window DOM object to share objects between back end and front end.
 //Every object hooked to the window object will also be directly available in the browser console.
 //You'll typically want to use only the functions on the class instances that are hooked to the window.
@@ -23,7 +27,7 @@ interface Window {
   PornMovie: PornMovie;
   Temporary: () => any;
   Variables: () => any;
-  Assets: any;
+  Assets: Assets;
 }
 window.Now = new Now();
 window.Homes = Homes;

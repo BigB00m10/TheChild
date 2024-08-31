@@ -1,6 +1,7 @@
 :: npcInteraction [nobr] {"position":"625,0"}
 <<scenery $scenery>>
 <<unlessEmergency>>
+    <<personImage $npc>>
     <<npcInteraction>>
 <</unlessEmergency>>
 :: slaveApproach {"position":"1000,0"}

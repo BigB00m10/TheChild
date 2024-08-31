@@ -243,40 +243,52 @@
     ''_npc.name'': "_args[0]"
     <<unset _npc>>
 <</widget>>
-<<widget personHunting>>
+<<widget personImage>>
     <div class="characterImage">
         <div id="characterImageFixed">
             <img id="characterImageAnim">
         </div>
     </div>
-    <<set 
-        $found_kid = Person.generate($settings.childGeneration);
-        $found_kid.expression = 'smile';
-        personImage($found_kid).then(url => document.getElementById('characterImageFixed').style.backgroundImage = `url(${url})`);
-        personImage($found_kid, 'animation').then(urlOpen =>{
-            console.log(urlOpen);
+    <<run
+        let person = Object.assign({},_args[0]);
+        if(!person.expression)
+            person.expression = person.status == 'citizen' || person.fear < 10 || person.love > person.fear + 20 ? 'smile' : 'frown';
+        if(window.tempObjectUrls)
+            window.tempObjectUrls.forEach(url=>URL.revokeObjectURL(url));
+        window.tempObjectUrls = [];
+        if(!Assets.character.hair.spriteCollections.firstOrDefault(c=>c.match.hairStyle == person.hairStyle))
+            person.hairStyle = 'straight';
+        personImage(person).then(url => window.tempObjectUrls.push(document.getElementById('characterImageFixed').style.backgroundImage = `url(${url})`));
+        personImage(person, 'animation').then(urlOpen =>{
             let anim = document.getElementById('characterImageAnim');
-            anim.src =urlOpen;
-            $found_kid.eyesClosed = true;
-            personImage($found_kid, 'animation').then(urlClose =>{
-                console.log(urlClose);
-                let blink = ()=>setTimeout(()=>{
+            anim.src = urlOpen;
+            person.eyesClosed = true;
+            personImage(person, 'animation').then(urlClose =>{
+                window.tempObjectUrls.push(urlOpen, urlClose);
+                let stop = false, blink;
+                $(document).on(':passageinit', ()=>stop=true);
+                (blink = ()=>setTimeout(()=>{
+                    if(stop)return;
                     anim.src=urlClose;
                     setTimeout(()=>{
+                        if(stop)return;
                         anim.src=urlOpen;
                         blink();
                     },50);
-                },Math.random()*4000+2000);
-                blink();
+                },Math.random()*4000+2000))();
             });
         });
     >>
-    You found a <<- Person.getLongDescription($found_kid)>> named $found_kid.name<br><br>
-    <<magicSunglasses $found_kid>>
+<</widget>>
+<<widget personHunting>>
     <<set
         _hasChloroform = Player.has('chloroform');
         _hasCandy = Player.has('Candy');
+        $found_kid = Person.generate($settings.childGeneration);
     >>
+    <<personImage $found_kid>>
+    You found a <<- Person.getLongDescription($found_kid)>> named $found_kid.name<br><br>
+    <<magicSunglasses $found_kid>>
     <<if !_hasChloroform and !_hasCandy>>
         (You don't have anything at your disposal to obtain kids. Try the online store on the computer in your room)<br>
     <<elseif Basement.availableBeds() lte 0>>

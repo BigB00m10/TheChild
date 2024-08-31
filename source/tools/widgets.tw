@@ -253,7 +253,23 @@
         $found_kid = Person.generate($settings.childGeneration);
         $found_kid.expression = 'smile';
         personImage($found_kid).then(url => document.getElementById('characterImageFixed').style.backgroundImage = `url(${url})`);
-        personImage($found_kid, 'animation').then(url => document.getElementById('characterImageAnim').src = url);
+        personImage($found_kid, 'animation').then(urlOpen =>{
+            console.log(urlOpen);
+            let anim = document.getElementById('characterImageAnim');
+            anim.src =urlOpen;
+            $found_kid.eyesClosed = true;
+            personImage($found_kid, 'animation').then(urlClose =>{
+                console.log(urlClose);
+                let blink = ()=>setTimeout(()=>{
+                    anim.src=urlClose;
+                    setTimeout(()=>{
+                        anim.src=urlOpen;
+                        blink();
+                    },50);
+                },Math.random()*4000+2000);
+                blink();
+            });
+        });
     >>
     You found a <<- Person.getLongDescription($found_kid)>> named $found_kid.name<br><br>
     <<magicSunglasses $found_kid>>

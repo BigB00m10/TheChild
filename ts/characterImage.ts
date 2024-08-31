@@ -58,7 +58,7 @@ let personPoses: Record<string, CharacterPose> = {
     ],
     baseCache: "tits",
     offscreenCache: "dress",
-    animationCache: "eyes",
+    animationCache: "hair",
   },
 };
 type ImageCacheType = "base" | "offscreen" | "animation";

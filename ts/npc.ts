@@ -7,6 +7,8 @@ type NpcStatus =
   | "servant"
   | "lover";
 type NpcEventType = "demand" | "ordinary";
+type TitSize = "flat" | "budding" | "small" | "modest" | "large";
+let titSizes: TitSize[] = ["flat", "budding", "small", "modest", "large"];
 interface NpcValue {
   obedience: number;
   obedienceRatio: string;
@@ -30,7 +32,9 @@ abstract class LivingCharacter {
   uid: Uid;
   hasPussy: boolean;
   hasPenis: boolean;
-  hasBoobs: boolean;
+  hasBoobs: undefined; //Deprecated and replaced by titSize
+  titSize: TitSize;
+  previousTitSize: TitSize;
   lactating: boolean;
   pregnantDays?: number; //Number of days passed while being pregnant or undefined if not pregnant.
   impregnator?: Uid; //UID of the character which this character is pregnant from.
@@ -38,7 +42,12 @@ abstract class LivingCharacter {
   genitals: AllGenitals; //Description of this character genitals
   inventory: Inventory;
   equippedItems: Inventory; //Things that the character has equipped or is wearing.
-  //General static function for common operations when giving birth with any character
+  /**
+   * General static function for common operations when giving birth with any character
+   * @param mom The mom character
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   * @returns The born baby
+   */
   static giveBirth(mom: LivingCharacter, variables?: any): Npc {
     if (!variables) variables = Variables();
     //Get child generation settings
@@ -71,14 +80,30 @@ abstract class LivingCharacter {
     player.home.family.push(baby);
     return baby;
   }
-  static getPregnancyMonth(char: LivingCharacter, variables?: any): number {
-    if (!char.pregnantDays) return 0;
+  /**
+   * Get the pregnancy month based on the number of days pregnant and the settings
+   * @param character The target character
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   * @returns The month number
+   */
+  static getPregnancyMonth(
+    character: LivingCharacter,
+    variables?: any
+  ): number {
+    if (!character.pregnantDays) return 0;
     if (!variables) variables = Variables();
     const pregnancyDays = variables.settings.pregnancyDays;
     return Math.ceil(
-      char.pregnantDays / (pregnancyDays != undefined ? pregnancyDays / 9 : 30)
+      character.pregnantDays /
+        (pregnancyDays != undefined ? pregnancyDays / 9 : 30)
     );
   }
+  /**
+   * Obtain character (NPC or Player) and variables from available data.
+   * @param character If it's a number, returns the Character with that UID. If it's null it returns currently selected NPC
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   * @returns A tuple with the fetched character and the SugarCube Variables
+   */
   static obtain(
     character: LivingCharacter,
     variables?: any
@@ -89,7 +114,12 @@ abstract class LivingCharacter {
     }
     return Npc.obtain(<Npc>character, variables);
   }
-  showBirthMessage(baby: Npc, laborNpc?: Npc) {
+  /**
+   * Announce to the player that a baby has been born
+   * @param baby The baby NPC object
+   * @param laborNpc The NPC giving birth if any (do not specify if it's the player)
+   */
+  showBirthMessage(baby: Npc, laborNpc?: Npc): void {
     Temporary().baby = baby;
     const playerCarryBabySentence = `You're currently carrying the baby, go to the inventory to interact with ${
       (<Person>baby).pronoun
@@ -123,11 +153,17 @@ abstract class LivingCharacter {
       .val(baby.name)
       .on("change", () => (Temporary().baby.name = <string>$babyName.val()));
   }
+  /**
+   * Set, update or remove the timed event that makes this NPC stop lactating
+   * @param character The target character (if not specified the active NPC will be affected)
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   * @param holdsNpc Indicates if the target character is holding another NPC
+   */
   lactationTimeout(
     character?: LivingCharacter,
     variables?: any,
     holdsNpc?: boolean
-  ) {
+  ): void {
     [character, variables] = Npc.obtain(<Npc>character, variables);
     if (typeof character == "number")
       character = character
@@ -148,7 +184,7 @@ abstract class LivingCharacter {
       if (character.uid)
         window.Now.addTimedEvent(
           24 * 5,
-          `var lc=window.Person.get(${character.uid});lc.lactating=false;if(lc.age<10)lc.hasBoobs=false`,
+          `var lc=window.Person.get(${character.uid});lc.lactating=false;if(npc.previousTitSize){npc.titSize=npc.previousTitSize;delete npc.previousTitSize}`,
           "stopLactation" + character.uid
         );
       else
@@ -159,6 +195,12 @@ abstract class LivingCharacter {
         );
     }
   }
+  /**
+   * Impregnates a character
+   * @param target The character to impregnate
+   * @param impregnatorUid The UID of the one that impregnated
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   */
   impregnate(target?: LivingCharacter, impregnatorUid?: Uid, variables?: any) {
     target = LivingCharacter.obtain(target, variables)[0];
     target.pregnantDays = 0;
@@ -212,23 +254,56 @@ abstract class Npc extends LivingCharacter {
   baseImageCache: string;
   //URL to the pre-rendered NPC image without facial expression or any layer over it.
   offscreenImageCache: string;
-  getMonthsSinceLastBirthDay(npc?: Npc) {
+  /**
+   * @param npc The target NPC. If omitted this instance will be used instead
+   * @returns The number of months elapsed since the last birthday
+   */
+  getMonthsSinceLastBirthDay(npc?: Npc): number {
     if (!npc) npc = this;
     return (
       (12 * npc.ageProgress) / (Variables().settings.agingIgDays || 365.25)
     );
   }
+  /**
+   * Checks if an NPC has breasts (bigger than flat)
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   */
+  hasTits(npc?: Npc, variables?: any): boolean {
+    npc = Npc.obtain(npc, variables)[0];
+    return titSizes.indexOf(npc.titSize) > 0;
+  }
+  /**
+   * Increase or decrease breast size on the indicated NPC
+   * @param amount Positive number to increase the size level or negative to decrease it
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   */
+  alterTitSize(amount: number, npc?: Npc, variables?: any): void {
+    npc = Npc.obtain(npc, variables)[0];
+    if (!npc.titSize) npc.titSize = "flat";
+    npc.titSize =
+      titSizes[
+        (titSizes.indexOf(npc.titSize) + amount).clamp(0, titSizes.length - 1)
+      ];
+  }
+  /**
+   * Makes the necessary pubertal changes to the NPC according to their age
+   * @param agedUp 
+   * @param npc The target NPC. No need to specify it if the method is already called from an NPC
+   */
   adjustPubescence(agedUp: boolean = false, npc?: Npc): void {
     if (!npc) npc = this;
     if ((agedUp && npc.age == 13) || npc.age > 12)
       //Pubescent for the first time
       switch (npc.sex) {
         case "female":
-          npc.hasBoobs = true;
+          window.Person.alterTitSize(1, npc);
           npc.impregnationChance = 80;
           break;
         case "herm":
-          npc.hasBoobs = npc.producesSperm = true;
+          window.Person.alterTitSize(1, npc);
+          npc.producesSperm = true;
           npc.impregnationChance = 80;
           break;
         case "male":
@@ -239,8 +314,8 @@ abstract class Npc extends LivingCharacter {
       const fertile = npc.age > 12;
       const female = npc.sex == "female" || npc.sex == "herm";
       const male = npc.sex == "male" || npc.sex == "herm";
-      if (npc.hasBoobs == undefined) {
-        npc.hasBoobs = fertile && female;
+      if (npc.titSize == undefined) {
+        if (fertile && female) npc.titSize = "budding";
         npc.lactating = false;
       }
       if (npc.producesSperm == undefined) {
@@ -250,11 +325,20 @@ abstract class Npc extends LivingCharacter {
       return;
     }
   }
+  /**
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   * @returns the normal inventory object (non-equipped items) from the target NPC
+   */
   getInventory(npc?: Npc, variables?: any): Inventory {
     [npc, variables] = Npc.obtain(npc, variables);
     return (npc.inventory = new Inventory(npc.inventory));
   }
-  //Gets the NPC inventory object for the currently equipped/wearing items from the Sugarcube variables.
+  /**
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   * @returns the NPC inventory object for the currently equipped/wearing items
+   */
   getEquippedInventory(npc?: Npc, variables?: any): Inventory {
     [npc, variables] = Npc.obtain(npc, variables);
     return (npc.equippedItems = new Inventory(npc.equippedItems));

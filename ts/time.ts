@@ -148,8 +148,17 @@ class Now {
     for (let index = 0; index < amount; index++) {
       allNpc.forEach((npc) => {
         if (npc.pregnantDays != undefined) {
+          let monthBefore = Npc.getPregnancyMonth(npc, variables);
           npc.pregnantDays++;
-          if (Npc.getPregnancyMonth(npc, variables) > 5) npc.hasBoobs = true;
+          let monthAfter = Npc.getPregnancyMonth(npc, variables);
+          if (monthAfter > monthBefore)
+            switch (monthAfter) {
+              case 6:
+              case 8:
+                if(!npc.previousTitSize)
+                  npc.previousTitSize = npc.titSize;
+                window.Person.alterTitSize(1, npc, variables);
+            }
         }
         npc.aroused = false;
         npc.lubricatedAss = false;

@@ -32,9 +32,9 @@ abstract class LivingCharacter {
   uid: Uid;
   hasPussy: boolean;
   hasPenis: boolean;
-  hasBoobs: undefined; //Deprecated and replaced by titSize
+  hasBoobs?: boolean; //Warning! On NPCs it needs to be updated using hasTits(). Which is done automatically when starting an interaction.
   titSize: TitSize;
-  previousTitSize: TitSize;
+  previousTitSize?: TitSize; //To save the previous breast size while on pregnancy growth.
   lactating: boolean;
   pregnantDays?: number; //Number of days passed while being pregnant or undefined if not pregnant.
   impregnator?: Uid; //UID of the character which this character is pregnant from.
@@ -289,33 +289,29 @@ abstract class Npc extends LivingCharacter {
   }
   /**
    * Makes the necessary pubertal changes to the NPC according to their age
-   * @param agedUp 
+   * @param agedUp
    * @param npc The target NPC. No need to specify it if the method is already called from an NPC
    */
   adjustPubescence(agedUp: boolean = false, npc?: Npc): void {
     if (!npc) npc = this;
-    if ((agedUp && npc.age == 13) || npc.age > 12)
-      //Pubescent for the first time
-      switch (npc.sex) {
-        case "female":
+    const female = npc.sex == "female" || npc.sex == "herm";
+    const male = npc.sex == "male" || npc.sex == "herm";
+    if (agedUp) {
+      if (npc.age == 13) {
+        //Pubescent for the first time
+        if (female) {
           window.Person.alterTitSize(1, npc);
           npc.impregnationChance = 80;
-          break;
-        case "herm":
-          window.Person.alterTitSize(1, npc);
-          npc.producesSperm = true;
-          npc.impregnationChance = 80;
-          break;
-        case "male":
-          npc.producesSperm = true;
-          break;
-      }
-    else {
+        }
+        if (male) npc.producesSperm = true;
+      } else if (female && (npc.age == 14 || npc.age == 15))
+        window.Person.alterTitSize([0, 1].random(), npc);
+    } else {
       const fertile = npc.age > 12;
-      const female = npc.sex == "female" || npc.sex == "herm";
-      const male = npc.sex == "male" || npc.sex == "herm";
       if (npc.titSize == undefined) {
-        if (fertile && female) npc.titSize = "budding";
+        if (fertile && female)
+          npc.titSize =
+            npc.age > 14 ? <TitSize>["small", "modest"].random() : "budding";
         npc.lactating = false;
       }
       if (npc.producesSperm == undefined) {
@@ -343,31 +339,62 @@ abstract class Npc extends LivingCharacter {
     [npc, variables] = Npc.obtain(npc, variables);
     return (npc.equippedItems = new Inventory(npc.equippedItems));
   }
+  /**
+   * Checks if an item is in the equipped inventory
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   * @returns a boolean indicating if the NPC has the item equipped
+   */
   wearing(itemName: string, npc?: Npc, variables?: any): boolean {
     return this.getEquippedInventory(npc, variables).has(itemName);
   }
+  /**
+   * Achievements are used for keeping track of things done or things in effect.
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   */
   hasAchievement(achievement: string, npc?: Npc): boolean {
     if (!npc) npc = Variables().npc;
     return npc.achievements.includes(achievement);
   }
+  /**
+   * Achievements are used for keeping track of things done or things in effect.
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   */
   hasAnyAchievement(achievements: string[], npc?: Npc) {
     if (!npc) npc = Variables().npc;
     return npc.achievements.includesAny(achievements);
   }
+  /**
+   * Achievements are used for keeping track of things done or things in effect.
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   */
   hasAllAchievements(achievements: string[], npc?: Npc) {
     if (!npc) npc = Variables().npc;
     return npc.achievements.includesAll(achievements);
   }
+  /**
+   * Adds an achievement to the NPC if they don't have it already.
+   * Achievements are used for keeping track of things done or things in effect.
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   */
   setAchievement(achievement: string, npc?: Npc): void {
     if (!npc) npc = Variables().npc;
     if (!this.hasAchievement(achievement, npc))
       npc.achievements.push(achievement);
   }
+  /**
+   * Achievements are used for keeping track of things done or things in effect.
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   */
   removeAchievement(achievement: string, npc?: Npc): void {
     if (!npc) npc = Variables().npc;
     npc.achievements.delete(achievement);
   }
-  //Gets the NPC's current disaggregated selling value.
+  /**
+   * Gets the NPC's current disaggregated selling value.
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   * @returns an NpcValue object with multiple number parameters
+   */
   getValue(npc?: Npc): NpcValue {
     if (!npc) npc = Variables().npc;
     const maxNonVirgin = 1500;
@@ -409,7 +436,11 @@ abstract class Npc extends LivingCharacter {
     value.total += value.freedomWish + value.virginBonus;
     return value;
   }
-  //Changes the NPC social status and triggers the necessary actions or events
+  /**
+   * Changes the NPC social status and triggers the necessary actions or events
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   * @param forceLocation (Optional) to force a location to move the NPC to. Instead of the default one where each status moves them to.
+   */
   setStatus(status: NpcStatus, npc?: Npc, forceLocation?: string): void {
     npc = Npc.obtain(npc)[0];
     switch (status) {
@@ -423,12 +454,16 @@ abstract class Npc extends LivingCharacter {
     if (forceLocation) npc.location = forceLocation;
     npc.status = status;
   }
-  //Turns the NPC into a slave of the child trainer
+  /**
+   * Turns the NPC into a slave of the child trainer and moves it to the basement.
+   */
   capture(npc: Npc): void {
     this.setStatus("slave", npc);
     Variables().slaves.push(npc);
   }
-  //Updates the locations of all Npc according to the provided date/time.
+  /**
+   * Updates the locations of all NPCs according to the provided date/time.
+   */
   static updateLocations(currentDate: Date): void {
     const variables = Variables();
     if (!currentDate) currentDate = variables.now.date;
@@ -482,7 +517,11 @@ abstract class Npc extends LivingCharacter {
       }
     });
   }
-  //Returns an array with all NPCs present in the game. Optionally, a function to filter them can be provided.
+  /**
+   * @param filter (Optional) a function to filter the NPCs
+   * @param variables (Optional) The SugarCube Variables object where to take the needed data from.
+   * @returns an array with all NPCs present in the game
+   */
   all(filter?: (npc: Npc) => boolean, variables?: any): Npc[] {
     if (!variables) variables = Variables();
     let all = variables.slaves;
@@ -491,25 +530,38 @@ abstract class Npc extends LivingCharacter {
     if (filter) return all.filter(filter);
     return all;
   }
-  //Returns the first NPC that complies with the provided condition or null
+  /**
+   * @param variables (Optional) The SugarCube Variables object where to take the needed data from.
+   * @returns the first NPC that complies with the provided condition or null
+   */
   firstOrNull(condition: (npc: Npc) => boolean, variables?: any): Npc {
     const candidates = this.all(condition, variables);
     return candidates.length ? candidates[0] : null;
   }
-  //Get the NPC with the indicated unique ID
+  /**
+   * Get the NPC with the indicated unique ID
+   */
   get(uid: Uid, variables?: any): Npc {
     return this.all(null, variables).firstOrDefault(
       (slave: Npc) => slave.uid == uid
     );
   }
-  //Obtain NPC and variables from available data. If it's a number, returns the NPC with that UID. If it's null it returns currently selected NPC
+  /**
+   * Obtain NPC and variables from available data. If it's a number, returns the NPC with that UID. If it's null it returns currently selected NPC
+   * @param variables (Optional) The SugarCube Variables object where to take the needed data from.
+   */
   static obtain(npc?: Npc, variables?: any): [Npc, any] {
     if (!variables) variables = Variables();
     if (typeof npc == "number") npc = window.Person.get(npc, variables);
     else if (!npc) npc = variables.npc;
     return [npc, variables];
   }
-  //Constructs a sentence indicating the stats requirements and optionally the current values in an NPC.
+  /**
+   * Constructs a sentence indicating the stats requirements and optionally the current values in an NPC.
+   * @param requirements An object with the names of the required stats and their required values
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   * @param showCurrent If set to true the sentence will show the current values for each stats
+   */
   getMinRequirementsSentence(
     requirements: Record<string, number>,
     npc?: Npc,
@@ -527,6 +579,9 @@ abstract class Npc extends LivingCharacter {
         );
     return entries.join(", ");
   }
+  /**
+   * @returns the NPCs that are wandering around at home (not locked on the basement)
+   */
   getWandering(): Npc[] {
     const variables = Variables();
     return <Person[]>(
@@ -536,7 +591,12 @@ abstract class Npc extends LivingCharacter {
       )
     );
   }
-  //Get the character that is holding the specified NPC
+  /**
+   * Get the character that is holding the specified NPC
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   * @param variables (Optional) The SugarCube Variables object where to take the needed data from.
+   * @param npcList (Optional) The list of the NPCs to check as holders. If not specified, all NPCs are checked.
+   */
   getHolder(npc?: Npc, variables?: any, npcList?: Npc[]): LivingCharacter {
     [npc, variables] = Npc.obtain(npc, variables);
     if (window.Player.getEquippedInventory().hasNpc(npc))
@@ -546,10 +606,21 @@ abstract class Npc extends LivingCharacter {
       window.Person.getEquippedInventory(candidate, variables).hasNpc(npc)
     );
   }
+  /**
+   * Check if the specified NPC is being held by anyone (NPC or player)
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   * @param variables (Optional) The SugarCube Variables object where to take the needed data from.
+   * @param npcList (Optional) The list of the NPCs to check as holders. If not specified, all NPCs are checked.
+   */
   isBeingHeld(npc?: Npc, variables?: any, npcList?: Npc[]): boolean {
     return !!this.getHolder(npc, variables, npcList);
   }
-  //Removes an NPC from the game and returns an array with the deleted NPC
+  /**
+   * Removes an NPC from the game and returns an array with the deleted NPC
+   * If the NPC is referenced anywhere, a copy of it will be saved on $removedNpcs
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   * @param variables (Optional) The SugarCube Variables object where to take the needed data from.
+   */
   delete(npc?: Npc, variables?: any): Npc[] {
     [npc, variables] = Npc.obtain(npc, variables);
     let holder = this.getHolder(npc, variables);
@@ -579,7 +650,9 @@ abstract class Npc extends LivingCharacter {
     if (index > -1)
       return (<Npc[]>variables.player.home.family).deleteAt(index);
   }
-  //Checks if this NPC should be released by the holder and does so in that case
+  /**
+   * Checks if this NPC should be released by the holder and does so in that case
+   */
   manageHolder(npc: Npc, holder: LivingCharacter): void {
     if (holder && holder.uid != 0 && npc.age > 1 && !npc.ageProgress) {
       const holderNpc = <Npc>holder;
@@ -712,15 +785,23 @@ class Person extends Npc {
     PersonUniqueness.applyRandom(person, applyUniqueness);
     return person;
   }
+  /**
+   * @returns a description of a person personality based on their uniqueness
+   */
   getPersonalityDescription(uniqueness: PersonUniqueness): string {
     return Object.keys(uniqueness)
       .filter((keyName) => typeof uniqueness[keyName] == "boolean")
       .join(", ");
   }
-  getHomePersonName(word: string, npc?: Npc): string {
-    if (!npc) npc = Variables().npc;
-    if (word == "sibling") word = npc.sex == "male" ? "bro" : "sis";
-    if (npc.age < 5) {
+  /**
+   * @param word the word taken from the name of home person in their uniqueness
+   * @param person The target person. If not specified, the active NPC will be selected
+   * @returns the expression used for the indicated person to refer to people on their original homes
+   */
+  getHomePersonName(word: string, person?: Person): string {
+    if (!person) person = Variables().npc;
+    if (word == "sibling") word = person.sex == "male" ? "bro" : "sis";
+    if (person.age < 5) {
       switch (word) {
         case "uncle":
           return "uncle";
@@ -735,7 +816,7 @@ class Person extends Npc {
       }
       return word;
     }
-    if (npc.age > 10) {
+    if (person.age > 10) {
       switch (word) {
         case "bro":
           word = "brother";
@@ -757,6 +838,10 @@ class Person extends Npc {
     }
     return word;
   }
+  /**
+   * @param word the word taken from the name of home person in their uniqueness
+   * @returns the sex a character in a person original home
+   */
   getHomePersonSex(word: string): Sex {
     switch (word) {
       case "dad":
@@ -772,6 +857,11 @@ class Person extends Npc {
     }
     return word.includes("boy") ? "male" : "female";
   }
+  /**
+   * Generates a very short description of the target person.
+   * @param person The target person. If not specified, the active NPC will be selected
+   * @param addTitle Add the person title (boy, girl, etc...)
+   */
   getShortDescription(person?: Person, addTitle?: boolean): string {
     person = <Person>Npc.obtain(person)[0];
     const months = this.getMonthsSinceLastBirthDay(person);
@@ -788,6 +878,10 @@ class Person extends Npc {
         : "")
     );
   }
+  /**
+   * Generates a long description of the target person.
+   * @param person The target person. If not specified, the active NPC will be selected
+   */
   getLongDescription(person?: Person): string {
     let variables: any;
     [person, variables] = <[Person, any]>Npc.obtain(person, null);
@@ -816,7 +910,10 @@ class Person extends Npc {
       description += `.\n@@color:deeppink;${person.GenPronoun}<<thirdPerson "'s" "'re">> pregnant@@<<emoji 🤰>>`;
     return description;
   }
-  //Returns a 0 year old person as a child of the specified person and the impregnator of that person.
+  /**
+   * @param variables (Optional) The SugarCube Variables object where to take the needed data from.
+   * @returns a new 0 year old person as a child of the specified person and the impregnator of that person.
+   */
   giveBirth(mom: Person, variables?: any): Npc {
     if (!variables) variables = Variables();
     const baby = <Person>LivingCharacter.giveBirth(mom, variables);

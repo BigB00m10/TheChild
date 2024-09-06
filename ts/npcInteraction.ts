@@ -216,6 +216,7 @@ Macro.add("npcInteraction", {
     const temporary = Temporary();
     variables.npc = window.Person.get(variables.npc.uid);
     const npc: Npc = variables.npc;
+    npc.hasBoobs = window.Person.hasTits(npc, variables);
     const steps: string[] = variables.npcInteractionRoute.split(".");
     const collection = window.Interactions[steps[0]];
     let options = callOrGetItself(collection.options);

@@ -470,6 +470,18 @@ class OnlineStore {
       ]),
       packQuantity: 15,
     }), //Baby formula
+    new Product({
+      name: "Breast enlargement pill",
+      description: "Miraculous pill to increase breast size",
+      price: 200,
+      tags: new Set(["player", "consumable", "medicine"]),
+    }), //Breast enlargement pill
+    new Product({
+      name: "Breast reduction pill",
+      description: "Miraculous pill to reduce breast size",
+      price: 200,
+      tags: new Set(["player", "consumable", "medicine"]),
+    }), //Breast reduction pill
   ];
   bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
   purchaseTime: Date; //Time of the first undelivered purchase.

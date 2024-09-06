@@ -1879,9 +1879,8 @@ window.Interactions["slave"] = {
               inventoryRequirements: ["Female fertility pill"],
               npcRequirements: ["impregnationChance<100"],
               optionText: "♀ Give $npc.pronoun another one",
-              contents: `You give $npc.name another female fertility pill.<<run Player.removeItem("Female fertility pill")>>
-              The chance of $npc.pronoun getting pregnant is increased even more.
-              (<<- Player.has('Female fertility pill') ? Player.getInventory().get('Female fertility pill').count : 'No'>> pills left)`,
+              contents: `You give $npc.name another female fertility pill.
+              The chance of $npc.pronoun getting pregnant is increased even more.<<consumePlayerItem 'female fertility pill' 'pills'>>`,
               showNpcStats: false,
               npcStats: () =>
                 baseInteractionOptions().givePill.next["femaleFertility"]
@@ -1889,7 +1888,7 @@ window.Interactions["slave"] = {
               next: () =>
                 <NpcInteractionOptions>{
                   another:
-                    baseInteractionOptions().givePill.next["femaleFertility"],
+                    baseInteractionOptions().givePill.next["femaleFertility"].next['another'],
                   back: goBackToBeginningOption,
                 },
             },
@@ -1903,6 +1902,44 @@ window.Interactions["slave"] = {
           contents: `You give $npc.name a male fertility pill.<<consumePlayerItem 'male fertility pill' 'pills'>>`,
           npcStats: ["+producesSperm"],
           next: baseInteractionOptions,
+        },
+        breastEnlargement: {
+          inventoryRequirements: ["Breast enlargement pill"],
+          optionText: '🍈🍈 Give $npc.pronoun a breast enlargement pill',
+          contents: `You give $npc.name a breast enlargement pill. And $npc.possessive breasts grow in front of your eyes.<<consumePlayerItem 'Breast enlargement pill' 'pills'>><<run Person.alterTitSize(1)>>`,
+          next: {
+            another: {
+              inventoryRequirements: ["Breast enlargement pill"],
+              optionText: '🍈🍈 Give $npc.pronoun another one',
+              contents: `You give $npc.name a breast enlargement pill. And $npc.possessive breasts grow even more.<<consumePlayerItem 'Breast enlargement pill' 'pills'>><<run Person.alterTitSize(1)>>`,
+              next: () =>
+                <NpcInteractionOptions>{
+                  another:
+                    baseInteractionOptions().givePill.next["breastEnlargement"].next['another'],
+                  back: goBackToBeginningOption,
+                },
+            },
+            back: goBackToBeginningOption,
+          }
+        },
+        breastReduction: {
+          inventoryRequirements: ["Breast reduction pill"],
+          optionText: '🥞 Give $npc.pronoun a breast reduction pill',
+          contents: `You give $npc.name a breast reduction pill. And $npc.possessive breasts shrink in front of your eyes.<<consumePlayerItem 'Breast reduction pill' 'pills'>><<run Person.alterTitSize(-1)>>`,
+          next: {
+            another: {
+              inventoryRequirements: ["Breast reduction pill"],
+              optionText: '🥞 Give $npc.pronoun another one',
+              contents: `You give $npc.name a breast reduction pill. And $npc.possessive breasts shrink even more.<<consumePlayerItem 'Breast reduction pill' 'pills'>><<run Person.alterTitSize(-1)>>`,
+              next: () =>
+                <NpcInteractionOptions>{
+                  another:
+                    baseInteractionOptions().givePill.next["breastReduction"].next['another'],
+                  back: goBackToBeginningOption,
+                },
+            },
+            back: goBackToBeginningOption,
+          }
         },
       },
     },

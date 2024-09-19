@@ -286,19 +286,24 @@
         _hasCandy = Player.has('Candy');
         $found_kid = Person.generate($settings.childGeneration);
     >>
-    <<personImage $found_kid>>
-    You found a <<- Person.getLongDescription($found_kid)>> named $found_kid.name<br><br>
-    <<magicSunglasses $found_kid>>
+    <div id="npcInteraction">
+        <div>
+            <<personImage $found_kid>>
+        </div><div>
+            You found a <<- Person.getLongDescription($found_kid)>> named $found_kid.name<br><br>
+            <<magicSunglasses $found_kid>>
+        </div>
+    </div>
     <<if !_hasChloroform and !_hasCandy>>
         (You don't have anything at your disposal to obtain kids. Try the online store on the computer in your room)<br>
     <<elseif Basement.availableBeds() lte 0>>
         (Not enough space for a new kid back at home)<br>
     <<else>>
         <<if _hasCandy>>
-            <<keyOption [[Offer $found_kid.name some Candy.|CandyLure]] 🍬>>: 9min<br>
+            <<keyOption [[Offer $found_kid.name some Candy.|CandyLure]] 🍬>>: 9min
         <</if>>
         <<if _hasChloroform>>
-            <<keyOption [[Kidnap $found_kid.pronoun|kidnap]] 🖐>>: 30min<br>
+            <br><<keyOption [[Kidnap $found_kid.pronoun|kidnap]] 🖐>>: 30min
         <</if>>
     <</if>>
 <</widget>>
@@ -468,7 +473,6 @@
     <<set $scenery = _args[0];_url = Assets.scenery[$scenery]>>
     <<if _url && !$settings.hideScenery>>\
         <img class="centerHouse" @src="_url"><<unset _url>>
-        <hr>
     <</if>>\
 <</widget>>\
 :: workOption {"position":"875,0"}

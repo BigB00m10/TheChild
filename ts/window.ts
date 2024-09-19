@@ -359,3 +359,14 @@ $(
     window.Player.gameVersion +
     "</span>"
 ).appendTo(document.getElementById("ui-bar"));
+let $story = document.getElementById("story");
+$(document).on(":passagedisplay", (event) => {
+  let scenery = <HTMLElement>document.querySelector(".centerHouse");
+  let minRatio = Variables().settings.minSceneryScreenPercentage;
+  if (scenery)
+    scenery.style.maxHeight =
+      Math.max(
+        scenery.clientHeight + (window.innerHeight - $story.clientHeight),
+        window.innerHeight * (minRatio ?? 0.25)
+      ) + "px";
+});

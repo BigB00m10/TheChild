@@ -8,5 +8,9 @@
     "@babel/preset-typescript": "^7.16.7",
     "@types/twine-sugarcube": "^2.36.2",
     "babel-preset-minify": "^0.5.1"
+  },
+  "dependencies": {
+    "npm": "^10.8.3",
+    "npx": "^10.2.2"
   }
 }

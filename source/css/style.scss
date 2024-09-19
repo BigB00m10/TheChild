@@ -82,7 +82,31 @@ label.toggle-button {
 .emoji {
   margin: 0 5px;
 }
+#npcInteraction {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  > div {
+    float: left;
+    margin-left: 1%;
+    width: 81%;
+    &:first-child {
+      margin-left: 0;
+      width: fit-content;
+    }
+  }
+}
 @media (max-width: 550px) or (max-height: 550px) {
+  #npcInteraction > div:first-child {
+    border: 1px solid;
+    transform: scale(-0.7, 0.7);
+    position: absolute;
+    top: -2%;
+    right: 1%;
+    background-color: hsla(0, 0%, 99%, 0.4);
+  }
   h2.passageHead {
     margin-block-start: -1.5em;
     margin-block-end: -0.9em;
@@ -93,16 +117,36 @@ label.toggle-button {
   .extraSpace {
     display: none;
   }
+  #story {
+    margin: 0.5em;
+  }
+  .centerHouse {
+    max-width: 100%;
+    + br {
+      display: none;
+    }
+  }
+  #ui-bar.stowed ~ #story {
+    margin-left: 2.7em;
+  }
+  .passage {
+    line-height: 1.28;
+  }
+  script + br,
+  .row + br {
+    display: none;
+  }
 }
 .characterImage {
-  float: left;
+  width: fit-content;
   animation: breathe 2s steps(7) infinite alternate;
   > div {
-    height: 239px;
+    background-repeat: no-repeat;
+    background-size: contain;
   }
 }
 @keyframes breathe {
   to {
-    transform:scale(0.97, 0.99) translateY(0.7%)
+    transform: scale(0.97, 0.99) translateY(0.7%);
   }
 }

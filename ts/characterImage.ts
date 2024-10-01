@@ -211,17 +211,20 @@ interface Window {
 window.personImage = async (
   person: Person,
   cache?: ImageCacheType,
-  pose: string = "idle"
+  pose?: string
 ): Promise<string> => {
   let fullCanvas = document.createElement("canvas");
   fullCanvas.width = <number>(<unknown>window.Assets.character.neededWidth);
   fullCanvas.height = <number>(<unknown>window.Assets.character.neededHeight);
   let fullCanvasContext = fullCanvas.getContext("2d");
   let $c = person;
+  if (pose == undefined) pose = $c.pose || "idle";
   let middle = fullCanvas.width / 2;
   let bottom = fullCanvas.height; //Middle-bottom is the point of origin. The sprites are drawn relative to this point.
   //fullCanvasContext.clearRect(0, 0, fullCanvas.width, fullCanvas.height);
   let charPose = personPoses[pose];
+  if(!charPose)
+    return null;
   let afterBaseIndex = charPose.paintOrder.indexOf(charPose.baseCache) + 1;
   let afterOffscreenIndex =
     charPose.paintOrder.indexOf(charPose.offscreenCache) + 1;
@@ -234,21 +237,21 @@ window.personImage = async (
       sliceEnd = afterBaseIndex;
       break;
     case "offscreen":
-      if ($c.baseImageCache) {
+      if ($c.imageCachePose == pose && $c.baseImageCache) {
         fullCanvasContext.drawImage(await url2img($c.baseImageCache), 0, 0);
         sliceStart = afterBaseIndex;
       } else sliceStart = 0;
       sliceEnd = afterOffscreenIndex;
       break;
     default:
-      if ($c.offscreenImageCache) {
+      if ($c.imageCachePose == pose && $c.offscreenImageCache) {
         fullCanvasContext.drawImage(
           await url2img($c.offscreenImageCache),
           0,
           0
         );
         sliceStart = afterOffscreenIndex;
-      } else if ($c.baseImageCache) {
+      } else if ($c.imageCachePose == pose && $c.baseImageCache) {
         fullCanvasContext.drawImage(await url2img($c.baseImageCache), 0, 0);
         sliceStart = afterBaseIndex;
       } else sliceStart = 0;
@@ -258,6 +261,7 @@ window.personImage = async (
       sliceStart = afterAnimationIndex;
       break;
   }
+  let somethingDrawn = false;
   charPose.paintOrder.slice(sliceStart, sliceEnd).forEach((layerName) => {
     let layer = window.Assets.character[layerName];
     if (!layer) return;
@@ -345,7 +349,9 @@ window.personImage = async (
       middle + sprite.x,
       bottom + sprite.y
     );
+    somethingDrawn = true;
   });
+  if (!somethingDrawn) return null;
   return URL.createObjectURL(
     await new Promise<Blob>((resolve) =>
       fullCanvas.toBlob((blob) => resolve(blob))

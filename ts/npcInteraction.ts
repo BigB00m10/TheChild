@@ -112,12 +112,13 @@ let callOrGetItself = (valueOrFunction: any, ...args: any[]) =>
 //npcUid is the target npc's UID and it's optional. If not specified the existing Npc in the $npc story variable will be used.
 //Example: <<keyAction directPiston>><<openNpcInteraction 'slave.pushDown.strip.pushDickAnus.ram.fast' $slaves[0].uid>><</keyAction>>
 Macro.add("openNpcInteraction", {
-  handler: function () {
-    let variables = Variables();
+  handler() {
+    const variables = Variables();
     if (SugarCube.State.passage != "npcInteraction")
       variables.returnPassage = SugarCube.State.passage;
     variables.npcInteractionRoute = this.args[0];
     if (this.args[1]) variables.npc = Npc.obtain(this.args[1], variables)[0];
+    variables.npc.pose = "idle";
     (<any>SugarCube.State).display("npcInteraction");
   },
 });
@@ -208,10 +209,23 @@ const checkCanBeShown = (option: NpcInteraction) => {
   }
   return canBeShown;
 };
+Macro.add("npcInteractionLayout", {
+  tags: [],
+  handler() {
+    let imageDiv = document.createElement("div"),
+      contents = document.createElement("div");
+    $(contents).wiki(this.payload[0].contents);
+    if (this.args[0]) $(imageDiv).wiki(`<<personImage ${this.args[0]}>>`);
+    let wrapper = document.createElement("div");
+    wrapper.id = "npcInteraction";
+    wrapper.append(imageDiv, contents);
+    this.output.append(wrapper);
+  },
+});
 //Outputs the current interaction indicated by the route $npcInteractionRoute and directed to the Npc in $npc
 //Not recommended to use it directly unless you know exactly what are you doing, use openNpcInteraction macro instead.
 Macro.add("npcInteraction", {
-  handler: function () {
+  handler() {
     const variables = Variables();
     const temporary = Temporary();
     variables.npc = window.Person.get(variables.npc.uid);
@@ -230,13 +244,10 @@ Macro.add("npcInteraction", {
       }
       options = callOrGetItself(interaction.next);
     }
-    Wiki(
-      (interaction ? interaction.contents : collection.contents) + "\n",
-      this.output
-    );
+    let result =
+      (interaction ? interaction.contents : collection.contents) + "\n";
     if (interaction && interaction.altOptions)
       options = interaction.altOptions(npc, options);
-    let result = "";
     let npcHungerIncrease = 0;
     if (interaction && (interaction.minutesCost || interaction.altMinutes)) {
       const minutes = interaction.altMinutes
@@ -423,13 +434,15 @@ Macro.add("npcInteraction", {
           result += `\n<<keyOption [[${stopOptionText}|$returnPassage]] ${emoji}>>`;
       }
     }
-    Wiki(result, this.output);
+    $(this.output).wiki(
+      `<<npcInteractionLayout '$npc'>>${result}<</npcInteractionLayout>>`
+    );
   },
 });
 //Outputs a text based on the current person uniqueness in $npc or passed as the first parameter
 //Uses the tables in the UniquenessTables class.
 Macro.add("personUniqueness", {
-  handler: function () {
+  handler() {
     let person: Person = this.args[1] || Variables().npc;
     const table: any[][] = UniquenessTables[this.args[0]];
     let defaultCase: UniquenessCase;
@@ -522,7 +535,7 @@ Macro.add("personUniqueness", {
 });
 //To use in an interaction to indicate NPC ejaculating
 Macro.add("npcCum", {
-  handler: function () {
+  handler() {
     const variables = Variables();
     const $npc: Npc = variables.npc;
     const lustDecCum = variables.settings.lustDecCum;
@@ -548,7 +561,7 @@ Macro.add("playerCum", {
 });
 //To use in an interaction to indicate NPC is stimulated.
 Macro.add("npcStimulated", {
-  handler: () => {
+  handler() {
     const $npc: Npc = Variables().npc;
     if (!$npc.aroused) {
       if (!Temporary().npcStatModifiers) Temporary().npcStatModifiers = [];
@@ -558,7 +571,7 @@ Macro.add("npcStimulated", {
 });
 //To indicate that there has been an internal cumshot from the first indicated character to the second and make the second pregnant if applicable.
 Macro.add("checkImpregnation", {
-  handler: function () {
+  handler() {
     const variables = Variables();
     if (variables.settings.pregnancyOption == "disabled") return;
     const impregnator: LivingCharacter = this.args[0];

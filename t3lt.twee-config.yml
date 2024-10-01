@@ -86,3 +86,6 @@ sugarcube-2:
       name: magicSunglasses
     personImage:
       name: personImage
+    npcInteractionLayout:
+      name: npcInteractionLayout
+      container: true

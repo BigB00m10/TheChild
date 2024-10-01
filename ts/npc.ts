@@ -32,16 +32,37 @@ abstract class LivingCharacter {
   uid: Uid;
   hasPussy: boolean;
   hasPenis: boolean;
-  hasBoobs?: boolean; //Warning! On NPCs it needs to be updated using hasTits(). Which is done automatically when starting an interaction.
+  /**
+   * Warning! On NPCs it needs to be updated using hasTits(). Which is done automatically when starting an interaction.
+   */
+  hasBoobs?: boolean;
   titSize: TitSize;
-  previousTitSize?: TitSize; //To save the previous breast size while on pregnancy growth.
+  /**
+   * To save the previous breast size while on pregnancy growth.
+   */
+  previousTitSize?: TitSize;
   lactating: boolean;
-  pregnantDays?: number; //Number of days passed while being pregnant or undefined if not pregnant.
-  impregnator?: Uid; //UID of the character which this character is pregnant from.
-  impregnationChance: number; //Percentage chance of this character getting impregnated when receiving sperm internally.
-  genitals: AllGenitals; //Description of this character genitals
+  /**
+   * Number of days passed while being pregnant or undefined if not pregnant.
+   */
+  pregnantDays?: number;
+  /**
+   * UID of the character which this character is pregnant from.
+   */
+  impregnator?: Uid;
+  /**
+   * Percentage chance of this character getting impregnated when receiving sperm internally.
+   */
+  impregnationChance: number;
+  /**
+   * Description of this character genitals
+   */
+  genitals: AllGenitals;
   inventory: Inventory;
-  equippedItems: Inventory; //Things that the character has equipped or is wearing.
+  /**
+   * Things that the character has equipped or is wearing.
+   */
+  equippedItems: Inventory;
   /**
    * General static function for common operations when giving birth with any character
    * @param mom The mom character
@@ -208,9 +229,15 @@ abstract class LivingCharacter {
   }
 }
 abstract class Npc extends LivingCharacter {
-  ageIntroduced: number; //What was the age of the NPC when it was introduced to the game (generated).
+  /**
+   * What was the age of the NPC when it was introduced to the game (generated).
+   */
+  ageIntroduced: number;
   age: number;
-  ageProgress: number = 0; //Number of days passed while having the current age.
+  /**
+   * Number of days passed while having the current age.
+   */
+  ageProgress: number = 0;
   stopAging?: boolean;
   producesSperm: boolean;
   lubricatedAss: boolean;
@@ -221,7 +248,10 @@ abstract class Npc extends LivingCharacter {
   penisVirgin: boolean = true;
   vaginaVirgin: boolean = true;
   analVirgin: boolean = true;
-  mouthVirgin: boolean = true; //Due to a personal error only slaves with previous personal experience have this at false.
+  /**
+   * Due to a personal error only slaves with previous personal experience have this at false.
+   */
+  mouthVirgin: boolean = true;
   assSpermAmount: number = 0;
   pussySpermAmount: number = 0;
   bodySpermAmount: number = 0;
@@ -237,23 +267,47 @@ abstract class Npc extends LivingCharacter {
   lust: number = 0;
   freedomWish: number = 75;
   status: NpcStatus = "citizen";
-  //Name of the last event assigned to this NPC
+  /**
+   * Name of the last event assigned to this NPC
+   */
   event: string;
-  //Type of the last event
+  /**
+   * Type of the last event
+   */
   eventType: NpcEventType;
-  //This property is not used anymore, it was to identify a slave using the index in the slave array.
-  //Changes in the array caused problems easily so it was replaced with the uid property
+  /**
+   * This property is not used anymore, it was to identify a slave using the index in the slave array.
+   * Changes in the array caused problems easily so it was replaced with the uid property
+   */
   index: undefined;
-  //achievements can be used to keep track of what the npc has experienced
+  /**
+   * achievements can be used to keep track of what the npc has experienced
+   */
   achievements: string[] = [];
-  //for long-lasting punishments
+  /**
+   * for long-lasting punishments
+   */
   punishments: string[] = [];
-  //Where this NPC is located in the house or in the world, try to match up with the scenery name.
+  /**
+   * Where this NPC is located in the house or in the world, try to match up with the scenery name.
+   */
   location: string = "unknown";
-  //URL to the pre-rendered NPC base image, the part which has less changes (without clothes)
+  /**
+   * pose (position) that this NPC is currently holding (for the character image). If not set "idle" is assumed.
+   */
+  pose: string;
+  /**
+   * URL to the pre-rendered NPC base image, the part which has less changes (without clothes)
+   */
   baseImageCache: string;
-  //URL to the pre-rendered NPC image without facial expression or any layer over it.
+  /**
+   * URL to the pre-rendered NPC image without facial expression or any layer over it.
+   */
   offscreenImageCache: string;
+  /**
+   * pose (position) for the available cache
+   */
+  imageCachePose: string;
   /**
    * @param npc The target NPC. If omitted this instance will be used instead
    * @returns The number of months elapsed since the last birthday
@@ -698,8 +752,11 @@ class Person extends Npc {
     super();
     Object.assign(this, init);
   }
-  //Generate a new Person based on the person generation configuration provided or the default one.
-  //setting applyUniqueness to false will avoid that the uniqueness is applied to the Person stats
+  /**
+   * Generates a random person.
+   * @param applyUniqueness setting it to false will avoid that the uniqueness is applied to the Person stats
+   * @returns a new Person based on the person generation configuration provided or the default one.
+   */
   generate(gen?: PersonGeneration, applyUniqueness: boolean = true): Person {
     if (gen === undefined) gen = new PersonGeneration();
     let person = new Person();

@@ -258,9 +258,13 @@
         window.tempObjectUrls = [];
         if(!Assets.character.hair.spriteCollections.firstOrDefault(c=>c.match.hairStyle == person.hairStyle))
             person.hairStyle = 'straight';
-        personImage(person).then(url => window.tempObjectUrls.push(document.getElementById('characterImageFixed').style.backgroundImage = `url(${url})`));
+        personImage(person).then(url => url && window.tempObjectUrls.push(document.getElementById('characterImageFixed').style.backgroundImage = `url(${url})`));
         personImage(person, 'animation').then(urlOpen =>{
             let anim = document.getElementById('characterImageAnim');
+            if(!urlOpen) {
+                anim.style.display = 'none';
+                return;
+            }
             anim.src = urlOpen;
             person.eyesClosed = true;
             personImage(person, 'animation').then(urlClose =>{
@@ -286,14 +290,10 @@
         _hasCandy = Player.has('Candy');
         $found_kid = Person.generate($settings.childGeneration);
     >>
-    <div id="npcInteraction">
-        <div>
-            <<personImage $found_kid>>
-        </div><div>
-            You found a <<- Person.getLongDescription($found_kid)>> named $found_kid.name<br><br>
-            <<magicSunglasses $found_kid>>
-        </div>
-    </div>
+    <<npcInteractionLayout '$found_kid'>>
+        You found a <<- Person.getLongDescription($found_kid)>> named $found_kid.name<br><br>
+        <<magicSunglasses $found_kid>>
+    <</npcInteractionLayout>>
     <<if !_hasChloroform and !_hasCandy>>
         (You don't have anything at your disposal to obtain kids. Try the online store on the computer in your room)<br>
     <<elseif Basement.availableBeds() lte 0>>

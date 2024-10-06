@@ -556,8 +556,8 @@ window.Interactions["okSleepWithPlayerDemand"] = {
 };
 window.Interactions["wakeUpAfterNightTogether"] = {
   defaultStopOption: "🔙 Leave $npc.pronoun.",
-  beforeStop: "<<run $player.sleeping=true>>",
-  contents: `<<run Person.removeAchievement('okSleepWithPlayer');$personWokeUp = false>>\
+  beforeStop: "<<run delete $npc.sleeping;$player.sleeping=true>>",
+  contents: `<<run Person.removeAchievement('okSleepWithPlayer')>>\
   Morning light hits your face escaping from the window. You open your eyes and see $npc.name laying on top of you.<<switch $npc.hairColor>>
     <<case blonde>>
       $npc.Possessive blond hair glows in the sunlight as you admire $npc.possessive $npc.skin body.
@@ -570,12 +570,12 @@ window.Interactions["wakeUpAfterNightTogether"] = {
   <</switch>>`,
   options: {
     wakeHer: {
-      canBeShown: () => !Variables().personWokeUp,
+      npcRequirements:["sleeping"],
       optionText: "⏰ Wake $npc.pronoun up.",
       contents: `You try to wake $npc.pronoun up.
       $npc.GenPronoun <<thirdPerson "groans" "groan">> and <<thirdPerson "wakes" "wake">> up.<<set $personWokeUp = true>>
       $npc.GenPronoun <<thirdPerson "is" "are">> still on top of you lying naked as $npc.genPronoun <<thirdPerson "looks" "look">> you in the eye.`,
-      npcStats: ["fear-20", "love+5%", "freedomWish-5"],
+      npcStats: ["fear-20", "love+5%", "freedomWish-5", "sleeping=false"],
       next: () =>
         ({
           kiss: {
@@ -602,7 +602,7 @@ window.Interactions["wakeUpAfterNightTogether"] = {
           minutesCost: 10,
           contents: `<<if $npc.age gt 4>><<npcSay "Ah...   .  . This feels soo good">>
           <</if>>$npc.GenPronoun <<thirdPerson "screams" "scream">> and <<thirdPerson "orgasms" "orgasm">>.<<npcCum>>`,
-          npcStats: ["love+10", "freedomWish-10"],
+          npcStats: ["love+10", "freedomWish-10", "sleeping=false"],
         },
         back: WakeUpMorning.back,
       },
@@ -627,7 +627,7 @@ window.Interactions["wakeUpAfterNightTogether"] = {
       $npc.GenPronoun <<thirdPerson "moans" "moan">> loudly and <<thirdPerson "grips" "grip">> the bedsheets tightly.
       As $npc.genPronoun <<thirdPerson "clenches" "clench">> $npc.possessive butt cheeks in pleasure<<if $npc.hasPussy>> wetting the bed a little<</if>>. 
       $npc.Possessive face is bright red.`,
-      npcStats: ["love+10", "freedomWish-10"],
+      npcStats: ["love+10", "freedomWish-10", "sleeping=false"],
     },
     touchBoobs: {
       npcRequirements: ["hasBoobs"],

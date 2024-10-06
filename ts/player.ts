@@ -1,44 +1,67 @@
 class Player extends LivingCharacter {
+  /**
+   * The current game version will be shown in the game. And it will be saved to the SugarCube player variable to know on which version the current game was started on.
+   */
   gameVersion: string = "0.2.0.7BETA";
-  //Zero UID identifies the player.
+  /**
+   * Zero UID identifies the player.
+   */
   uid: Uid = 0;
-  //The name of the hole where the player can be fucked by default (not sure if this will be used)
+  /**
+   * The name of the hole where the player can be fucked by default (not sure if this will be used)
+   */
   sexHole: string;
   home: Home = Homes.smallUrban;
   job: Job = Jobs.garbageCollector;
   cash: number = 100;
   energy: number = 100;
-  //Unused, not sure if it will ever be used.
+  /**
+   * Unused, not sure if it will ever be used.
+   */
   lust: number;
-  //Set to true when the player goes to sleep so the bed passage knows that the player just woke up and to know if energy should be reduced or restored
-  sleeping: boolean;
-  //Just a flag to check if the player has worked already to avoid evading responsibilities.
+  /**
+   * Just a flag to check if the player has worked already to avoid evading responsibilities.
+   */
   workedToday: boolean = false;
-  //Holds the items that the player has available to use.
+  /**
+   * Holds the items that the player has available to use.
+   */
   inventory: Inventory = new Inventory();
   constructor(definition?: Partial<Player>) {
     super();
     Object.assign(this, definition);
   }
-  //Gets the player inventory object from the Sugarcube variables.
+  /**
+   * Gets the player inventory object.
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   */
   getInventory(variables?: any): Inventory {
     if (!variables) variables = Variables();
     return (variables.player.inventory = new Inventory(
       variables.player.inventory
     ));
   }
-  //Gets the player inventory object for the currently equipped/wearing items from the Sugarcube variables.
+  /**
+   * Gets the player inventory object for the currently equipped/wearing items.
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   */
   getEquippedInventory(variables?: any): Inventory {
     if (!variables) variables = Variables();
     return (variables.player.equippedItems = new Inventory(
       variables.player.equippedItems
     ));
   }
-  //Checks if the player wears or has the specified item (by name) equipped
+  /**
+   * Checks if the player wears or has the specified item (by name) equipped
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   */
   wearing(itemName: string, variables?: any): boolean {
     return this.getEquippedInventory(variables).has(itemName);
   }
-  //Checks if the player has an item in their inventory.
+  /**
+   * Checks if the player has an item in their inventory.
+   * @param count the minimum number of this item needed.
+   */
   has(itemName: string, count: number = 1) {
     return this.getInventory().has(itemName, count);
   }
@@ -57,7 +80,10 @@ class Player extends LivingCharacter {
     let player = Variables().player as Player;
     player.gender = gender;
   }
-  //Use this to change the player's sex.
+  /**
+   * Use this to change the player's sex.
+   * @param player The player SugarCube object where to take the needed data from (optional)
+   */
   setSex(sex: Sex, player?: Player) {
     if (!player) player = Variables().player as Player;
     player.sex = sex;
@@ -100,17 +126,27 @@ class Player extends LivingCharacter {
         break;
     }
   }
+  /**
+   * Achievements are used to keep track of what things are already done before.
+   */
   setAchievement(achievement: string): void {
     (Variables().achievements as string[]).pushUnique(achievement);
   }
-  //Achievements are used to keep track of what things are already done before.
+  /**
+   * Achievements are used to keep track of what things are already done before.
+   */
   hasAchievement(achievement: string): boolean {
     return (Variables().achievements as string[]).includes(achievement);
   }
+  /**
+   * Achievements are used to keep track of what things are already done before.
+   */
   removeAchievement(achievement: string): void {
     (Variables().achievements as string[]).delete(achievement);
   }
-  //Get how the specified NPC calls the player (how is the player addressed)
+  /**
+   * Get how the specified NPC calls the player (how is the player addressed)
+   */
   getAddressing(npc: Npc) {
     let variables = Variables();
     let $player: Player = variables.player;
@@ -130,13 +166,14 @@ class Player extends LivingCharacter {
     var specific = $addressing[npc.status];
     return specific ? specific : result;
   }
-  //Bind a HTML DOM element with a property. So that when the element value is changed the property changes too and the other way around.
-  //Parameters:
-  //id: ID of the HTML element that will be bind to the variable
-  //parentVariable: The parent variable or source property that contains the target property
-  //propertyName: The name of the target property in the parent variable
-  //onChanged: (optional, default:null) Extra function to execute when the element value is changed. If this function returns a value, that value will be used instead of the element's value.
-  //displayId: (optional) Only for range elements. It will apply the range value to the input with the specified id. So the player can see its current value.
+  /**
+   * Bind a HTML DOM element with a property. So that when the element value is changed the property changes too and the other way around.
+   * @param id ID of the HTML element that will be bind to the variable
+   * @param parentVariable The parent variable or source property that contains the target property
+   * @param propertyName The name of the target property in the parent variable
+   * @param onChanged (optional, default:null) Extra function to execute when the element value is changed. If this function returns a value, that value will be used instead of the element's value.
+   * @param displayId (optional) Only for range elements. It will apply the range value to the input with the specified id. So the player can see its current value.
+   */
   bindSettingDom(
     id: string,
     parentVariable: object,
@@ -178,11 +215,12 @@ class Player extends LivingCharacter {
         break;
     }
   }
-  //Bind a pair of HTML DOM elements indicating a range with their respective properties of a variable. So that when the element value is changed the property changes too and the other way around.
-  //Parameters:
-  //elementIdBase: Used to get the id of the HTML elements. "From" and "To" will be appended to get the two element's IDs
-  //parentVariable: The variable that contains the from and to properties to bind.
-  //propertyBaseName: Used to get the name of the properties. The first letter will be uppercase'd, and "from" and "to" will be prepended to get the two property names.
+  /**
+   * Bind a pair of HTML DOM elements indicating a range with their respective properties of a variable. So that when the element value is changed the property changes too and the other way around.
+   * @param elementIdBase Used to get the id of the HTML elements. "From" and "To" will be appended to get the two element's IDs
+   * @param parentVariable The variable that contains the from and to properties to bind.
+   * @param propertyBaseName Used to get the name of the properties. The first letter will be uppercase'd, and "from" and "to" will be prepended to get the two property names.
+   */
   bindRangeSettingsDom(
     elementIdBase: string,
     parentVariable: object,
@@ -235,7 +273,10 @@ class Player extends LivingCharacter {
     this.getEquippedInventory(variables).addNpc(baby, "holding", "child"); //Make the player hold the newborn for now
     return baby;
   }
-  //Checks if the player is inside home
+  /**
+   * Checks if the player is inside home
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   */
   isHome(variables?: any): boolean {
     if (!variables) variables = Variables();
     return (

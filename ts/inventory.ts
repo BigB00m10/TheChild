@@ -4,46 +4,99 @@ interface Array<T> {
    */
   firstOrDefault<T>(predicate: Function): T;
 }
-//Array extension to return the first item that makes the predicate return true or null
+/**
+ * Array extension to return the first item that makes the predicate return true or null
+ */
 Array.prototype.firstOrDefault = function <T>(predicate: Function) {
   return this.reduce((accumulator: T, currentValue: T) => {
     if (!accumulator && predicate(currentValue)) accumulator = currentValue;
     return accumulator;
   }, null);
 };
-//A product does not represent a physical item but something that can be bought and transfer a corresponding item to an inventory.
+/**
+ * A product does not represent a physical item but something that can be bought and transfer a corresponding item to an inventory.
+ */
 class Product {
-  name: string; //Product name displayed. If itemName is not specified it will also be the item's name.
-  itemName?: string; //The item's name (once purchased)
+  /**
+   * Product name displayed. If itemName is not specified it will also be the item's name.
+   */
+  name: string;
+  /**
+   * The item's name (once purchased)
+   */
+  itemName?: string;
   price: number;
   description: string;
-  packQuantity?: number = 1; //How many items are transferred to the inventory for each product bought
-  available?: number; //How many times this product can be purchased. This value will decrease after each purchase and set soldOut to true when it reaches zero.
-  soldOut?: boolean = false; //If set to true it will not appear available for purchasing.
-  tags: Set<string>; //Keywords related to the product. The first keyword indicates where the item go after receiving it. It will be used to filter the products in the future.
-  use?: (characterUid?: Uid) => any; //Action executed when this item is used from an inventory (not through an interaction) by the player or another character indicated by the Uid
-  removed?: (characterUid?: Uid) => void; //Event to fire when the item is removed through an interaction or the player pressing the inventory button.
-  remove?: (characterUid?: Uid) => void; //Action executed when the remove button is pressed from a list of worn items (not through an interaction) by the player or another character indicated by the Uid
+  /**
+   * How many items are transferred to the inventory for each product bought
+   */
+  packQuantity?: number = 1;
+  /**
+   * How many times this product can be purchased. This value will decrease after each purchase and set soldOut to true when it reaches zero.
+   */
+  available?: number;
+  /**
+   * If set to true it will not appear available for purchasing.
+   */
+  soldOut?: boolean = false;
+  /**
+   * Keywords related to the product. The first keyword indicates where the item go after receiving it. It will be used to filter the products in the future.
+   */
+  tags: Set<string>;
+  /**
+   * Collection of types and values to indicate that this product is incompatible with something else.
+   * Used to determine if some NPC characteristic (boobs or pregnant belly) cannot be drawn when this product is equipped.
+   */
+  incompatible?: Record<string, any[]>;
+  /**
+   * Action executed when this item is used from an inventory (not through an interaction) by the player or another character indicated by the Uid
+   */
+  use?: (characterUid?: Uid) => any;
+  /**
+   * Event to fire when the item is removed through an interaction or the player pressing the inventory button.
+   */
+  removed?: (characterUid?: Uid) => void;
+  /**
+   * Action executed when the remove button is pressed from a list of worn items (not through an interaction) by the player or another character indicated by the Uid
+   */
+  remove?: (characterUid?: Uid) => void;
   constructor(init?: Product) {
     Object.assign(this, init);
   }
-  //Create an item from this product and add it to the provided inventory. The product availability is not altered by this method.
+  /**
+   * Create an item from this product and add it to the provided inventory. The product availability is not altered by this method.
+   * @param count The number of products to transfer (Default:1)
+   */
   transferTo?(inventory: Inventory, count: number = 1) {
     inventory.add({
       name: this.itemName ? this.itemName : this.name,
       description: this.description,
       count: count * this.packQuantity,
       tags: this.tags,
+      incompatible: this.incompatible,
     });
   }
 }
-//Represents a physical item.
+/**
+ * Represents a physical item.
+ */
 class Item {
   name: string;
   description: string;
   count?: number = 1;
-  tags: Set<string>; //Keywords related to this item. It will be used to filter the items in a inventory in the future.
-  extra?: any; //Extra item data
+  /**
+   * Keywords related to this item. It will be used to filter the items in a inventory in the future.
+   */
+  tags: Set<string>;
+  /**
+   * Extra item data
+   */
+  extra?: any;
+  /**
+   * Collection of types and values to indicate that this item is incompatible with something else.
+   * Used to determine if some NPC characteristic (boobs or pregnant belly) cannot be drawn when this item is equipped.
+   */
+  incompatible?: Record<string, any[]>;
   constructor(init?: Item) {
     Object.assign(this, init);
   }
@@ -164,9 +217,13 @@ class Inventory {
     this.items.delete(this.getNpc(npc));
   }
 }
-//The only store available right now, if more are created maybe a parent abstract class should be created.
+/**
+ * The only store available right now, if more are created maybe a parent abstract class should be created.
+ */
 class OnlineStore {
-  //Updating this class does not automatically updates the $onlineStore story variable unless a new product is added, the version number is used to know if the story variable object should be updated when loading an old save.
+  /**
+   * Updating this class does not automatically updates the $onlineStore story variable unless a new product is added, the version number is used to know if the story variable object should be updated when loading an old save.
+   */
   version: number = 4;
   products: Product[] = [
     new Product({
@@ -482,6 +539,24 @@ class OnlineStore {
       price: 200,
       tags: new Set(["player", "consumable", "medicine"]),
     }), //Breast reduction pill
+    new Product({
+      name: "Sundress",
+      description:
+        "Also called summer dress. A loose fitting one-piece dress with thin shoulder straps and made of fine cotton",
+      price: 85,
+      tags: new Set(["wardrobe", "clothes", "wearable", "body"]),
+      incompatible: {
+        tits: <TitSize[]>["large", "modest", "small"],
+        pregnantTrimester: [3, 2],
+      },
+    }), //Sundress
+    new Product({
+      name: "Gladiator sandals",
+      description:
+        "Shoes made of straps wrapping the lower leg, exposing toes and feet.",
+      price: 65,
+      tags: new Set(["wardrobe", "clothes", "wearable", "shoes", "feet"]),
+    }), //Gladiator sandals
   ];
   bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
   purchaseTime: Date; //Time of the first undelivered purchase.

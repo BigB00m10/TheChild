@@ -33,6 +33,11 @@ abstract class LivingCharacter {
   hasPussy: boolean;
   hasPenis: boolean;
   /**
+   * Set to true when the player goes to sleep so the bed passage knows that the player just woke up and to know if energy should be reduced or restored.
+   * On NPCs it's used to indicate that their eyes in the character image should stay closed.
+   */
+  sleeping: boolean;
+  /**
    * Warning! On NPCs it needs to be updated using hasTits(). Which is done automatically when starting an interaction.
    */
   hasBoobs?: boolean;
@@ -401,6 +406,39 @@ abstract class Npc extends LivingCharacter {
    */
   wearing(itemName: string, npc?: Npc, variables?: any): boolean {
     return this.getEquippedInventory(npc, variables).has(itemName);
+  }
+  /**
+   * Checks if the NPC has any items with the indicated incompatibility (type and value)
+   * @param type The type of incompatibility (like tits or pregnancyTrimester)
+   * @param value The value to check
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   */
+  wearingIncompatible(
+    type: string,
+    value: any,
+    npc?: Npc,
+    variables?: any
+  ): boolean {
+    return this.getEquippedInventory(npc, variables).items.firstOrDefault(
+      (item: Item) => {
+        let incompatible = item.incompatible[type];
+        return incompatible ? incompatible.includes(value) : false;
+      }
+    );
+  }
+  /**
+   * Check if a pregnant belly should be drawn
+   * @param trimester the trimester to check (from 1 to 3)
+   * @param npc The target NPC. If not specified, the active NPC will be selected
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   */
+  canDrawPregnant(trimester: 1 | 2 | 3, npc?: Npc, variables?: any): boolean {
+    return (
+      Math.floor(LivingCharacter.getPregnancyMonth(npc, variables) / 3) ==
+        trimester &&
+      !this.wearingIncompatible("pregnantTrimester", trimester, npc)
+    );
   }
   /**
    * Achievements are used for keeping track of things done or things in effect.
@@ -832,10 +870,13 @@ class Person extends Npc {
         ? "short"
         : person.age == 2
         ? ["short", "medium"].random()
-        : ["short", "medium", "long"].random();
+        : (person.gender == "boy"
+            ? ["short", "medium"]
+            : ["short", "medium", "long"]
+          ).random();
     let hairStyles = [...gen.hairStyles];
     if (person.gender == "boy")
-      hairStyles.delete("pig tails", "twin tails", "ponytail");
+      hairStyles.delete("pig tails", "twin tails", "ponytail", "shoulder");
     person.hairStyle = hairStyles.random();
     person.eyeColor = gen.eyeColors.random();
     person.uid = getUid();
@@ -1027,6 +1068,16 @@ class Person extends Npc {
     window.Person.removeAchievement("playerNoticedPregnancy", mom);
     return baby;
   }
+  /**
+   * Check if tits of the indicated size can be drawn
+   * @param person The target person. If not specified, the active NPC will be selected
+   */
+  canDrawTits(size: TitSize, person?: Person): boolean {
+    return (
+      person.titSize == size &&
+      !person.wearingIncompatible("tits", size, person)
+    );
+  }
 }
 interface GenderGeneration {
   fromAge: number;
@@ -1047,7 +1098,7 @@ class PersonGeneration {
   };
   femalePercentage: number = 50;
   hermPercentage: number = 0;
-  static naturalHairStyles = ["curly", "wavy", "straight"];
+  static naturalHairStyles = ["curly", "wavy", "straight", "shoulder"];
   hairStyles = [
     ...PersonGeneration.naturalHairStyles,
     "emo bangs",

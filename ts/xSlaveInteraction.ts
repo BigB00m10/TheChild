@@ -146,6 +146,7 @@ window.Interactions["slave"] = {
         <<elseif $npc.love gt 50>>\
           $npc.GenPronoun <<thirdPerson "leaves" "leave">> <<- $npc.pronoun>>self completely open as $npc.genPronoun <<thirdPerson "smiles" "smile">> at you<<emoji ♥>>.
         <</if>>`,
+      npcStats:["pose=floor"],
       altOptions(npc: Npc, current: NpcInteractionOptions) {
         if ((npc as Person).haveClothes) return current;
         return afterStrip(); //If slave has no clothes we can skip stripping.
@@ -2093,15 +2094,17 @@ window.Interactions["slave"] = {
         as $npc.genPronoun slightly <<thirdPerson "rotates" "rotate">> back and forth on the end of the rope.
         <<set $npc.location = "tortRafters">>`,
       npcStats: (_npc) => {
+        let stats = ["pose=suspended"];
         switch (Temporary().reaction) {
           case "lust":
-            return ["lust+10%"];
+            stats.push("lust+10%");
           case "love":
-            return ["love+5%"];
+            stats.push("love+5%");
           case "obedience":
           case "resistance":
-            return ["obedience+10", "freedomWish+10"];
+            stats.push("obedience+10", "freedomWish+10");
         }
+        return stats;
       },
       next: {
         stepBack: {
@@ -2131,7 +2134,7 @@ window.Interactions["slave"] = {
           $npc.location='basement'
         >>\
         (Rope added back to your inventory)`,
-      npcStats: ["fear-10", "love+5%"],
+      npcStats: ["pose=idle", "fear-10", "love+5%"],
       next: {
         toBasement: {
           optionText: "🚪 Return to main basement",

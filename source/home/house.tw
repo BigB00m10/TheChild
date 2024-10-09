@@ -22,6 +22,7 @@
     <<keyOption [[Leave your room|main]] 🚪>>
     <<keyOption [[Open your computer|pc]] 💻>>
     <<keyOption [[Bathroom|bathroom]] 🛀>>
+    <<homeSpaceContainerOption 'BedRoom' 'wardrobe'>>\
     <<sleepOption>>\
     <<keyAction 'Fast forward time' ⏩>>\
         <<dialog 'Fast forward time'>>\

@@ -32,6 +32,7 @@ abstract class HomeSpace {
   abstract passageName: string;
   getContents(variables?: any): Inventory {
     if (!variables) variables = Variables();
+    if (!variables[this.passageName]) variables[this.passageName] = this;
     return (variables[this.passageName].contents = new Inventory(
       variables[this.passageName].contents
     ));

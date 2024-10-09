@@ -396,7 +396,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
   <</if>><<if $npc.love gte 80>>\
     <<if $npc.haveClothes>>\
       $npc.GenPronoun happily <<thirdPerson "takes" "take">> all of $npc.possessive clothes off.
-    <<elseif Person.getInventory().has('cooking apron')>>\
+    <<elseif Person.wearing('cooking apron')>>\
       $npc.GenPronoun happily <<thirdPerson "takes" "take">> off $npc.possessive apron.
     <</if>>\
     <<if $npc.lust gte 60>>\
@@ -544,11 +544,12 @@ window.Interactions["okSleepWithPlayerDemand"] = {
       optionText: "😴 Cuddle with $npc.name and sleep.",
       contents:
         "You get close to $npc.name under the sheets and tenderly hold $npc.name close in your arms until you two fall sleep.",
-      npcStats: ["love+10", "fear-20"],
+      npcStats: ["love+10", "fear-20", "+sleeping"],
       next: WakeUpMorning.options,
     },
     sleep: {
       optionText: "💤 Just sleep.",
+      npcStats: ["+sleeping"],
       contents: "<<sleep>>",
       action: true,
     },
@@ -570,12 +571,12 @@ window.Interactions["wakeUpAfterNightTogether"] = {
   <</switch>>`,
   options: {
     wakeHer: {
-      npcRequirements:["sleeping"],
+      npcRequirements: ["sleeping"],
       optionText: "⏰ Wake $npc.pronoun up.",
       contents: `You try to wake $npc.pronoun up.
       $npc.GenPronoun <<thirdPerson "groans" "groan">> and <<thirdPerson "wakes" "wake">> up.<<set $personWokeUp = true>>
       $npc.GenPronoun <<thirdPerson "is" "are">> still on top of you lying naked as $npc.genPronoun <<thirdPerson "looks" "look">> you in the eye.`,
-      npcStats: ["fear-20", "love+5%", "freedomWish-5", "sleeping=false"],
+      npcStats: ["fear-20", "love+5%", "freedomWish-5", "-sleeping"],
       next: () =>
         ({
           kiss: {
@@ -602,7 +603,7 @@ window.Interactions["wakeUpAfterNightTogether"] = {
           minutesCost: 10,
           contents: `<<if $npc.age gt 4>><<npcSay "Ah...   .  . This feels soo good">>
           <</if>>$npc.GenPronoun <<thirdPerson "screams" "scream">> and <<thirdPerson "orgasms" "orgasm">>.<<npcCum>>`,
-          npcStats: ["love+10", "freedomWish-10", "sleeping=false"],
+          npcStats: ["love+10", "freedomWish-10", "-sleeping"],
         },
         back: WakeUpMorning.back,
       },
@@ -627,7 +628,7 @@ window.Interactions["wakeUpAfterNightTogether"] = {
       $npc.GenPronoun <<thirdPerson "moans" "moan">> loudly and <<thirdPerson "grips" "grip">> the bedsheets tightly.
       As $npc.genPronoun <<thirdPerson "clenches" "clench">> $npc.possessive butt cheeks in pleasure<<if $npc.hasPussy>> wetting the bed a little<</if>>. 
       $npc.Possessive face is bright red.`,
-      npcStats: ["love+10", "freedomWish-10", "sleeping=false"],
+      npcStats: ["love+10", "freedomWish-10", "-sleeping"],
     },
     touchBoobs: {
       npcRequirements: ["hasBoobs"],

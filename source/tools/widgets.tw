@@ -253,22 +253,19 @@
         let person = Object.assign({},_args[0]);
         if(!person.expression)
             person.expression = person.status == 'citizen' || person.fear < 10 || person.love > person.fear + 20 ? 'smile' : 'frown';
-        if(window.tempObjectUrls)
-            window.tempObjectUrls.forEach(url=>URL.revokeObjectURL(url));
-        window.tempObjectUrls = [];
         if(!Assets.character.hair.spriteCollections.firstOrDefault(c=>c.match.hairStyle == person.hairStyle))
             person.hairStyle = 'straight';
-        personImage(person).then(url => url && window.tempObjectUrls.push(document.getElementById('characterImageFixed').style.backgroundImage = `url(${url})`));
+        personImage(person).then(url => url && tempObjectUrl(document.getElementById('characterImageFixed').style.backgroundImage = `url(${url})`));
         personImage(person, 'animation').then(urlOpen =>{
             let anim = document.getElementById('characterImageAnim');
             if(!urlOpen) {
                 anim.style.display = 'none';
                 return;
             }
-            anim.src = urlOpen;
+            anim.src = tempObjectUrl(urlOpen);
             person.eyesClosed = true;
             personImage(person, 'animation').then(urlClose =>{
-                window.tempObjectUrls.push(urlOpen, urlClose);
+                tempObjectUrl(urlClose);
                 let stop = false, blink;
                 $(document).on(':passageinit', ()=>stop=true);
                 (blink = ()=>setTimeout(()=>{
@@ -463,18 +460,24 @@
         });
     >><</done>>
 <</widget>>
-<<widget itemImage>>/*Max size: 212x183*/
-  <<set _url = Assets.item[_args[0]]>>
-  <<if _url>>
-    <img @src="_url"><<unset _url>>
-  <</if>>
-<</widget>>
 <<widget scenery>>\
     <<set $scenery = _args[0];_url = Assets.scenery[$scenery]>>
     <<if _url && !$settings.hideScenery>>\
         <img class="centerHouse" @src="_url"><<unset _url>>
     <</if>>\
 <</widget>>\
+<<widget homeSpaceContainerOption>>
+    <<set
+        _actionText = 'Check the ' + _args[1];
+        _dialogTitle = _args[0].toLowerCase().toUpperFirst() + ' ' + _args[1].toUpperFirst();
+        _homeSpaceItems = window[_args[0]].getContents().items;
+    >>
+    <<if _homeSpaceItems.length>><<keyAction _actionText 🗄>><<dialog _dialogTitle>>\
+        <<for _item range _homeSpaceItems>>\
+            <<print OnlineStore.getInventoryLine(_item)>><br>
+        <</for>>\
+    <</dialog>><</keyAction>><br><</if>>
+<</widget>>
 :: workOption {"position":"875,0"}
 <<if $player.job && !$player.workedToday && Now.isBetween("7:00 AM", "2:00 PM")>>\
     <<workOption>>

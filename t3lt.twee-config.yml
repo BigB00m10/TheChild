@@ -89,3 +89,5 @@ sugarcube-2:
     npcInteractionLayout:
       name: npcInteractionLayout
       container: true
+    homeSpaceContainerOption:
+      name: homeSpaceContainerOption

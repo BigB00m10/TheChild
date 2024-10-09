@@ -311,6 +311,7 @@ Macro.add("npcInteraction", {
               break;
             default:
               let match = /(\w+)(%?)([+-])(\d+)(%?)/.exec(change);
+              if (!match) match = /(\w+)(=)(\w+)/.exec(change);
               varName = match[1];
               varPath = "variables.npc." + varName;
               value = eval(varPath) as number;
@@ -329,6 +330,12 @@ Macro.add("npcInteraction", {
                   console.error(err);
                   console.info(varPath);
                 }
+              } else if (match[2] == "=") {
+                try {
+                  value = eval(match[3]);
+                } catch {
+                  value = "'" + match[3] + "'";
+                }
               } else {
                 result += change.beautifyStat();
                 value = (
@@ -341,7 +348,8 @@ Macro.add("npcInteraction", {
                       )
                 ) as number;
               }
-              value = Math.ceil(value).clamp(0, 100);
+              if (typeof value == "number")
+                value = Math.ceil(value).clamp(0, 100);
               break;
           }
           eval(`${varPath} = ${value}`);

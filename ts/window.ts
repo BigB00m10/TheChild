@@ -1,4 +1,6 @@
 interface Assets {
+  pornMovie: Record<string, string>;
+  item: Record<string, string>;
   character: Record<string, CharacterGraphicLayer>;
   icon: Record<string, string>;
 }
@@ -22,12 +24,20 @@ interface Window {
   Kitchen: Kitchen;
   Garden: Garden;
   OnlineStore: OnlineStore;
+  /**
+   * Interactions will be populated in the next files.
+   * Typescript files are processed in alphabetical order, that's why letters are prepended to the file names.
+   */
   Interactions: Record<string, NpcInteractionCollection>;
   PersonUniquenessPresets: PersonUniqueness[];
   PornMovie: PornMovie;
   Temporary: () => any;
   Variables: () => any;
   Assets: Assets;
+  /**
+   * Make this object URL revoked on the next passage and return the same URL for convenience
+   */
+  tempObjectUrl: (url: string) => string;
 }
 window.Now = new Now();
 window.Homes = Homes;
@@ -48,8 +58,6 @@ window.PersonUniquenessPresets = personUniquenessPresets;
 window.PornMovie = new PornMovie();
 window.Temporary = Temporary;
 window.Variables = Variables;
-//Interactions will be populated in the next files.
-//Typescript files are processed in alphabetical order, that's why letters are prepended to the file names.
 window.Interactions = {};
 let keyBuffer = [];
 let lastKeyTime = Date.now();
@@ -126,6 +134,11 @@ document.addEventListener("keypress", (evt) => {
     Engine.show();
   }
 });
+let tempObjectUrls = [];
+window.tempObjectUrl = (url: string) => {
+  tempObjectUrls.push(url);
+  return url;
+};
 $(document).on(":passageinit", () => {
   if (Save.onLoad.size == 0) {
     Save.onLoad.add((save) => {
@@ -346,11 +359,14 @@ $(document).on(":passageinit", () => {
         if (waveyIndex != -1)
           variables.settings.childGeneration.hairStyles[waveyIndex] = "wavy";
       }
-      if (!variables.kitchen) variables.kitchen = new Kitchen();
       variables.player.inventory.items.forEach((item: Item) => {
         if (Array.isArray(item.tags)) item.tags = new Set(item.tags);
       });
     });
+  }
+  if (tempObjectUrls.length) {
+    tempObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+    tempObjectUrls = [];
   }
 });
 $(document.head).append(`<link rel='icon' href='${window.Assets.icon.fav}'>`);

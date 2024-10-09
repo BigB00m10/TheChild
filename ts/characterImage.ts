@@ -23,7 +23,7 @@ interface Sprite {
 }
 interface SpritePoseCollection {
   sprites: Record<string, Sprite>; //Sprites per pose
-  match: object; //One of the sprites in this collection will be drawn only if these properties match the current character properties
+  match: any; //One of the sprites in this collection will be drawn only if these properties match the current character properties
   colorShift?: string; //Name of the color shift to apply to all the sprites in the collections (overrides the one specified in the module)
 }
 interface CharacterGraphicLayer {
@@ -109,7 +109,7 @@ let colorShifts: Record<string, ColorShiftCollection> = {
       black: { h: -0.05, s: 0.27, b: -0.56 },
       //white: { h: -0.07, s: 0.11, b: 0 },
       pale: { h: -0.03, s: -0.08, b: 0 },
-      tan: { h: -0.3, s: 0.35, b: -0.25 },
+      tan: { h: -0.06, s: 0.4, b: -0.1 },
       brown: { h: -0.05, s: 0.45, b: -0.26 },
       olive: { h: -0.04, s: 0.27, b: -0.17 },
     },
@@ -201,6 +201,27 @@ function hsb2rgb(
   destination[index + 1] = Math.round(green * 255);
   destination[index + 2] = Math.round(blue * 255);
 }
+/**
+ * Create a canvas of the same size as the sprite and write the sprite image data into it.
+ * @param alteredPixels to use an altered version of the pixels
+ */
+function spriteToCanvas(
+  sprite: Sprite,
+  alteredPixels?: Uint8ClampedArray
+): HTMLCanvasElement {
+  const spriteCanvas = document.createElement("canvas");
+  spriteCanvas.width = sprite.width;
+  spriteCanvas.height = sprite.height;
+  let spriteContext = spriteCanvas.getContext("2d");
+  spriteContext.putImageData(
+    new ImageData(alteredPixels || sprite.pixels, sprite.width, sprite.height, {
+      colorSpace: "display-p3",
+    }),
+    0,
+    0
+  );
+  return spriteCanvas;
+}
 interface Window {
   personImage: (
     person: Person,
@@ -213,6 +234,7 @@ window.personImage = async (
   cache?: ImageCacheType,
   pose?: string
 ): Promise<string> => {
+  if (Variables().settings.hideCharacter) return null;
   let fullCanvas = document.createElement("canvas");
   fullCanvas.width = <number>(<unknown>window.Assets.character.neededWidth);
   fullCanvas.height = <number>(<unknown>window.Assets.character.neededHeight);
@@ -221,10 +243,8 @@ window.personImage = async (
   if (pose == undefined) pose = $c.pose || "idle";
   let middle = fullCanvas.width / 2;
   let bottom = fullCanvas.height; //Middle-bottom is the point of origin. The sprites are drawn relative to this point.
-  //fullCanvasContext.clearRect(0, 0, fullCanvas.width, fullCanvas.height);
   let charPose = personPoses[pose];
-  if(!charPose)
-    return null;
+  if (!charPose) return null;
   let afterBaseIndex = charPose.paintOrder.indexOf(charPose.baseCache) + 1;
   let afterOffscreenIndex =
     charPose.paintOrder.indexOf(charPose.offscreenCache) + 1;
@@ -300,9 +320,6 @@ window.personImage = async (
       );
     if (!spriteCollection) return;
     let sprite = spriteCollection.sprites[pose];
-    let spriteCanvas = document.createElement("canvas"); //Canvas used to convert the pixel values into an image ready to draw
-    spriteCanvas.width = sprite.width;
-    spriteCanvas.height = sprite.height;
     let pixels = sprite.pixels;
     //#region color shift
     let colorShiftName =
@@ -336,16 +353,8 @@ window.personImage = async (
       }
     }
     //#endregion
-    let spriteContext = spriteCanvas.getContext("2d");
-    spriteContext.putImageData(
-      new ImageData(pixels, sprite.width, sprite.height, {
-        colorSpace: "display-p3",
-      }),
-      0,
-      0
-    );
     fullCanvasContext.drawImage(
-      spriteCanvas,
+      spriteToCanvas(sprite, pixels),
       middle + sprite.x,
       bottom + sprite.y
     );

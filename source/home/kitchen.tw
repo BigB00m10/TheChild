@@ -11,12 +11,8 @@ You are currently standing in your kitchen.<<if _cook>> _cook.name is in charge 
         <<set $player.energy = ($player.energy + 18).clamp(0, 100)>>
         <<run Engine.show()>>
     <</keyAction>>: 45min + 18 Energy
-    <<if Kitchen.getContents().items.length>><<keyAction 'Check the cabinet' 🗄>><<dialog 'Kitchen Cabinet'>>\
-        <<for _item range Kitchen.getContents().items>>\
-            <<print OnlineStore.getInventoryLine(_item)>>
-        <</for>>\
-    <</dialog>><</keyAction>>
-    <</if>><<if _cook>>\
+    <<homeSpaceContainerOption 'Kitchen' 'cabinet'>>\
+    <<if _cook>>\
         <<keyAction 'Set feeding rules' ⚙>>
             <<showCookFeedingRules>>
         <</keyAction>>

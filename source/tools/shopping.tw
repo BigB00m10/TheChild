@@ -104,6 +104,9 @@ You received: <<- $onlineStore.bought.items.map(function(item){return item.count
 <</if>><<if OnlineStore.isBought("infant formula")>>\
     ''You store the infant formula in the kitchen cabinet.''
 
+<</if>><<if OnlineStore.boughtHouseClothes()>>\
+    ''Your new clothes are stored in your bedroom wardrobe.''
+
 <</if>>\
 <<unlessEmergency>>\
     <<keyOption [[Go back inside|main]] 🔙>>

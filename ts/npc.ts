@@ -420,6 +420,7 @@ abstract class Npc extends LivingCharacter {
     npc?: Npc,
     variables?: any
   ): boolean {
+    [npc, variables] = Npc.obtain(npc, variables);
     return this.getEquippedInventory(npc, variables).items.firstOrDefault(
       (item: Item) => {
         let incompatible = item.incompatible[type];
@@ -434,10 +435,11 @@ abstract class Npc extends LivingCharacter {
    * @param variables The SugarCube Variables object where to take the needed data from (optional)
    */
   canDrawPregnant(trimester: 1 | 2 | 3, npc?: Npc, variables?: any): boolean {
+    [npc, variables] = Npc.obtain(npc, variables);
     return (
       Math.floor(LivingCharacter.getPregnancyMonth(npc, variables) / 3) ==
         trimester &&
-      !this.wearingIncompatible("pregnantTrimester", trimester, npc)
+      !window.Person.wearingIncompatible("pregnantTrimester", trimester, npc, variables)
     );
   }
   /**
@@ -1072,10 +1074,11 @@ class Person extends Npc {
    * Check if tits of the indicated size can be drawn
    * @param person The target person. If not specified, the active NPC will be selected
    */
-  canDrawTits(size: TitSize, person?: Person): boolean {
+  canDrawTits(size: TitSize, person?: Person, variables?: any): boolean {
+    [person, variables] = <[Person, any]>Npc.obtain(person, variables);
     return (
       person.titSize == size &&
-      !person.wearingIncompatible("tits", size, person)
+      !window.Person.wearingIncompatible("tits", size, person, variables)
     );
   }
 }

@@ -1,12 +1,9 @@
 interface Array<T> {
-  /*
+  /**
    *Array extension to return the first item that makes the predicate return true or null
    */
   firstOrDefault<T>(predicate: Function): T;
 }
-/**
- * Array extension to return the first item that makes the predicate return true or null
- */
 Array.prototype.firstOrDefault = function <T>(predicate: Function) {
   return this.reduce((accumulator: T, currentValue: T) => {
     if (!accumulator && predicate(currentValue)) accumulator = currentValue;
@@ -60,6 +57,10 @@ class Product {
    * Action executed when the remove button is pressed from a list of worn items (not through an interaction) by the player or another character indicated by the Uid
    */
   remove?: (characterUid?: Uid) => void;
+  /**
+   * The image of this product (in case it's not in window.Assets.item)
+   */
+  imageUrl?: string;
   constructor(init?: Product) {
     Object.assign(this, init);
   }
@@ -103,7 +104,10 @@ class Item {
 }
 class Inventory {
   items: Item[] = [];
-  //Adds the specified item to the inventory optionally overriding the quantity of the number of items to be added
+  /**
+   * Adds the specified item to the inventory
+   * @param quantity The quantity of this item to add to the inventory. If not specified, item.count or 1 will be added.
+   */
   add(item: Item, quantity: number = 0): void {
     const existing: Item = this.items.firstOrDefault(
       (i: Item) => i.name == item.name
@@ -117,8 +121,10 @@ class Inventory {
       this.items.push(destItem);
     }
   }
-  //Removes one item from the inventory, the count indicated, or all of them if the specified count is zero.
-  //Returns the number of items left
+  /**
+   * Removes one item from the inventory, the count indicated, or all of them if the specified count is zero.
+   * @returns the number of items left
+   */
   remove(item: Item, count: number = 1): number {
     if (!item) return;
     if (!count || count >= item.count) {
@@ -126,7 +132,9 @@ class Inventory {
       return 0;
     } else return (item.count -= count);
   }
-  //Get the item with the specified name or starting with the specified word ignoring case.
+  /**
+   * Get the item with the specified name or starting with the specified word ignoring case.
+   */
   get(name: string): Item {
     name = name.toLowerCase();
     let found: Item = this.items.firstOrDefault(
@@ -138,22 +146,30 @@ class Inventory {
       );
     return found;
   }
-  //Same as the remove action but selecting the item by name or starting with the specified word ignoring case.
+  /**
+   * Same as the remove action but selecting the item by name or starting with the specified word ignoring case.
+   */
   removeByName(name: string, count: number = 1): number {
     return this.remove(this.get(name), count);
   }
-  //Check if the inventory contains at least the specified count of items selected by name or, if count not specified, at least one.
+  /**
+   * Check if the inventory contains at least the specified count of items selected by name or, if count not specified, at least one.
+   */
   has(itemName: string, count: number = 0): boolean {
     let item: Item = this.get(itemName);
     if (item === null) return false;
     if (!count) return true;
     return item.count >= count;
   }
-  //Check if the inventory has at least one item of all of the specified by name.
+  /**
+   * Check if the inventory has at least one item of all of the specified by name.
+   */
   hasAll(itemNames: string[]): boolean {
     return itemNames.countWith((n) => this.has(n)) == itemNames.length;
   }
-  //Moves an item from this inventory to another (including all quantity of that item)
+  /**
+   * Moves an item from this inventory to another (including all quantity of that item)
+   */
   move(item: Item, destination: Inventory): void;
   move(itemIndex: number, destination: Inventory): void;
   move(itemOrIndex: number | Item, destination: Inventory): void {
@@ -162,20 +178,28 @@ class Inventory {
     destination.add(item);
     this.items.delete(item);
   }
-  //Moves an item from this inventory to another (including all quantity of that item)
+  /**
+   * Moves an item from this inventory to another (including all quantity of that item)
+   */
   moveByName(itemName: string, destination: Inventory): void {
     let item = this.get(itemName);
     if (item === null) return;
     destination.add(item);
     this.items.delete(item);
   }
-  //Remove all items in this inventory
+  /**
+   * Remove all items in this inventory
+   */
   clear(): void {
     this.items = [];
   }
   constructor(init?: Partial<Inventory>) {
     Object.assign(this, init);
   }
+  /**
+   * Add an NPC to this inventory as an item (used to carry in arms)
+   * @param extraTags Add extra tags (other than the "npc" tag) to the item in the inventory
+   */
   addNpc(npc: Npc, ...extraTags: string[]): void {
     let item = new Item({
       name: `NPC id ${npc.uid}`,
@@ -187,32 +211,42 @@ class Inventory {
     this.add(item);
     npc.location = "unknown";
   }
-  //Get the items in this inventory that have the provided description case-insensitive or null
+  /**
+   * Get the items in this inventory that have the provided description case-insensitive or null
+   */
   withDescription(description: string): Item[] {
     description = description.toLowerCase();
     return this.items.filter(
       (item: Item) => item.description.toLowerCase() == description
     );
   }
-  //Get the items in this inventory that do NOT have the provided description case-insensitive or null
+  /**
+   * Get the items in this inventory that do NOT have the provided description case-insensitive or null
+   */
   withoutDescription(description: string): Item[] {
     description = description.toLowerCase();
     return this.items.filter(
       (item: Item) => item.description.toLowerCase() != description
     );
   }
-  //Gets the indicated NPC if present in this inventory or null
+  /**
+   * Gets the indicated NPC if present in this inventory or null
+   */
   getNpc(npc: Npc): Item {
     const uid = typeof npc == "number" ? npc : npc.uid;
     return this.withDescription("npc").firstOrDefault(
       (item: Item) => item.extra == uid
     );
   }
-  //Checks if this inventory contains the indicated NPC
+  /**
+   * Checks if this inventory contains the indicated NPC
+   */
   hasNpc(npc: Npc): boolean {
     return this.getNpc(npc) != null;
   }
-  //Remove the indicated NPC from this inventory if present
+  /**
+   * Remove the indicated NPC from this inventory if present
+   */
   removeNpc(npc: Npc): void {
     this.items.delete(this.getNpc(npc));
   }
@@ -544,7 +578,7 @@ class OnlineStore {
       description:
         "Also called summer dress. A loose fitting one-piece dress with thin shoulder straps and made of fine cotton",
       price: 85,
-      tags: new Set(["wardrobe", "clothes", "wearable", "body"]),
+      tags: new Set(["bedRoom", "clothes", "wearable", "body"]),
       incompatible: {
         tits: <TitSize[]>["large", "modest", "small"],
         pregnantTrimester: [3, 2],
@@ -555,12 +589,21 @@ class OnlineStore {
       description:
         "Shoes made of straps wrapping the lower leg, exposing toes and feet.",
       price: 65,
-      tags: new Set(["wardrobe", "clothes", "wearable", "shoes", "feet"]),
+      tags: new Set(["bedRoom", "clothes", "wearable", "shoes", "feet"]),
     }), //Gladiator sandals
   ];
-  bought: Inventory = new Inventory(); //Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
-  purchaseTime: Date; //Time of the first undelivered purchase.
-  //Get a product from the store, optionally provide the sugarcube variables object to save computing power.
+  /**
+   * Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
+   */
+  bought: Inventory = new Inventory();
+  /**
+   * Time of the first undelivered purchase.
+   */
+  purchaseTime: Date;
+  /**
+   * Get a product from the store, optionally provide the sugarcube variables object to save computing power.
+   * @param variables The SugarCube Variables object where to take the needed data from (optional)
+   */
   get(name: string, variables?: any): Product {
     if (!variables) variables = Variables();
     let store: OnlineStore = variables.onlineStore as OnlineStore;
@@ -571,12 +614,17 @@ class OnlineStore {
     if (index == -1) return null;
     return (store.products[index] = new Product(store.products[index]));
   }
-  //Get the a product's base class to get access to the methods defined in that product or the initial field values. Not the actual values.
+  /**
+   * Get the a product's base class to get access to the methods defined in that product or the initial field values. Not the actual values.
+   */
   getBase(name: string): Product {
     return this.products.firstOrDefault(
       (p: Product) => p.name.toLowerCase() == name.toLowerCase()
     );
   }
+  /**
+   * @returns the product index of this item and the base text to show in an inventory user interface
+   */
   private internalInventoryLine(item: Item): [number, string] {
     const index = this.products.findIndex(
       (p: Product) =>
@@ -588,6 +636,11 @@ class OnlineStore {
       (item.count && item.count > 1 ? item.count + " " : "") + item.name,
     ];
   }
+  /**
+   * @param item A non equipped item (important)
+   * @param characterUid For the "Use" button to know to which character it should be used (Player by default)
+   * @returns markup that shows a line in an inventory user interface indicating the number available of this item and buttons for different actions about this item, if available.
+   */
   getInventoryLine(item: Item, characterUid: Uid = 0): string {
     let [index, result] = this.internalInventoryLine(item);
     if (item.tags.has("garbage"))
@@ -598,6 +651,11 @@ class OnlineStore {
       ` <<button "use">><<run OnlineStore.products[${index}].use(${characterUid})>><</button>>`
     );
   }
+  /**
+   * @param item An equipped item (important)
+   * @param characterUid For the "Remove" button to know to which character the unequipping should be applied.
+   * @returns markup that shows a line in an inventory user interface indicating the number available of this item and buttons for different actions about this item, if available.
+   */
   getWornInventoryLine(item: Item, characterUid: Uid = 0): string {
     let [index, result] = this.internalInventoryLine(item);
     if (index == -1 || !this.products[index].remove) return result;
@@ -606,12 +664,21 @@ class OnlineStore {
       ` <<button "remove">><<run OnlineStore.products[${index}].remove(${characterUid})>><</button>>`
     );
   }
-  //Check if a product on the store can be bought with the current available player's money.
+  /**
+   * Check if a product on the store can be bought with the current available player's money.
+   * @param name The name of the product
+   * @param count The amount needed to buy
+   */
   canBuy(name: string, count: number = 1): boolean {
     let variables = Variables();
     return variables.player.cash >= this.get(name, variables).price * count;
   }
-  //Performs a purchase on a product
+  /**
+   * Performs a purchase on a product
+   * @param name The name of the product
+   * @param count The amount of items to purchase
+   * @returns True if the item was successfully bought. False if the player doesn't have enough money.
+   */
   buy(name: string, count: number = 1): boolean {
     let variables = Variables();
     let player = variables.player as Player;
@@ -629,18 +696,30 @@ class OnlineStore {
     if (!store.purchaseTime) store.purchaseTime = variables.now.date;
     return true;
   }
-  //Gets the product or item final destination
+  /**
+   * Gets the product or item final destination
+   * @returns An inventory
+   */
   destination(product: Product | Item): Inventory {
     const destinationName = [...product.tags][0].toUpperFirst();
     if (window[destinationName]?.getContents)
       return window[destinationName].getContents();
     return window.Player.getInventory();
   }
-  //Check if an item it's bought and has a pending delivery
+  /**
+   * Check if an item it's bought and has a pending delivery
+   */
   isBought(itemName: string): boolean {
     return new Inventory(Variables().onlineStore.bought).has(itemName);
   }
-  //Transfer all bought products to the respective destinations.
+  boughtHouseClothes(): boolean {
+    return Variables().onlineStore.bought.items.firstOrDefault((i: Item) =>
+      i.tags.has("bedRoom")
+    );
+  }
+  /**
+   * Transfer all bought products to the respective destinations.
+   */
   receiveBought(): void {
     const variables = Variables();
     const store = <OnlineStore>variables.onlineStore;
@@ -649,18 +728,75 @@ class OnlineStore {
     store.bought.clear();
     store.purchaseTime = null;
   }
-  //Checks if there are items pending delivery
+  /**
+   * Checks if there are items pending delivery
+   */
   pendingOrder(): boolean {
     return Variables().onlineStore.bought.items.length > 0;
   }
-  //Builds a price string to be displayed
+  /**
+   * Builds a price string to be displayed
+   */
   priceText(product: Product): string {
     return "¤" + product.price;
   }
-  //Builds a text to display as a product name
+  /**
+   * Builds a text to display as a product name
+   */
   productText(product: Product): string {
     let text = product.name;
     if (product.packQuantity > 1) text += " x " + product.packQuantity;
     return text + ": ";
   }
 }
+let drawnItemImageCounter = 0;
+//Outputs an item's image by name. Max recommendable item image size: 212x183
+Macro.add("itemImage", {
+  handler() {
+    const name = this.args[0];
+    let url = window.Assets.item[name];
+    let product: Product;
+    if (!url) {
+      product = window.OnlineStore.getBase(name);
+      url = product.imageUrl;
+    }
+    if (url) {
+      (<HTMLElement>this.output).innerHTML += `<img src="${url}">`;
+      return;
+    }
+    const lowerName = name.toLowerCase();
+    for (const layerName of [
+      "hairBackOrnament",
+      "bodyUnderwear",
+      "socks",
+      "shoes",
+      "topUnderwear",
+      "handWear",
+      "topDress",
+      "bottomUnderwear",
+      "bottomDress",
+      "dress",
+      "headWear",
+    ]) {
+      const spriteCol: SpritePoseCollection = window.Assets.character[
+        layerName
+      ]?.spriteCollections.firstOrDefault(
+        (spriteCol: SpritePoseCollection) =>
+          Object.keys(spriteCol.match).firstOrDefault((key: string) =>
+            key.toLowerCase().includes(lowerName)
+          ) && spriteCol.match.age == "12-15"
+      );
+      if (spriteCol) {
+        const id = "itemImage" + drawnItemImageCounter++;
+        (<HTMLElement>this.output).innerHTML += `<img id="${id}">`;
+        spriteToCanvas(spriteCol.sprites.idle).toBlob((blob) => {
+          url = URL.createObjectURL(blob);
+          if (product) product.imageUrl = url;
+          else window.tempObjectUrl(url);
+          (<HTMLImageElement>document.getElementById(id)).src = url;
+        });
+        return;
+      }
+    }
+  },
+});

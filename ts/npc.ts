@@ -423,7 +423,7 @@ abstract class Npc extends LivingCharacter {
     [npc, variables] = Npc.obtain(npc, variables);
     return this.getEquippedInventory(npc, variables).items.firstOrDefault(
       (item: Item) => {
-        let incompatible = item.incompatible[type];
+        let incompatible = item.incompatible ? item.incompatible[type] : null;
         return incompatible ? incompatible.includes(value) : false;
       }
     );
@@ -439,7 +439,12 @@ abstract class Npc extends LivingCharacter {
     return (
       Math.floor(LivingCharacter.getPregnancyMonth(npc, variables) / 3) ==
         trimester &&
-      !window.Person.wearingIncompatible("pregnantTrimester", trimester, npc, variables)
+      !window.Person.wearingIncompatible(
+        "pregnantTrimester",
+        trimester,
+        npc,
+        variables
+      )
     );
   }
   /**
@@ -773,7 +778,7 @@ class Animal extends Npc {
 }
 const genderList: Gender[] = ["boy", "girl", "nb"];
 class Person extends Npc {
-  version: number = 2;
+  version: number = 3;
   title: string;
   pronoun: string;
   genPronoun: string;
@@ -873,17 +878,33 @@ class Person extends Npc {
         : person.age == 2
         ? ["short", "medium"].random()
         : (person.gender == "boy"
-            ? ["short", "medium"]
+            ? ["short", "short", "medium"]
             : ["short", "medium", "long"]
           ).random();
-    let hairStyles = [...gen.hairStyles];
+    const hairStyles = [...gen.hairStyles];
     if (person.gender == "boy")
       hairStyles.delete("pig tails", "twin tails", "ponytail", "shoulder");
     person.hairStyle = hairStyles.random();
     person.eyeColor = gen.eyeColors.random();
     person.uid = getUid();
     PersonUniqueness.applyRandom(person, applyUniqueness);
+    window.Person.giveInitialClothes(person, variables);
     return person;
+  }
+  /**
+   * Give and equip the initial clothes to the target person.
+   * @param person The target person. If not specified, the active NPC will be selected
+   * @param variables (Optional) The SugarCube Variables object where to take the needed data from.
+   */
+  giveInitialClothes(person?: Person, variables?: any) {
+    const wearing = window.Person.getEquippedInventory(person, variables);
+    if (person.gender == "girl")
+      ["sundress", "gladiator sandals"].forEach((n) =>
+        window.OnlineStore.get(n).transferTo(wearing)
+      );
+    else {
+      //TODO: add boy clothes
+    }
   }
   /**
    * @returns a description of a person personality based on their uniqueness

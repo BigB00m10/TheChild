@@ -162,7 +162,7 @@ $(document).on(":passageinit", () => {
           variables.player
         );
       }
-      let slaves = variables.slaves as Person[];
+      let slaves = <Person[]>window.Person.all((npc) => true, variables);
       if (slaves && slaves.length) {
         let reassignUid = false;
         if (slaves[0].version == 1) {
@@ -220,6 +220,8 @@ $(document).on(":passageinit", () => {
             slave.faceSpermAmount = 0;
             slave.bodySpermAmount = 0;
           }
+          if (slave.haveClothes && (!slave.version || slave.version < 3))
+            window.Person.giveInitialClothes(slave, variables);
           slave.version = window.Person.version;
           if (!slave.uniqueness) PersonUniqueness.applyRandom(slave, false);
           if (!slave.genitals.all) {

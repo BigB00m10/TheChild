@@ -134,13 +134,14 @@ class Inventory {
   }
   /**
    * Get the item with the specified name or starting with the specified word ignoring case.
+   * @param [partial=false] if set to true, it will match an item that contains all the words in the name provided
    */
-  get(name: string): Item {
+  get(name: string, partial: boolean = false): Item {
     name = name.toLowerCase();
     let found: Item = this.items.firstOrDefault(
       (i: Item) => i.name.toLowerCase() == name
     );
-    if (!found)
+    if (!found && partial)
       found = this.items.firstOrDefault((i: Item) =>
         i.name.toLowerCase().split(" ").includesAll(name.split(" "))
       );
@@ -148,24 +149,33 @@ class Inventory {
   }
   /**
    * Same as the remove action but selecting the item by name or starting with the specified word ignoring case.
+   * @param [partial=false] if set to true, it will match an item that contains all the words in the name provided
    */
-  removeByName(name: string, count: number = 1): number {
-    return this.remove(this.get(name), count);
+  removeByName(
+    name: string,
+    count: number = 1,
+    partial: boolean = false
+  ): number {
+    return this.remove(this.get(name, partial), count);
   }
   /**
    * Check if the inventory contains at least the specified count of items selected by name or, if count not specified, at least one.
+   * @param [partial=false] if set to true, it will match an item that contains all the words in the name provided
    */
-  has(itemName: string, count: number = 0): boolean {
-    let item: Item = this.get(itemName);
+  has(itemName: string, count: number = 0, partial: boolean = false): boolean {
+    let item: Item = this.get(itemName, partial);
     if (item === null) return false;
     if (!count) return true;
     return item.count >= count;
   }
   /**
    * Check if the inventory has at least one item of all of the specified by name.
+   * @param [partial=false] if set to true, it will match an item that contains all the words in the name provided
    */
-  hasAll(itemNames: string[]): boolean {
-    return itemNames.countWith((n) => this.has(n)) == itemNames.length;
+  hasAll(itemNames: string[], partial: boolean = false): boolean {
+    return (
+      itemNames.countWith((n) => this.has(n, 0, partial)) == itemNames.length
+    );
   }
   /**
    * Moves an item from this inventory to another (including all quantity of that item)
@@ -180,9 +190,14 @@ class Inventory {
   }
   /**
    * Moves an item from this inventory to another (including all quantity of that item)
+   * @param [partial=false] if set to true, it will match an item that contains all the words in the name provided
    */
-  moveByName(itemName: string, destination: Inventory): void {
-    let item = this.get(itemName);
+  moveByName(
+    itemName: string,
+    destination: Inventory,
+    partial: boolean = false
+  ): void {
+    let item = this.get(itemName, partial);
     if (item === null) return;
     destination.add(item);
     this.items.delete(item);
@@ -228,6 +243,20 @@ class Inventory {
     return this.items.filter(
       (item: Item) => item.description.toLowerCase() != description
     );
+  }
+  /**
+   * @returns the items in this inventory that have the provided tag
+   */
+  withTag(tag: string): Item[] {
+    return this.items.filter((i) => i.tags.has(tag));
+  }
+  /**
+   * @returns the items in this inventory that have all the provided tags
+   */
+  withTags(...tags: string[]): Item[] {
+    let items = this.items;
+    for (var tag of tags) items = items.filter((i) => i.tags.has(tag));
+    return items;
   }
   /**
    * Gets the indicated NPC if present in this inventory or null

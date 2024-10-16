@@ -146,7 +146,7 @@ window.Interactions["slave"] = {
         <<elseif $npc.love gt 50>>\
           $npc.GenPronoun <<thirdPerson "leaves" "leave">> <<- $npc.pronoun>>self completely open as $npc.genPronoun <<thirdPerson "smiles" "smile">> at you<<emoji ♥>>.
         <</if>>`,
-      npcStats:["pose=floor"],
+      npcStats: ["pose=floor"],
       altOptions(npc: Npc, current: NpcInteractionOptions) {
         if ((npc as Person).haveClothes) return current;
         return afterStrip(); //If slave has no clothes we can skip stripping.
@@ -1889,7 +1889,8 @@ window.Interactions["slave"] = {
               next: () =>
                 <NpcInteractionOptions>{
                   another:
-                    baseInteractionOptions().givePill.next["femaleFertility"].next['another'],
+                    baseInteractionOptions().givePill.next["femaleFertility"]
+                      .next["another"],
                   back: goBackToBeginningOption,
                 },
             },
@@ -1906,49 +1907,58 @@ window.Interactions["slave"] = {
         },
         breastEnlargement: {
           inventoryRequirements: ["Breast enlargement pill"],
-          optionText: '🍈🍈 Give $npc.pronoun a breast enlargement pill',
+          optionText: "🍈🍈 Give $npc.pronoun a breast enlargement pill",
           contents: `You give $npc.name a breast enlargement pill. And $npc.possessive breasts grow in front of your eyes.<<consumePlayerItem 'Breast enlargement pill' 'pills'>><<run Person.alterTitSize(1)>>`,
           next: {
             another: {
               inventoryRequirements: ["Breast enlargement pill"],
-              optionText: '🍈🍈 Give $npc.pronoun another one',
+              optionText: "🍈🍈 Give $npc.pronoun another one",
               contents: `You give $npc.name a breast enlargement pill. And $npc.possessive breasts grow even more.<<consumePlayerItem 'Breast enlargement pill' 'pills'>><<run Person.alterTitSize(1)>>`,
               next: () =>
                 <NpcInteractionOptions>{
                   another:
-                    baseInteractionOptions().givePill.next["breastEnlargement"].next['another'],
+                    baseInteractionOptions().givePill.next["breastEnlargement"]
+                      .next["another"],
                   back: goBackToBeginningOption,
                 },
             },
             back: goBackToBeginningOption,
-          }
+          },
         },
         breastReduction: {
           inventoryRequirements: ["Breast reduction pill"],
-          optionText: '🥞 Give $npc.pronoun a breast reduction pill',
+          optionText: "🥞 Give $npc.pronoun a breast reduction pill",
           contents: `You give $npc.name a breast reduction pill. And $npc.possessive breasts shrink in front of your eyes.<<consumePlayerItem 'Breast reduction pill' 'pills'>><<run Person.alterTitSize(-1)>>`,
           next: {
             another: {
               inventoryRequirements: ["Breast reduction pill"],
-              optionText: '🥞 Give $npc.pronoun another one',
+              optionText: "🥞 Give $npc.pronoun another one",
               contents: `You give $npc.name a breast reduction pill. And $npc.possessive breasts shrink even more.<<consumePlayerItem 'Breast reduction pill' 'pills'>><<run Person.alterTitSize(-1)>>`,
               next: () =>
                 <NpcInteractionOptions>{
                   another:
-                    baseInteractionOptions().givePill.next["breastReduction"].next['another'],
+                    baseInteractionOptions().givePill.next["breastReduction"]
+                      .next["another"],
                   back: goBackToBeginningOption,
                 },
             },
             back: goBackToBeginningOption,
-          }
+          },
         },
       },
     },
     giveClothes: {
       npcRequirements: ["!haveClothes"],
       locationExclusions: ["tortRafters"],
-      canBeShown: () =>
-        window.Player.has(`Used clothes(${Variables().npc.age} y.o.)`),
+      canBeShown() {
+        const wardrobe = window.BedRoom.getContents();
+        const bodyClothes = wardrobe.withTags("clothes", "body");
+        const shoes = wardrobe.withTag("shoes");
+        return (
+          <boolean>(<unknown>bodyClothes.length) &&
+          <boolean>(<unknown>shoes.length)
+        );
+      },
       optionText: "👕 Give $npc.pronoun some clothes",
       contents: `<<if $npc.age lte 3>>\
           <<if $npc.uniqueness.naughty>>\
@@ -1985,6 +1995,11 @@ window.Interactions["slave"] = {
         <</if>>\
         <<run Player.removeItem("Used clothes(" + $npc.age + " y.o.)")>>`,
       npcStats: (npc) => {
+        const wardrobe = window.BedRoom.getContents();
+        const bodyClothes = wardrobe.withTags("clothes", "body");
+        const shoes = wardrobe.withTag("shoes");
+        const wear = window.Person.getEquippedInventory();
+        [bodyClothes[0], shoes[0]].forEach((c) => wardrobe.move(c, wear, 1));
         let stats = ["+haveClothes", "fear-5"];
         if (npc.love > 60) stats.push("love+5%");
         return stats;

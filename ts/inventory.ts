@@ -67,15 +67,18 @@ class Product {
   /**
    * Create an item from this product and add it to the provided inventory. The product availability is not altered by this method.
    * @param count The number of products to transfer (Default:1)
+   * @returns the added item
    */
-  transferTo?(inventory: Inventory, count: number = 1) {
+  transferTo?(inventory: Inventory, count: number = 1): Item {
+    const itemName = this.itemName ? this.itemName : this.name;
     inventory.add({
-      name: this.itemName ? this.itemName : this.name,
+      name: itemName,
       description: this.description,
       count: count * this.packQuantity,
       tags: this.tags,
       incompatible: this.incompatible,
     });
+    return inventory.get(itemName);
   }
 }
 /**
@@ -179,14 +182,19 @@ class Inventory {
   }
   /**
    * Moves an item from this inventory to another (including all quantity of that item)
+   * @param count If specified, only the indicated amount will be moved
    */
-  move(item: Item, destination: Inventory): void;
-  move(itemIndex: number, destination: Inventory): void;
-  move(itemOrIndex: number | Item, destination: Inventory): void {
+  move(item: Item, destination: Inventory, count?: number): void;
+  move(itemIndex: number, destination: Inventory, count?: number): void;
+  move(
+    itemOrIndex: number | Item,
+    destination: Inventory,
+    count: number = 0
+  ): void {
     const item =
       typeof itemOrIndex == "number" ? this.items[itemOrIndex] : itemOrIndex;
-    destination.add(item);
-    this.items.delete(item);
+    destination.add(item, count);
+    this.remove(item, count);
   }
   /**
    * Moves an item from this inventory to another (including all quantity of that item)
@@ -287,7 +295,7 @@ class OnlineStore {
   /**
    * Updating this class does not automatically updates the $onlineStore story variable unless a new product is added, the version number is used to know if the story variable object should be updated when loading an old save.
    */
-  version: number = 4;
+  version: number = 5;
   products: Product[] = [
     new Product({
       name: "Chloroform",
@@ -605,9 +613,9 @@ class OnlineStore {
     new Product({
       name: "Sundress",
       description:
-        "Also called summer dress. A loose fitting one-piece dress with thin shoulder straps and made of fine cotton",
+        "Also called summer dress. A loose fitting one-piece dress with thin shoulder straps and made of fine cotton for girls.",
       price: 85,
-      tags: new Set(["bedRoom", "clothes", "wearable", "body"]),
+      tags: new Set(["bedRoom", "clothes", "wearable", "body", "girl"]),
       incompatible: {
         tits: <TitSize[]>["large", "modest", "small"],
         pregnantTrimester: [3, 2],
@@ -616,10 +624,31 @@ class OnlineStore {
     new Product({
       name: "Gladiator sandals",
       description:
-        "Shoes made of straps wrapping the lower leg, exposing toes and feet.",
+        "Shoes made of straps wrapping the lower leg, exposing toes and feet. For girls.",
       price: 65,
-      tags: new Set(["bedRoom", "clothes", "wearable", "shoes", "feet"]),
+      tags: new Set([
+        "bedRoom",
+        "clothes",
+        "wearable",
+        "shoes",
+        "feet",
+        "girl",
+      ]),
     }), //Gladiator sandals
+    new Product({
+      name: "Panties",
+      description: "Classic underwear for girls",
+      price: 20,
+      tags: new Set(["bedRoom", "clothes", "wearable", "groin", "girl"]),
+      available: 0,
+    }), //Panties
+    new Product({
+      name: "Briefs",
+      description: "",
+      price: 20,
+      tags: new Set(["bedRoom", "clothes", "wearable", "groin", "boy"]),
+      available: 0,
+    }), //Briefs
   ];
   /**
    * Bought products are transferred to this inventory until delivered (where they are transferred to their destination)

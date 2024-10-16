@@ -20,10 +20,8 @@ $(document).on(
 function keyOptionParameters(
   args: TwineSugarCube.MacroArgsArray
 ): [string, string, string, string] {
-  const emoji =
-    args.length > 1 ? args[1] : "'&nbsp;&nbsp;&nbsp;&nbsp;'";
-  const widget =
-    args.length > 2 && args[2] == "btn" ? "button" : "link";
+  const emoji = args.length > 1 ? args[1] : "'&nbsp;&nbsp;&nbsp;&nbsp;'";
+  const widget = args.length > 2 && args[2] == "btn" ? "button" : "link";
   let idStart = keyToId[keyOptionNumber];
   let displayOptionNumber = keyOptionNumber.toString();
   if (keyOptionShiftKey) {
@@ -41,9 +39,10 @@ function keyOptionParameters(
 //Example: <<keyOption [[My text|myPassage]] 🎃 btn>>
 Macro.add("keyOption", {
   handler: function () {
-    const [emoji, widget, idStart, displayOptionNumber] =
-      keyOptionParameters(this.args);
-    Wiki(
+    const [emoji, widget, idStart, displayOptionNumber] = keyOptionParameters(
+      this.args
+    );
+    Span(
       `<<${widget} "<<emoji ${emoji}>>(${displayOptionNumber}) ${this.args[0].text}" "${this.args[0].link}">><</${widget}>>`,
       this.output
     ).attr("id", idStart + "Act");
@@ -61,9 +60,10 @@ Macro.add("keyOption", {
 Macro.add("keyAction", {
   tags: null,
   handler: function () {
-    const [emoji, widget, idStart, displayOptionNumber] =
-      keyOptionParameters(this.args);
-    Wiki(
+    const [emoji, widget, idStart, displayOptionNumber] = keyOptionParameters(
+      this.args
+    );
+    Span(
       `<<${widget} "<<emoji ${emoji}>>(${displayOptionNumber}) ${this.args[0]}">>${this.payload[0].contents}<</${widget}>>`,
       this.output
     ).attr("id", idStart + "Act");

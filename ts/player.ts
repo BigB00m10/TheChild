@@ -56,14 +56,14 @@ class Player extends LivingCharacter {
    * @param variables The SugarCube Variables object where to take the needed data from (optional)
    */
   wearing(itemName: string, variables?: any): boolean {
-    return this.getEquippedInventory(variables).has(itemName);
+    return this.getEquippedInventory(variables).has(itemName, 0, true);
   }
   /**
    * Checks if the player has an item in their inventory.
    * @param count the minimum number of this item needed.
    */
   has(itemName: string, count: number = 1) {
-    return this.getInventory().has(itemName, count);
+    return this.getInventory().has(itemName, count, true);
   }
   removeItem(itemName: string) {
     return this.getInventory().removeByName(itemName);
@@ -301,6 +301,20 @@ Macro.add("consumePlayerItem", {
         itemCountName +
         (itemLeft == 1 || itemCountName.endsWith("s") ? "" : "s")
       } left)`,
+      this.output
+    );
+  },
+});
+//Moves all equipped clothes in the current NPC to the wardrobe
+Macro.add("takeClothes", {
+  handler() {
+    const [person, variables] = <[Person, any]>Npc.obtain();
+    const equipped = window.Person.getEquippedInventory(person, variables);
+    const wardrobe = window.BedRoom.getContents(variables);
+    equipped.withTag("clothes").forEach((i) => equipped.move(i, wardrobe));
+    person.haveClothes = false;
+    Wiki(
+      "(Taken clothes were stored in the ''@@color:yellow;wardrobe on your bedroom@@'')",
       this.output
     );
   },

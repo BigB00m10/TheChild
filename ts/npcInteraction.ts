@@ -118,7 +118,6 @@ Macro.add("openNpcInteraction", {
       variables.returnPassage = SugarCube.State.passage;
     variables.npcInteractionRoute = this.args[0];
     if (this.args[1]) variables.npc = Npc.obtain(this.args[1], variables)[0];
-    variables.npc.pose = "idle";
     (<any>SugarCube.State).display("npcInteraction");
   },
 });
@@ -436,10 +435,7 @@ Macro.add("npcInteraction", {
           emoji = stopOptionText.split(" ")[0];
           stopOptionText = stopOptionText.slice(emoji.length + 1);
         }
-        if (collection.beforeStop)
-          result += `\n<<keyAction '${stopOptionText}' ${emoji}>>${collection.beforeStop}<<goto $returnPassage>><</keyAction>>`;
-        else
-          result += `\n<<keyOption [[${stopOptionText}|$returnPassage]] ${emoji}>>`;
+        result += `\n<<keyAction '${stopOptionText}' ${emoji}>>${collection.beforeStop}<<set $npc.pose='idle'>><<goto $returnPassage>><</keyAction>>`;
       }
     }
     $(this.output).wiki(

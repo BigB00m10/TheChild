@@ -142,36 +142,29 @@ window.tempObjectUrl = (url: string) => {
 $(document).on(":passageinit", () => {
   if (Save.onLoad.size == 0) {
     Save.onLoad.add((save) => {
-      let stateIndex = save.state.history.length - 1;
-      let variables = save.state.history[stateIndex].variables;
-      if (
-        !variables.player.genitals.all ||
-        variables.player.impregnationChance == undefined
-      ) {
-        if (!variables.player.genitals.all)
-          variables.player.gender =
-            variables.player.gender != "male" ? "girl" : "boy";
+      const variables =
+        save.state.history[save.state.history.length - 1].variables;
+      const player = <Player>variables.player;
+      if (!player.genitals.all || player.impregnationChance == undefined) {
+        if (!player.genitals.all)
+          player.gender = variables.player.gender != "male" ? "girl" : "boy";
         //Change to new gender/sex format from a 0.1.8.2 save or older
         //This will now also run when updating from 0.1.14.1 or older to add pregnancy stats
         window.Player.setSex(
-          variables.player.sex
-            ? variables.player.sex
-            : variables.player.gender == "boy"
-            ? "male"
-            : "female",
-          variables.player
+          player.sex ? player.sex : player.gender == "boy" ? "male" : "female",
+          player
         );
       }
-      let slaves = <Person[]>window.Person.all((npc) => true, variables);
-      if (slaves && slaves.length) {
+      const persons = <Person[]>window.Person.all((npc) => true, variables);
+      if (persons && persons.length) {
         let reassignUid = false;
-        if (slaves[0].version == 1) {
+        if (persons[0].version == 1) {
           variables.lastUid = 0;
           reassignUid = true;
         }
-        let addSlaveUniqueness = !slaves[0].uniqueness;
+        let addSlaveUniqueness = !persons[0].uniqueness;
         let randomIndex = 0;
-        slaves.forEach((slave: Person) => {
+        persons.forEach((slave: Person) => {
           if (!slave.hunger) slave.hunger = 0;
           if (!slave.GenPronoun) {
             slave.GenPronoun = slave.gender != "boy" ? "She" : "He";
@@ -282,42 +275,66 @@ $(document).on(":passageinit", () => {
           else if (saveProduct.name != product.name)
             onlineStore.products.splice(productIndex, 0, product);
         }
-      if (!onlineStore.version || onlineStore.version < 4) {
-        let mattressIndex = onlineStore.products.findIndex(
-          (p) => p.name == "Matress" //Old typo
-        );
-        if (mattressIndex == -1)
-          mattressIndex = onlineStore.products.findIndex(
-            (p) => p.name == "Mattress"
+      if (!onlineStore.version || onlineStore.version < 5) {
+        if (onlineStore.version < 4) {
+          let mattressIndex = onlineStore.products.findIndex(
+            (p) => p.name == "Matress" //Old typo
           );
-        onlineStore.products[mattressIndex] =
-          window.OnlineStore.get("Mattress");
-        const lubeIndex = onlineStore.products.findIndex(
-          (p) => p.name == "Lube"
-        );
-        const lubeOut = onlineStore.products[lubeIndex].soldOut;
-        onlineStore.products[lubeIndex] = window.OnlineStore.get("Lube");
-        onlineStore.products[lubeIndex].soldOut = lubeOut;
-        onlineStore.products[
-          onlineStore.products.findIndex((p) => p.name == "Condom")
-        ] = window.OnlineStore.get("Condom");
-        var mGlassesIndex = onlineStore.products.findIndex(
-          (p) => p.name == "Magic sunglasses"
-        );
-        var mGlassesOut = onlineStore.products[mGlassesIndex].soldOut;
-        onlineStore.products[mGlassesIndex] =
-          window.OnlineStore.get("Magic sunglasses");
-        onlineStore.products[mGlassesIndex].soldOut = mGlassesOut;
-        if (onlineStore.bought.items.length && !onlineStore.purchaseTime)
-          onlineStore.purchaseTime = window.Now.isEqualOrLaterThan(
-            "7:01 AM",
-            variables.now.date
-          )
-            ? variables.now.date
-            : new Date(variables.now.date).setDate(
-                variables.now.date.getDate() - 1
-              );
-        onlineStore.version = 4;
+          if (mattressIndex == -1)
+            mattressIndex = onlineStore.products.findIndex(
+              (p) => p.name == "Mattress"
+            );
+          onlineStore.products[mattressIndex] =
+            window.OnlineStore.get("Mattress");
+          const lubeIndex = onlineStore.products.findIndex(
+            (p) => p.name == "Lube"
+          );
+          const lubeOut = onlineStore.products[lubeIndex].soldOut;
+          onlineStore.products[lubeIndex] = window.OnlineStore.get("Lube");
+          onlineStore.products[lubeIndex].soldOut = lubeOut;
+          onlineStore.products[
+            onlineStore.products.findIndex((p) => p.name == "Condom")
+          ] = window.OnlineStore.get("Condom");
+          var mGlassesIndex = onlineStore.products.findIndex(
+            (p) => p.name == "Magic sunglasses"
+          );
+          var mGlassesOut = onlineStore.products[mGlassesIndex].soldOut;
+          onlineStore.products[mGlassesIndex] =
+            window.OnlineStore.get("Magic sunglasses");
+          onlineStore.products[mGlassesIndex].soldOut = mGlassesOut;
+          if (onlineStore.bought.items.length && !onlineStore.purchaseTime)
+            onlineStore.purchaseTime = window.Now.isEqualOrLaterThan(
+              "7:01 AM",
+              variables.now.date
+            )
+              ? variables.now.date
+              : new Date(variables.now.date).setDate(
+                  variables.now.date.getDate() - 1
+                );
+        }
+        const inventory = window.Player.getInventory(variables);
+        const wardrobe = window.BedRoom.getContents(variables);
+        let personRefIndex = 0;
+        inventory.items.forEach((item: Item) => {
+          if (Array.isArray(item.tags)) item.tags = new Set(item.tags);
+          const refPerson = persons[personRefIndex];
+          if (item.name.includes("underwear")) {
+            inventory.remove(item);
+            const addedItem = window.OnlineStore.getBase(
+              refPerson.gender == "girl" ? "panties" : "briefs"
+            ).transferTo(wardrobe);
+            addedItem.extra = {
+              importantDetail:
+                player.sex == "female" ? "With love juice" : "Cum stained",
+            };
+            personRefIndex = ++personRefIndex % persons.length;
+          } else if (item.name.startsWith("Used clothes")) {
+            inventory.remove(item);
+            //TODO: remove and add default clothes sets to the wardrobe
+            personRefIndex = ++personRefIndex % persons.length;
+          }
+        });
+        onlineStore.version = 5;
       }
       let childGen: PersonGeneration = settings.childGeneration;
       if (!childGen.hairStyles)
@@ -336,20 +353,19 @@ $(document).on(":passageinit", () => {
         };
       }
       if (variables.player.house) {
-        variables.player.home = variables.player.house;
+        player.home = variables.player.house;
         delete variables.player.house;
       }
-      if (variables.player.home.spaces == undefined)
-        variables.player.home.spaces = window.Homes.smallUrban.spaces;
+      if (player.home.spaces == undefined)
+        player.home.spaces = window.Homes.smallUrban.spaces;
       else
         for (let houseKey in window.Homes)
           if (
-            window.Homes[houseKey].name == variables.player.home.name &&
-            variables.player.home.spaces.length <
-              window.Homes[houseKey].spaces.length
+            window.Homes[houseKey].name == player.home.name &&
+            player.home.spaces.length < window.Homes[houseKey].spaces.length
           )
-            variables.player.home.spaces = window.Homes[houseKey].spaces;
-      if (!variables.player.gameVersion) {
+            player.home.spaces = window.Homes[houseKey].spaces;
+      if (!player.gameVersion) {
         if (!variables.settings.childGeneration.hairStyles.includes("ponytail"))
           variables.settings.childGeneration.hairStyles.pushUnique(
             "pig tails",
@@ -360,10 +376,8 @@ $(document).on(":passageinit", () => {
           variables.settings.childGeneration.hairStyles.indexOf("wavey");
         if (waveyIndex != -1)
           variables.settings.childGeneration.hairStyles[waveyIndex] = "wavy";
+        player.gameVersion = "unknown";
       }
-      variables.player.inventory.items.forEach((item: Item) => {
-        if (Array.isArray(item.tags)) item.tags = new Set(item.tags);
-      });
     });
   }
   if (tempObjectUrls.length) {

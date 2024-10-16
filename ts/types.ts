@@ -23,11 +23,24 @@ function Variables(): any {
 function Temporary(): any {
   return temporary() as any;
 }
-function Wiki(
+/**
+ * @param markup SugarCube markup
+ * @param output this.output in macros
+ * @returns A span element already appended to the output with the provided markup wikified
+ */
+function Span(
   markup: string,
   output: HTMLElement | DocumentFragment
 ): JQuery<HTMLSpanElement> {
   return $(document.createElement("span")).wiki(markup).appendTo(output);
+}
+/**
+ * Wikifies the markup and appends it to the output
+ * @param markup SugarCube markup
+ * @param output this.output in macros
+ */
+function Wiki(markup: string, output: HTMLElement | DocumentFragment): void {
+  $(output).wiki(markup);
 }
 /* Snippet to hook an event to an object. Might be useful someday.
 interface ILiteEvent<T> {

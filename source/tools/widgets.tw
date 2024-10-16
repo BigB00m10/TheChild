@@ -388,17 +388,6 @@
         >><</done>>
     <</dialog>>
 <</widget>>
-<<widget takeClothes>>
-    <<set _item = {
-        name:'Used clothes(' + $npc.age + ' y.o.)',
-        description:'Used clothes from a ' + $npc.age + ' year old',
-        count:1,
-        tags:new Set(["person","clothes","used"])
-        };
-        $npc.haveClothes = false;
-        Player.getInventory().add(_item);>>
-    (_item.description added to your inventory)
-<</widget>>
 <<widget storeProductList>>
     <<set 
         var filterTag = _args[2];

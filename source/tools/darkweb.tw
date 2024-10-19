@@ -6,7 +6,7 @@
     /*<<keyOption [[Buy a vehicle|DarkStore]] 🚗>>*/\
     <<if $settings.slaveSelling>><<keyOption [[Sell a child|sellchild]] 💸>>
     <</if>>\
-    <<keyOption [[Sell dirty clothes|sellclothes]] 👙>>
+    <<keyOption [[Sell used clothes|sellclothes]] 👙>>
     <<keyOption [[Leave the dark web|pc]] 💻>>
 <</unlessEmergency>>\
 
@@ -85,12 +85,12 @@ Choose item to sell:
     _clothes = _wardRobe.withTag('clothes');
 >>\
 <<for _item range _clothes>>\
-    <<set _value = OnlineStore.get(_item.name).price / 2>>\
+    <<set _value = OnlineStore.get(_item.name).price / 2 + (_item.extra && _item.extra.importantDetail?10:0)>>\
     <<capture _item _value>>\
         <<set
             if(_charcode == 104) _charcode += 2;
             _char = String.fromCharCode(_charcode++);
-            _linkText = '(' + _char.toUpperCase() + ') ' + _item.name + ' for ¤' + _value;
+            _linkText = '(' + _char.toUpperCase() + ') ' + OnlineStore.itemDisplayName(_item) + ' for ¤' + _value;
             _keyId = _char + 'KeyAct';
         >>\
         <span @id='_keyId'><<link _linkText>>
@@ -103,7 +103,7 @@ Choose item to sell:
                     <<button "✅ (Space) Yes, sell _item.name">>\
                         <<cash _value>>\
                         <<run 
-                            _wardRobe.remove(_item.name, 1);
+                            _wardRobe.remove(_item);
                             Engine.show();
                             Dialog.close();
                         >>\

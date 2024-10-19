@@ -67,9 +67,10 @@ class Product {
   /**
    * Create an item from this product and add it to the provided inventory. The product availability is not altered by this method.
    * @param count The number of products to transfer (Default:1)
+   * @param extra Extra info to attach to the item
    * @returns the added item
    */
-  transferTo?(inventory: Inventory, count: number = 1): Item {
+  transferTo?(inventory: Inventory, count: number = 1, extra?: any): Item {
     const itemName = this.itemName ? this.itemName : this.name;
     inventory.add({
       name: itemName,
@@ -77,6 +78,7 @@ class Product {
       count: count * this.packQuantity,
       tags: this.tags,
       incompatible: this.incompatible,
+      extra: extra,
     });
     return inventory.get(itemName);
   }
@@ -112,9 +114,14 @@ class Inventory {
    * @param quantity The quantity of this item to add to the inventory. If not specified, item.count or 1 will be added.
    */
   add(item: Item, quantity: number = 0): void {
-    const existing: Item = this.items.firstOrDefault(
-      (i: Item) => i.name == item.name
-    );
+    const existing: Item = this.items.firstOrDefault((i: Item) => {
+      if (i.name != item.name) return false;
+      if (item.extra) {
+        if (!i.extra) return false;
+        return i.extra.importantDetail == item.extra.importantDetail;
+      }
+      return i.extra == item.extra;
+    });
     if (existing)
       existing.count = (existing.count || 1) + (quantity || item.count || 1);
     // Add to existing item, taking into account that not all items have a count
@@ -130,7 +137,7 @@ class Inventory {
    */
   remove(item: Item, count: number = 1): number {
     if (!item) return;
-    if (!count || count >= item.count) {
+    if (!count || count >= item.count || !item.count) {
       this.items.delete(item);
       return 0;
     } else return (item.count -= count);
@@ -681,6 +688,15 @@ class OnlineStore {
     );
   }
   /**
+   * @returns the text that should be shown when showing the item to the player
+   */
+  itemDisplayName(item: Item): string {
+    return (
+      item.name +
+      (item.extra?.importantDetail ? `(${item.extra.importantDetail})` : "")
+    );
+  }
+  /**
    * @returns the product index of this item and the base text to show in an inventory user interface
    */
   private internalInventoryLine(item: Item): [number, string] {
@@ -689,10 +705,10 @@ class OnlineStore {
         (p.itemName ? p.itemName : p.name).toLowerCase() ==
         item.name.toLowerCase()
     );
-    return [
-      index,
-      (item.count && item.count > 1 ? item.count + " " : "") + item.name,
-    ];
+    var line =
+      (item.count && item.count > 1 ? item.count + " " : "") +
+      window.OnlineStore.itemDisplayName(item);
+    return [index, line];
   }
   /**
    * @param item A non equipped item (important)
@@ -701,7 +717,7 @@ class OnlineStore {
    */
   getInventoryLine(item: Item, characterUid: Uid = 0): string {
     let [index, result] = this.internalInventoryLine(item);
-    if (item.tags.has("garbage"))
+    if (item.tags?.has("garbage"))
       result += ` <<button 'throw away'>><<dialog 'Items removed'>><<run Player.getInventory().removeByName('${item.name}', 0)>>${result} were thrown away\n<<button "OK">><<dialogclose>><</button>><</dialog>><</button>>`;
     if (index == -1 || !this.products[index].use) return result;
     return (

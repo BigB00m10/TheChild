@@ -892,19 +892,23 @@ class Person extends Npc {
     return person;
   }
   /**
-   * Give and equip the initial clothes to the target person.
+   * Give and equip the initial clothes to the target person. Or store it in the indicated inventory.
    * @param person The target person. If not specified, the active NPC will be selected
    * @param variables (Optional) The SugarCube Variables object where to take the needed data from.
+   * @param destination (Optional) The inventory where the clothes should be transferred to.
    */
-  giveInitialClothes(person?: Person, variables?: any) {
-    const wearing = window.Person.getEquippedInventory(person, variables);
-    if (person.gender == "girl")
-      ["sundress", "gladiator sandals"].forEach((n) =>
-        window.OnlineStore.get(n).transferTo(wearing)
-      );
-    else {
-      //TODO: add boy clothes
-    }
+  giveInitialClothes(
+    person?: Person,
+    variables?: any,
+    destination?: Inventory
+  ) {
+    if (!destination)
+      destination = window.Person.getEquippedInventory(person, variables);
+    //TODO: add boy clothes
+    (person.gender == "girl"
+      ? ["sundress", "gladiator sandals", "panties"]
+      : ["briefs"]
+    ).forEach((n) => window.OnlineStore.getBase(n).transferTo(destination));
   }
   /**
    * @returns a description of a person personality based on their uniqueness

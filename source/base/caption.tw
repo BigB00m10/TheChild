@@ -117,6 +117,36 @@ Energy:<<if $cheat>>\
     <</dialog>>
 <</link>>
 <<link "⚙ Settings">><<include settings>><</link>>
+<<link "🙏 Credits">><<dialog "Credits">>\
+    <<set _credits={
+        MysticalMagic:'Original Idea',
+        stuffed:'Coding and writting',
+        Osgilio26:'Coding, art and design',
+        DocAmakus:'Coding',
+        JoaxOuch:'Coding, art and design',
+        SirDerpington:'Coding',
+        Pain:'Writting',
+        Arganderus:'Writting',
+        samandsteve:'Coding, writting and design',
+        StrangeFriend:'Art',
+        Astrii:'Writting',
+        Carrabina:'Coding and writting'
+    };
+    let width = window.innerWidth - 84;
+    _nameStyle = "";
+    if(width > 415){
+        width = 415;
+        _nameStyle = "text-align:right"
+    }
+    _dialogWidth = 'width:' + Math.min(415, window.innerWidth - 84) + 'px';>>\
+    <div @style=_dialogWidth>\
+        <<for _name, _role range _credits>>\
+            <div class="row">\
+                <div class="one-half column" @style="_nameStyle">''_name''<<if !_nameStyle>>:<</if>></div><div class="one-half column">_role</div>\
+            </div>\
+        <</for>>\
+    </div>\
+<</dialog>><</link>>
 :: settings {"position":"500,125"}
 <<dialog Settings>>\
     <<set _stopAgingNpcs=Person.all(function(npc){return npc.stopAging})>>\

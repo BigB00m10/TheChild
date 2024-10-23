@@ -1,4 +1,4 @@
-:: Start {"position":"1025,825"}
+:: Start {"position":"1025,950"}
 !!Disclaimer
 This is a work of fiction with content of a sexual nature inappropriate for minors. All characters depicted are at least 18 years of age even when stated otherwise and all actions are done in a consensual way, even when otherwise stated. No character will have lasting negative effects or injuries from the events that take place. No child or person is actually abused, it is all just games and role play.
 
@@ -7,7 +7,7 @@ This is a work of fiction with content of a sexual nature inappropriate for mino
 If you are struggling with problematic urges or feelings, please consider seeking help and/or resources in AllTheFallen: https://allthefallen.moe/forum/index.php?threads/rules-%E2%80%A2-grey-sections.26491/
 
 <<keyOption [[I understand|Intro]] ✔ btn>>
-:: Intro
+:: Intro {"position":"1025,825"}
 <<set _sexOptions = ["man", "woman", "futanari"]>>\
 <<set _genderOptions = ["him", "her", "them"]>>
 Your name is <<textbox "$player.name" "David">>, a young <<listbox '_sex' autoselect>><<optionsfrom _sexOptions>><</listbox>>

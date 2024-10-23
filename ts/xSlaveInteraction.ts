@@ -1951,13 +1951,28 @@ window.Interactions["slave"] = {
       npcRequirements: ["!haveClothes"],
       locationExclusions: ["tortRafters"],
       canBeShown() {
-        const wardrobe = window.BedRoom.getContents();
-        const bodyClothes = wardrobe.withTags("clothes", "body");
-        const shoes = wardrobe.withTag("shoes");
-        return (
-          <boolean>(<unknown>bodyClothes.length) &&
-          <boolean>(<unknown>shoes.length)
-        );
+        const variables = Variables();
+        const wardrobe = window.BedRoom.getContents(variables);
+        let hasClothes = true;
+        if (<Gender>variables.npc.gender == "girl") {
+          hasClothes &&= <boolean>(
+            (<unknown>wardrobe.withTags("clothes", "body", "girl").length)
+          );
+          hasClothes &&= <boolean>(
+            (<unknown>wardrobe.withTags("shoes", "girl").length)
+          );
+        } else {
+          hasClothes &&= <boolean>(
+            (<unknown>wardrobe.withTags("shoes", "unisex").length)
+          );
+          hasClothes &&= <boolean>(
+            (<unknown>wardrobe.withTags("clothes", "torso", "unisex").length)
+          );
+          hasClothes &&= <boolean>(
+            (<unknown>wardrobe.withTags("clothes", "legs", "unisex").length)
+          );
+        }
+        return hasClothes;
       },
       optionText: "👕 Give $npc.pronoun some clothes",
       contents: `<<if $npc.age lte 3>>\
@@ -1995,11 +2010,27 @@ window.Interactions["slave"] = {
         <</if>>\
         <<run Player.removeItem("Used clothes(" + $npc.age + " y.o.)")>>`,
       npcStats: (npc) => {
-        const wardrobe = window.BedRoom.getContents();
-        const bodyClothes = wardrobe.withTags("clothes", "body");
-        const shoes = wardrobe.withTag("shoes");
+        const variables = Variables();
+        const wardrobe = window.BedRoom.getContents(variables);
+        const clothes: Item[] = [];
+        if (<Gender>variables.npc.gender == "girl") {
+          clothes.push(
+            wardrobe.withTags("clothes", "body", "girl")[0],
+            wardrobe.withTags("shoes", "girl")[0]
+          );
+          const underwear = wardrobe.withTags("underwear", "groin", "girl");
+          if (underwear.length) clothes.push(underwear[0]);
+        } else {
+          clothes.push(
+            wardrobe.withTags("clothes", "torso", "unisex")[0],
+            wardrobe.withTags("clothes", "legs", "unisex")[0],
+            wardrobe.withTags("shoes", "unisex")[0]
+          );
+          const underwear = wardrobe.withTags("underwear", "groin", "boy");
+          if (underwear.length) clothes.push(underwear[0]);
+        }
         const wear = window.Person.getEquippedInventory();
-        [bodyClothes[0], shoes[0]].forEach((c) => wardrobe.move(c, wear, 1));
+        clothes.forEach((c) => wardrobe.move(c, wear, 1));
         let stats = ["+haveClothes", "fear-5"];
         if (npc.love > 60) stats.push("love+5%");
         return stats;

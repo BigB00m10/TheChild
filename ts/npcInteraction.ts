@@ -244,7 +244,9 @@ Macro.add("npcInteraction", {
       options = callOrGetItself(interaction.next);
     }
     let result =
-      (interaction ? interaction.contents : collection.contents) + "\n";
+      $(document.createElement("span"))
+        .wiki(interaction ? interaction.contents : collection.contents)
+        .html() + "\n";
     if (interaction && interaction.altOptions)
       options = interaction.altOptions(npc, options);
     let npcHungerIncrease = 0;

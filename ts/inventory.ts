@@ -621,7 +621,7 @@ class OnlineStore {
       name: "Sundress",
       description:
         "Also called summer dress. A loose fitting one-piece dress with thin shoulder straps and made of fine cotton for girls.",
-      price: 85,
+      price: 75,
       tags: new Set(["bedRoom", "clothes", "wearable", "body", "girl"]),
       incompatible: {
         tits: <TitSize[]>["large", "modest", "small"],
@@ -632,7 +632,7 @@ class OnlineStore {
       name: "Gladiator sandals",
       description:
         "Shoes made of straps wrapping the lower leg, exposing toes and feet. For girls.",
-      price: 65,
+      price: 45,
       tags: new Set([
         "bedRoom",
         "clothes",
@@ -646,16 +646,51 @@ class OnlineStore {
       name: "Panties",
       description: "Classic underwear for girls",
       price: 20,
-      tags: new Set(["bedRoom", "clothes", "wearable", "groin", "girl"]),
-      available: 0,
+      tags: new Set([
+        "bedRoom",
+        "clothes",
+        "wearable",
+        "groin",
+        "girl",
+        "underwear",
+      ]),
+      soldOut: true,
     }), //Panties
     new Product({
       name: "Briefs",
-      description: "",
+      description:
+        "Short form-fitting underwear with a waistband and a fly opening for boys",
       price: 20,
-      tags: new Set(["bedRoom", "clothes", "wearable", "groin", "boy"]),
-      available: 0,
+      tags: new Set([
+        "bedRoom",
+        "clothes",
+        "wearable",
+        "groin",
+        "boy",
+        "underwear",
+      ]),
+      soldOut: true,
     }), //Briefs
+    new Product({
+      name: "T-Shirt",
+      description:
+        "Solid colored cotton shirt with short sleeves and round neckline",
+      price: 30,
+      tags: new Set(["bedRoom", "clothes", "wearable", "torso", "unisex"]),
+    }), //T-Shirt
+    new Product({
+      name: "Shorts",
+      description:
+        "Shortened version of trousers. Short enough to not cover the knee.",
+      price: 60,
+      tags: new Set(["bedRoom", "clothes", "wearable", "groin", "legs", "unisex"]),
+    }), //Shorts
+    new Product({
+      name: "Sandals",
+      description: "Shoes made of straps, exposing toes and feet",
+      price: 30,
+      tags: new Set(["bedRoom", "clothes", "wearable", "shoes", "feet", "unisex"]),
+    }), //Sandals
   ];
   /**
    * Bought products are transferred to this inventory until delivered (where they are transferred to their destination)
@@ -857,7 +892,7 @@ Macro.add("itemImage", {
       ]?.spriteCollections.firstOrDefault(
         (spriteCol: SpritePoseCollection) =>
           Object.keys(spriteCol.match).firstOrDefault((key: string) =>
-            key.toLowerCase().includes(lowerName)
+            key.toLowerCase().includes("'" + lowerName + "'")
           ) && spriteCol.match.age == "12-15"
       );
       if (spriteCol) {

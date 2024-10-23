@@ -904,10 +904,9 @@ class Person extends Npc {
   ) {
     if (!destination)
       destination = window.Person.getEquippedInventory(person, variables);
-    //TODO: add boy clothes
     (person.gender == "girl"
       ? ["sundress", "gladiator sandals", "panties"]
-      : ["briefs"]
+      : ["t-shirt", "shorts", "briefs", "sandals"]
     ).forEach((n) => window.OnlineStore.getBase(n).transferTo(destination));
   }
   /**

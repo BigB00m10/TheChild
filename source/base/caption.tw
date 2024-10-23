@@ -313,6 +313,12 @@ Energy:<<if $cheat>>\
                     $('#cheatsButton button').text(($cheat ? "Disable" : "Enable") + " Cheats");
                 >>
             <</button>></span>\
+            <label class="toggle-button">\
+                <input id="toggleScenery" type="checkbox" class="macro-checkbox"><span>Disable scenery image</span>\
+            </label>\
+            <label class="toggle-button">\
+                <input id="toggleCharacterImage" type="checkbox" class="macro-checkbox"><span>Disable character images</span>\
+            </label>\
         </div>\
     </div>\
     <script>
@@ -422,7 +428,7 @@ Energy:<<if $cheat>>\
                     break
             }
         })
-        Player.bindSettingDom('toggleEmoji',$settings,'emoji',function(element){
+        Player.bindSettingDom('toggleEmoji',$settings,'emoji',element=>{
             var $emoji = $('.emoji')
             if(element.checked)
                 $emoji.show()
@@ -437,6 +443,20 @@ Energy:<<if $cheat>>\
         Player.bindRangeSettingsDom('maleAge',$settings.childGeneration.males,'age')
         Player.bindRangeSettingsDom('hermAge',$settings.childGeneration.herms,'age')
         Player.bindSettingDom('lustDecCum',$settings,'lustDecCum')
+        Player.bindSettingDom('toggleScenery',$settings,'hideScenery',element=>{
+            let $ci = $('.centerHouse')
+            if(element.checked)
+                $ci.hide();
+            else
+                $ci.show();
+        })
+        Player.bindSettingDom('toggleCharacterImage',$settings,'hideCharacter',element=>{
+            let $ci = $('.characterImage')
+            if(element.checked)
+                $ci.hide();
+            else
+                $ci.show();
+        })
     </script>\
 <</dialog>>\
 :: noAgingNpcList [nobr] {"position":"375,125"}

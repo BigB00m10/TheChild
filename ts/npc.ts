@@ -147,9 +147,9 @@ abstract class LivingCharacter {
    */
   showBirthMessage(baby: Npc, laborNpc?: Npc): void {
     Temporary().baby = baby;
-    const playerCarryBabySentence = `You're currently carrying the baby, go to the inventory to interact with ${
+    const playerCarryBabySentence = `You're currently carrying the baby, ''@@color:yellow;go to the inventory to interact with ${
       (<Person>baby).pronoun
-    }`;
+    }@@''`;
     const dad = window.Person.get(baby.dad);
     let ownSentence: string;
     if (laborNpc) ownSentence = laborNpc.name + "'s";

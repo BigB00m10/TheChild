@@ -6,24 +6,27 @@ You are currently standing in your wc.
     <<slaveEvents Wc>>
     <<keyOption [[Leave your wc|main]] 🚪>>
     <<keyAction 'Go to the toilet' 🚽>><<addMinutes 5>><<run Engine.show()>><</keyAction>>: 5min
-    <<if Player.getInventory().items.firstOrDefault(function(item){return item.name.startsWith('Used clothes')}) != null>>\
+    <<if BedRoom.getContents().withTag('underwear').firstOrDefault(i=>!i.extra?.importantDetail)>>\
         <<keyOption [[Masturbate using stolen slave underwear|pantiescum]] 💦>>: 30min
     <</if>>\
     <<sleepOption>>\
 <</unlessEmergency>>\
 :: pantiescum {"position":"400,825"}
 <<addMinutes 30>>\
+<<run
+    let wardrobe = BedRoom.getContents();
+    let clean = wardrobe.withTag('underwear').firstOrDefault(i=>!i.extra?.importantDetail);
+    let stained = Object.assign({},clean);
+    stained.extra={importantDetail:$player.hasPenis?"Cum stained":"With love juice"};
+    wardrobe.remove(clean);
+    wardrobe.add(stained, 1);
+    _underwearName = clean.name;
+>>\
 <<if $player.hasPenis>>\
-    @@color:yellow;You wrap the underwear on your penis and fap until you cum in them.@@
-    @@color:yellow;(Cum filled underwear added to your inventory)@@
+    @@color:yellow;You wrap some _underwearName on your penis and fap until you cum in them.@@
+    ''@@color:yellow;(Cum filled _underwearName added to the wardrobe in your room)@@''
 <<else>>\
-    @@color:yellow;You rub the underwear on your pussy till you cum.@@
-    @@color:yellow;(Love juice stained underwear added to your inventory))@@
+    @@color:yellow;You rub some _underwearName on your pussy till you cum.@@
+    ''@@color:yellow;(_underwearName with love juice added to the wardrobe in your room)@@''
 <</if>>\
 <<include wc>>\
-<<run
-    if($player.hasPenis)
-        Player.getInventory().add({name:'Cum filled underwear',description:'Underwear that was filled with your cum',count:1,tags:['slave','wearable','clothes','playerPresent']});
-    else
-        Player.getInventory().add({name:'Love juice stained underwear',description:'Underwear that was stained with your love juice',count:1,tags:['slave','wearable','clothes','playerPresent']});
->>\

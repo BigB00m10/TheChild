@@ -336,7 +336,7 @@ $(document).on(":passageinit", () => {
                     : "briefs"
                 ).transferTo(wardrobe, 1, {
                   importantDetail:
-                    player.sex == "female" ? "With love juice" : "Cum stained",
+                    player.hasPenis ? "Cum stained" : "With love juice",
                 });
                 personRefIndex = ++personRefIndex % persons.length;
                 inventory.remove(item);

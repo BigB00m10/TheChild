@@ -88,6 +88,17 @@ label.toggle-button {
     display: table;
     clear: both;
   }
+  &.big > div:first-child {
+    position: fixed;
+    z-index: 3;
+    top: 0;
+    display: flex;
+    width: 100%;
+    left: 50%;
+  }
+  &.big #characterImageAnim {
+    max-height: 550px;
+  }
   > div {
     float: left;
     margin-left: 1%;
@@ -99,13 +110,25 @@ label.toggle-button {
   }
 }
 @media (max-width: 550px) or (max-height: 550px) {
-  #npcInteraction > div:first-child {
-    border: 1px solid;
-    transform: scale(-0.7, 0.7);
-    position: absolute;
-    top: -2%;
-    right: 1%;
-    background-color: hsla(0, 0%, 99%, 0.4);
+  #npcInteraction {
+    &.big > div:first-child {
+      background-color: transparent;
+      transform: scale(-1, 1);
+      left: 0;
+      border: none;
+      justify-content: center;
+    }
+    &.big #characterImageAnim {
+      max-height: none;
+    }
+    > div:first-child {
+      border: 1px solid;
+      transform: scale(-0.7, 0.7);
+      position: absolute;
+      top: -2%;
+      right: 1%;
+      background-color: #fcfcfc66;
+    }
   }
   h2.passageHead {
     margin-block-start: -1.5em;

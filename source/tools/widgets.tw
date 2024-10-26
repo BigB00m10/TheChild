@@ -249,15 +249,15 @@
             <img id="characterImageAnim">
         </div>
     </div>
-    <<run
+    <<done>><<run
         let person = Object.assign({},_args[0]);
         if(!person.expression)
             person.expression = person.status == 'citizen' || person.fear < 10 || person.love > person.fear + 20 ? 'smile' : 'frown';
         if(!Assets.character.hair.spriteCollections.firstOrDefault(c=>c.match.hairStyle == person.hairStyle))
             person.hairStyle = 'straight';
-        personImage(person).then(url => url && tempObjectUrl(document.getElementById('characterImageFixed').style.backgroundImage = `url(${url})`));
+        let fixed = document.getElementById('characterImageFixed'),anim = document.getElementById('characterImageAnim');
+        personImage(person).then(url => url && tempObjectUrl(fixed.style.backgroundImage = `url(${url})`));
         personImage(person, 'animation').then(urlOpen =>{
-            let anim = document.getElementById('characterImageAnim');
             if(!urlOpen) {
                 anim.style.display = 'none';
                 return;
@@ -279,7 +279,7 @@
                 },Math.random()*4000+2000))();
             });
         });
-    >>
+    >><</done>>
 <</widget>>
 <<widget personHunting>>
     <<set

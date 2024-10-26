@@ -214,11 +214,24 @@ Macro.add("npcInteractionLayout", {
     let imageDiv = document.createElement("div"),
       contents = document.createElement("div");
     $(contents).wiki(this.payload[0].contents);
-    if (this.args[0]) $(imageDiv).wiki(`<<personImage ${this.args[0]}>>`);
     let wrapper = document.createElement("div");
     wrapper.id = "npcInteraction";
     wrapper.append(imageDiv, contents);
     this.output.append(wrapper);
+    if (this.args[0]) {
+      $(imageDiv).wiki(`<<personImage ${this.args[0]}>>`);
+      let toggle = 1;
+      imageDiv.onclick = () => {
+        const anim = $("#characterImageAnim")[0];
+        if ((toggle ^= 1)) {
+          anim.style.height = null;
+          wrapper.classList.remove("big");
+          return;
+        }
+        anim.style.height = window.innerHeight - 7 + "px";
+        wrapper.classList.add("big");
+      };
+    }
   },
 });
 //Outputs the current interaction indicated by the route $npcInteractionRoute and directed to the Npc in $npc

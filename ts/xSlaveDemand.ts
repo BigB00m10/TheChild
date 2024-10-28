@@ -395,7 +395,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
   <<else>>$npc.GenPronoun <<thirdPerson "looks" "look">> nervous...
   <</if>><<if $npc.love gte 80>>\
     <<if $npc.haveClothes>>\
-      $npc.GenPronoun happily <<thirdPerson "takes" "take">> all of $npc.possessive clothes off.
+      $npc.GenPronoun happily <<thirdPerson "takes" "take">> all of $npc.possessive clothes off.<<run Person.strip()>>
     <<elseif Person.wearing('cooking apron')>>\
       $npc.GenPronoun happily <<thirdPerson "takes" "take">> off $npc.possessive apron.
     <</if>>\
@@ -557,7 +557,7 @@ window.Interactions["okSleepWithPlayerDemand"] = {
 };
 window.Interactions["wakeUpAfterNightTogether"] = {
   defaultStopOption: "🔙 Leave $npc.pronoun.",
-  beforeStop: "<<run delete $npc.sleeping;$player.sleeping=true>>",
+  beforeStop: "<<run delete $npc.sleeping;$player.sleeping=true;Person.dressBack()>>",
   contents: `<<run Person.removeAchievement('okSleepWithPlayer')>>\
   Morning light hits your face escaping from the window. You open your eyes and see $npc.name laying on top of you.<<switch $npc.hairColor>>
     <<case blonde>>

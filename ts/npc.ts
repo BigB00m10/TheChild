@@ -1097,6 +1097,7 @@ class Person extends Npc {
   /**
    * Check if tits of the indicated size can be drawn
    * @param person The target person. If not specified, the active NPC will be selected
+   * @param variables (Optional) The SugarCube Variables object where to take the needed data from.
    */
   canDrawTits(size: TitSize, person?: Person, variables?: any): boolean {
     [person, variables] = <[Person, any]>Npc.obtain(person, variables);
@@ -1104,6 +1105,36 @@ class Person extends Npc {
       person.titSize == size &&
       !window.Person.wearingIncompatible("tits", size, person, variables)
     );
+  }
+  previouslyWearingClothes: Item[];
+  /**
+   * Un-equip all clothes by moving them to the normal inventory and save the references to person.previouslyWearingClothes
+   * @param person The target person. If not specified, the active NPC will be selected
+   * @param variables (Optional) The SugarCube Variables object where to take the needed data from.
+   */
+  strip(person?: Person, variables?: any): void {
+    [person, variables] = <[Person, any]>Person.obtain(person, variables);
+    const wearing = this.getEquippedInventory(person, variables);
+    const inventory = this.getInventory(person, variables);
+    if (!person.previouslyWearingClothes) person.previouslyWearingClothes = [];
+    person.previouslyWearingClothes.push(...wearing.withTag("clothes"));
+    person.previouslyWearingClothes.forEach((item: Item) =>
+      wearing.move(item, inventory)
+    );
+  }
+  /**
+   * Equip all clothes in person.previouslyWearingClothes by moving them to the normal inventory to the equipped one
+   * @param person The target person. If not specified, the active NPC will be selected
+   * @param variables (Optional) The SugarCube Variables object where to take the needed data from.
+   */
+  dressBack(person?: Person, variables?: any): void {
+    [person, variables] = <[Person, any]>Person.obtain(person, variables);
+    const wearing = this.getEquippedInventory(person, variables);
+    const inventory = this.getInventory(person, variables);
+    person.previouslyWearingClothes.forEach((item: Item) =>
+      inventory.move(item, wearing)
+    );
+    delete person.previouslyWearingClothes;
   }
 }
 interface GenderGeneration {

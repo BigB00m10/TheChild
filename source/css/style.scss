@@ -106,10 +106,70 @@ label.toggle-button {
     &:first-child {
       margin-left: 0;
       width: fit-content;
+      position: relative;
     }
+  }
+  &.big .zzz {
+    top: 20%;
+    left: 18%;
+    font-size: 60pt;
+  }
+}
+.characterImage {
+  width: fit-content;
+  animation: breathe 2s steps(7) infinite alternate;
+  > div {
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+}
+@keyframes breathe {
+  to {
+    transform: scale(0.97, 0.99) translateY(0.7%);
+  }
+}
+.zzz {
+  position: absolute;
+  font-weight: 900;
+  color: #a054f6;
+  animation: zzz 4s ease-out infinite;
+  font-size: 200%;
+  font-family: cursive;
+  top: 19%;
+  left: 50%;
+  transform: translate(300%, 100%) rotate(60deg);
+}
+@keyframes zzz {
+  0% {
+    opacity: 0;
+    font-size: 1%;
+  }
+  100% {
+    transform: translate(72%, -100%);
   }
 }
 @media (max-width: 550px) or (max-height: 550px) {
+  .zzz {
+    transform: translate(300%, 100%) rotate(60deg) scale(-1, 1);
+  }
+  @keyframes zzz {
+    0% {
+      opacity: 0;
+      font-size: 1%;
+    }
+    100% {
+      transform: translate(72%, -100%) scale(-1, 1);
+    }
+  }
+  @keyframes zzz-big {
+    0% {
+      opacity: 0;
+      font-size: 1%;
+    }
+    100% {
+      transform: translateY(-180%) scale(-1, 1);
+    }
+  }
   #npcInteraction {
     &.big > div:first-child {
       background-color: transparent;
@@ -128,6 +188,13 @@ label.toggle-button {
       top: -2%;
       right: 1%;
       background-color: #fcfcfc66;
+    }
+    &.big .zzz {
+      top: 24%;
+      left: 66%;
+      font-size: 60pt;
+      transform: rotate(60deg) scale(-1, 1);
+      animation-name: zzz-big;
     }
   }
   h2.passageHead {
@@ -158,18 +225,5 @@ label.toggle-button {
   script + br,
   .row + br {
     display: none;
-  }
-}
-.characterImage {
-  width: fit-content;
-  animation: breathe 2s steps(7) infinite alternate;
-  > div {
-    background-repeat: no-repeat;
-    background-size: contain;
-  }
-}
-@keyframes breathe {
-  to {
-    transform: scale(0.97, 0.99) translateY(0.7%);
   }
 }

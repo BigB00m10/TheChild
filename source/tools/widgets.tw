@@ -248,7 +248,7 @@
         <div id="characterImageFixed">
             <img id="characterImageAnim">
         </div>
-    </div>
+    </div><div class="zzz">Z</div>
     <<done>><<run
         let person = Object.assign({},_args[0]);
         if(!person.expression)
@@ -257,6 +257,8 @@
             person.hairStyle = 'straight';
         let fixed = document.getElementById('characterImageFixed'),anim = document.getElementById('characterImageAnim');
         personImage(person).then(url => url && tempObjectUrl(fixed.style.backgroundImage = `url(${url})`));
+        console.log(person.sleeping);
+        person.eyesClosed = person.sleeping;
         personImage(person, 'animation').then(urlOpen =>{
             if(!urlOpen) {
                 anim.style.display = 'none';
@@ -264,20 +266,21 @@
             }
             anim.src = tempObjectUrl(urlOpen);
             person.eyesClosed = true;
-            personImage(person, 'animation').then(urlClose =>{
-                tempObjectUrl(urlClose);
-                let stop = false, blink;
-                $(document).on(':passageinit', ()=>stop=true);
-                (blink = ()=>setTimeout(()=>{
-                    if(stop)return;
-                    anim.src=urlClose;
-                    setTimeout(()=>{
+            if(!person.sleeping)
+                personImage(person, 'animation').then(urlClose =>{
+                    tempObjectUrl(urlClose);
+                    let stop = false, blink;
+                    $(document).on(':passageinit', ()=>stop=true);
+                    (blink = ()=>setTimeout(()=>{
                         if(stop)return;
-                        anim.src=urlOpen;
-                        blink();
-                    },50);
-                },Math.random()*4000+2000))();
-            });
+                        anim.src=urlClose;
+                        setTimeout(()=>{
+                            if(stop)return;
+                            anim.src=urlOpen;
+                            blink();
+                        },50);
+                    },Math.random()*4000+2000))();
+                });
         });
     >><</done>>
 <</widget>>

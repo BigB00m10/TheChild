@@ -210,16 +210,23 @@ function spriteToCanvas(
   alteredPixels?: Uint8ClampedArray
 ): HTMLCanvasElement {
   const spriteCanvas = document.createElement("canvas");
-  spriteCanvas.width = sprite.width;
-  spriteCanvas.height = sprite.height;
-  let spriteContext = spriteCanvas.getContext("2d");
-  spriteContext.putImageData(
-    new ImageData(alteredPixels || sprite.pixels, sprite.width, sprite.height, {
-      colorSpace: "display-p3",
-    }),
-    0,
-    0
-  );
+  try {
+    spriteCanvas.width = sprite.width;
+    spriteCanvas.height = sprite.height;
+    let spriteContext = spriteCanvas.getContext("2d");
+    spriteContext.putImageData(
+      new ImageData(
+        alteredPixels || sprite.pixels,
+        sprite.width,
+        sprite.height,
+        {
+          colorSpace: "display-p3",
+        }
+      ),
+      0,
+      0
+    );
+  } catch (error) {}
   return spriteCanvas;
 }
 interface Window {

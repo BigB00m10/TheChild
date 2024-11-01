@@ -683,13 +683,27 @@ class OnlineStore {
       description:
         "Shortened version of trousers. Short enough to not cover the knee.",
       price: 60,
-      tags: new Set(["bedRoom", "clothes", "wearable", "groin", "legs", "unisex"]),
+      tags: new Set([
+        "bedRoom",
+        "clothes",
+        "wearable",
+        "groin",
+        "legs",
+        "unisex",
+      ]),
     }), //Shorts
     new Product({
       name: "Sandals",
       description: "Shoes made of straps, exposing toes and feet",
       price: 30,
-      tags: new Set(["bedRoom", "clothes", "wearable", "shoes", "feet", "unisex"]),
+      tags: new Set([
+        "bedRoom",
+        "clothes",
+        "wearable",
+        "shoes",
+        "feet",
+        "unisex",
+      ]),
     }), //Sandals
   ];
   /**
@@ -899,6 +913,7 @@ Macro.add("itemImage", {
         const id = "itemImage" + drawnItemImageCounter++;
         (<HTMLElement>this.output).innerHTML += `<img id="${id}">`;
         spriteToCanvas(spriteCol.sprites.idle).toBlob((blob) => {
+          if (!blob) return;
           url = URL.createObjectURL(blob);
           if (product) product.imageUrl = url;
           else window.tempObjectUrl(url);

@@ -5,7 +5,7 @@ You are currently standing in your wc.
     <<wanderingSlaves>>\
     <<slaveEvents Wc>>
     <<keyOption [[Leave your wc|main]] 🚪>>
-    <<keyAction 'Go to the toilet' 🚽>><<addMinutes 5>><<run Engine.show()>><</keyAction>>: 5min
+    <<keyAction 'Go to the toilet' 🚽>><<addMinutes 5>><<goto wc>><</keyAction>>: 5min
     <<if BedRoom.getContents().withTag('underwear').firstOrDefault(i=>!i.extra?.importantDetail)>>\
         <<keyOption [[Masturbate using stolen slave underwear|pantiescum]] 💦>>: 30min
     <</if>>\

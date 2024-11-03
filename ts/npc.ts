@@ -1129,6 +1129,7 @@ class Person extends Npc {
    */
   dressBack(person?: Person, variables?: any): void {
     [person, variables] = <[Person, any]>Person.obtain(person, variables);
+    if (!this.previouslyWearingClothes) return;
     const wearing = this.getEquippedInventory(person, variables);
     const inventory = this.getInventory(person, variables);
     person.previouslyWearingClothes.forEach((item: Item) =>

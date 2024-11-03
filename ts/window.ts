@@ -335,8 +335,9 @@ $(document).on(":passageinit", () => {
                     ? "panties"
                     : "briefs"
                 ).transferTo(wardrobe, 1, {
-                  importantDetail:
-                    player.hasPenis ? "Cum stained" : "With love juice",
+                  importantDetail: player.hasPenis
+                    ? "Cum stained"
+                    : "With love juice",
                 });
                 personRefIndex = ++personRefIndex % persons.length;
                 inventory.remove(item);
@@ -409,6 +410,10 @@ $(document).on(":passageinit", () => {
             variables.settings.childGeneration.hairStyles[waveyIndex] = "wavy";
           player.gameVersion = "unknown";
         }
+        const wardrobe = window.BedRoom.getContents(variables);
+        wardrobe.items
+          .filter((i) => !i.tags || !i.name || !i.description)
+          .forEach((i) => wardrobe.remove(i, 0));
       } catch (error) {
         console.log(error);
         throw error;

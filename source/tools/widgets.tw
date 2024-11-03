@@ -248,7 +248,7 @@
         <div id="characterImageFixed">
             <img id="characterImageAnim">
         </div>
-    </div><div class="zzz">Z</div>
+    </div><<if _args[0].sleeping>><div class="zzz">Z</div><</if>>
     <<done>><<run
         let person = Object.assign({},_args[0]);
         if(!person.expression)
@@ -257,7 +257,6 @@
             person.hairStyle = 'straight';
         let fixed = document.getElementById('characterImageFixed'),anim = document.getElementById('characterImageAnim');
         personImage(person).then(url => url && tempObjectUrl(fixed.style.backgroundImage = `url(${url})`));
-        console.log(person.sleeping);
         person.eyesClosed = person.sleeping;
         personImage(person, 'animation').then(urlOpen =>{
             if(!urlOpen) {

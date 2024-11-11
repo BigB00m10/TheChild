@@ -198,8 +198,14 @@ class Inventory {
     destination: Inventory,
     count: number = 0
   ): void {
-    const item =
-      typeof itemOrIndex == "number" ? this.items[itemOrIndex] : itemOrIndex;
+    const item: Item =
+      typeof itemOrIndex == "number"
+        ? this.items[itemOrIndex]
+        : this.items.firstOrDefault(
+            (i: Item) =>
+              i.name == itemOrIndex.name &&
+              i.extra?.importantDetail == itemOrIndex.extra?.importantDetail
+          );
     destination.add(item, count);
     this.remove(item, count);
   }

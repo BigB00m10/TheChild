@@ -118,7 +118,7 @@ Macro.add("openNpcInteraction", {
       variables.returnPassage = SugarCube.State.passage;
     variables.npcInteractionRoute = this.args[0];
     if (this.args[1]) variables.npc = Npc.obtain(this.args[1], variables)[0];
-    (<any>SugarCube.State).display("npcInteraction");
+    SugarCube.Engine.play("npcInteraction");
   },
 });
 const checkCondition = (objectName: string, condition: string): boolean => {

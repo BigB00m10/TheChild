@@ -2,7 +2,11 @@ class Player extends LivingCharacter {
   /**
    * The current game version will be shown in the game. And it will be saved to the SugarCube player variable to know on which version the current game was started on.
    */
-  gameVersion: string = "0.3.1.0";
+  gameVersion: string = "0.3.1.1";
+  /**
+   * Number to know what needs to be changed when loading an old save (see passageinit event in window.ts)
+   */
+  saveVersion = 1;
   /**
    * Zero UID identifies the player.
    */

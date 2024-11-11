@@ -210,7 +210,7 @@ abstract class LivingCharacter {
       if (character.uid)
         window.Now.addTimedEvent(
           24 * 5,
-          `var lc=window.Person.get(${character.uid});lc.lactating=false;if(npc.previousTitSize){npc.titSize=npc.previousTitSize;delete npc.previousTitSize}`,
+          `let lc=window.Person.get(${character.uid});lc.lactating=false;if(lc.previousTitSize){lc.titSize=lc.previousTitSize;delete lc.previousTitSize}`,
           "stopLactation" + character.uid
         );
       else
@@ -849,7 +849,9 @@ class Person extends Npc {
     person.ageIntroduced = person.age;
     person.adjustPubescence();
     if (person.age < 6)
-      person.freedomWish -= ((6 - person.age) / 6) * person.freedomWish;
+      person.freedomWish -= Math.floor(
+        ((6 - person.age) / 6) * person.freedomWish
+      );
     person.genitals = {
       male: person.sex == "male" || person.sex == "herm" ? "dick" : null,
       female:
@@ -872,18 +874,28 @@ class Person extends Npc {
     person.name = (person.gender != "boy" ? femaleNames : maleNames).random();
     person.skin = gen.skins.random();
     person.hairColor = gen.hairColors.random();
-    person.hairLength =
-      person.age == 0
-        ? "short"
-        : person.age == 2
-        ? ["short", "medium"].random()
-        : (person.gender == "boy"
-            ? ["short", "short", "medium"]
-            : ["short", "medium", "long"]
-          ).random();
+    person.hairLength = PseudoRandom.either(
+      PseudoRandom.getSeed(turns()),
+      person.age < 2
+        ? ["short"]
+        : person.age < 5
+        ? person.gender == "boy"
+          ? ["short"]
+          : ["short", "medium"]
+        : person.gender == "boy"
+        ? ["short", "short", "short", "medium"]
+        : ["short", "medium", "medium", "medium", "long", "long"]
+    );
     const hairStyles = [...gen.hairStyles];
     if (person.gender == "boy")
-      hairStyles.delete("pig tails", "twin tails", "ponytail", "shoulder");
+      hairStyles.delete(
+        "pig tails",
+        "twin tails",
+        "ponytail",
+        "shoulder",
+        "wavy side part"
+      );
+    else hairStyles.delete("fauxhawkian", "front spikes");
     person.hairStyle = hairStyles.random();
     person.eyeColor = gen.eyeColors.random();
     person.uid = getUid();
@@ -1129,11 +1141,15 @@ class Person extends Npc {
    */
   dressBack(person?: Person, variables?: any): void {
     [person, variables] = <[Person, any]>Person.obtain(person, variables);
-    if (!this.previouslyWearingClothes) return;
+    if (!person.previouslyWearingClothes) return;
     const wearing = this.getEquippedInventory(person, variables);
     const inventory = this.getInventory(person, variables);
+    const wardrobe = window.BedRoom.getContents(variables);
     person.previouslyWearingClothes.forEach((item: Item) =>
-      inventory.move(item, wearing)
+      inventory.move(
+        item,
+        this.wearing(item.name, person, variables) ? wardrobe : wearing
+      )
     );
     delete person.previouslyWearingClothes;
   }

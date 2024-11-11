@@ -1717,7 +1717,7 @@ window.Interactions["slave"] = {
                 <</if>><<playerCum>>`,
                 npcStats: (npc) =>
                   npc.hunger >= 50 || npc.lust >= 80
-                    ? ["hunger-5", "mouthTraining+10"]
+                    ? ["hunger-10", "mouthTraining+10"]
                     : null,
                 next: baseInteractionOptions,
               },
@@ -2296,7 +2296,7 @@ window.Interactions["slave"] = {
         Player.getEquippedInventory().addNpc($npc);
         Player.lactationTimeout($player);
       >> You pick up $npc.name in your arms.
-      You can now bring $npc.pronoun with you and interact with $npc.pronoun through your inventory at any time.`,
+      You can now bring $npc.pronoun with you and interact with $npc.pronoun @@color:yellow;''through your inventory''@@ at any time.`,
       next: baseInteractionOptions,
     },
     babyFeed: {

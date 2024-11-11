@@ -143,277 +143,300 @@ $(document).on(":passageinit", () => {
   if (Save.onLoad.size == 0) {
     Save.onLoad.add((save) => {
       try {
-        const variables =
-          save.state.history[save.state.history.length - 1].variables;
+        const variables = save.state.history[save.state.index].variables;
         const player = <Player>variables.player;
-        if (!player.genitals.all || player.impregnationChance == undefined) {
-          if (!player.genitals.all)
-            player.gender = variables.player.gender != "male" ? "girl" : "boy";
-          //Change to new gender/sex format from a 0.1.8.2 save or older
-          //This will now also run when updating from 0.1.14.1 or older to add pregnancy stats
-          window.Player.setSex(
-            player.sex
-              ? player.sex
-              : player.gender == "boy"
-              ? "male"
-              : "female",
-            player
-          );
-        }
-        const persons = <Person[]>window.Person.all((npc) => true, variables);
-        if (persons && persons.length) {
-          let reassignUid = false;
-          if (persons[0].version == 1) {
-            variables.lastUid = 0;
-            reassignUid = true;
+        if (!player.saveVersion) {
+          if (!player.genitals.all || player.impregnationChance == undefined) {
+            if (!player.genitals.all)
+              player.gender =
+                variables.player.gender != "male" ? "girl" : "boy";
+            //Change to new gender/sex format from a 0.1.8.2 save or older
+            //This will now also run when updating from 0.1.14.1 or older to add pregnancy stats
+            window.Player.setSex(
+              player.sex
+                ? player.sex
+                : player.gender == "boy"
+                ? "male"
+                : "female",
+              player
+            );
           }
-          let addSlaveUniqueness = !persons[0].uniqueness;
-          let randomIndex = 0;
-          persons.forEach((slave: Person) => {
-            if (!slave.hunger) slave.hunger = 0;
-            if (!slave.GenPronoun) {
-              slave.GenPronoun = slave.gender != "boy" ? "She" : "He";
-              slave.genPronoun = slave.gender != "boy" ? "she" : "he";
-              slave.Possessive = slave.gender != "boy" ? "Her" : "His";
+          const persons = <Person[]>window.Person.all((npc) => true, variables);
+          if (persons && persons.length) {
+            let reassignUid = false;
+            if (persons[0].version == 1) {
+              variables.lastUid = 0;
+              reassignUid = true;
             }
-            if (slave.anusTraining == undefined) {
-              slave.anusTraining = 0;
-              slave.pussyTraining = 0;
-              slave.mouthTraining = 0;
-            }
-            if (slave.hasPenis == undefined) {
-              slave.hasPenis = slave.sex == "male";
-              slave.hasPussy = slave.sex == "female";
-            }
-            window.Person.adjustPubescence(false, slave);
-            if (slave.analVirgin == undefined) {
-              slave.analVirgin = true;
-              slave.vaginaVirgin = true;
-              slave.penisVirgin = true;
-              slave.mouthVirgin = true;
-            }
-            if (slave.status == undefined) slave.status = "slave";
-            if (slave.punishments == undefined) slave.punishments = [];
-            if (slave.location == undefined) slave.location = "basement";
-            if (slave.achievements == undefined) slave.achievements = [];
-            if (slave.uid == undefined || reassignUid) {
-              slave.uid = getUid(variables);
-              delete slave.index;
-            }
-            if (slave.status == "slave" && slave.location != "basement")
-              slave.status = "home slave";
-            if (!slave.version) {
-              if (!slave.analVirgin)
-                window.Person.setAchievement("playerTookAnalVirginity", slave);
-              if (!slave.vaginaVirgin)
-                window.Person.setAchievement(
-                  "playerTookVaginaVirginity",
-                  slave
-                );
-              if (!slave.penisVirgin)
-                window.Person.setAchievement("playerTookPenisVirginity", slave);
-              if (!slave.mouthVirgin)
-                window.Person.setAchievement("playerTookMouthVirginity", slave);
-              if (slave.mouthTraining)
-                window.Person.setAchievement("hadMouthSexWithPlayer", slave);
-              slave.assSpermAmount = 0;
-              slave.pussySpermAmount = 0;
-              slave.faceSpermAmount = 0;
-              slave.bodySpermAmount = 0;
-            }
-            if (slave.haveClothes && (!slave.version || slave.version < 3))
-              window.Person.giveInitialClothes(slave, variables);
-            slave.version = window.Person.version;
-            if (!slave.uniqueness) PersonUniqueness.applyRandom(slave, false);
-            if (!slave.genitals.all) {
-              //Change to new gender/sex format from a 0.1.8.2 save or older
-              slave.sex = slave.gender as Sex;
-              slave.gender = slave.sex == "male" ? "boy" : "girl";
-              slave.genitals = {
-                male: slave.sex == "male" ? "dick" : null,
-                female:
-                  slave.sex == "female"
-                    ? slave.age < 15
-                      ? "cunny"
-                      : "pussy"
-                    : null,
-                all:
-                  slave.sex == "male"
-                    ? "dick"
-                    : slave.age < 15
-                    ? "cunny"
-                    : "pussy",
-              };
-            }
-            if (slave.ageProgress == undefined) {
-              slave.ageProgress = PseudoRandom.getFromRange(
-                PseudoRandom.getSeed(variables.now.date, randomIndex++),
-                0,
-                7
-              );
-              slave.ageIntroduced = slave.age;
-            }
-            if (slave.hairStyle == "wavey") slave.hairStyle = "wavy";
-          });
-          if (addSlaveUniqueness) {
-            Dialog.setup("Slave personalities");
-            Dialog.wiki(
-              "Old save file loaded.\nRandom personalities have been assigned to the already captured slaves."
-            );
-            Dialog.open();
-          }
-        }
-        let settings: any = variables.settings;
-        if (settings.anal == undefined) settings.anal = true;
-        if (settings.slaveSelling == undefined) settings.slaveSelling = true;
-        if (settings.lustDecCum == undefined) settings.lustDecCum = 20;
-        if (variables.achievements == undefined) variables.achievements = [];
-        let onlineStore = variables.onlineStore as OnlineStore;
-        if (onlineStore.products.length < window.OnlineStore.products.length)
-          for (
-            //A new product was added to the backend class
-            let productIndex = 0;
-            productIndex < window.OnlineStore.products.length;
-            productIndex++
-          ) {
-            //Find where the name doesn't match and insert the new products in the right position
-            let product = window.OnlineStore.products[productIndex];
-            let saveProduct = onlineStore.products[productIndex];
-            if (!saveProduct) onlineStore.products.push(product);
-            else if (saveProduct.name != product.name)
-              onlineStore.products.splice(productIndex, 0, product);
-          }
-        if (!onlineStore.version || onlineStore.version < 5) {
-          if (onlineStore.version < 4) {
-            let mattressIndex = onlineStore.products.findIndex(
-              (p) => p.name == "Matress" //Old typo
-            );
-            if (mattressIndex == -1)
-              mattressIndex = onlineStore.products.findIndex(
-                (p) => p.name == "Mattress"
-              );
-            onlineStore.products[mattressIndex] =
-              window.OnlineStore.getBase("Mattress");
-            const lubeIndex = onlineStore.products.findIndex(
-              (p) => p.name == "Lube"
-            );
-            const lubeOut = onlineStore.products[lubeIndex].soldOut;
-            onlineStore.products[lubeIndex] =
-              window.OnlineStore.getBase("Lube");
-            onlineStore.products[lubeIndex].soldOut = lubeOut;
-            onlineStore.products[
-              onlineStore.products.findIndex((p) => p.name == "Condom")
-            ] = window.OnlineStore.getBase("Condom");
-            var mGlassesIndex = onlineStore.products.findIndex(
-              (p) => p.name == "Magic sunglasses"
-            );
-            var mGlassesOut = onlineStore.products[mGlassesIndex].soldOut;
-            onlineStore.products[mGlassesIndex] =
-              window.OnlineStore.getBase("Magic sunglasses");
-            onlineStore.products[mGlassesIndex].soldOut = mGlassesOut;
-            if (onlineStore.bought.items.length && !onlineStore.purchaseTime)
-              onlineStore.purchaseTime = window.Now.isEqualOrLaterThan(
-                "7:01 AM",
-                variables.now.date
-              )
-                ? variables.now.date
-                : new Date(variables.now.date).setDate(
-                    variables.now.date.getDate() - 1
+            let addSlaveUniqueness = !persons[0].uniqueness;
+            let randomIndex = 0;
+            persons.forEach((slave: Person) => {
+              if (!slave.hunger) slave.hunger = 0;
+              if (!slave.GenPronoun) {
+                slave.GenPronoun = slave.gender != "boy" ? "She" : "He";
+                slave.genPronoun = slave.gender != "boy" ? "she" : "he";
+                slave.Possessive = slave.gender != "boy" ? "Her" : "His";
+              }
+              if (slave.anusTraining == undefined) {
+                slave.anusTraining = 0;
+                slave.pussyTraining = 0;
+                slave.mouthTraining = 0;
+              }
+              if (slave.hasPenis == undefined) {
+                slave.hasPenis = slave.sex == "male";
+                slave.hasPussy = slave.sex == "female";
+              }
+              window.Person.adjustPubescence(false, slave);
+              if (slave.analVirgin == undefined) {
+                slave.analVirgin = true;
+                slave.vaginaVirgin = true;
+                slave.penisVirgin = true;
+                slave.mouthVirgin = true;
+              }
+              if (slave.status == undefined) slave.status = "slave";
+              if (slave.punishments == undefined) slave.punishments = [];
+              if (slave.location == undefined) slave.location = "basement";
+              if (slave.achievements == undefined) slave.achievements = [];
+              if (slave.uid == undefined || reassignUid) {
+                slave.uid = getUid(variables);
+                delete slave.index;
+              }
+              if (slave.status == "slave" && slave.location != "basement")
+                slave.status = "home slave";
+              if (!slave.version) {
+                if (!slave.analVirgin)
+                  window.Person.setAchievement(
+                    "playerTookAnalVirginity",
+                    slave
                   );
-          }
-          const inventory = window.Player.getInventory(variables);
-          const wardrobe = window.BedRoom.getContents(variables);
-          let personRefIndex = 0;
-          let clothesMoved = false;
-          [...inventory.items].forEach((item: Item) => {
-            if (Array.isArray(item.tags)) item.tags = new Set(item.tags);
-            if (item.name.includes("underwear")) {
-              let count = item.count || 1;
-              for (let i = 0; i < count; i++) {
-                window.OnlineStore.getBase(
-                  persons[personRefIndex].gender == "girl"
-                    ? "panties"
-                    : "briefs"
-                ).transferTo(wardrobe, 1, {
-                  importantDetail: player.hasPenis
-                    ? "Cum stained"
-                    : "With love juice",
-                });
-                personRefIndex = ++personRefIndex % persons.length;
-                inventory.remove(item);
+                if (!slave.vaginaVirgin)
+                  window.Person.setAchievement(
+                    "playerTookVaginaVirginity",
+                    slave
+                  );
+                if (!slave.penisVirgin)
+                  window.Person.setAchievement(
+                    "playerTookPenisVirginity",
+                    slave
+                  );
+                if (!slave.mouthVirgin)
+                  window.Person.setAchievement(
+                    "playerTookMouthVirginity",
+                    slave
+                  );
+                if (slave.mouthTraining)
+                  window.Person.setAchievement("hadMouthSexWithPlayer", slave);
+                slave.assSpermAmount = 0;
+                slave.pussySpermAmount = 0;
+                slave.faceSpermAmount = 0;
+                slave.bodySpermAmount = 0;
               }
-              clothesMoved = true;
-            } else if (item.name.startsWith("Used clothes")) {
-              let count = item.count || 1;
-              for (let i = 0; i < count; i++) {
-                window.Person.giveInitialClothes(
-                  persons[personRefIndex],
-                  variables,
-                  wardrobe
+              if (slave.haveClothes && (!slave.version || slave.version < 3))
+                window.Person.giveInitialClothes(slave, variables);
+              slave.version = window.Person.version;
+              if (!slave.uniqueness) PersonUniqueness.applyRandom(slave, false);
+              if (!slave.genitals.all) {
+                //Change to new gender/sex format from a 0.1.8.2 save or older
+                slave.sex = slave.gender as Sex;
+                slave.gender = slave.sex == "male" ? "boy" : "girl";
+                slave.genitals = {
+                  male: slave.sex == "male" ? "dick" : null,
+                  female:
+                    slave.sex == "female"
+                      ? slave.age < 15
+                        ? "cunny"
+                        : "pussy"
+                      : null,
+                  all:
+                    slave.sex == "male"
+                      ? "dick"
+                      : slave.age < 15
+                      ? "cunny"
+                      : "pussy",
+                };
+              }
+              if (slave.ageProgress == undefined) {
+                slave.ageProgress = PseudoRandom.getFromRange(
+                  PseudoRandom.getSeed(variables.now.date, randomIndex++),
+                  0,
+                  7
                 );
-                personRefIndex = ++personRefIndex % persons.length;
-                inventory.remove(item);
+                slave.ageIntroduced = slave.age;
               }
-              clothesMoved = true;
+              if (slave.hairStyle == "wavey") slave.hairStyle = "wavy";
+              window.Person.dressBack(slave, variables);
+            });
+            if (addSlaveUniqueness) {
+              Dialog.setup("Slave personalities");
+              Dialog.wiki(
+                "Old save file loaded.\nRandom personalities have been assigned to the already captured slaves."
+              );
+              Dialog.open();
             }
-          });
-          if (clothesMoved) {
-            Dialog.setup("Inventory clothes");
-            Dialog.wiki(
-              "Old save file loaded.\nThe clothes on your inventory have been converted and moved to the wardrobe in your bedroom."
-            );
-            Dialog.open();
           }
-          onlineStore.version = 5;
-        }
-        let childGen: PersonGeneration = settings.childGeneration;
-        if (!childGen.hairStyles)
-          childGen.hairStyles = window.PersonGeneration.hairStyles;
-        if (!childGen.eyeColors)
-          childGen.eyeColors = window.PersonGeneration.eyeColors;
-        if (!childGen.hairColors)
-          childGen.hairColors = window.PersonGeneration.hairColors;
-        if (!childGen.skins) childGen.skins = window.PersonGeneration.skins;
-        if (!childGen.herms) {
-          //New settings added not present in a 0.1.8.2 save or older
-          childGen.hermPercentage = 0;
-          childGen.herms = {
-            fromAge: 1,
-            toAge: 15,
-          };
-        }
-        if (variables.player.house) {
-          player.home = variables.player.house;
-          delete variables.player.house;
-        }
-        if (player.home.spaces == undefined)
-          player.home.spaces = window.Homes.smallUrban.spaces;
-        else
-          for (let houseKey in window.Homes)
+          let settings: any = variables.settings;
+          if (settings.anal == undefined) settings.anal = true;
+          if (settings.slaveSelling == undefined) settings.slaveSelling = true;
+          if (settings.lustDecCum == undefined) settings.lustDecCum = 20;
+          if (variables.achievements == undefined) variables.achievements = [];
+          let onlineStore = variables.onlineStore as OnlineStore;
+          if (onlineStore.products.length < window.OnlineStore.products.length)
+            for (
+              //A new product was added to the backend class
+              let productIndex = 0;
+              productIndex < window.OnlineStore.products.length;
+              productIndex++
+            ) {
+              //Find where the name doesn't match and insert the new products in the right position
+              let product = window.OnlineStore.products[productIndex];
+              let saveProduct = onlineStore.products[productIndex];
+              if (!saveProduct) onlineStore.products.push(product);
+              else if (saveProduct.name != product.name)
+                onlineStore.products.splice(productIndex, 0, product);
+            }
+          if (!onlineStore.version || onlineStore.version < 5) {
+            if (onlineStore.version < 4) {
+              let mattressIndex = onlineStore.products.findIndex(
+                (p) => p.name == "Matress" //Old typo
+              );
+              if (mattressIndex == -1)
+                mattressIndex = onlineStore.products.findIndex(
+                  (p) => p.name == "Mattress"
+                );
+              onlineStore.products[mattressIndex] =
+                window.OnlineStore.getBase("Mattress");
+              const lubeIndex = onlineStore.products.findIndex(
+                (p) => p.name == "Lube"
+              );
+              const lubeOut = onlineStore.products[lubeIndex].soldOut;
+              onlineStore.products[lubeIndex] =
+                window.OnlineStore.getBase("Lube");
+              onlineStore.products[lubeIndex].soldOut = lubeOut;
+              onlineStore.products[
+                onlineStore.products.findIndex((p) => p.name == "Condom")
+              ] = window.OnlineStore.getBase("Condom");
+              var mGlassesIndex = onlineStore.products.findIndex(
+                (p) => p.name == "Magic sunglasses"
+              );
+              var mGlassesOut = onlineStore.products[mGlassesIndex].soldOut;
+              onlineStore.products[mGlassesIndex] =
+                window.OnlineStore.getBase("Magic sunglasses");
+              onlineStore.products[mGlassesIndex].soldOut = mGlassesOut;
+              if (onlineStore.bought.items.length && !onlineStore.purchaseTime)
+                onlineStore.purchaseTime = window.Now.isEqualOrLaterThan(
+                  "7:01 AM",
+                  variables.now.date
+                )
+                  ? variables.now.date
+                  : new Date(variables.now.date).setDate(
+                      variables.now.date.getDate() - 1
+                    );
+            }
+            const inventory = window.Player.getInventory(variables);
+            const wardrobe = window.BedRoom.getContents(variables);
+            let personRefIndex = 0;
+            let clothesMoved = false;
+            [...inventory.items].forEach((item: Item) => {
+              if (Array.isArray(item.tags)) item.tags = new Set(item.tags);
+              if (item.name.includes("underwear")) {
+                let count = item.count || 1;
+                for (let i = 0; i < count; i++) {
+                  window.OnlineStore.getBase(
+                    persons[personRefIndex].gender == "girl"
+                      ? "panties"
+                      : "briefs"
+                  ).transferTo(wardrobe, 1, {
+                    importantDetail: player.hasPenis
+                      ? "Cum stained"
+                      : "With love juice",
+                  });
+                  personRefIndex = ++personRefIndex % persons.length;
+                  inventory.remove(item);
+                }
+                clothesMoved = true;
+              } else if (item.name.startsWith("Used clothes")) {
+                let count = item.count || 1;
+                for (let i = 0; i < count; i++) {
+                  window.Person.giveInitialClothes(
+                    persons[personRefIndex],
+                    variables,
+                    wardrobe
+                  );
+                  personRefIndex = ++personRefIndex % persons.length;
+                  inventory.remove(item);
+                }
+                clothesMoved = true;
+              }
+            });
+            if (clothesMoved) {
+              Dialog.setup("Inventory clothes");
+              Dialog.wiki(
+                "Old save file loaded.\nThe clothes on your inventory have been converted and moved to the wardrobe in your bedroom."
+              );
+              Dialog.open();
+            }
+            onlineStore.version = 5;
+          }
+          let childGen: PersonGeneration = settings.childGeneration;
+          if (!childGen.hairStyles)
+            childGen.hairStyles = window.PersonGeneration.hairStyles;
+          if (!childGen.eyeColors)
+            childGen.eyeColors = window.PersonGeneration.eyeColors;
+          if (!childGen.hairColors)
+            childGen.hairColors = window.PersonGeneration.hairColors;
+          if (!childGen.skins) childGen.skins = window.PersonGeneration.skins;
+          if (!childGen.herms) {
+            //New settings added not present in a 0.1.8.2 save or older
+            childGen.hermPercentage = 0;
+            childGen.herms = {
+              fromAge: 1,
+              toAge: 15,
+            };
+          }
+          if (variables.player.house) {
+            player.home = variables.player.house;
+            delete variables.player.house;
+          }
+          if (player.home.spaces == undefined)
+            player.home.spaces = window.Homes.smallUrban.spaces;
+          else
+            for (let houseKey in window.Homes)
+              if (
+                window.Homes[houseKey].name == player.home.name &&
+                player.home.spaces.length < window.Homes[houseKey].spaces.length
+              )
+                player.home.spaces = window.Homes[houseKey].spaces;
+          if (!player.gameVersion) {
             if (
-              window.Homes[houseKey].name == player.home.name &&
-              player.home.spaces.length < window.Homes[houseKey].spaces.length
+              !variables.settings.childGeneration.hairStyles.includes(
+                "ponytail"
+              )
             )
-              player.home.spaces = window.Homes[houseKey].spaces;
-        if (!player.gameVersion) {
-          if (
-            !variables.settings.childGeneration.hairStyles.includes("ponytail")
-          )
-            variables.settings.childGeneration.hairStyles.pushUnique(
-              "pig tails",
-              "twin tails",
-              "ponytail"
+              variables.settings.childGeneration.hairStyles.pushUnique(
+                "pig tails",
+                "twin tails",
+                "ponytail"
+              );
+            const waveyIndex =
+              variables.settings.childGeneration.hairStyles.indexOf("wavey");
+            if (waveyIndex != -1)
+              variables.settings.childGeneration.hairStyles[waveyIndex] =
+                "wavy";
+            player.gameVersion = "unknown";
+          }
+          const wardrobe = window.BedRoom.getContents(variables);
+          wardrobe.items
+            .filter((i) => !i.tags || !i.name || !i.description)
+            .forEach((i) => wardrobe.remove(i, 0));
+          variables.timedEvents
+            ?.filter((te: TimedEvent) => te.ref.startsWith("stopLactation"))
+            .forEach(
+              (te: TimedEvent) =>
+                (te.action = te.action.replace(/npc\./g, "lc."))
             );
-          const waveyIndex =
-            variables.settings.childGeneration.hairStyles.indexOf("wavey");
-          if (waveyIndex != -1)
-            variables.settings.childGeneration.hairStyles[waveyIndex] = "wavy";
-          player.gameVersion = "unknown";
+          console.info("Transformed old save");
+          player.saveVersion = window.Player.saveVersion;
         }
-        const wardrobe = window.BedRoom.getContents(variables);
-        wardrobe.items
-          .filter((i) => !i.tags || !i.name || !i.description)
-          .forEach((i) => wardrobe.remove(i, 0));
       } catch (error) {
         console.log(error);
         throw error;

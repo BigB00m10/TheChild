@@ -145,7 +145,7 @@ window.Interactions["slaveEventHunger"] = {
     cum: {
       playerRequirements: ["hasPenis"],
       optionText:
-        "💦 Offer $npc.pronoun your ==sperm== white jelly. (-5 hunger)",
+        "💦 Offer $npc.pronoun your ==sperm== white jelly. (-10 hunger)",
       minutesCost: 30,
       contents: `You show $npc.pronoun your dick while grabbing it with your hand and say:
       "Here, you can eat my special jelly. My body produces it, but you need to stimulate this to be able to get it out."
@@ -208,14 +208,14 @@ window.Interactions["slaveEventHunger"] = {
       npcStats: () => {
         let temp = Temporary();
         if (temp.denied) return null;
-        let stats = ["hunger-5", "lust+5%", "mouthTraining+10"];
+        let stats = ["hunger-10", "lust+5%", "mouthTraining+10"];
         if (temp.willing) stats.push("love+5");
         return stats;
       },
     },
     pussy: {
       playerRequirements: ["hasPussy"],
-      optionText: "💦 Offer $npc.pronoun your love juice. (-5 hunger)",
+      optionText: "💦 Offer $npc.pronoun your love juice. (-10 hunger)",
       minutesCost: 30,
       contents: `You show $npc.pronoun your pussy and say:
       "Come here, you can drink my love juice. My body produces it, but you need to stimulate me down here to be able to get it out."
@@ -276,10 +276,9 @@ window.Interactions["slaveEventHunger"] = {
       <</if>>`,
       altMinutes: (minutes) => (Temporary().denied ? 0 : minutes),
       npcStats: () =>
-        (
-          window.Interactions.slaveEventHunger.options["cum"]
-            .npcStats as CallableFunction
-        )(),
+        (<CallableFunction>(
+          window.Interactions.slaveEventHunger.options["cum"].npcStats
+        ))(),
     },
     breastfeed: {
       playerRequirements: ["hasBoobs", "lactating"],

@@ -12,21 +12,25 @@ You are currently standing in your wc.
     <<sleepOption>>\
 <</unlessEmergency>>\
 :: pantiescum {"position":"400,825"}
-<<addMinutes 30>>\
 <<run
     let wardrobe = BedRoom.getContents();
     let clean = wardrobe.withTag('underwear').firstOrDefault(i=>!i.extra?.importantDetail);
-    let stained = Object.assign({},clean);
-    stained.extra={importantDetail:$player.hasPenis?"Cum stained":"With love juice"};
-    wardrobe.remove(clean);
-    wardrobe.add(stained, 1);
-    _underwearName = clean.name;
+    if(clean){
+        let stained = Object.assign({},clean);
+        stained.extra={importantDetail:$player.hasPenis?"Cum stained":"With love juice"};
+        wardrobe.remove(clean);
+        wardrobe.add(stained, 1);
+        _underwearName = clean.name;
+    }
 >>\
-<<if $player.hasPenis>>\
-    @@color:yellow;You wrap some _underwearName on your penis and fap until you cum in them.@@
-    ''@@color:yellow;(Cum filled _underwearName added to the wardrobe in your room)@@''
-<<else>>\
-    @@color:yellow;You rub some _underwearName on your pussy till you cum.@@
-    ''@@color:yellow;(_underwearName with love juice added to the wardrobe in your room)@@''
+<<if _underwearName>>\
+    <<addMinutes 30>>\
+    <<if $player.hasPenis>>\
+        @@color:yellow;You wrap some _underwearName on your penis and fap until you cum in them.@@
+        ''@@color:yellow;(Cum filled _underwearName added to the wardrobe in your room)@@''
+    <<else>>\
+        @@color:yellow;You rub some _underwearName on your pussy till you cum.@@
+        ''@@color:yellow;(_underwearName with love juice added to the wardrobe in your room)@@''
+    <</if>>\
 <</if>>\
 <<include wc>>\

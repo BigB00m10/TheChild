@@ -64,13 +64,14 @@ interface NpcInteraction {
   //A function to alter the options specified in the next field above in case you need a special set of options when this specific interaction is shown.
   altOptions?: (
     npc: Npc,
-    current: NpcInteractionOptions
+    current: NpcInteractionOptions,
+    extraNpcs?: Npc[]
   ) => NpcInteractionOptions;
   //If specified the function is used to alter the minutesCost field when the option is selected. But the option will still show the minutes stated in minutesCost,
   altMinutes?: (current: number) => number;
   //If specified changes the base route to the options on this interaction.
   //For instance: If the function returns "slave.pushDown" and the options are named option1 and option2 the options will lead to the interactions "slave.pushDown.option1" and "slave.pushDown.option2"
-  baseRoute?: (npc: Npc) => string;
+  baseRoute?: (npc: Npc, extraNpcs?: Npc[]) => string;
   //If specified, forces to show or not this interaction if there's no options available for the player to select other than a "back" option or the stop option.
   //If not specified options without sub-options are only hidden if hideEmptyOptions on the parent collection is set to true.
   showIfEmpty?: boolean;
@@ -234,15 +235,105 @@ Macro.add("npcInteractionLayout", {
     }
   },
 });
+function processStats(
+  result: string,
+  showStats: boolean,
+  hungerIncrease: number,
+  npc: Npc,
+  npcStats: string[],
+  showNpcName: boolean
+): [string, boolean, number] {
+  if (npcStats && npcStats.length) {
+    if (showStats === undefined) showStats = true;
+    if (
+      hungerIncrease &&
+      !npcStats.firstOrDefault((s: string) => s.startsWith("hunger"))
+    )
+      npcStats.push("hunger+" + hungerIncrease);
+    if (showNpcName) result += npc.name + ":";
+    result += "@@color:yellow;";
+    let first = true;
+    const npcGetterJs = `window.Person.get(${npc.uid})`;
+    npcStats.forEach((change) => {
+      switch (change) {
+        case "+aroused":
+          window.Now.addTimedEvent(
+            0.5, //Schedule this NPC to lose its arousal in half an hour from now.
+            `var p=${npcGetterJs};if(p)p.aroused = false`,
+            npc.uid + "arousalEnd"
+          );
+          break;
+        case "-aroused":
+          window.Now.removeTimedEvent(npc.uid + "arousalEnd");
+          break;
+      }
+      if (first) first = false;
+      else result += ", ";
+      let varName: string;
+      let varPath: string;
+      let value: number | string;
+      switch (change[0]) {
+        case "+":
+        case "-":
+          varName = change.slice(1);
+          varPath = npcGetterJs + "." + varName;
+          result += change[0] + varName.beautifyStat();
+          value = change[0] != "-" ? "true" : "false";
+          break;
+        default:
+          let match = /(\w+)(%?)([+-])(\d+)(%?)/.exec(change);
+          if (!match) match = /(\w+)(=)(\w+)/.exec(change);
+          varName = match[1];
+          varPath = npcGetterJs + "." + varName;
+          value = eval(varPath) as number;
+          if (match[2] == "%") {
+            try {
+              //Fairmath
+              let max = parseInt(match[4]);
+              let fraction = (max + 1 - value) * (max / 100);
+              let term =
+                fraction * 100 == max
+                  ? "0"
+                  : Math.max(0, Math.round(fraction)).toString();
+              result += varName.beautifyStat() + match[3] + term;
+              value = eval(value.toString() + match[3] + term) as number;
+            } catch (err) {
+              console.error(err);
+              console.info(varPath);
+            }
+          } else if (match[2] == "=") {
+            try {
+              value = eval(match[3]);
+            } catch {
+              value = "'" + match[3] + "'";
+            }
+          } else {
+            result += change.beautifyStat();
+            value = (
+              match[5] != "%"
+                ? eval(value + match[3] + match[4])
+                : eval(
+                    `Math.max(1, value)${match[3]}${
+                      (value * parseFloat(match[4])) / 100
+                    }`
+                  )
+            ) as number;
+          }
+          if (typeof value == "number") value = Math.ceil(value).clamp(0, 100);
+          break;
+      }
+      eval(`${varPath} = ${value}`);
+    });
+    result += "@@\n";
+  }
+  return [result, showStats, hungerIncrease];
+}
 //Outputs the current interaction indicated by the route $npcInteractionRoute and directed to the Npc in $npc
 //Not recommended to use it directly unless you know exactly what are you doing, use openNpcInteraction macro instead.
 Macro.add("npcInteraction", {
   handler() {
     const variables = Variables();
     const temporary = Temporary();
-    variables.npc = window.Person.get(variables.npc.uid);
-    const npc: Npc = variables.npc;
-    npc.hasBoobs = window.Person.hasTits(npc, variables);
     const steps: string[] = variables.npcInteractionRoute.split(".");
     const collection = window.Interactions[steps[0]];
     let options = callOrGetItself(collection.options);
@@ -256,12 +347,19 @@ Macro.add("npcInteraction", {
       }
       options = callOrGetItself(interaction.next);
     }
-    let result =
-      $(document.createElement("span"))
-        .wiki(interaction ? interaction.contents : collection.contents)
-        .html() + "\n";
+    variables.npc = window.Person.get(variables.npc.uid);
+    const npc: Npc = variables.npc;
+    npc.hasBoobs = window.Person.hasTits(npc, variables);
+    if (variables.extraNpcs)
+      for (let npcIndex = 0; npcIndex < variables.extraNpcs; npcIndex++) {
+        let current = variables.extraNpcs[npcIndex];
+        current = variables.extraNpcs[npcIndex] = window.Person.get(
+          current.uid
+        );
+        current.hasBoobs = window.Person.hasTits(current, variables);
+      }
     if (interaction && interaction.altOptions)
-      options = interaction.altOptions(npc, options);
+      options = interaction.altOptions(npc, options, variables.extraNpcs);
     let npcHungerIncrease = 0;
     if (interaction && (interaction.minutesCost || interaction.altMinutes)) {
       const minutes = interaction.altMinutes
@@ -277,100 +375,32 @@ Macro.add("npcInteraction", {
         npcHungerIncrease = Math.max(1, Math.round((minutes / 8) * 0.46));
     }
     let showNpcStats = interaction ? interaction.showNpcStats : undefined;
-    const extraNpcStats = temporary.npcStatModifiers;
-    if ((interaction && interaction.npcStats) || extraNpcStats) {
-      const npcStats = [];
-      if (interaction && interaction.npcStats) {
-        const stats = callOrGetItself(interaction.npcStats, npc);
-        if (stats) npcStats.push(...stats);
-      }
+    const npcs = [npc];
+    if (variables.extraNpcs) npcs.push(...variables.extraNpcs);
+    let npcStats = callOrGetItself(interaction ? interaction.npcStats : null);
+    const extraNpcStats = callOrGetItself(temporary.npcStatModifiers);
+    if (!npcStats || typeof npcStats[0] == "string") {
       if (extraNpcStats) {
-        const stats = callOrGetItself(extraNpcStats, npc);
-        if (stats) npcStats.push(...stats);
+        if (!npcStats) npcStats = [];
+        npcStats.push(...extraNpcStats);
       }
-      if (npcStats.length) {
-        if (showNpcStats === undefined) showNpcStats = true;
-        if (
-          npcHungerIncrease &&
-          !npcStats.firstOrDefault((s: string) => s.startsWith("hunger"))
-        )
-          npcStats.push("hunger+" + npcHungerIncrease);
-        result += "@@color:yellow;";
-        let first = true;
-        npcStats.forEach((change) => {
-          switch (change) {
-            case "+aroused":
-              window.Now.addTimedEvent(
-                0.5, //Schedule this NPC to lose its arousal in half an hour from now.
-                `var p=window.Person.get(${npc.uid});if(p)p.aroused = false`,
-                npc.uid + "arousalEnd"
-              );
-              break;
-            case "-aroused":
-              window.Now.removeTimedEvent(npc.uid + "arousalEnd");
-              break;
-          }
-          if (first) first = false;
-          else result += ", ";
-          let varName: string;
-          let varPath: string;
-          let value: number | string;
-          switch (change[0]) {
-            case "+":
-            case "-":
-              varName = change.slice(1);
-              varPath = "variables.npc." + varName;
-              result += change[0] + varName.beautifyStat();
-              value = change[0] != "-" ? "true" : "false";
-              break;
-            default:
-              let match = /(\w+)(%?)([+-])(\d+)(%?)/.exec(change);
-              if (!match) match = /(\w+)(=)(\w+)/.exec(change);
-              varName = match[1];
-              varPath = "variables.npc." + varName;
-              value = eval(varPath) as number;
-              if (match[2] == "%") {
-                try {
-                  //Fairmath
-                  let max = parseInt(match[4]);
-                  let fraction = (max + 1 - value) * (max / 100);
-                  let term =
-                    fraction * 100 == max
-                      ? "0"
-                      : Math.max(0, Math.round(fraction)).toString();
-                  result += varName.beautifyStat() + match[3] + term;
-                  value = eval(value.toString() + match[3] + term) as number;
-                } catch (err) {
-                  console.error(err);
-                  console.info(varPath);
-                }
-              } else if (match[2] == "=") {
-                try {
-                  value = eval(match[3]);
-                } catch {
-                  value = "'" + match[3] + "'";
-                }
-              } else {
-                result += change.beautifyStat();
-                value = (
-                  match[5] != "%"
-                    ? eval(value + match[3] + match[4])
-                    : eval(
-                        `Math.max(1, value)${match[3]}${
-                          (value * parseFloat(match[4])) / 100
-                        }`
-                      )
-                ) as number;
-              }
-              if (typeof value == "number")
-                value = Math.ceil(value).clamp(0, 100);
-              break;
-          }
-          eval(`${varPath} = ${value}`);
-        });
-        result += "@@\n";
-      }
-    }
+      if (!npcStats || typeof npcStats[0] == "string") npcStats = [npcStats];
+    } else if (extraNpcStats)
+      for (let statIndex = 0; statIndex < extraNpcStats.length; statIndex++)
+        npcStats[statIndex].push(...extraNpcStats[statIndex]);
+    let result =
+      $(document.createElement("span"))
+        .wiki(interaction ? interaction.contents : collection.contents)
+        .html() + "\n";
+    for (let npcIndex = 0; npcIndex < npcs.length; npcIndex++)
+      [result, showNpcStats, npcHungerIncrease] = processStats(
+        result,
+        showNpcStats,
+        npcHungerIncrease,
+        npcs[npcIndex],
+        npcStats[npcIndex % (npcStats?.length || 1)],
+        npcs.length > 1
+      );
     if (interaction && showNpcStats) result += "<<npcStats>>\n";
     let baseRoute =
       interaction && interaction.baseRoute

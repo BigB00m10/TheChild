@@ -120,6 +120,11 @@ window.Interactions["houseSlave"] = {
     },
   },
   defaultStopOption: "✋ Leave $npc.pronoun alone",
-  timeIncreaseNpcHunger: true,
-  beforeStop: '<<run OnlineStore.getBase("condom").removed($npc.uid)>>',
+  timeIncreaseNpcHunger: true
 };
+window.Interactions["callSlavesBasement"] = {
+  contents:'',
+  options:{
+
+  }
+}

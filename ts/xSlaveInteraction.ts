@@ -2318,7 +2318,6 @@ window.Interactions["slave"] = {
     },
   },
   timeIncreaseNpcHunger: true,
-  beforeStop: '<<run OnlineStore.getBase("condom").removed($npc.uid)>>',
 };
 //Instead of duplicating same text on the two interactions I just copy the contents and add the code that steals the clothes.
 window.Interactions.slave.options["pushDown"].next.stealClothes.contents =

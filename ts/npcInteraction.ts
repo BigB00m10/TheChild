@@ -119,6 +119,9 @@ Macro.add("openNpcInteraction", {
       variables.returnPassage = SugarCube.State.passage;
     variables.npcInteractionRoute = this.args[0];
     if (this.args[1]) variables.npc = Npc.obtain(this.args[1], variables)[0];
+    variables.extraNpcs = [];
+    for (let npcIndex = 2; npcIndex < this.args.length; npcIndex++)
+      variables.extraNpcs.push(Npc.obtain(this.args[npcIndex], variables));
     SugarCube.Engine.play("npcInteraction");
   },
 });
@@ -328,6 +331,25 @@ function processStats(
   }
   return [result, showStats, hungerIncrease];
 }
+let beforeStopInteractionMarkup = null;
+let beforeStopInteraction:CallableFunction = null;
+$(document).on(":passagestart", () => {
+  const variables = Variables();
+  if (variables.npc && State.passage != "npcInteraction") {
+    if (beforeStopInteraction) beforeStopInteraction();
+    if (beforeStopInteractionMarkup) $.wiki(beforeStopInteractionMarkup);
+    variables.npc.pose = "idle";
+    window.OnlineStore.getBase("condom").removed(variables.npc.uid);
+    if (variables.extraNpcs)
+      variables.extraNpcs.forEach((npc: Npc) => {
+        npc.pose = "idle";
+        window.OnlineStore.getBase("condom").removed(npc.uid);
+      });
+    delete variables.extraNpcs;
+    delete variables.npc;
+    delete variables.npcInteractionRoute;
+  }
+});
 //Outputs the current interaction indicated by the route $npcInteractionRoute and directed to the Npc in $npc
 //Not recommended to use it directly unless you know exactly what are you doing, use openNpcInteraction macro instead.
 Macro.add("npcInteraction", {
@@ -336,6 +358,7 @@ Macro.add("npcInteraction", {
     const temporary = Temporary();
     const steps: string[] = variables.npcInteractionRoute.split(".");
     const collection = window.Interactions[steps[0]];
+    beforeStopInteractionMarkup = collection.beforeStop;
     let options = callOrGetItself(collection.options);
     let interaction: NpcInteraction;
     for (let stepIndex = 1; stepIndex < steps.length; stepIndex++) {
@@ -480,7 +503,7 @@ Macro.add("npcInteraction", {
           emoji = stopOptionText.split(" ")[0];
           stopOptionText = stopOptionText.slice(emoji.length + 1);
         }
-        result += `\n<<keyAction '${stopOptionText}' ${emoji}>>${collection.beforeStop}<<set $npc.pose='idle'>><<goto $returnPassage>><</keyAction>>`;
+        result += `\n<<keyAction '${stopOptionText}' ${emoji}>><<goto $returnPassage>><</keyAction>>`;
       }
     }
     $(this.output).wiki(

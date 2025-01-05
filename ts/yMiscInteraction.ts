@@ -120,11 +120,48 @@ window.Interactions["houseSlave"] = {
     },
   },
   defaultStopOption: "✋ Leave $npc.pronoun alone",
-  timeIncreaseNpcHunger: true
+  timeIncreaseNpcHunger: true,
 };
-window.Interactions["callSlavesBasement"] = {
-  contents:'',
-  options:{
-
-  }
-}
+Macro.add("twoNpcSex", {
+  handler() {
+    let variables = Variables();
+    if (!variables.top)
+      beforeStopInteraction.push(() => {
+        delete variables.top;
+        delete variables.bottom;
+      });
+    let top = Npc.obtain(this.args[0], variables);
+    let bottom = Npc.obtain(this.args[1], variables);
+    variables.top = top;
+    variables.bottom = bottom;
+    let span = Span(`<<playerSay '$top, do sex with $bottom'>>
+      <<personUniqueness twoNpcSexTop $top>>`, this.output);
+  },
+});
+window.Interactions["twoSlaveBasement"] = {
+  contents: "You bring $npc.name and $extraNpcs[0].name together",
+  options: {
+    clothesOff: {
+      canBeShown() {
+        let variables = Variables();
+        return variables.npc.haveClothes || variables.extraNpcs[0].haveClothes;
+      },
+      optionText: "👣 Get them naked",
+      contents: "",//TODO
+      next: window.Interactions["twoSlaveBasement"].options,
+    },
+    aFuckB: {
+      npcRequirements: ["age>2"],
+      optionText: "🐒 make $npc.name fuck $extraNpcs[0].name",
+      contents: "<<twoNpcSex $npc $extraNpcs[0]>>",
+      next: window.Interactions["twoSlaveBasement"].options,
+    },
+    bFuckA: {
+      canBeShown: () => Variables().extraNpcs[0].age > 2,
+      optionText: "🐒 make $extraNpcs[0].name fuck $npc.name",
+      contents: "<<twoNpcSex $extraNpcs[0] $npc>>",
+      next: window.Interactions["twoSlaveBasement"].options,
+    },
+  },
+  defaultStopOption: "✋ leave them alone",
+};

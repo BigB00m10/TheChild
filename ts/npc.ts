@@ -766,6 +766,13 @@ abstract class Npc extends LivingCharacter {
       window.Person.lactationTimeout(holder, variables);
     }
   }
+  hasPenetrationExperience(npc?: Npc, variables?: any): boolean {
+    [npc, variables] = Npc.obtain(npc, variables);
+    if (npc.hasPenis && !npc.penisVirgin) return true;
+    if (npc.hasPussy && !npc.vaginaVirgin) return true;
+    if (!npc.analVirgin) return true;
+    return false;
+  }
 }
 type AnimalSpecies = "dog" | "cat" | "rabbit" | "horse" | "pig" | "cow";
 type RoughSize = "tiny" | "small" | "normal" | "big" | "very big";

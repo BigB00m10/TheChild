@@ -331,18 +331,24 @@ function processStats(
   }
   return [result, showStats, hungerIncrease];
 }
-let beforeStopInteractionMarkup = null;
-let beforeStopInteraction:CallableFunction = null;
+let beforeStopInteractionMarkup = "";
+let beforeStopInteraction: CallableFunction[] = [];
 $(document).on(":passagestart", () => {
   const variables = Variables();
   if (variables.npc && State.passage != "npcInteraction") {
-    if (beforeStopInteraction) beforeStopInteraction();
-    if (beforeStopInteractionMarkup) $.wiki(beforeStopInteractionMarkup);
-    variables.npc.pose = "idle";
+    beforeStopInteraction.forEach((action) => {
+      action();
+    });
+    beforeStopInteraction = [];
+    if (beforeStopInteractionMarkup) {
+      $.wiki(beforeStopInteractionMarkup);
+      beforeStopInteractionMarkup = "";
+    }
+    window.Person.get(variables.npc.uid, variables).pose = "idle";
     window.OnlineStore.getBase("condom").removed(variables.npc.uid);
     if (variables.extraNpcs)
       variables.extraNpcs.forEach((npc: Npc) => {
-        npc.pose = "idle";
+        window.Person.get(npc.uid, variables).pose = "idle";
         window.OnlineStore.getBase("condom").removed(npc.uid);
       });
     delete variables.extraNpcs;
@@ -355,10 +361,10 @@ $(document).on(":passagestart", () => {
 Macro.add("npcInteraction", {
   handler() {
     const variables = Variables();
-    const temporary = Temporary();
     const steps: string[] = variables.npcInteractionRoute.split(".");
     const collection = window.Interactions[steps[0]];
-    beforeStopInteractionMarkup = collection.beforeStop;
+    if (!beforeStopInteractionMarkup)
+      beforeStopInteractionMarkup = collection.beforeStop;
     let options = callOrGetItself(collection.options);
     let interaction: NpcInteraction;
     for (let stepIndex = 1; stepIndex < steps.length; stepIndex++) {
@@ -397,10 +403,14 @@ Macro.add("npcInteraction", {
       )
         npcHungerIncrease = Math.max(1, Math.round((minutes / 8) * 0.46));
     }
-    let showNpcStats = interaction ? interaction.showNpcStats : undefined;
+    let result =
+      $(document.createElement("span"))
+        .wiki(interaction ? interaction.contents : collection.contents)
+        .html() + "\n";
     const npcs = [npc];
     if (variables.extraNpcs) npcs.push(...variables.extraNpcs);
     let npcStats = callOrGetItself(interaction ? interaction.npcStats : null);
+    const temporary = Temporary();
     const extraNpcStats = callOrGetItself(temporary.npcStatModifiers);
     if (!npcStats || typeof npcStats[0] == "string") {
       if (extraNpcStats) {
@@ -411,10 +421,7 @@ Macro.add("npcInteraction", {
     } else if (extraNpcStats)
       for (let statIndex = 0; statIndex < extraNpcStats.length; statIndex++)
         npcStats[statIndex].push(...extraNpcStats[statIndex]);
-    let result =
-      $(document.createElement("span"))
-        .wiki(interaction ? interaction.contents : collection.contents)
-        .html() + "\n";
+    let showNpcStats = interaction ? interaction.showNpcStats : undefined;
     for (let npcIndex = 0; npcIndex < npcs.length; npcIndex++)
       [result, showNpcStats, npcHungerIncrease] = processStats(
         result,
@@ -536,7 +543,13 @@ Macro.add("personUniqueness", {
             setOutput(uniquenessCase);
             return;
           }
-        } else if (checkCondition(uniquenessCase.condition)) {
+        } else if (
+          typeof uniquenessCase.condition != "string" &&
+          uniquenessCase.condition(person, variables)
+        ) {
+          setOutput(uniquenessCase);
+          return;
+        } else if (checkCondition(<string>uniquenessCase.condition)) {
           setOutput(uniquenessCase);
           return;
         }
@@ -637,7 +650,7 @@ Macro.add("npcStimulated", {
     const $npc: Npc = Variables().npc;
     if (!$npc.aroused) {
       if (!Temporary().npcStatModifiers) Temporary().npcStatModifiers = [];
-      Temporary().npcStatModifiers.push("+aroused");
+      Temporary().npcStatModifiers.push("+aroused"); //TODO: this is not working
     } else window.Now.assertTimedEvent($npc.uid + "arousalEnd", 0.5);
   },
 });

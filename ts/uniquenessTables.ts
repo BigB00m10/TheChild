@@ -4,7 +4,7 @@ interface UniquenessCase {
   //default option, when it doesn't match any other characteristic
   default: string;
   //When specified, this case will follow this condition instead of the global ones.
-  condition?: string;
+  condition?: string | ((p: Person, variables: any) => boolean);
   //The other properties are tied to the npc traits. They can be combined with "And" in camelcase. Example: curiousAndNaughty
   //The traits will be checked in the same order that they are coded.
   //That is, if shy is specified first and then energetic. Npc shyness will be checked first and then the npc energetic trait (the first one that is true)
@@ -384,6 +384,54 @@ class UniquenessTables {
         //Default case when other cases do not apply
         default: "=age8 1 diligent", //Use the diligent code on the first case of the 8yo group
         shy: "=age8 1 diligentAndShy", //Use the diligentAndShy code on the first case of the 8yo group
+      },
+    ],
+  ];
+  static twoNpcSexTop = [
+    [],
+    [
+      3, //From 3yo to 4yo
+      {
+        default: `$top.name stays still, looking at you with a confused face.
+        Looks like $top.genPronoun do<<thirdPerson es ''>>n't know what sex is yet. So you decide to teach $top.pronoun.`,
+      },
+      {
+        condition: (p: Person, v: any) =>
+          window.Person.hasPenetrationExperience(p, v),
+        naughty:
+          "$top.name immediately looks very excited when hearing that and quickly approaches $bottom.name with the intent to follow your instructions.",
+      },
+    ],
+    [
+      5, //From 5yo to 7yo
+      {
+        //Default case
+        default: `$top looks confused. <<npcSay 'What is "sechs"?' $top>>
+        <<playerSay "I'll teach you">>`,
+      },
+      {
+        //With experience in penetration
+        condition: (p: Person, v: any) =>
+          window.Person.hasPenetrationExperience(p, v),
+        default: `<<if $top.lust gte 50 || $top.uniqueness.naughty>>\
+          $top.name nods excited and quickly approaches $bottom.name with the intent to follow your instructions.
+        <<elseif $top.obedience gte 60 || ($top.uniqueness.diligent && !$top.uniqueness.shy)>>\
+          $top.name nods and obediently approaches $bottom.name with the intent to follow your instructions.
+        <<elseif>><<set _unwilling = true>>\
+          $top.name glances at $bottom.name. Looks like $top.genPronoun <<thirdPerson understands understand>> what you're asking $top.pronoun, but $top.genPronoun'<<thirdPerson s re>> hesitant about it.
+        <</if>>`,
+      },
+    ],
+    [
+      8, //From 8yo
+      {
+        default: "=age5", //Same as in 5-7yo
+        diligent: "", //TODO: leaned about sex without personal experience
+      },
+      {
+        condition: (p: Person, v: any) =>
+          window.Person.hasPenetrationExperience(p, v),
+        default: "", //TODO
       },
     ],
   ];

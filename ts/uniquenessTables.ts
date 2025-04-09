@@ -388,7 +388,7 @@ class UniquenessTables {
     ],
   ];
   static twoNpcSexTop = [
-    [],
+    ["lust50", "obedience60"],
     [
       3, //From 3yo to 4yo
       {
@@ -396,10 +396,14 @@ class UniquenessTables {
         Looks like $top.genPronoun do<<thirdPerson es ''>>n't know what sex is yet. So you decide to teach $top.pronoun.`,
       },
       {
-        condition: (p: Person, v: any) =>
-          window.Person.hasPenetrationExperience(p, v),
-        naughty:
-          "$top.name immediately looks very excited when hearing that and quickly approaches $bottom.name with the intent to follow your instructions.",
+        condition: window.Person.hasPenetrationExperience,
+        default: `<<if $top.lust gte 50 || $top.uniqueness.naughty>>\
+          $top.name immediately looks very excited when hearing that and quickly approaches $bottom.name with the intent to follow your instructions.
+        <<elseif $top.obedience gte 60 || ($top.uniqueness.diligent && !$top.uniqueness.shy)>>\
+          $top.name approaches $bottom.name right after hearing your demand. Looks like $npc.genPronoun already understands what you're asking $npc.pronoun.
+        <<elseif>><<set _topUnwilling = true>>\
+          $top.name <<if $top.uniqueness.shy>>blushes and looks away<<else>>glances at $bottom.name<</if>>. Looks like $top.genPronoun <<thirdPerson understands understand>> what you're asking $top.pronoun, but $top.genPronoun'<<thirdPerson s re>> hesitant about it.
+        <</if>>`,
       },
     ],
     [
@@ -411,28 +415,75 @@ class UniquenessTables {
       },
       {
         //With experience in penetration
-        condition: (p: Person, v: any) =>
-          window.Person.hasPenetrationExperience(p, v),
+        condition: window.Person.hasPenetrationExperience,
         default: `<<if $top.lust gte 50 || $top.uniqueness.naughty>>\
           $top.name nods excited and quickly approaches $bottom.name with the intent to follow your instructions.
         <<elseif $top.obedience gte 60 || ($top.uniqueness.diligent && !$top.uniqueness.shy)>>\
-          $top.name nods and obediently approaches $bottom.name with the intent to follow your instructions.
-        <<elseif>><<set _unwilling = true>>\
-          $top.name glances at $bottom.name. Looks like $top.genPronoun <<thirdPerson understands understand>> what you're asking $top.pronoun, but $top.genPronoun'<<thirdPerson s re>> hesitant about it.
+          $top.name nods<<if $top.uniqueness.shy>> while blushing<</if>> and obediently approaches $bottom.name with the intent to follow your instructions.
+        <<elseif>><<set _topUnwilling = true>>\
+          $top.name <<if $top.uniqueness.shy>>blushes and looks away<<else>>glances at $bottom.name<</if>>. Looks like $top.genPronoun <<thirdPerson understands understand>> what you're asking $top.pronoun, but $top.genPronoun'<<thirdPerson s re>> hesitant about it.
         <</if>>`,
       },
     ],
     [
-      8, //From 8yo
+      8, //From 8yo to 11yo
       {
         default: "=age5", //Same as in 5-7yo
-        diligent: "", //TODO: leaned about sex without personal experience
+        diligentAndNaughty: `<<if $top.uniqueness.shy>>$top immediately blushes
+        <<npcSay 'Ah...Okay.'>><<else>>$top nods at you and approaches $bottom. Looks like $top doesn't need much persuasion on lewd stuff<</if>>`,
+        diligent: `$top<<if $top.uniqueness.shy>><<emoji 😳>>blushes and<</if>> looks surprised.
+        <<npcSay 'Eh...? No! I don't wanna...' $top>><<set _topUnwilling = true>>`,
       },
       {
-        condition: (p: Person, v: any) =>
-          window.Person.hasPenetrationExperience(p, v),
-        default: "", //TODO
+        //lust
+        diligent: "=diligentAndNaughty", //same as the diligentAndNaughty selector in the default case
+      },
+      {
+        //obedience
+        diligent: `<<npcSay 'Yes <<npcAddressPlayer $top>>!!'>>
+            $top.name seems to know what you're talking about and obediently follows your instructions.`,
+        default: "=default", //same as default case
+      },
+      {
+        condition: window.Person.hasPenetrationExperience,
+        default: `<<if $top.lust gte 50 || $top.uniqueness.naughty>><<if $top.uniqueness.shy>>$top immediately blushes
+          <<npcSay 'Ah...Okay.'>><<else>>$top nods at you and approaches $bottom. Looks like $top doesn't need much persuasion on lewd stuff<</if>>
+        <<elseif $top.obedience gte 60 || ($top.uniqueness.diligent && !$top.uniqueness.shy)>>\
+          <<if $top.uniqueness.shy>>\
+            <<npcSay 'O-okay!' $top>><<emoji 😳>>
+            $top.name is blushing and looking at the ground but $top.genPronoun doesn't seem to have any problem with it and approaches $bottom.name
+          <<else>>\
+            <<npcSay 'Yes <<npcAddressPlayer $top>>!!'>>
+            $top.name looks enthusiastic and obediently follows your instructions.
+          <</if>>
+        <<elseif>><<set _topUnwilling = true>>\
+          <<if $top.uniqueness.shy>>\
+            <<npcSay "N...No...I...can't" $top>>
+            $top.name blushes and takes an step back.
+          <<else>>\
+            <<npcSay "I don't wanna do it!">>
+          <</if>>
+        <</if>>`,
       },
     ],
+    [
+      12, //From 12yo onwards
+      {
+        default: "=age8 1 diligent",
+        naughty: "=age8 1 diligentAndNaughty",
+      },
+      {
+        //lust
+        default: "=age8",
+      },
+      {
+        //obedience
+        default: "=age8 3 diligent",
+      },
+    ],
+  ];
+  static twoNpcSexBottom = [
+    ["lust50", "obedience60"],
+    [3, {}],
   ];
 }

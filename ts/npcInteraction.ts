@@ -409,9 +409,9 @@ Macro.add("npcInteraction", {
         .html() + "\n";
     const npcs = [npc];
     if (variables.extraNpcs) npcs.push(...variables.extraNpcs);
-    let npcStats = callOrGetItself(interaction ? interaction.npcStats : null);
+    let npcStats = callOrGetItself(interaction ? interaction.npcStats : null, npc);
     const temporary = Temporary();
-    const extraNpcStats = callOrGetItself(temporary.npcStatModifiers);
+    const extraNpcStats = callOrGetItself(temporary.npcStatModifiers, npc);
     if (!npcStats || typeof npcStats[0] == "string") {
       if (extraNpcStats) {
         if (!npcStats) npcStats = [];

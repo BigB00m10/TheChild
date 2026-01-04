@@ -448,6 +448,26 @@ $(document).on(":passageinit", () => {
                 (te: TimedEvent) =>
                   (te.action = te.action.replace(/npc\./g, "lc."))
               );
+          } else if (
+            player.saveVersion == 2 &&
+            window.Person.all(
+              (npc) => (<Person>npc).uniqueness.name == "inherited",
+              variables
+            )?.length
+          ) {
+            const gen: PersonGeneration = variables.settings.childGeneration;
+            if (
+              gen.females.fromAge == 0 &&
+              gen.females.toAge == 0 &&
+              gen.males.fromAge == 0 &&
+              gen.males.toAge == 0 &&
+              gen.herms.fromAge == 0 &&
+              gen.herms.toAge == 0
+            ) {
+              gen.females = window.PersonGeneration.females;
+              gen.males = window.PersonGeneration.males;
+              gen.herms = window.PersonGeneration.herms;
+            }
           }
           const wardrobe = window.BedRoom.getContents(variables);
           wardrobe.items

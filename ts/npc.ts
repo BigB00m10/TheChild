@@ -1216,9 +1216,17 @@ class PersonGeneration {
     "blue",
   ];
   skins = ["tan", "brown", "black", "white", "pale", "olive"];
-  load(definition: Object | string): PersonGeneration {
+  load(definition: PersonGeneration | string): PersonGeneration {
     if (typeof definition == "string") definition = JSON.parse(definition);
-    Object.assign(this, definition);
+    for (var key in <PersonGeneration>definition)
+      switch (typeof definition[key]) {
+        case "object":
+          Object.assign(this[key], definition[key]);
+          break;
+        default:
+          this[key] = definition[key];
+          break;
+      }
     return this;
   }
 }

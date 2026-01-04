@@ -387,8 +387,6 @@ Macro.add("npcInteraction", {
         );
         current.hasBoobs = window.Person.hasTits(current, variables);
       }
-    if (interaction && interaction.altOptions)
-      options = interaction.altOptions(npc, options, variables.extraNpcs);
     let npcHungerIncrease = 0;
     if (interaction && (interaction.minutesCost || interaction.altMinutes)) {
       const minutes = interaction.altMinutes
@@ -407,9 +405,14 @@ Macro.add("npcInteraction", {
       $(document.createElement("span"))
         .wiki(interaction ? interaction.contents : collection.contents)
         .html() + "\n";
+    if (interaction && interaction.altOptions)
+      options = interaction.altOptions(npc, options, variables.extraNpcs);
     const npcs = [npc];
     if (variables.extraNpcs) npcs.push(...variables.extraNpcs);
-    let npcStats = callOrGetItself(interaction ? interaction.npcStats : null, npc);
+    let npcStats = callOrGetItself(
+      interaction ? interaction.npcStats : null,
+      npc
+    );
     const temporary = Temporary();
     const extraNpcStats = callOrGetItself(temporary.npcStatModifiers, npc);
     if (!npcStats || typeof npcStats[0] == "string") {

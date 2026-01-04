@@ -402,7 +402,7 @@ class UniquenessTables {
         <<elseif $top.obedience gte 60 || ($top.uniqueness.diligent && !$top.uniqueness.shy)>>\
           $top.name approaches $bottom.name right after hearing your demand. Looks like $npc.genPronoun already understands what you're asking $npc.pronoun.
         <<elseif>><<set _topUnwilling = true>>\
-          $top.name <<if $top.uniqueness.shy>>blushes and looks away<<else>>glances at $bottom.name<</if>>. Looks like $top.genPronoun <<thirdPerson understands understand>> what you're asking $top.pronoun, but $top.genPronoun'<<thirdPerson s re>> hesitant about it.
+          $top.name <<if $top.uniqueness.shy>>blushes and looks away<<else>>glances at $bottom.name<</if>>. Looks like $top.genPronoun <<thirdPerson understands understand>> what you're asking $top.pronoun, but $top.genPronoun'<<thirdPerson s re>> not willing to proceed.
         <</if>>`,
       },
     ],
@@ -481,9 +481,5 @@ class UniquenessTables {
         default: "=age8 3 diligent",
       },
     ],
-  ];
-  static twoNpcSexBottom = [
-    ["lust50", "obedience60"],
-    [3, {}],
   ];
 }

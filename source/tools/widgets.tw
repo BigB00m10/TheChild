@@ -285,8 +285,8 @@
 <</widget>>
 <<widget personHunting>>
     <<set
-        _hasChloroform = Player.has('chloroform', true);
-        _hasCandy = Player.has('Candy');
+        _hasChloroform = Player.has('chloroform');
+        _hasCandy = Player.has('candy');
         $found_kid = Person.generate($settings.childGeneration);
     >>
     <<npcInteractionLayout '$found_kid'>>

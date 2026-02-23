@@ -404,7 +404,13 @@ window.Interactions["okSleepWithPlayerDemand"] = {
     $npc.GenPronoun hastily <<thirdPerson "climbs" "climb">> in bed with you.
     You also climb in bed with $npc.pronoun, after taking your clothes off.
   <<else>>\
-    $npc.GenPronoun slowly <<thirdPerson "takes" "take">> $npc.possessive clothes off and then <<thirdPerson "climbs" "climb">> on the bed.
+    <<if $npc.haveClothes>>\
+      $npc.GenPronoun slowly <<thirdPerson "takes" "take">> $npc.possessive clothes off and then <<thirdPerson "climbs" "climb">> on the bed.
+    <<elseif Person.wearing('cooking apron')>>\
+      $npc.GenPronoun slowly <<thirdPerson "takes" "take">> $npc.possessive apron off and then <<thirdPerson "climbs" "climb">> on the bed.
+    <<else>>\
+      $npc.GenPronoun , already nude, <<thirdPerson "climbs" "climb">> on the bed.
+    <</if>>\
     You take your clothes off and climb the bed after $npc.pronoun.
   <</if>><<npcStats>>`,
   defaultStopOption: false, //This interaction cannot be stopped since the player sleeps after it.

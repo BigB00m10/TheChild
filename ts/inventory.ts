@@ -144,9 +144,9 @@ class Inventory {
   }
   /**
    * Get the item with the specified name or starting with the specified word ignoring case.
-   * @param [partial=false] if set to true, it will match an item that contains all the words in the name provided
+   * @param [partial=true] if set to true, it will match an item that contains all the words in the name provided
    */
-  get(name: string, partial: boolean = false): Item {
+  get(name: string, partial: boolean = true): Item {
     name = name.toLowerCase();
     let found: Item = this.items.firstOrDefault(
       (i: Item) => i.name.toLowerCase() == name
@@ -159,20 +159,20 @@ class Inventory {
   }
   /**
    * Same as the remove action but selecting the item by name or starting with the specified word ignoring case.
-   * @param [partial=false] if set to true, it will match an item that contains all the words in the name provided
+   * @param [partial=true] if set to true, it will match an item that contains all the words in the name provided
    */
   removeByName(
     name: string,
     count: number = 1,
-    partial: boolean = false
+    partial: boolean = true
   ): number {
     return this.remove(this.get(name, partial), count);
   }
   /**
    * Check if the inventory contains at least the specified count of items selected by name or, if count not specified, at least one.
-   * @param [partial=false] if set to true, it will match an item that contains all the words in the name provided
+   * @param [partial=true] if set to true, it will match an item that contains all the words in the name provided
    */
-  has(itemName: string, count: number = 0, partial: boolean = false): boolean {
+  has(itemName: string, count: number = 0, partial: boolean = true): boolean {
     let item: Item = this.get(itemName, partial);
     if (item === null) return false;
     if (!count) return true;
@@ -180,9 +180,9 @@ class Inventory {
   }
   /**
    * Check if the inventory has at least one item of all of the specified by name.
-   * @param [partial=false] if set to true, it will match an item that contains all the words in the name provided
+   * @param [partial=true] if set to true, it will match an item that contains all the words in the name provided
    */
-  hasAll(itemNames: string[], partial: boolean = false): boolean {
+  hasAll(itemNames: string[], partial: boolean = true): boolean {
     return (
       itemNames.countWith((n) => this.has(n, 0, partial)) == itemNames.length
     );
@@ -211,12 +211,12 @@ class Inventory {
   }
   /**
    * Moves an item from this inventory to another (including all quantity of that item)
-   * @param [partial=false] if set to true, it will match an item that contains all the words in the name provided
+   * @param [partial=true] if set to true, it will match an item that contains all the words in the name provided
    */
   moveByName(
     itemName: string,
     destination: Inventory,
-    partial: boolean = false
+    partial: boolean = true
   ): void {
     let item = this.get(itemName, partial);
     if (item === null) return;

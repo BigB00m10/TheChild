@@ -2,7 +2,7 @@ class Player extends LivingCharacter {
   /**
    * The current game version will be shown in the game. And it will be saved to the SugarCube player variable to know on which version the current game was started on.
    */
-  gameVersion: string = "0.3.1.5";
+  gameVersion: string = "0.3.1.7";
   /**
    * Number to know what needs to be changed when loading an old save (see passageinit event in window.ts)
    */
@@ -42,7 +42,7 @@ class Player extends LivingCharacter {
   getInventory(variables?: any): Inventory {
     if (!variables) variables = Variables();
     return (variables.player.inventory = new Inventory(
-      variables.player.inventory
+      variables.player.inventory,
     ));
   }
   /**
@@ -52,7 +52,7 @@ class Player extends LivingCharacter {
   getEquippedInventory(variables?: any): Inventory {
     if (!variables) variables = Variables();
     return (variables.player.equippedItems = new Inventory(
-      variables.player.equippedItems
+      variables.player.equippedItems,
     ));
   }
   /**
@@ -161,8 +161,8 @@ class Player extends LivingCharacter {
       return $addressing && $addressing.offspring
         ? $addressing.offspring
         : $player.gender != "boy"
-        ? "mommy"
-        : "daddy";
+          ? "mommy"
+          : "daddy";
     let result = $player.name;
     if (!$addressing) return result;
     if ($addressing.slave) result = $addressing.slave;
@@ -183,7 +183,7 @@ class Player extends LivingCharacter {
     parentVariable: object,
     propertyName: string,
     onChanged: (element: HTMLElement) => any,
-    displayId: string
+    displayId: string,
   ): void {
     let $element = $("#" + id);
     switch ($element.attr("type")) {
@@ -202,7 +202,7 @@ class Player extends LivingCharacter {
             if (onChanged) parentVariable[propertyName] = onChanged(this);
             if (!onChanged || parentVariable[propertyName] === undefined)
               parentVariable[propertyName] = parseInt(
-                (<HTMLInputElement>this).value
+                (<HTMLInputElement>this).value,
               );
             if (displayId) $("#" + displayId).val(parentVariable[propertyName]);
           })
@@ -228,7 +228,7 @@ class Player extends LivingCharacter {
   bindRangeSettingsDom(
     elementIdBase: string,
     parentVariable: object,
-    propertyBaseName: string
+    propertyBaseName: string,
   ): void {
     let $from = $("#" + elementIdBase + "From");
     let $to = $("#" + elementIdBase + "To");
@@ -271,7 +271,7 @@ class Player extends LivingCharacter {
         (trait) => {
           //70% chance of inherit each trait from dad
           if (random(10) < 8) baby.uniqueness[trait] = dad.uniqueness[trait];
-        }
+        },
       );
     }
     this.getEquippedInventory(variables).addNpc(baby, "holding", "child"); //Make the player hold the newborn for now
@@ -305,7 +305,7 @@ Macro.add("consumePlayerItem", {
         itemCountName +
         (itemLeft == 1 || itemCountName.endsWith("s") ? "" : "s")
       } left)`,
-      this.output
+      this.output,
     );
   },
 });
@@ -319,7 +319,7 @@ Macro.add("takeClothes", {
     person.haveClothes = false;
     Wiki(
       "(Taken clothes were stored in the ''@@color:yellow;wardrobe on your bedroom@@'')",
-      this.output
+      this.output,
     );
   },
 });

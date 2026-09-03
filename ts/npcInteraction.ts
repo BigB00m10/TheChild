@@ -121,21 +121,72 @@ Macro.add("openNpcInteraction", {
     (<any>SugarCube.State).display("npcInteraction");
   },
 });
+
+// Safe condition evaluator to replace eval() - prevents code injection
+const safeGetValue = (obj: any, path: string): any => {
+  const keys = path.split(".");
+  let value = obj;
+  for (const key of keys) {
+    if (value == null) return undefined;
+    value = value[key];
+  }
+  return value;
+};
+
+// Safe expression evaluator for simple comparisons
+const safeEvaluateCondition = (value: any, operator: string, compare: string): boolean => {
+  // Convert "true"/"false" strings to booleans
+  if (compare === "true") compare = "1";
+  if (compare === "false") compare = "0";
+  
+  const compareNum = isNaN(parseFloat(compare)) ? compare : parseFloat(compare);
+  const valueNum = isNaN(Number(value)) ? value : Number(value);
+  
+  switch (operator) {
+    case "===":
+    case "==":
+      return valueNum == compareNum;
+    case "!==":
+    case "!=":
+      return valueNum != compareNum;
+    case "<":
+      return valueNum < compareNum;
+    case "<=":
+      return valueNum <= compareNum;
+    case ">":
+      return valueNum > compareNum;
+    case ">=":
+      return valueNum >= compareNum;
+    default:
+      return false;
+  }
+};
+
 const checkCondition = (objectName: string, condition: string): boolean => {
-  let neg = "";
+  let neg = false;
   if (condition[0] == "!") {
-    neg = "!";
+    neg = true;
     condition = condition.slice(1);
   }
-  return eval(
-    neg +
-      "variables()." +
-      objectName +
-      "." +
-      condition
-        .replace(/(\w[!=]=?=?)((?!true)(?!false)[^\d=].+)/, "$1'$2'")
-        .replace(/([^><!=])=([^=])/, "$1==$2")
-  );
+  
+  // Parse condition: propertyName operator value
+  const match = condition.match(/^(\w+)([!=<>]*=?)(.*?)$/);
+  if (!match) return false;
+  
+  const obj = variables()[objectName];
+  if (!obj) return false;
+  
+  const propertyName = match[1];
+  let operator = match[2] || "==";
+  let compareValue = match[3];
+  
+  // Handle single = as ==
+  if (operator === "=") operator = "==";
+  
+  const actualValue = safeGetValue(obj, propertyName);
+  const result = safeEvaluateCondition(actualValue, operator, compareValue);
+  
+  return neg ? !result : result;
 };
 const checkCanBeShown = (option: NpcInteraction) => {
   let canBeShown = true;
@@ -270,7 +321,7 @@ Macro.add("npcInteraction", {
             case "+aroused":
               window.Now.addTimedEvent(
                 0.5, //Schedule this NPC to lose its arousal in half an hour from now.
-                `var p=window.Person.get(${npc.uid});if(p)p.aroused = false`,
+                `var p=window.Person.get(${npc.uid});if(p)p.aroused = false;`,
                 npc.uid + "arousalEnd"
               );
               break;
@@ -294,8 +345,7 @@ Macro.add("npcInteraction", {
             default:
               let match = /(\w+)(%?)([+-])(\d+)(%?)/.exec(change);
               varName = match[1];
-              varPath = "variables().npc." + varName;
-              value = eval(varPath) as number;
+              value = npc[varName] as number;
               if (match[2] == "%") {
                 try {
                   //Fairmath
@@ -306,27 +356,26 @@ Macro.add("npcInteraction", {
                       ? "0"
                       : Math.max(0, Math.round(fraction)).toString();
                   result += varName.beautifyStat() + match[3] + term;
-                  value = eval(value.toString() + match[3] + term) as number;
+                  value = match[3] === "+" ? value + parseInt(term) : value - parseInt(term);
                 } catch (err) {
                   console.error(err);
-                  console.info(varPath);
+                  console.info(varName);
                 }
               } else {
                 result += change.beautifyStat();
-                value = (
-                  match[5] != "%"
-                    ? eval(value + match[3] + match[4])
-                    : eval(
-                        `Math.max(1, value)${match[3]}${
-                          (value * parseFloat(match[4])) / 100
-                        }`
-                      )
-                ) as number;
+                const modifier = parseInt(match[4]);
+                if (match[5] != "%") {
+                  value = match[3] === "+" ? value + modifier : value - modifier;
+                } else {
+                  const percentModifier = (value * modifier) / 100;
+                  value = Math.max(1, match[3] === "+" ? value + percentModifier : value - percentModifier);
+                }
               }
               value = Math.ceil(value).clamp(0, 100);
               break;
           }
-          eval(`${varPath} = ${value}`);
+          // Safely set the value on the npc object
+          npc[varName] = value;
         });
         result += "@@\n";
       }
@@ -426,10 +475,14 @@ Macro.add("personUniqueness", {
     let person: Person = this.args[1] || Variables().npc;
     const table: any[][] = UniquenessTables[this.args[0]];
     let defaultCase: UniquenessCase;
-    const checkCondition = (condition: string) => {
+    const checkConditionSafe = (condition: string) => {
       if (!condition) return false;
       var match = condition.match(/^([a-z]+)([^\d]*)(\d+)$/);
-      return eval(person[match[1]] + (match[2] || ">=") + match[3]);
+      if (!match) return false;
+      const propertyValue = person[match[1]];
+      const operator = match[2] || ">=";
+      const compareValue = parseInt(match[3]);
+      return safeEvaluateCondition(propertyValue, operator, compareValue.toString());
     };
     const processAgeRow = (cases: Array<UniquenessCase>) => {
       defaultCase = cases.firstOrDefault(
@@ -440,11 +493,11 @@ Macro.add("personUniqueness", {
         const uniquenessCase = cases[caseIndex];
         if (!uniquenessCase.condition) {
           if (uniquenessCase == defaultCase) continue;
-          if (checkCondition(table[0][--conditionIndex])) {
+          if (checkConditionSafe(table[0][--conditionIndex])) {
             setOutput(uniquenessCase);
             return;
           }
-        } else if (checkCondition(uniquenessCase.condition)) {
+        } else if (checkConditionSafe(uniquenessCase.condition)) {
           setOutput(uniquenessCase);
           return;
         }

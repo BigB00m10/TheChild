@@ -2,6 +2,14 @@
   "name": "theChildTrainer",
   "version": "0.1.14.2_BETA",
   "twee3LanguageTools.storyformat.current": "sugarcube-2",
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "html.validate.styles": false,
+  "html.validate.scripts": false,
+  "files.exclude": {
+    "**/releases/**": false
+  },
   "cSpell.ignoreRegExpList": ["/Names:.+\\][^\\]]+/g", "/No+/g"],
   "cSpell.words": [
     "baaack",

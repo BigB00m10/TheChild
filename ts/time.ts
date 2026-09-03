@@ -162,7 +162,14 @@ class Now {
         const element = timedEvents[index];
         element.timeoutHours -= amount;
         if (element.timeoutHours <= 0) {
-          eval(element.action);
+          // Execute the stored action safely using Function constructor
+          // This is safer than eval() as it runs in a limited scope
+          try {
+            const fn = new Function(element.action);
+            fn();
+          } catch (error) {
+            console.error("Error executing timed event:", error, element.action);
+          }
           timedEvents.splice(index);
         }
       }
